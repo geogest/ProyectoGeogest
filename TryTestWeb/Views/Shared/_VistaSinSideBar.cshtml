@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNet.Identity
+
+@{
+    bool isCert = ParseExtensions.ItsUserOnCertificationEnvironment(User.Identity.GetUserId());
+    //bool isLibroNoHecho = ParseExtensions.MostrarAlertaLibro(User.Identity.GetUserId());
+    string logo = ParseExtensions.GetLogoHtml(User.Identity.GetUserId(), Session);
+    string RazonS = ParseExtensions.GetRazonS(User.Identity.GetUserId(), Session);
+
+    string MsgAlertaCertificadoDigital = string.Empty;
+    bool AlertarCertificadoDigital = false;
+
+    // AlertarCertificadoDigital = ParseExtensions.AlertarCertificadoDigitalNearExpiration(User.Identity.GetUserId(), out MsgAlertaCertificadoDigital, Session);
+
+
+    string VistaAccedida = ViewContext.RouteData.Values["action"].ToString();
+
+    //List<string> lstAdvertencias = ParseExtensions.Revisar_Advertir_CAF(User.Identity.GetUserId(), Session);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seleccionar Empresa</title>
+</head>
+<body>
+    <div class="topbar">
+        <!-- LOGO -->
+        <div class="topbar-left">
+            <div class="text-center">
+                @*<a href="@Url.Action("Index", "Home")" class="logo"><i class="fa fa-edge icon-c-logo"></i><span>E-Factu</span></a>*@
+                <!-- Image Logo here -->
+                <a href="@Url.Action("SeleccionarEmisorDesdeModulo","Home")" class="logo">
+                    <i class="fa fa-edge icon-c-logo"></i>
+                    <span><img src="~/Content/images/logo_facturalabs_blanco@2x.png" height="35" /></span>
+                </a>
+            </div>
+        </div>
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+
+                <div class="pull-left">
+                    <button class="button-menu-mobile open-left waves-effect waves-light">
+                        <i class="md md-menu"></i>
+                    </button>
+                    <span class="clearfix"></span>
+                </div>
+                <ul class="nav navbar-nav hidden-xs">
+                    <li><a href="https://desk.zoho.com/portal/efactu/home" target="_blank" class="waves-effect waves-light">Soporte</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ayuda <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="ion-help"></i><span> Registar Clientes</span></a></li>
+                            <li><a href="#"><i class="ion-help"></i><span> Crear Facturas</span></a></li>
+                            <li><a href="#"><i class="ion-help"></i><span> Crear Nota de Crédito</span></a></li>
+                            <li><a href="#"><i class="ion-help"></i><span> Crear Nota de Débito</span></a></li>
+                            <li><a href="#"><i class="ion-help"></i><span> Registar Gastos</span></a></li>
+                            <li><a href="#"><i class="ion-help"></i><span> Facturas Recibidas</span></a></li>
+                            <li><a href="#"><i class="ion-help"></i><span> Registrar Pagos</span></a></li>
+                        </ul>
+                    </li>
+                    @if (ParseExtensions.ItsUserOnCertificationEnvironment(User.Identity.GetUserId()))
+                    {
+                        <li><a href="#" class="waves-effect waves-light"><i class="ion-alert-circled"></i><span><b> Certificación SII</b></span></a></li>
+                    }
+
+
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right pull-right">
+
+                 
+                    @Html.Partial("_LoginPartial")
+
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

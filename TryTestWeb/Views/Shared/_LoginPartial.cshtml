@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNet.Identity
+
+    @if (Request.IsAuthenticated)
+    {
+        <li class="dropdown top-menu-item-xs">
+            <a href="" class="dropdown-toggle profile waves-effect waves-light" data-toggle="dropdown" aria-expanded="true"><img src="~/Content/images/avat.jpg" alt="user-img" class="img-circle"></a>
+            <ul class="dropdown-menu">
+                <li><a href="@Url.Action("ChangePassword", "Manage")"><i class="ti-user m-r-10 text-custom"></i> @User.Identity.GetUserName()</a></li>
+                @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "SwitchPlatformCert"))
+                {
+                    <li><a href="@Url.Action("SwitchPlatformCert", "FMSend")"><i class="ti-pin-alt m-r-10 text-custom"></i> Cambiar a entorno Certificacion</a></li>
+                }
+                @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "SwitchPlatformProd"))
+                {
+                    <li><a href="@Url.Action("SwitchPlatformProd", "FMSend")"><i class="ti-pin2 m-r-10 text-custom"></i> Cambiar a entorno Produccion</a></li>
+                }
+                <li><a href="@Url.Action("SeleccionarEmisorDesdeModulos", "Home")"><i class="ti-settings m-r-10 text-custom"></i>Seleccionar Empresa</a></li>
+                <li class="divider"></li>
+
+                <li> @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <a href="javascript:document.getElementById('logoutForm').submit();"><i class="ti-power-off m-r-10 text-danger"></i> Salir</a>
+                }</li>
+            </ul>
+
+
+
+            
+        </li>
+
+    }
+    else
+    {
+
+        <li class="dropdown top-menu-item-xs">
+            <a href="" class="dropdown-toggle profile waves-effect waves-light" data-toggle="dropdown" aria-expanded="true"><i class="ti-user m-r-10 text-custom"></i></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="@Url.Action("Login", "Account")"><i class="fa fa-gear fa-fw"></i> Login</a>
+                </li>
+            </ul>
+        </li>
+
+    }

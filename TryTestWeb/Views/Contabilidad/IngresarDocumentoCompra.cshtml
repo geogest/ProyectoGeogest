@@ -1,0 +1,253 @@
+﻿@model LibrosContablesModel
+
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Ingresar Documento Tributario de Compra</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Ingresar Documento Tributario de Compra
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("NuevoDocumentoCompra", "Contabilidad", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "DocCompra" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Cuenta Contable</label>
+            <div class="col-md-2">
+                <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control" data-live-search="true" required data-size="10">
+                    @Html.Raw(ViewBag.HtmlStr)
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">RUT</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" name="AUXrut" id="AUXrut" required data-valRut="foo" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Razon Social</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" name="AUXrazoncta" required id="AUXrazoncta" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Tipo Documento</label>
+            <div class="col-md-2">
+                <select id="TipoDocumento" name="TipoDocumento" class="selectpicker show-tick form-control" data-live-search="true" required data-size="10">
+                    <option value="">Seleccione</option>
+                    @Html.Raw(ViewBag.OSTipoDte)
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Folio</label>
+            <div class="col-md-10">
+                <input type="number" min="0" step="1" class="form-control" name="Folio" required id="Folio" />
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Fecha Documento</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" required name="FechaDoc" id="FechaDoc" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Fecha Recepcion</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" required name="FechaRecep" id="FechaRecep" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Monto Exento</label>
+            <div class="col-md-3">
+                <input type="number" min="0" step="1" class="form-control" name="MontoExento" required id="MontoExento" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Monto Afecto</label>
+            <div class="col-md-3">
+                <input type="number" min="0" step="1" class="form-control" name="MontoNeto" required id="MontoNeto" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Monto IVA</label>
+            <div class="col-md-3">
+                <input type="number" min="0" step="1" class="form-control" name="MontoIva" required id="MontoIva" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Monto Total</label>
+            <div class="col-md-3">
+                <input type="number" min="0" step="1" class="form-control" name="MontoTotal" required id="MontoTotal" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Tipo Documento Referencia</label>
+            <div class="col-md-2">
+                <select id="TipoDocReferencia" name="TipoDocReferencia" class="selectpicker show-tick form-control" data-live-search="true" data-size="10">
+                    <option value="">Seleccione</option>
+                    @Html.Raw(ViewBag.OSTipoDte)
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FolioDocReferencia, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-1">
+                @Html.EditorFor(model => model.FolioDocReferencia, new { htmlAttributes = new { @type = "number", @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Ingresar Documento Compra" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+
+        $.validator.addMethod("rut", function (value, element) {
+            var rutFormat = value.replace("-", "");
+            if (rutFormat.length > 1) {
+          
+                var rutFormat = rutFormat.substring(0, rutFormat.length - 1) + "-" + rutFormat.substring(rutFormat.length - 1);
+                $(element).val(rutFormat);
+
+            }
+            return this.optional(element) || $.Rut.validar(rutFormat);
+        }, "Este campo debe ser un rut valido.");
+
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+
+        $.validator.addMethod("validaTotal",
+       function (value, element) {
+
+           var exento = $("#MontoExento").val();
+           var afecto = $("#MontoNeto").val();
+           var iva = $("#MontoIva").val();
+           var total = $("#MontoTotal").val();
+         //  if (exento == 0) {
+
+           if ((parseInt(exento) + parseInt(afecto) + parseInt(iva)) == total) {
+               return true;
+           } else {
+               return false;
+           }
+           //} else {
+           //    return true;
+          // }
+
+       },
+      "Monto Afecto más Iva deben ser igual al monto Total"
+      );
+
+
+
+        $("#DocCompra").validate({
+            ignore: [],
+            rules: {
+                cuenta: "required",
+                AUXrut: {
+                    required: true,
+                    rut: true
+                },
+                AUXrazoncta: "required",
+                TipoDocumento: "required",
+                Folio: { required: true, number: true },
+                FechaDoc: "required",
+                FechaRecep: "required",
+                MontoExento: "required",
+                MontoNeto: "required",
+                MontoIva: "required",
+                MontoTotal: { required: true, validaTotal: true }
+            },
+            messages: {
+                cuenta: "Debe seleccionar una cuenta contable",
+                AUXrut: "Debe ingresar un rut valido",
+                AUXrazoncta: "Debe ingresar una razon social",
+                TipoDocumento: "Debe seleccionar un tipo de documento",
+                Folio: "Debe ingresar un folio",
+                FechaDoc: "Debe seleccionar una fecha para para el documento",
+                FechaRecep: "Debe seleccionar una fecha de recepcion del documento",
+                MontoExento: "Debe ingresar el valor correspondiente al monto exento ",
+                MontoNeto: "Debe ingresar el valor correspondiente al monto afecto ",
+                MontoIva: "Debe ingresar el valor correspondiente al monto del IVA ",
+                MontoTotal: "Debe ingresar el valor correspondiente al total"
+            }
+        });
+
+        $("#FechaDoc").datepicker();
+        $("#FechaRecep").datepicker();
+
+        $("input[name='AUXrut']").autocomplete({
+            source: '@Url.Action("AutoCompleteRutPrestadorAuxiliar")',
+            change: function (event, ui) { console.log(ui); CSGetPrestadorAuxiliar($("input[name='AUXrut']")); }
+        });
+    });
+
+    function CSGetPrestadorAuxiliar(thingie) {
+        var url = '@Url.Action("GetPrestadorByRUT")';
+        console.log(thingie);
+        $.getJSON(url, { RUT: thingie.val() },
+            function (data) {
+                if (data.ok == true) {
+                    $("input[name='AUXrazoncta']").val(data.RazonSocial);
+                }
+            }
+        );
+    }
+</script>
+
+

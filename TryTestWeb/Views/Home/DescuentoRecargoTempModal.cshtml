@@ -1,0 +1,70 @@
+﻿@model List<string>
+<form id="DscRcgEditForm">
+    <div class="panel panel-red1">
+        <input type="hidden" name="LineaDetalle" id="LineaDetalle" value="@((int)ViewBag.lineaDetalle)">
+        <div id="DscRecargo" class="panel-body">
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label class="control-label">Tipo Movimiento</label>
+                    <select class="form-control custom-select" id="TpoMov" name="TpoMov">
+                        <option value="D">Descuento</option>
+                        <option value="R">Recargo</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label">Seleccione Tipo</label>
+                    <select class="form-control custom-select" id="TpoValor" name="TpoValor">
+                        <option value="%">Porcentaje</option>
+                        <option value="$">Monto</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row form-group">                
+                <div class="col-md-6">
+                    <label class="control-label IMPRESO">Descripción </label>
+                    <input class="form-control" placeholder="Descripción" name="GlosaDR" id="GlosaDR" type="text" maxlength="45">
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label IMPRESO">Valor</label>
+                    <input class="form-control" placeholder="" name="ValorDR" id="ValorDR" type="number" maxlength="18" value="0">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-rounded waves-effect waves-light" id="AddDescuentoRecargo" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+        </div>
+    </div>
+</form>
+
+@if (Model != null && Model.Count > 0)
+{
+    <script type="text/javascript">
+        $('#TpoMov').val("@(Model[1])");
+        $('#GlosaDR').val("@(Model[2])");
+        $('#TpoValor').val("@(Model[3])");
+        $('#ValorDR').val("@(Model[4])");
+    </script>
+}
+
+<script>
+    $('#AddDescuentoRecargo').click(function (e) {
+            e.preventDefault();
+
+            var dataVal = $('#DscRcgEditForm').serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "AgregarDescuentoRecargoTemp",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: dataVal,
+                success: function (d) {
+                    $("#ModalEditDescuentoRecargo").modal('hide'); //CAMBIAR A QUE OCULTE EL MODAL CORRECTO
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // TODO: Show error
+                }
+            });
+
+    });
+</script>

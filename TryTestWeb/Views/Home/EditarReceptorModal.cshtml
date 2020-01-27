@@ -1,0 +1,103 @@
+﻿@model QuickReceptorModel
+
+<form id="AUXForm">
+    <div class="panel panel-red1">
+        <input type="hidden" name="ReceptorID" id="ReceptorID" value="@Model.QuickReceptorModelID">
+        <div id="DatosReceptor" class="panel-body">
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label class="control-label">Rut:</label>
+                    <input autocomplete="on" class="form-control" maxlength="12" size="10" placeholder="11111111-1" id="EFXP_RUT_RECEP" name="EFXP_RUT_RECEP" type="text" value="@Model.RUT">
+                </div>
+                <div class="col-md-6"><label class="control-label">Razon Social:</label> <input class="form-control" maxlength="100" tabindex="14" size="50" name="EFXP_RZN_SOC_RECEP" id="EFXP_RZN_SOC_RECEP" type="text" value="@Model.RazonSocial"> </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12"><label class="control-label">Giro:</label> <input autocomplete="on" class="form-control" name="EFXP_GIRO_RECEP" id="EFXP_GIRO_RECEP" type="text" maxlength="40" value="@Model.Giro"></div>
+            </div>
+
+            <div class="row form-group">             
+                <div class="col-md-6">
+                    <label class="control-label">Region:</label>
+                    <select id="EFXP_REGION_RECEP" name="EFXP_REGION_RECEP" class="form-control custom-select">
+                        @foreach (var region in ViewBag.Regiones)
+                        {
+                            if (Model.idRegion == region.RegionModelsID)
+                            {
+                                <option selected value="@region.RegionModelsID">@region.nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@region.RegionModelsID">@region.nombre</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label">Comuna:</label>
+                    <select class="form-control custom-select" id="EFXP_CMNA_RECEP" name="EFXP_CMNA_RECEP" value="">
+                        @foreach (var comunass in ViewBag.Comunas)
+                        {
+                            if (Model.idComuna == comunass.ComunaModelsID)
+                            {
+                                <option selected value="@comunass.ComunaModelsID">@comunass.nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@comunass.ComunaModelsID">@comunass.nombre</option>
+                            }
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12"><label class="control-label">Direccion:</label> <input autocomplete="on" class="form-control" name="EFXP_DIR_RECEP" id="EFXP_DIR_RECEP" maxlength="70" size="50" type="text" value="@Model.Direccion"> </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-rounded waves-effect waves-light" id="Edit" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+
+        </div>
+    </div>
+</form>
+
+<script>
+    $('#Edit').click(function (e) {
+        e.preventDefault();
+
+            var dataVal = $('#AUXForm').serialize();
+            
+            var SelectedReceptorValue = $('#ReceptorID').val();
+            
+            $.ajax({
+                type: "POST",
+                url: "EditarReceptorAjax",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: dataVal,
+                success: function (d) {
+                    $("#ModalEditReceptor").modal('hide'); //CAMBIAR A QUE OCULTE EL MODAL CORRECTO
+                    UpdateSelect(SelectedReceptorValue);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // TODO: Show error
+                }
+            });
+
+    });
+
+    
+    function UpdateSelect(selectedReceptor)
+    {
+        var url = '@Url.Action("UpdateReceptorSelect")';
+        $.getJSON(url, { selectedVal: selectedReceptor },
+        function (data) {
+            if (data.ok == true) {
+                $('#id_receptor').html('');
+                $('#id_receptor').html(data.selectInput);
+                }
+            }
+         );
+    }
+    
+</script>

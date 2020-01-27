@@ -1,0 +1,650 @@
+﻿@model PagedList.IPagedList<BoletasHonorariosModel>
+@using PagedList.Mvc;
+
+<!-- Page-Title -->
+<form role="form">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group pull-right m-t-30">
+                <div class="button-list">
+                    <button type="button" onclick="javascript:NuevoEgreso();" class="btn btn-primary" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="ion-android-add"></i></span>Honorarios
+                    </button>
+
+                    <button type="submit" @(Model == null || Model.Count == 0 ? "disabled" : string.Empty) name="Exportar" id="Exportar" class="btn btn-primary" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                    </button>
+
+                    <button type="submit" @(Model == null || Model.Count == 0 ? "disabled" : string.Empty) name="ExportarLibro" id="ExportarLibro" class="btn btn-primary" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar Libro
+                    </button>
+                </div>
+            </div>
+            <div class="page-header-2">
+                <h2 class="page-header">Boletas de Honorarios</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Gastos</a>
+                    </li>
+                    <li class="active">
+                        Boletas de Honorarios
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row m-t-15">
+        <div class="col-md-12">
+            <div class="form-group">
+                @{
+                    int mes = int.Parse(ViewBag.Meses);
+                }
+
+                <div class="col-md-2">
+                    <select class="form-control" id="meses" name="meses">
+                        <option value="13" @(mes == 13 ? "selected" : "" )>Todos</option>
+                        <option value="1" @(mes == 1 ? "selected" : "" )>Enero</option>
+                        <option value="2" @(mes == 2 ? "selected" : "" )>Febrero</option>
+                        <option value="3" @(mes == 3 ? "selected" : "" )>Marzo</option>
+                        <option value="4" @(mes == 4 ? "selected" : "" )>Abril</option>
+                        <option value="5" @(mes == 5 ? "selected" : "" )>Mayo</option>
+                        <option value="6" @(mes == 6 ? "selected" : "" )>Junio</option>
+                        <option value="7" @(mes == 7 ? "selected" : "" )>Julio</option>
+                        <option value="8" @(mes == 8 ? "selected" : "" )>Agosto</option>
+                        <option value="9" @(mes == 9 ? "selected" : "" )>Septiembre</option>
+                        <option value="10" @(mes == 10 ? "selected" : "" )>Octubre</option>
+                        <option value="11" @(mes == 11 ? "selected" : "" )>Noviembre</option>
+                        <option value="12" @(mes == 12 ? "selected" : "" )>Diciembre</option>
+                    </select>
+
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" name="anno">
+                        @{int anno = DateTime.Now.Year;
+                            int annoS = int.Parse(ViewBag.Anno);
+                        }
+                        @for (int i = anno - 4; i <= anno; i++)
+                        {
+                            <option @(annoS == i ? "selected" : "" ) value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="id_pagados" name="id_pagados" class="selectpicker show-tick form-control">
+                        <option @( string.IsNullOrWhiteSpace(ViewBag.id_pagados) == true || ParseExtensions.ParseInt(ViewBag.id_pagados) == 0 ? "selected" : "" ) value>Estado Pago</option>
+                        <option @( string.IsNullOrWhiteSpace(ViewBag.id_pagados) == false && ParseExtensions.ParseInt(ViewBag.id_pagados) == 1 ? "selected" : "" ) value="1">Pagados</option>
+                        <option @( string.IsNullOrWhiteSpace(ViewBag.id_pagados) == false && ParseExtensions.ParseInt(ViewBag.id_pagados) == 2 ? "selected" : "" ) value="2">Impago</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary waves-effect waves-light pull-left" data-animation="fadein" data-plugin="custommodal"
+                            data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="fa fa-search"></i></span>Buscar
+                    </button>
+                </div>
+                <div class="col-md-3">
+                </div>
+            </div>
+
+        </div>
+    </div><!-- Fin Filtros -->
+</form>
+<!-- Tabla -->
+<div class="row m-t-30">
+    <div id="listaDerecho" class="col-lg-12">
+        @{int cont = 0; }
+        @foreach (var Honorario in Model)
+            {
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-box m-b-10">
+                        <div class="table-box opport-box">
+                            <div class="col-lg-1">
+                                <div class="table-detail checkbx-detail">
+                                    <div class="checkbox checkbox-success m-r-15">
+                                        <input id="checkbox_@cont" onclick="javascript: seleccionaDetalle(@cont, this);" type="checkbox">
+                                        <label for="checkbox1"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>#@Honorario.NumeroBoleta</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-t-0">Boleta</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="table-detail">
+                                    @{
+                                        String razon = Honorario.RazonSocial;
+                                        int limite = 20;
+                                        if (Honorario.RazonSocial.Length > limite)
+                                        {
+                                            razon = Honorario.RazonSocial.Substring(0, limite - 1) + " ...";
+                                        }
+
+                                    }
+
+                                    <h5 class="m-t-0"><b>@razon</b></h5>
+                                    <div class="member-info">
+                                        @*<p class="text-dark m-b-5"><b>Rut Emisor:</b> <span class="text-muted">@ParseExtensions.RutWithDots(Honorario.RUT) </span></p>*@
+                                        <p class="text-dark m-b-0"><b>Fecha Emisión: </b> <span class="text-muted">@ParseExtensions.ToMM_DD_AAAA(Honorario.Fecha) </span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:none;">
+                                <div id="Col1_@cont">
+                                    @Honorario.NumeroBoleta
+                                </div>
+                                <div id="Col2_@cont">
+                                    @ParseExtensions.RutWithDots(Honorario.RUT_txt)
+                                </div>
+                                <div id="Col3_@cont">
+                                    @ParseExtensions.ToMM_DD_AAAA(Honorario.Fecha)
+                                </div>
+                                <div id="Col4_@cont">
+                                    @Honorario.RazonSocial
+                                </div>
+                                <div id="Col5_@cont">
+                                    @(Honorario.Estado)
+                                </div>
+                                <div id="Col6_@cont">
+                                    $ @ParseExtensions.NumeroConPuntosDeMiles(Honorario.Brutos)
+                                </div>
+                                <div id="Col7_@cont">
+                                    $ @ParseExtensions.NumeroConPuntosDeMiles(Honorario.Retenido)
+                                </div>
+                                <div id="Col8_@cont">
+                                    $ @ParseExtensions.NumeroConPuntosDeMiles(Honorario.Liquido)
+                                </div>
+                                <div id="Col9_@cont">
+                                    $ @(Honorario.EstaPagadaSTR())
+                                </div>
+                                <div id="Col10_@cont">
+                                 @if (Honorario.EstaPagada() == false)
+                                 {
+                                    <a id="AddPayment" onclick="prepararAgregarPago(@Honorario.BoletasHonorariosModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Pago!" data-original-title="Agregar Pago!"><i class="ion-cash"></i></a>
+                                 }
+                                </div>
+                                <div id="Col11_@cont">
+                                    <a id="EditButton" onclick="EditEgreso(@Honorario.BoletasHonorariosModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Editar Honorario" data-original-title="Editar Honorario"><i class="ion-edit"></i></a>
+                                </div>
+                                <div id="Col12_@cont">
+                                    @if (string.IsNullOrWhiteSpace(Honorario.TipoArchivoAsociado) == false)
+                                    {
+                                        <a id="aShowFile" onclick="showFile(@Honorario.BoletasHonorariosModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Mostrar Archivo!" data-original-title="Mostrar Archivo!"><i class="ion-images"></i></a>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>$ @ParseExtensions.NumeroConPuntosDeMiles(Honorario.Brutos)</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0">Total</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>$ @ParseExtensions.NumeroConPuntosDeMiles(Honorario.Retenido)</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0">Retenido</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>$ @ParseExtensions.NumeroConPuntosDeMiles(Honorario.Liquido)</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0">Liquido</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                    <div class="table-detail">
+                                        <p class="text-dark m-b-0">
+                                            @if (@Honorario.EstaPagada())
+                                            {
+                                                <h5 class="m-t-0"><b>Pago</b></h5>
+                                            }
+                                            else
+                                            {
+                                                <h5 class="m-t-0"><a id="AddPayment" onclick="prepararAgregarPago(@Honorario.BoletasHonorariosModelID);"><b><u>Pago</u></b></a></h5>
+                                            }
+                                        </p>
+                                            @if (@Honorario.EstaPagada())
+                                            {
+                                                <span class="label label-success">Pagado</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="label label-danger">Impago</span>
+                                            }
+                                    </div>
+                                </div>
+                            </div>
+                     </div>
+                    @{cont++;
+                    }
+                </div>
+             </div>
+           }
+    </div>
+
+    <div id="listaIzquierdo" class="col-lg-4" style="display:none;">
+        <div class="card-box">
+
+            <h4 class="page-header">Acciones</h4>
+            <div class="col-lg-2 pull-left" id="detCol11"></div>
+            <div class="col-lg-2 pull-left" id="detCol10"></div>           
+            <div class="col-lg-2 pull-left" id="detCol12"></div>
+
+            <br />
+            <h4 class="page-header">Información Honorario</h4>
+
+            <p class="text-dark m-b-5"><b>Número Boleta:</b> <span class="text-muted"><div id="detCol1"></div></span></p>
+            <p class="text-dark m-b-5"><b>Rut Emisor:</b> <span class="text-muted"><div id="detCol2"></div> </span></p>
+            <p class="text-dark m-b-0"><b>Fecha Emisión: </b> <span class="text-muted"><div id="detCol3"></div></span></p>
+            <p class="text-dark m-b-0"><b>Nombre Emisor: </b> <span class="text-muted"><div id="detCol4"></div></span></p>
+            <p class="text-dark m-b-0"><b>Estado Documento: </b> <span class="text-muted"><div id="detCol5"></div></span></p>
+            <p class="text-dark m-b-0"><b>Bruto: </b> <span class="text-muted"><div id="detCol6"></div></span></p>
+            <p class="text-dark m-b-0"><b>Retenido: </b> <span class="text-muted"><div id="detCol7"></div></span></p>
+            <p class="text-dark m-b-0"><b>Liquido: </b> <span class="text-muted"><div id="detCol8"></div></span></p>
+            <p class="text-dark m-b-0"><b>Estado Pago: </b> <span class="text-muted"><div id="detCol9"></div></span></p>
+
+        </div>
+    </div>
+</div><!-- Fin Tabla -->
+
+ <!-- Modal Documento -->
+<div id="ModalContentFile" class="modal fade in" role="dialog" aria-labelledby="ModalContentFile" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="row form-group">
+                <div class="col-lg-12" id="displayFile">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("FlipEstadoPagoEgresoFijo", "Home", FormMethod.Post, new { id = "TablaCuentas" }))
+{
+    <!-- Modal Pago -->
+    <div id="ModalIngresoPago" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <input type="hidden" id="hiddenPago" name="hiddenPago" value="4">
+        <input type="hidden" id="folioIDAsociado" name="folioIDAsociado" value="0">
+        <input type="hidden" id="restante" name="restante" value="0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Registrar Pago</h4>
+                </div>
+                <div id="ModyBodyAdd" class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label><b>Nº Operación</b></label>
+                            <input type="number" id="folioDocPago" name="folioDocPago" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha Pago</label>
+                            <input id="fechaPago" class="form-control" name="fechaPago" type="text">
+                        </div>
+                        <div class="col-lg-4">
+                            <label><b>Monto</b></label>
+                            <input type="number" id="montoPago" name="montoPago"  step="1" min="1" class="form-control">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label><b>Tipo Pago</b></label>
+                            <select class="form-control" name="tipoPago" id="tipoPago">
+                                @Html.Raw(ViewBag.TipoDePago)
+                            </select>
+                        </div>
+                        <div class="col-lg-6">
+                            <label><b>Forma de Pago</b></label>
+                            <select class="form-control" name="formaPago" id="formaPago">
+                                @Html.Raw(ViewBag.FormaDePago)
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("IngresarNuevoHonorario", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "IngresoHonorarioForm" }))
+{
+    <!--  Modal Registrar Honorarios -->
+    <div id="myModal" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <input type="hidden" id="editFlag" name="editFlag" value="0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Registrar Honorario</h4>
+                </div>
+                <div id="ModyBody" class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h5>Tipo Retención</h5>
+                            <select class="form-control" name="tipoRetencion" id="tipoRetencion">
+                                @Html.Raw(ViewBag.ConSinRetenciones)
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <h5>Nº Documento</h5>
+                            <input type="number" id="NumeroBoleta" name="NumeroBoleta" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="row m-t-10">
+                        <div class="col-md-4">
+                            <h5>Fecha Emisión</h5>
+                            <input value="@ParseExtensions.ToDD_MM_AAAA(DateTime.Now)" id="fechaGasto" class="form-control" name="fechaGasto" type="text">
+                        </div>
+                        <div class="col-lg-8">
+                            <h5>Monto Total</h5>
+                            <input type="number" id="montoTotal" name="montoTotal" min="1" step="1" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row m-t-10">
+                        <div class="col-lg-6">
+                            <h5>RUT</h5>
+                            <input type="text" id="rut" name="rut" class="form-control">
+                        </div>
+                        <div class="col-lg-6">
+                            <h5>Nombre Emisor</h5>
+                            <input type="text" id="RazonSocial" name="RazonSocial" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row m-t-10">
+                        <div class="col-lg-12">
+                            <h5>Glosa Descripción</h5>
+                            <input type="text" id="GlosaDescripcion" name="GlosaDescripcion" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row form-group m-t-10">
+                        <div class="col-lg-12">
+                            <h5>Seleccionar archivo</h5>
+                            <input id="fileAttach" name="fileAttach" type="file" accept=".pdf, .jpg, .jpeg, .png">
+                            <h6><em>Nota: El archivo no debe ser superior a 500kb y el formato debe ser PDF, JPG o PNG</em></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+Pagina @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("ListaHonorarios",
+  new { page, Meses = ViewBag.Meses, Anno = ViewBag.Anno }))
+
+<script>
+    $(document).ready(function () {
+
+        $.validator.addMethod('filesize', function (value, element, param) {
+            return this.optional(element) || (element.files[0].size <= param)
+        });
+
+        $("#TablaCuentas").validate({
+            ignore: [],
+            rules: {
+                fechaPago: "required",
+                montoPago: {
+                    required: true,
+                    min: 1
+                },
+                tipoPago: "required",
+                formaPago: "required"
+            },
+            messages: {
+                fechaPago: "Debe seleccionar una fecha de pago.",
+                montoPago: "Debe ingresar un monto de pago.",
+                tipoPago: "Debe seleccionar un tipo de pago.",
+                formaPago: "Debe seleccionar una forma de pago."
+            }
+        });
+
+        $("#IngresoHonorarioForm").validate({
+            ignore: [],
+            rules: {
+                NumeroBoleta: "required",
+                fechaGasto: "required",
+                montoTotal: {
+                    required: true,
+                    min: 1
+                },
+                rut: {
+                    required: true,
+                    rutValidator: true
+                },
+                RazonSocial: "required",
+                fileAttach: { accept: "image/jpg,image/jpeg,image/png,application/pdf", filesize: 524288 }
+            },
+            messages: {
+                NumeroBoleta: "Debe ingresar un numero asociado a esta boleta de honorarios",
+                fechaGasto: "Debe ingresar una fecha asociada a esta boleta de honorarios",
+                montoTotal: "Debe ingresar un total y este debe ser mayor a 0",
+                rut: "Debe ingresar un rut valido asociado a esta boleta de honorarios",
+                RazonSocial: "Debe ingresar una razon social asociada a esta boleta de honorarios",
+                fileAttach: "El archivo no debe superar los 500kb y debe ser de formato .jpg, .png o .pdf"
+            }
+        });
+
+
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+        $(function () {
+            $("#fechaPago").datepicker();
+            $("#fechaGasto").datepicker();
+        });
+        $("#tipoPago").change(function () {
+            tipoPago_Change();
+        });
+    });
+
+    function NuevoEgreso() {
+        NewEgreso();
+        $('#myModal').modal('show');
+    }
+
+function prepararAgregarPago(IDAsociado) {
+
+        $("#folioIDAsociado").val(IDAsociado);
+        $.ajax
+        ({
+            url: "ObtenerPagoMontoTotal?IDDoc=" + IDAsociado + "&TipoOperacion=" + $("#hiddenPago").val(),
+            success: function (data) {
+                $("#restante").val(data.pagoTotal);
+                $("#montoPago").val($("#restante").val());
+
+                $("#fechaPago").val('@ParseExtensions.ToDD_MM_AAAA(DateTime.Now)');
+                $("#formaPago").val(1);
+                $("#folioDocPago").val('');
+
+                $("#tipoPago").val(2);
+
+                $("#montoPago").prop("readonly", true);
+                $("#ModalIngresoPago").modal('show');
+            }
+        });
+    }
+
+    function tipoPago_Change() {
+            if ($('#tipoPago').val() == '2') {
+                $("#montoPago").val($("#restante").val());
+                $("#montoPago").prop("readonly", true);
+            }
+            else {
+                $("#montoPago").prop("readonly", false);
+                $("#montoPago").val(0);
+            }
+    }
+
+    function showFile(IDEgresoModel) {
+        $.ajax
+        ({
+            url: "PrepararEditHonorarios?IDEgresoFijo=" + IDEgresoModel,
+            success: function (data) {
+                var isSuccessful = (data.ok == true);
+                if (isSuccessful) {
+                    $("#displayFile").html(data.displayFile);
+                }
+            }
+        });
+        $('#ModalContentFile').modal('show');
+    }
+
+    function EditEgreso(IDEgresoModel) {
+        $.ajax
+        ({
+            url: "PrepararEditHonorarios?IDEgresoFijo=" + IDEgresoModel,
+            success: function (data) {
+                var isSuccessful = (data.ok == true);
+                if (isSuccessful) {
+
+                    $("#editFlag").val(data.IDEgresoFijo);
+                    $("#tipoRetencion").val(data.tipoRetencion);
+                    $("#montoTotal").val(data.montoTotal);
+                    $("#NumeroBoleta").val(data.NumeroBoleta);
+                    $("#NumeroBoleta").prop("readonly", true);
+                    $("#rut").val(data.rut);
+                    $("#RazonSocial").val(data.RazonSocial);
+                    $("#fechaGasto").val(data.fechaGasto);
+                    $("#displayFile").html(data.displayFile);
+                    $("#myModal").modal();
+                    if (data.allowEditPagos == false) {
+                        $("#montoTotal").prop("readonly", true);
+                    }
+                    else {
+                        $("#montoTotal").prop("readonly", false);
+                    }
+                }
+                else {
+                    NewEgreso();
+                }
+            }
+        });
+    }
+
+        function NewEgreso()
+        {
+            $("#displayFile").html('');
+            $("#editFlag").val(0);
+            $("#tipoRetencion").val(1);
+            $("#fechaGasto").val('@ParseExtensions.ToDD_MM_AAAA(DateTime.Now)');
+            $("#montoTotal").val(0);
+            $("#NumeroBoleta").val('');
+            $("#NumeroBoleta").prop("readonly", false);
+            $("#rut").val('');
+            $("#RazonSocial").val('');
+        }
+
+
+        function seleccionaDetalle(cont, dato)
+        {
+            if ($(dato).prop("checked") == false) {
+
+            if ($("#listaDerecho").attr("class") == "col-lg-12") {
+            $("#listaDerecho").attr("class", "col-lg-8");
+            $("#listaIzquierdo").removeAttr("style");
+
+            } else {
+            $("#listaDerecho").attr("class", "col-lg-12");
+            $("#listaIzquierdo").attr("style", "display:none;");
+            }
+
+            $("#detCol1").html($("#Col1_" + cont).html());
+            $("#detCol2").html($("#Col2_" + cont).html());
+            $("#detCol3").html($("#Col3_" + cont).html());
+            $("#detCol4").html($("#Col4_" + cont).html());
+            $("#detCol5").html($("#Col5_" + cont).html());
+            $("#detCol6").html($("#Col6_" + cont).html());
+            $("#detCol7").html($("#Col7_" + cont).html());
+            $("#detCol8").html($("#Col8_" + cont).html());
+            $("#detCol9").html($("#Col9_" + cont).html());
+            $("#detCol10").html($("#Col10_" + cont).html());
+            $("#detCol11").html($("#Col11_" + cont).html());
+            $("#detCol12").html($("#Col12_" + cont).html());
+            }
+            if ($(dato).prop("checked") == true) {
+
+            for (var i = 0; i < 10 ; i++) {
+            if (cont != i) {
+            console.log(cont);
+            $("#checkbox_" + i).removeAttr("checked");
+            }
+
+            }
+
+            if ($("#listaDerecho").attr("class") == "col-lg-12") {
+            $("#listaDerecho").attr("class", "col-lg-8");
+            $("#listaIzquierdo").removeAttr("style");
+
+            }
+
+            $("#detCol1").html($("#Col1_" + cont).html());
+            $("#detCol2").html($("#Col2_" + cont).html());
+            $("#detCol3").html($("#Col3_" + cont).html());
+            $("#detCol4").html($("#Col4_" + cont).html());
+            $("#detCol5").html($("#Col5_" + cont).html());
+            $("#detCol6").html($("#Col6_" + cont).html());
+            $("#detCol7").html($("#Col7_" + cont).html());
+            $("#detCol8").html($("#Col8_" + cont).html());
+            $("#detCol9").html($("#Col9_" + cont).html());
+            $("#detCol10").html($("#Col10_" + cont).html());
+            $("#detCol11").html($("#Col11_" + cont).html());
+            $("#detCol12").html($("#Col12_" + cont).html());
+            }
+
+            $('html,body').scrollTop(0);
+        }
+</script>
+
+<style>
+th {
+    white-space: nowrap;
+}
+</style>
+
+<style>
+td {
+    white-space: nowrap;
+}
+</style>

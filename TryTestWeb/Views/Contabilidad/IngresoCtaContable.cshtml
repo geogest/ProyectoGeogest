@@ -1,0 +1,190 @@
+﻿@model CuentaContableModel
+@{
+    ViewBag.Title = "IngresoCtaContable";
+}
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Agregar Cuenta Contable</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad Admin</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Agregar Cuenta Contable
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("NuevaCtaContable", "Contabilidad", FormMethod.Post, new { id = "DatosCtaContable" }))
+{
+    <div class="row form-group">
+        <div class="col-lg-3 form-group">
+            <label class="control-label">Nombre </label>
+            <input type="text" class="form-control" name="nombrecta" id="nombrecta" required />
+        </div>
+        <div class="col-lg-2 form-group">
+            <label class="control-label" style="color:transparent;">___</label>
+            <select id="clasificacion" name="clasificacion" class="required form-control">
+                <option value="0">Seleccionar</option>
+                @Html.Raw(ViewBag.osCuentasContables)
+            </select>
+        </div>
+        <div class="col-lg-2 form-group">
+            <label class="control-label" style="color:transparent;">___</label>
+            <select id="subclasificacion" name="subclasificacion" class="required show-tick form-control" data-live-search="true" data-size="10" title="SubClasificación">
+                @Html.Raw(ViewBag.HtmlStr)
+            </select>
+        </div>
+        <div class="col-lg-2 form-group">
+            <label class="control-label" style="color:transparent;">___</label>
+            <select id="subsubclasificacion" name="subsubclasificacion" class="required show-tick form-control" data-live-search="true" data-size="10" title="SubSubClasificación">
+                @Html.Raw(ViewBag.HtmlStr)
+            </select>
+        </div>
+        <div class="col-lg-2 form-group">
+            <label class="control-label">Código Sugerido</label>
+            <input type="text" class="required form-control" name="codcta" id="codcta" readonly />
+        </div>
+        <div class="col-lg-1 form-group">
+            <div class="checkbox">
+                <label><input type="checkbox" id="analisis" name="analisis"> Analisis </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <button type="submit" class="btn btn-primary redondo btnPress" disabled>Agregar Cuenta Contable</button>
+    </div>
+
+}
+
+<script>
+    $(document).ready(function () {
+        $('#DatosCtaContable').validate();
+
+        $("#DatosCtaContable").validate({
+            rules: {
+                'clasificacion': { valueNotEquals: 0 },
+                'subclasificacion': { valueNotEquals: 0 },
+                'subsubclasificacion': { valueNotEquals: 0 },
+                'codcta': { valueNotEquals: "" }
+            },
+            messages: {
+                'clasificacion': { valueNotEquals: "Debe seleccionar clasificacion" },
+                'subclasificacion': { valueNotEquals: "Debe seleccionar clasificacion" },
+                'subsubclasificacion': { valueNotEquals: "Debe seleccionar clasificacion" },
+                'codcta': { valueNotEquals: "Debe generarse un codigo" }
+            }
+        });
+    });
+
+    function pre_form_validate() {
+        var result = true;
+        $('#DatosCtaContable').validate();
+        $('#DatosCtaContable .form-group').each(function () {
+            if ($(this).hasClass('has-error')) {
+                result = false;
+                CheckSelects();
+                return false;
+            }
+        });
+        CheckSelects();
+        return result;
+    }
+
+    function CheckSelects() {
+        if ($("#clasificacion").val() === "" || $("#subclasificacion").val() === "" || $("#subsubclasificacion").val() == "") {
+            $(':input[type="submit"]').prop('disabled', true);
+        }
+        else {
+            $(':input[type="submit"]').prop('disabled', false);
+        }
+    }
+
+    document.getElementById("nombrecta").onchange = function () { pre_form_validate() };
+    document.getElementById("clasificacion").onchange = function () { GetSubClasfificacion(), pre_form_validate() };
+    document.getElementById("subclasificacion").onchange = function () { GetSubSubClasfificacion(), pre_form_validate() };
+    document.getElementById("subsubclasificacion").onchange = function () { getSugerido(), pre_form_validate() };
+
+    function GetSubClasfificacion(value) {
+        var url = '@Url.Action("ObtenerSubclasificacion")';
+        var cID = $("#clasificacion").val();
+        if (cID == 0)
+        {
+            var optionSelect = $('#subclasificacion');
+            optionSelect.find('option').remove();
+            $("#codcta").val('');
+            var optionSelectSubSub = $('#subsubclasificacion');
+            optionSelectSubSub.find('option').remove();
+            return;
+        }
+
+        $.getJSON(url, { Clasificacion: cID },
+            function (data) {
+                var optionSelect = $('#subclasificacion');
+                optionSelect.find('option').remove();
+                $("#codcta").val('');
+
+                var optionSelectSubSub = $('#subsubclasificacion');
+                optionSelectSubSub.find('option').remove();
+
+                optionSelect.append('<option value="0">Seleccionar</option>');
+                $.each(data, function (Value, Text) {
+                    optionSelect.append('<option value="' + Text.Value + '">' + Text.Text + '</option>');
+                });
+            }
+            );
+
+    }
+
+    function GetSubSubClasfificacion(value) {
+        var url = '@Url.Action("ObtenerSubSubclasificacion")';
+        var cID = $("#subclasificacion").val();
+        if (cID == 0)
+        {
+            var optionSelect = $('#subsubclasificacion');
+            optionSelect.find('option').remove();
+            $("#codcta").val('');
+            optionSelect.append('<option value="0">Seleccionar</option>');
+            return;
+        }
+
+        $.getJSON(url, { SubClasificacion: cID },
+            function (data) {
+                var optionSelect = $('#subsubclasificacion');
+                optionSelect.find('option').remove();
+                $("#codcta").val('');
+
+                optionSelect.append('<option value="0">Seleccionar</option>');
+                $.each(data, function (Value, Text) {
+                    optionSelect.append('<option value="' + Text.Value + '">' + Text.Text + '</option>');
+                });
+            }
+            );
+    }
+
+    function getSugerido(value) {
+        var url = '@Url.Action("ObtenerCodSugerido")';
+        var cID = $("#subsubclasificacion").val();
+        if (cID == 0)
+        {
+            $("#codcta").val('');
+            return;
+        }
+
+        $.getJSON(url, { SubSubClasificacion: cID },
+            function (data) {
+                var sub = cID.toString();
+                $("#codcta").val(data.a_stringSugerido);
+            }
+            )
+    }
+
+</script>

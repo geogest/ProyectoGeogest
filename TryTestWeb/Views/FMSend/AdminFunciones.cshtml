@@ -1,0 +1,129 @@
+﻿<!-- Page-Title -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Administrador Modulos</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Admin</a>
+                </li>
+                <li class="active">
+                    Administrador Modulos
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("AdminFuncionesUpdate", "FMSend", FormMethod.Post, new { id = "FormularioWhole" }))
+{
+<!-- Filtros -->
+<div class="row m-t-15">
+    <div class="col-md-12">
+
+        <div class="form-group">
+
+            <div class="col-md-2">
+                <select class="form-control" id="ambiente" name="ambiente">
+                    <option value="0" selected>Ambiente</option>
+                    <option value="1">Certificación</option>
+                    <option value="2">Producción</option>
+                </select>
+            </div>
+
+            <div class="col-md-2" id="zonaSelectReceptor">
+                <select class="form-control" id="usuario" name="usuario"></select>
+            </div>
+
+            <div class="col-md-2">
+                <select class="form-control" id="empresa" name="empresa">
+                    
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <input type="submit" value="Editar" class="btn btn-primary " data-animation="fadein" data-plugin="custommodal"
+                        data-overlaySpeed="200" data-overlayColor="#36404a"/>
+            </div>
+
+            <div class="col-md-2">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Filtros -->
+
+<div class="row m-t-15">
+    <div class="col-lg-12">
+        <select id="funciones" style="height: 250px;" name="funciones" multiple class="selectpicker show-tick form-control"></select>
+    </div>
+</div>
+}
+<script>
+
+    $(document).ready(function () {
+        $("#ambiente").change(function () {
+            cambioTipoAmbiente();
+        });
+
+        $("#usuario").change(function () {
+            cambioUsuario();
+        });
+
+        $("#empresa").change(function () {
+            cambioEmpresa();
+        });
+    });
+
+
+    //obtenerFuncionesAdminFunciones(int dataContext, int SelectedUser, int SelectedEmisor)
+
+    function cambioEmpresa() {
+        $('#funciones').html('');
+        var url = '@Url.Action("obtenerFuncionesAdminFunciones")';
+        var tipoAmbiente = $("#ambiente").val();
+        var UsuarioSelect = $("#usuario").val();
+        var EmpresaSelect = $("#empresa").val();
+
+        $.getJSON(url, { dataContext: tipoAmbiente, SelectedUser: UsuarioSelect, SelectedEmisor: EmpresaSelect },
+        function (data) {
+            if (data.ok == true) {
+                $('#funciones').html('');
+                $('#funciones').html(data.selectInput);
+            }
+        });
+    }
+
+    function cambioUsuario() {
+        $('#funciones').html('');
+        $('#empresa').html('');
+        var url = '@Url.Action("obtenerEmisoresAdminFunciones")';
+        var tipoAmbiente = $("#ambiente").val();
+        var UsuarioSelect = $("#usuario").val();
+
+        $.getJSON(url, { dataContext: tipoAmbiente, SelectedUser: UsuarioSelect },
+        function (data) {
+            if (data.ok == true) {
+                $('#empresa').html('');
+                $('#empresa').html(data.selectInput);
+            }
+        });
+    }
+
+    function cambioTipoAmbiente() {
+        $('#funciones').html('');
+        $('#empresa').html('');
+        $('#usuario').html('');
+        var url = '@Url.Action("obtenerUsuariosAdminFunciones")';
+        var tipoAmbiente = $("#ambiente").val();
+
+        $.getJSON(url, { dataContext: tipoAmbiente },
+        function (data) {
+            if (data.ok == true) {
+                $('#usuario').html('');
+                $('#usuario').html(data.selectInput);
+            }
+        });
+    }
+</script>

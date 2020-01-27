@@ -1,0 +1,238 @@
+﻿@model QuickReceptorModel
+
+<style>
+    .border-r-1 {
+        border-right: 1px solid #dddddd !important;
+    }
+</style>
+
+<div id="datos">
+    <div class="row form-group">
+        @using (Html.BeginForm("UpsertClienteC", "Home", FormMethod.Post, new { id = "UpsertCliente" }))
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header-2">
+                        <h2 class="page-header">Nuevo Cliente</h2>
+                        <ol class="breadcrumb">
+
+                            <li>
+                                <a href="#">Clientes</a>
+                            </li>
+                            <li class="active">
+                                Nuevo Cliente
+                            </li>
+                        </ol>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="panel panel-2">
+                <div class="row">
+                    <div class="col-md-6 border-r-1">
+
+                        <h3 class="panel-heading" >Datos Empresa </h3>
+                        <div class="panel-body" >
+
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="razon">Razón Social*</label>@Html.EditorFor(model => model.RazonSocial, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.RazonSocial, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="RUTEmpresa">RUT Empresa*</label>@Html.EditorFor(model => model.RUT, new { htmlAttributes = new { @class = "form-control",@id = "RutPrestador", @required = "true", @rutValidator = "true", @parsley_trigger = "change", @maxlength = "10", @style = "text-transform:uppercase;", @onblur = "rutFormant('RutPrestador');" } })
+                                    @Html.ValidationMessageFor(m => m.RUT, "", new { @class = "text-danger parsley-required" })
+
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="control-label" for="nombre">Nombre Fantasía</label>
+                                    @Html.EditorFor(model => model.NombreFantasia, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="giro">Giro*</label>@Html.EditorFor(model => model.Giro, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "40", @data_parsley_type = "alphanum" } })
+                                    @Html.ValidationMessageFor(m => m.Giro, "", new { @class = "text-danger parsley-required" })
+
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+
+                                <div class="col-md-6">
+                                    <label class="control-label" for="region"><!--Ciudad/Localidad-->Región*</label>
+                                    <select name="idRegion" id="idRegion" onchange="javascript:cambiaComuna();" class="form-control select2-selection--single">
+                                        <option name="" value="">Seleccionar</option>
+                                        @foreach (var region in ViewBag.Regiones)
+                                        {
+
+                                            if (Model.idRegion == region.RegionModelsID)
+                                            {
+                                                <option selected value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+
+                                        }
+
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                                <div class="col-md-6">
+                                    @* @Html.HiddenFor(model => model.Comunas)*@
+                                    <label class="control-label" for="comuna">Comuna*</label>
+                                    <select class="form-control select2" id="idComuna" name="idComuna">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var comuna in ViewBag.Comunas)
+                                        {
+
+                                            if (Model.idComuna == comuna.ComunaModelsID)
+                                            {
+                                                <option selected value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+                                            }
+
+                                        }
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="addDir">Dirección*</label> @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control", @maxlength = "70" } })
+                                    @Html.ValidationMessageFor(m => m.Direccion, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+
+
+                        <h3 class="panel-heading">Datos Contacto Comercial (Opcional) </h3>
+                        <div class="panel-body">
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="nombreContacto">Nombre Contacto </label>
+                                    @Html.EditorFor(model => model.NombreContacto, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+                                </div>
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="EmailContacto">Email Contacto</label>
+                                    @Html.EditorFor(model => model.Contacto, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="telefonoCobranza">Teléfono Contacto</label>
+                                    @Html.EditorFor(model => model.TelefonoContacto, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div> <!--Row-->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <a href="@Url.Action("ListarCliente", "Home")" class="btn btn-primary waves-effect waves-light"><span class="btn-label"><i class="ion-android-arrow-back"></i></span>Volver</a><br>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <button class="btn btn-primary waves-effect waves-light" value="Crear cliente" name="Save" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div><br />
+            </div> <!--panel-->
+
+
+
+
+        }
+    </div>
+
+
+
+</div>
+
+<script>
+
+        //$("#idRegion").on("change", function () {
+    function cambiaComuna(){
+        var idRegion = $("#idRegion option:selected").val();
+
+        $("#idComuna option").each(function () {
+            var idRegionS = $(this).attr("name");
+            if (idRegion == idRegionS) {
+                $(this).removeAttr('style');
+            } else {
+                $(this).attr('style', "display:none;");
+            }
+
+            // console.log('opcion ' + $(this).text() + ' valor ' + $(this).attr('value'))
+        });
+
+        //vuelo a la opcion de inicio del select box
+        $("#idComuna").val("");
+    }
+
+    function rutFormant(idRut) {
+
+        var rut = document.getElementById(idRut).value;
+        if (rut.indexOf("-") == -1) {
+            document.getElementById(idRut).value = formateaRut(rut);
+        }
+
+
+    }
+
+    function formateaRut(rut) {
+
+        var actual = rut.replace("/^0+/", "");
+        var rutPuntos = "";
+        if (actual != '' && actual.length > 1) {
+            var sinPuntos = actual.replace("/\./g", "");
+            var actualLimpio = sinPuntos.replace("/-/g", "");
+            var inicio = actualLimpio.substring(0, actualLimpio.length - 1);
+
+
+            var dv = actualLimpio.substring(actualLimpio.length - 1);
+            rutPuntos = inicio + "-" + dv;
+        }
+        return rutPuntos;
+    }
+
+       // });
+
+
+
+</script>

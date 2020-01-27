@@ -1,0 +1,162 @@
+﻿@model EstadoResultadoModel
+@*@{
+    ViewBag.Title = "EstadoResultado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+
+@using (Html.BeginForm("UpdateEstadoResultado", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+
+   <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header-2">
+                <h2 class="page-header">Informe Estado Resultado</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Informes</a>
+                    </li>
+                    <li class="active">
+                        Informe Estado Resultado
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        @*<div class="col-lg-12">*@
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Escoger Fechas</b>
+                </div>
+                <div class="panel-body" style="height: 128px;">
+                    <div class="row form-group">
+
+                        <div class="col-xs-4">
+                            <label for="" class="control-label">Periodo</label>
+                            <select name="Periodo" id="Periodo" class="form-control">
+                                <option value="13">Todos</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-3">
+                            <label class="control-label">Año:</label>
+                            <input class="form-control" placeholder="" name="Anio" id="Anio" type="number" value="2017">
+                        </div>
+                        @*<div class="col-md-3">
+                                <label class="control-label" style="color:transparent;"> _</label>
+                                <input class="btn btn-1" value="Cargar Datos" name="load" type="submit">
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-4">
+                <div class="panel-heading">
+                    <b> GANANCIA O PERDIDA DE PERIODO(S)</b>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <div class="row form-group">
+                                <label for="ganancia" class="control-label text-center col-md-4"><h2>Diferencia:</h2></label>
+                                <br>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control readonly" id="ganancia" placeholder="" value="0" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+  
+    </div>
+
+    <div id="parshial">
+        @Html.Partial("EstadoResultadoPartial", Model)
+    </div>
+
+  
+
+}
+
+
+<script>
+
+        $(document).ready(function () {
+
+            $('#Save').attr('disabled', 'disabled');
+            $('#IngresosVarios').attr('disabled', 'disabled');
+            $('#HonorBrut').attr('disabled', 'disabled');
+            $('#RemuBrut').attr('disabled', 'disabled');
+            $('#GastosVarios').attr('disabled', 'disabled');
+          
+
+            $("#Periodo").change(function () {
+                ReloadPartial();
+
+            });
+
+            $("#Anio").change(function () {
+                ReloadPartial();
+            });
+        });
+
+        function Disabless() {
+            var todos = $('#Periodo').val();
+            if (todos == '13') {
+                $('#Save').attr('disabled', 'disabled');
+                $('#IngresosVarios').attr('disabled', 'disabled');
+                $('#HonorBrut').attr('disabled', 'disabled');
+                $('#RemuBrut').attr('disabled', 'disabled');
+                $('#GastosVarios').attr('disabled', 'disabled');
+              
+            }
+            else {
+                $('#Save').removeAttr('disabled');
+                $('#IngresosVarios').removeAttr('disabled');
+                $('#HonorBrut').removeAttr('disabled');
+                $('#RemuBrut').removeAttr('disabled');
+                $('#GastosVarios').removeAttr('disabled');
+             
+            }
+        }
+
+        function ReloadPartial() {
+
+            var urlP = '@Url.Action("EstadoResultadoPartial")';
+            var periodo = $("#Periodo").val();
+            var anio = $("#Anio").val();
+            $.ajax({
+                url: urlP,
+                type: 'POST',
+                data: { periodo: periodo, anio: anio },
+                success: function (partialView) {
+                    $('#parshial').html(partialView);
+                    Disabless();
+                }
+            });
+        }
+
+</script>
+

@@ -1,0 +1,231 @@
+﻿@model QuickReceptorModel
+
+<style>
+    .border-r-1 {
+        border-right: 1px solid #dddddd !important;
+    }
+
+</style>
+<div id="datos">
+    <div class="row form-group">
+        @using (Html.BeginForm("UpdateReceptorProveedor", "Home", FormMethod.Post, new { id = "Updatecliente" }))
+        {
+
+            <!-- Page-Title -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="page-header-2">
+                        <h1 class="page-header">Editar Proveedor</h1>
+                        <ol class="breadcrumb">
+                            <li>
+                                <a href="#"><h6>Proveedores</h6></a>
+                            </li>
+                            <li class="active">
+                                <h6>Editar Proveedor</h6>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="panel panel-2">
+                <div class="row">
+                    <div class="col-md-6 border-r-1">
+
+                        <h3 class="panel-heading">Datos Empresa </h3>
+                        <div class="panel-body">
+
+                            <div class="row form-group" style="display:none;">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="razon">Id Recepción</label>@Html.ValidationMessageFor(m => m.QuickReceptorModelID, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.QuickReceptorModelID, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                                </div>
+
+                            </div>
+
+
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="razon">Razon Social</label>@Html.ValidationMessageFor(m => m.RazonSocial, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.RazonSocial, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                                </div>
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="RUTEmpresa">RUT Empresa</label>@Html.ValidationMessageFor(m => m.RUT, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.RUT, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", @style = "text-transform:uppercase;" } })
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="control-label" for="nombre">Nombre Fantasía</label>
+                                    @Html.EditorFor(model => model.NombreFantasia, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="giro">Giro</label>@Html.ValidationMessageFor(m => m.Giro, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.Giro, new { htmlAttributes = new { @class = "form-control", @maxlength = "40" } })
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+
+                                <div class="col-md-6">
+                                    @*@Html.HiddenFor(model => model.Regiones, new { Model.Regiones } )*@
+                                    <label class="control-label" for="ciudad"><!--Ciudad/Localidad-->Región</label>@Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger" })
+                                    <select name="idRegion" id="idRegion" onchange="javascript:cambiaComuna(1);" class="form-control">
+                                        <option name="" value="">Seleccionar</option>
+                                        @foreach (var region in ViewBag.Regiones)
+                                        {
+
+                                            if (Model.idRegion == region.RegionModelsID)
+                                            {
+                                                <option selected value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+
+                                        }
+
+                                    </select>
+
+
+
+                                    @*@Html.EditorFor(model => model.Ciudad, new { htmlAttributes = new { @class = "form-control", @maxlength = "20" } })*@
+                                </div>
+                                <div class="col-md-6">
+                                    @* @Html.HiddenFor(model => model.Comunas)*@
+                                    <label class="control-label" for="comuna">Comuna</label>@Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger" })
+                                    <select class="form-control custom-select" id="idComuna" name="idComuna">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var comuna in ViewBag.Comunas)
+                                        {
+
+                                            if (Model.idComuna == comuna.ComunaModelsID)
+                                            {
+                                                <option selected value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="addDir">Direccion</label>@Html.ValidationMessageFor(m => m.Direccion, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control", @maxlength = "70" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+
+
+                        <h3 class="panel-heading">Datos Contacto Comercial (Opcional) </h3>
+                        <div class="panel-body">
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="nombreContacto">Nombre Contacto </label>
+                                    @Html.EditorFor(model => model.NombreContacto, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+                                </div>
+
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="EmailContacto">Email Contacto</label>
+                                    @Html.EditorFor(model => model.Contacto, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="telefonoCobranza">Telefono Contacto</label>
+                                    @Html.EditorFor(model => model.TelefonoContacto, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div> <!--Row-->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <a href="@Url.Action("ListarCliente", "Home")" class="btn btn-primary waves-effect waves-light"><span class="btn-label"><i class="ion-android-arrow-back"></i></span>Volver</a><br>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <button class="btn btn-primary waves-effect waves-light" value="Actualizar cliente" name="Save" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div><br />
+            </div> <!--panel-->
+
+
+
+
+        }
+    </div>
+
+
+
+</div>
+<script>
+    $(document).ready(function () {
+        cambiaComuna(0);
+
+    });
+        //$("#idRegion").on("change", function () {
+
+    function cambiaComuna(opcion) {
+
+        var idRegion = $("#idRegion option:selected").val();
+
+        $("#idComuna option").each(function () {
+            var idRegionS = $(this).attr("name");
+            if (idRegion == idRegionS) {
+                $(this).removeAttr('style');
+            } else {
+                $(this).attr('style', "display:none;");
+            }
+
+            // console.log('opcion ' + $(this).text() + ' valor ' + $(this).attr('value'))
+        });
+        if (opcion == 1) {
+            //vuelo a la opcion de inicio del select box
+            $("#idComuna").val("");
+        }
+        
+
+
+    }
+
+           //$("#idComuna").selectpicker("refresh");
+
+      //  });
+
+
+
+</script>

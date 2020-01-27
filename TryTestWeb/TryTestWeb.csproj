@@ -1,0 +1,1369 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7E7164F4-457A-4746-828A-C5F9CDB083F2}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TryTestWeb</RootNamespace>
+    <AssemblyName>TryTestWeb</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AE.Net.Mail">
+      <HintPath>..\packages\AE.Net.Mail.1.7.10.0\lib\net45\AE.Net.Mail.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML">
+      <HintPath>..\packages\ClosedXML.0.86.0\lib\net46\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFrameworkPaginate, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFrameworkPaginate.1.2.0\lib\EntityFrameworkPaginate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ExcelNumberFormat">
+      <HintPath>..\packages\ExcelNumberFormat.1.0.3\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="FastMember.Signed">
+      <HintPath>..\packages\FastMember.Signed.1.3.0\lib\net45\FastMember.Signed.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.8\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Recaptcha">
+      <HintPath>packages\Recaptcha.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.FileSystem.Primitives">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Packaging">
+      <HintPath>..\packages\System.IO.Packaging.4.0.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="zxing, Version=0.14.0.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.14.0.1\lib\net40\zxing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.14.0.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.14.0.1\lib\net40\zxing.presentation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter">
+      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\MySqlConfiguration.cs" />
+    <Compile Include="App_Start\MySqlHistoryContext.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ContabilidadController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FMSendController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\RemuneracionController.cs" />
+    <Compile Include="DAL\FacturaContext.cs" />
+    <Compile Include="DAL\FacturaInitializer.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\CaptchaValidatorAttribute.cs" />
+    <Compile Include="Helpers\CodigosErrorUpload.cs" />
+    <Compile Include="Helpers\CuentaContable.cs" />
+    <Compile Include="Helpers\DTE_CodRef.cs" />
+    <Compile Include="Helpers\F29Provisorio.cs" />
+    <Compile Include="Helpers\GetSeed.cs" />
+    <Compile Include="Helpers\GetSeedProd.cs" />
+    <Compile Include="Helpers\GetTokenFromSeed.cs" />
+    <Compile Include="Helpers\GetTokenFromSeedProd.cs" />
+    <Compile Include="Helpers\ImpuestoAdicionalRetenciones.cs" />
+    <Compile Include="Helpers\LocatorInitializationHandler.cs" />
+    <Compile Include="Helpers\MailHelper.cs" />
+    <Compile Include="Helpers\Monitoreo.cs" />
+    <Compile Include="Helpers\PaginadorGenerico.cs" />
+    <Compile Include="Helpers\ParseExtensions.cs" />
+    <Compile Include="Helpers\ParserExportacionDropDown.cs" />
+    <Compile Include="Helpers\Perfilamiento\ModuloHandler.cs" />
+    <Compile Include="Helpers\Perfilamiento\ModuloHelper.cs" />
+    <Compile Include="Helpers\Perfilamiento\PerfilamientoModule.cs" />
+    <Compile Include="Helpers\Perfilamiento\PrivilegiosHandler.cs" />
+    <Compile Include="Helpers\QueryEstDteAvService.cs" />
+    <Compile Include="Helpers\QueryEstUpService.cs" />
+    <Compile Include="Helpers\ReminderHelper.cs" />
+    <Compile Include="Helpers\TipoDte.cs" />
+    <Compile Include="Helpers\XMLHelper.cs" />
+    <Compile Include="Migrations\201612070215163_Reset_Cert.cs" />
+    <Compile Include="Migrations\201612070215163_Reset_Cert.Designer.cs">
+      <DependentUpon>201612070215163_Reset_Cert.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612071823373_Migration1.cs" />
+    <Compile Include="Migrations\201612071823373_Migration1.Designer.cs">
+      <DependentUpon>201612071823373_Migration1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612072039388_Migration2.cs" />
+    <Compile Include="Migrations\201612072039388_Migration2.Designer.cs">
+      <DependentUpon>201612072039388_Migration2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612092223257_Migration3.cs" />
+    <Compile Include="Migrations\201612092223257_Migration3.Designer.cs">
+      <DependentUpon>201612092223257_Migration3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612102156418_Migration4.cs" />
+    <Compile Include="Migrations\201612102156418_Migration4.Designer.cs">
+      <DependentUpon>201612102156418_Migration4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612142007227_Migration5.cs" />
+    <Compile Include="Migrations\201612142007227_Migration5.Designer.cs">
+      <DependentUpon>201612142007227_Migration5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612142106162_Migration6.cs" />
+    <Compile Include="Migrations\201612142106162_Migration6.Designer.cs">
+      <DependentUpon>201612142106162_Migration6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612151813548_Migration7.cs" />
+    <Compile Include="Migrations\201612151813548_Migration7.Designer.cs">
+      <DependentUpon>201612151813548_Migration7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612292107197_Migration8.cs" />
+    <Compile Include="Migrations\201612292107197_Migration8.Designer.cs">
+      <DependentUpon>201612292107197_Migration8.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612292125067_Migration9.cs" />
+    <Compile Include="Migrations\201612292125067_Migration9.Designer.cs">
+      <DependentUpon>201612292125067_Migration9.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612292318304_Migration10.cs" />
+    <Compile Include="Migrations\201612292318304_Migration10.Designer.cs">
+      <DependentUpon>201612292318304_Migration10.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701142155138_Migration11.cs" />
+    <Compile Include="Migrations\201701142155138_Migration11.Designer.cs">
+      <DependentUpon>201701142155138_Migration11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701162159174_Migration12.cs" />
+    <Compile Include="Migrations\201701162159174_Migration12.Designer.cs">
+      <DependentUpon>201701162159174_Migration12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701162323041_Migration13.cs" />
+    <Compile Include="Migrations\201701162323041_Migration13.Designer.cs">
+      <DependentUpon>201701162323041_Migration13.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701192130146_Migration14.cs" />
+    <Compile Include="Migrations\201701192130146_Migration14.Designer.cs">
+      <DependentUpon>201701192130146_Migration14.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701202051160_Migration15.cs" />
+    <Compile Include="Migrations\201701202051160_Migration15.Designer.cs">
+      <DependentUpon>201701202051160_Migration15.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701202245567_Migration16.cs" />
+    <Compile Include="Migrations\201701202245567_Migration16.Designer.cs">
+      <DependentUpon>201701202245567_Migration16.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701210824537_Migration17.cs" />
+    <Compile Include="Migrations\201701210824537_Migration17.Designer.cs">
+      <DependentUpon>201701210824537_Migration17.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701211434027_Migration18.cs" />
+    <Compile Include="Migrations\201701211434027_Migration18.Designer.cs">
+      <DependentUpon>201701211434027_Migration18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702162311176_Migration_19.cs" />
+    <Compile Include="Migrations\201702162311176_Migration_19.Designer.cs">
+      <DependentUpon>201702162311176_Migration_19.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702212227320_Migration20.cs" />
+    <Compile Include="Migrations\201702212227320_Migration20.Designer.cs">
+      <DependentUpon>201702212227320_Migration20.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703032129199_Migration21.cs" />
+    <Compile Include="Migrations\201703032129199_Migration21.Designer.cs">
+      <DependentUpon>201703032129199_Migration21.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703032150413_Migration22.cs" />
+    <Compile Include="Migrations\201703032150413_Migration22.Designer.cs">
+      <DependentUpon>201703032150413_Migration22.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703110322178_Migration23.cs" />
+    <Compile Include="Migrations\201703110322178_Migration23.Designer.cs">
+      <DependentUpon>201703110322178_Migration23.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703110528356_Migration24.cs" />
+    <Compile Include="Migrations\201703110528356_Migration24.Designer.cs">
+      <DependentUpon>201703110528356_Migration24.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703140250120_Migration25.cs" />
+    <Compile Include="Migrations\201703140250120_Migration25.Designer.cs">
+      <DependentUpon>201703140250120_Migration25.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703142018318_Migration26.cs" />
+    <Compile Include="Migrations\201703142018318_Migration26.Designer.cs">
+      <DependentUpon>201703142018318_Migration26.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703182227136_Migration27.cs" />
+    <Compile Include="Migrations\201703182227136_Migration27.Designer.cs">
+      <DependentUpon>201703182227136_Migration27.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703182237591_Migration28.cs" />
+    <Compile Include="Migrations\201703182237591_Migration28.Designer.cs">
+      <DependentUpon>201703182237591_Migration28.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703182316064_Migration29.cs" />
+    <Compile Include="Migrations\201703182316064_Migration29.Designer.cs">
+      <DependentUpon>201703182316064_Migration29.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703190136374_Migration30.cs" />
+    <Compile Include="Migrations\201703190136374_Migration30.Designer.cs">
+      <DependentUpon>201703190136374_Migration30.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703200451099_Migration31.cs" />
+    <Compile Include="Migrations\201703200451099_Migration31.Designer.cs">
+      <DependentUpon>201703200451099_Migration31.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703212232260_Migration32.cs" />
+    <Compile Include="Migrations\201703212232260_Migration32.Designer.cs">
+      <DependentUpon>201703212232260_Migration32.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703222113006_Migration33.cs" />
+    <Compile Include="Migrations\201703222113006_Migration33.Designer.cs">
+      <DependentUpon>201703222113006_Migration33.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703232226190_Migration34.cs" />
+    <Compile Include="Migrations\201703232226190_Migration34.Designer.cs">
+      <DependentUpon>201703232226190_Migration34.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703312143366_Migration35.cs" />
+    <Compile Include="Migrations\201703312143366_Migration35.Designer.cs">
+      <DependentUpon>201703312143366_Migration35.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704062156203_Migration36.cs" />
+    <Compile Include="Migrations\201704062156203_Migration36.Designer.cs">
+      <DependentUpon>201704062156203_Migration36.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704072207366_Migration37.cs" />
+    <Compile Include="Migrations\201704072207366_Migration37.Designer.cs">
+      <DependentUpon>201704072207366_Migration37.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704110233153_Migration38.cs" />
+    <Compile Include="Migrations\201704110233153_Migration38.Designer.cs">
+      <DependentUpon>201704110233153_Migration38.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704122206593_Migration39.cs" />
+    <Compile Include="Migrations\201704122206593_Migration39.Designer.cs">
+      <DependentUpon>201704122206593_Migration39.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705020503511_Migration40.cs" />
+    <Compile Include="Migrations\201705020503511_Migration40.Designer.cs">
+      <DependentUpon>201705020503511_Migration40.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705292108058_Migration41.cs" />
+    <Compile Include="Migrations\201705292108058_Migration41.Designer.cs">
+      <DependentUpon>201705292108058_Migration41.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707171729104_Migration42.cs" />
+    <Compile Include="Migrations\201707171729104_Migration42.Designer.cs">
+      <DependentUpon>201707171729104_Migration42.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708190254164_Migration43.cs" />
+    <Compile Include="Migrations\201708190254164_Migration43.Designer.cs">
+      <DependentUpon>201708190254164_Migration43.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708280420020_Migration44.cs" />
+    <Compile Include="Migrations\201708280420020_Migration44.Designer.cs">
+      <DependentUpon>201708280420020_Migration44.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709082048459_Migration45.cs" />
+    <Compile Include="Migrations\201709082048459_Migration45.Designer.cs">
+      <DependentUpon>201709082048459_Migration45.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710130208080_Migration46.cs" />
+    <Compile Include="Migrations\201710130208080_Migration46.Designer.cs">
+      <DependentUpon>201710130208080_Migration46.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711281922035_Migration47.cs" />
+    <Compile Include="Migrations\201711281922035_Migration47.Designer.cs">
+      <DependentUpon>201711281922035_Migration47.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001240055286_EliminadoFlujoCajaModel.cs" />
+    <Compile Include="Migrations\202001240055286_EliminadoFlujoCajaModel.Designer.cs">
+      <DependentUpon>202001240055286_EliminadoFlujoCajaModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001240107091_EliminadoFlujoCajaNewModel.cs" />
+    <Compile Include="Migrations\202001240107091_EliminadoFlujoCajaNewModel.Designer.cs">
+      <DependentUpon>202001240107091_EliminadoFlujoCajaNewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001240332069_EliminadoEgresosFijos.cs" />
+    <Compile Include="Migrations\202001240332069_EliminadoEgresosFijos.Designer.cs">
+      <DependentUpon>202001240332069_EliminadoEgresosFijos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001260029346_EliminadoF29.cs" />
+    <Compile Include="Migrations\202001260029346_EliminadoF29.Designer.cs">
+      <DependentUpon>202001260029346_EliminadoF29.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001260033596_EliminadoCafHistorico.cs" />
+    <Compile Include="Migrations\202001260033596_EliminadoCafHistorico.Designer.cs">
+      <DependentUpon>202001260033596_EliminadoCafHistorico.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001260053323_EliminadosCuatroTablas.cs" />
+    <Compile Include="Migrations\202001260053323_EliminadosCuatroTablas.Designer.cs">
+      <DependentUpon>202001260053323_EliminadosCuatroTablas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001260111568_ElimnadoLiquidacionesModel.cs" />
+    <Compile Include="Migrations\202001260111568_ElimnadoLiquidacionesModel.Designer.cs">
+      <DependentUpon>202001260111568_ElimnadoLiquidacionesModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001260327262_EliminadoTresTablasRecurrentes.cs" />
+    <Compile Include="Migrations\202001260327262_EliminadoTresTablasRecurrentes.Designer.cs">
+      <DependentUpon>202001260327262_EliminadoTresTablasRecurrentes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001261726535_EliminadoMultiplesTablasFacturas.cs" />
+    <Compile Include="Migrations\202001261726535_EliminadoMultiplesTablasFacturas.Designer.cs">
+      <DependentUpon>202001261726535_EliminadoMultiplesTablasFacturas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001262054466_EliminadoMultiplesTablasFacturacion2.cs" />
+    <Compile Include="Migrations\202001262054466_EliminadoMultiplesTablasFacturacion2.Designer.cs">
+      <DependentUpon>202001262054466_EliminadoMultiplesTablasFacturacion2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001262059143_EliminadoQuickTransporteExportacion.cs" />
+    <Compile Include="Migrations\202001262059143_EliminadoQuickTransporteExportacion.Designer.cs">
+      <DependentUpon>202001262059143_EliminadoQuickTransporteExportacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001262111142_EliminadoPreferenciaReporteImpago.cs" />
+    <Compile Include="Migrations\202001262111142_EliminadoPreferenciaReporteImpago.Designer.cs">
+      <DependentUpon>202001262111142_EliminadoPreferenciaReporteImpago.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001262130263_EliminadoMultiplesFacturacion.cs" />
+    <Compile Include="Migrations\202001262130263_EliminadoMultiplesFacturacion.Designer.cs">
+      <DependentUpon>202001262130263_EliminadoMultiplesFacturacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BoletasHonorariosModel.cs" />
+    <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
+    <Compile Include="Models\CertificadosModels.cs" />
+    <Compile Include="Models\ComunaModels.cs" />
+    <Compile Include="Models\DTEPagosModel.cs" />
+    <Compile Include="Models\EmisoresHabilitados.cs" />
+    <Compile Include="Models\CustomErrorModel.cs" />
+    <Compile Include="Models\EstadoResultadoModel.cs" />
+    <Compile Include="Models\FMSModel.cs" />
+    <Compile Include="Models\FuncionesModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ActividadEconomicaModelCuentaContableModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\AuxiliaresModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\CentroCostoModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ClientesContablesModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ClientesProveedoresModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\CtasContablesPresupuestoModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\CuentaContableModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\DetalleVoucherModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ImpuestosAdicionalesModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ImpuestosAdRelacionModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ItemModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\LibroMayor.cs" />
+    <Compile Include="Models\ModelosSistemaContable\LibrosContablesModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\MonitoreoModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ParametrosClienteModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\PerfilUsuarioModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\SubClasificacionCtaContable.cs" />
+    <Compile Include="Models\ModelosSistemaContable\SubSubClasificacionCtaContable.cs" />
+    <Compile Include="Models\ModelosSistemaContable\SubSubCtaPresupuestoModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\UserClientesContablesModels.cs" />
+    <Compile Include="Models\ModelosSistemaContable\VoucherModel.cs" />
+    <Compile Include="Models\ModelsFactura\ActividadEconomicaModel.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\ModelsFactura\QuickEmisorModel.cs" />
+    <Compile Include="Models\ModelsFactura\QuickReceptorModel.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\AfpRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\BancoRemumodels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\CargoRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\DatosVariablesRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\EmpBancoRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\EmpleadoModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\EstadoCivilRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\GeneroRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\GratificacionRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\InsApvRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\IsapreRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\SminimoRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\SucursalRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\TcuentaRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\TipoContratoRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\TramoFaRemumodels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\TsueldoBaRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\UfRemuModels.cs" />
+    <Compile Include="Models\ModelsRemuneraciones\UtmRemuModels.cs" />
+    <Compile Include="Models\ModulosHabilitados.cs" />
+    <Compile Include="Models\ModuloSistemaModel.cs" />
+    <Compile Include="Models\PaginadorGenerico\BasePaginadorModel.cs" />
+    <Compile Include="Models\PaginadorGenerico\PaginadorModel.cs" />
+    <Compile Include="Models\PosesionUsuarios.cs" />
+    <Compile Include="Models\RegionModels.cs" />
+    <Compile Include="Models\ReportesImpagosLog.cs" />
+    <Compile Include="Models\UserModels.cs" />
+    <Compile Include="Models\UsuarioModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Models\ModelosSistemaContable\LibroDeHonorariosModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\ACTECOLIST.txt" />
+    <Content Include="App_Data\MailBody.html" />
+    <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\owl.carousel.css" />
+    <Content Include="Content\css\owl.theme.default.min.css" />
+    <Content Include="Content\css\style.css" />
+    <Content Include="Content\dataTables.bootstrap.css" />
+    <Content Include="Content\dataTables.responsive.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\googled3d1f8154bb942d3.html" />
+    <Content Include="Content\hint.css" />
+    <Content Include="Content\images\107.jpg" />
+    <Content Include="Content\images\14ter.jpg" />
+    <Content Include="Content\images\1\bad-group.jpg" />
+    <Content Include="Content\images\1\bad-man.jpg" />
+    <Content Include="Content\images\1\bad-woman.jpg" />
+    <Content Include="Content\images\1\bad-woman1.jpg" />
+    <Content Include="Content\images\1\bubble.jpg" />
+    <Content Include="Content\images\1\chart2.jpg" />
+    <Content Include="Content\images\1\charts.jpg" />
+    <Content Include="Content\images\1\Cloud-close.jpg" />
+    <Content Include="Content\images\1\Cloud-drawer.jpg" />
+    <Content Include="Content\images\1\Cloud-key.jpg" />
+    <Content Include="Content\images\1\Cloud-open.jpg" />
+    <Content Include="Content\images\1\Cloud-secure.jpg" />
+    <Content Include="Content\images\1\hands.jpg" />
+    <Content Include="Content\images\1\message.jpg" />
+    <Content Include="Content\images\1\piggy.jpg" />
+    <Content Include="Content\images\1\tablet.jpg" />
+    <Content Include="Content\images\1\working1.jpg" />
+    <Content Include="Content\images\1\working2.jpg" />
+    <Content Include="Content\images\2289.jpg" />
+    <Content Include="Content\images\assault.png" />
+    <Content Include="Content\images\avat.jpg" />
+    <Content Include="Content\images\bg_1.jpg" />
+    <Content Include="Content\images\bg_2.jpg" />
+    <Content Include="Content\images\bg_3.jpg" />
+    <Content Include="Content\images\charts_prices.jpg" />
+    <Content Include="Content\images\converse.png" />
+    <Content Include="Content\images\desk.png" />
+    <Content Include="Content\images\Elate\css\animate.css" />
+    <Content Include="Content\images\Elate\css\blue.css" />
+    <Content Include="Content\images\Elate\css\bootstrap.css" />
+    <Content Include="Content\images\Elate\css\icomoon.css" />
+    <Content Include="Content\images\Elate\css\magnific-popup.css" />
+    <Content Include="Content\images\Elate\css\new  2.txt" />
+    <Content Include="Content\images\Elate\css\new  3.txt" />
+    <Content Include="Content\images\Elate\css\simple-line-icons.css" />
+    <Content Include="Content\images\Elate\css\style.css" />
+    <Content Include="Content\images\Elate\css\style2.css" />
+    <Content Include="Content\images\Elate\css\style3.css" />
+    <Content Include="Content\images\Elate\css\style4.css" />
+    <Content Include="Content\images\Elate\js\bootstrap.min.js" />
+    <Content Include="Content\images\Elate\js\google_map.js" />
+    <Content Include="Content\images\Elate\js\jquery.countTo.js" />
+    <Content Include="Content\images\Elate\js\jquery.easing.1.3.js" />
+    <Content Include="Content\images\Elate\js\jquery.magnific-popup.min.js" />
+    <Content Include="Content\images\Elate\js\jquery.min.js" />
+    <Content Include="Content\images\Elate\js\jquery.stellar.min.js" />
+    <Content Include="Content\images\Elate\js\jquery.style.switcher.js" />
+    <Content Include="Content\images\Elate\js\jquery.waypoints.min.js" />
+    <Content Include="Content\images\Elate\js\magnific-popup-options.js" />
+    <Content Include="Content\images\Elate\js\main.js" />
+    <Content Include="Content\images\Elate\js\modernizr-2.6.2.min.js" />
+    <Content Include="Content\images\Elate\js\respond.min.js" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\francis.jpg" />
+    <Content Include="Content\images\full_image_1.jpg" />
+    <Content Include="Content\images\full_image_2.jpg" />
+    <Content Include="Content\images\gif-load.gif" />
+    <Content Include="Content\images\google.png" />
+    <Content Include="Content\images\handshake.jpg" />
+    <Content Include="Content\images\home_seo2_icon1.png" />
+    <Content Include="Content\images\home_seo2_icon3.png" />
+    <Content Include="Content\images\home_seo2_icon4.png" />
+    <Content Include="Content\images\home_seo2_offer1.png" />
+    <Content Include="Content\images\img_10.jpg" />
+    <Content Include="Content\images\img_7.jpg" />
+    <Content Include="Content\images\img_8.jpg" />
+    <Content Include="Content\images\instagram.png" />
+    <Content Include="Content\images\loc.png" />
+    <Content Include="Content\images\logo%402x.png" />
+    <Content Include="Content\images\logoBlanco%402x.png" />
+    <Content Include="Content\images\logofactu.png" />
+    <Content Include="Content\images\logophservicios_web.jpg" />
+    <Content Include="Content\images\Logo\logogeogestinicio.png" />
+    <Content Include="Content\images\Logo\logogeogest.png" />
+    <Content Include="Content\images\Logo\simbologeo.png" />
+    <Content Include="Content\images\logo_facturalabs_blanco%402x.png" />
+    <Content Include="Content\images\mac_1.png" />
+    <Content Include="Content\images\mac_2.png" />
+    <Content Include="Content\images\mac_3.png" />
+    <Content Include="Content\images\microsoft.png" />
+    <Content Include="Content\images\minilogofactu.png" />
+    <Content Include="Content\images\minimail.jpg" />
+    <Content Include="Content\images\O6MG2K0.jpg" />
+    <Content Include="Content\images\opt1.png" />
+    <Content Include="Content\images\opt2.png" />
+    <Content Include="Content\images\opt3.png" />
+    <Content Include="Content\images\pablina.jpg" />
+    <Content Include="Content\images\penny.jpg" />
+    <Content Include="Content\images\perrito.jpg" />
+    <Content Include="Content\images\perrito2.jpg" />
+    <Content Include="Content\images\perrito3.jpg" />
+    <Content Include="Content\images\person1.jpg" />
+    <Content Include="Content\images\person2.jpg" />
+    <Content Include="Content\images\person3.jpg" />
+    <Content Include="Content\images\person4.jpg" />
+    <Content Include="Content\images\phl\12B.jpg" />
+    <Content Include="Content\images\phl\icon.jpg" />
+    <Content Include="Content\images\phl\icon.png" />
+    <Content Include="Content\images\phl\logophservicios_web.jpg" />
+    <Content Include="Content\images\phl\logophservicios_web.png" />
+    <Content Include="Content\images\phl\minilogophservicios_web.png" />
+    <Content Include="Content\images\phl\phuenchuman.png" />
+    <Content Include="Content\images\quote-icon.png" />
+    <Content Include="Content\images\req.jpg" />
+    <Content Include="Content\images\section_blue.jpg" />
+    <Content Include="Content\images\startup.jpg" />
+    <Content Include="Content\images\store.jpg" />
+    <Content Include="Content\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\images\user.jpg" />
+    <Content Include="Content\images\user2.jpg" />
+    <Content Include="Content\images\user3.jpg" />
+    <Content Include="Content\images\woman.png" />
+    <Content Include="Content\images\work_1.jpg" />
+    <Content Include="Content\images\work_2.jpg" />
+    <Content Include="Content\images\work_3.jpg" />
+    <Content Include="Content\images\work_4.jpg" />
+    <Content Include="Content\images\work_5.jpg" />
+    <Content Include="Content\images\work_6.jpg" />
+    <Content Include="Content\images\work_7.jpg" />
+    <Content Include="Content\images\work_8.jpg" />
+    <Content Include="Content\images\x.png" />
+    <Content Include="Content\jquery-ui.css" />
+    <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\cell.js" />
+    <Content Include="Content\js\config.js" />
+    <Content Include="Content\js\from_html.js" />
+    <Content Include="Content\js\html2canvas.js" />
+    <Content Include="Content\js\html2pdf.js" />
+    <Content Include="Content\js\jquery-2.1.4.min.js" />
+    <Content Include="Content\js\jquery.app.js" />
+    <Content Include="Content\js\jquery.easing.1.3.min.js" />
+    <Content Include="Content\js\jquery.js" />
+    <Content Include="Content\js\jquery.sticky.js" />
+    <Content Include="Content\js\jspdf.debug.js" />
+    <Content Include="Content\js\jspdf.js" />
+    <Content Include="Content\js\owl.carousel.min.js" />
+    <Content Include="Content\js\require.js" />
+    <Content Include="Content\js\SmoothScroll.js" />
+    <Content Include="Content\images\logo_facturalabs%402x.png" />
+    <Content Include="Content\js\test_harness.js" />
+    <Content Include="Content\metisMenu.min.css" />
+    <Content Include="Content\morris.css" />
+    <Content Include="Content\normalize.css" />
+    <Content Include="Content\PagedList.css" />
+    <Content Include="Content\penny.css" />
+    <Content Include="Content\sb-admin-2.css" />
+    <Content Include="Content\sitemap.xml" />
+    <Content Include="Content\skeleton.css" />
+    <Content Include="Content\style.css" />
+    <Content Include="Content\Template2\css\bootstrap-datepicker.min.css" />
+    <Content Include="Content\Template2\css\bootstrap.min.css" />
+    <Content Include="Content\Template2\css\components.css" />
+    <Content Include="Content\Template2\css\core.css" />
+    <Content Include="Content\Template2\css\icons.css" />
+    <Content Include="Content\Template2\css\pages.css" />
+    <Content Include="Content\Template2\css\responsive.css" />
+    <Content Include="Content\Template2\css\typicons.css" />
+    <Content Include="Content\Template2\css\variables.css" />
+    <Content Include="Content\Template2\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\Template2\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\Template2\fonts\ionicons.svg" />
+    <Content Include="Content\Template2\fonts\Material-Design-Iconic-Font.svg" />
+    <Content Include="Content\Template2\fonts\Simple-Line-Icons.svg" />
+    <Content Include="Content\Template2\fonts\themify.svg" />
+    <Content Include="Content\Template2\fonts\typicons.svg" />
+    <Content Include="Content\Template2\fonts\weathericons-regular-webfont.svg" />
+    <Content Include="Content\Template2\js\bootstrap-datepicker.min.js" />
+    <Content Include="Content\Template2\js\bootstrap.min.js" />
+    <Content Include="Content\Template2\js\detect.js" />
+    <Content Include="Content\Template2\js\fastclick.js" />
+    <Content Include="Content\Template2\js\jquery.app.js" />
+    <Content Include="Content\Template2\js\jquery.blockUI.js" />
+    <Content Include="Content\Template2\js\jquery.core.js" />
+    <Content Include="Content\Template2\js\jquery.dashboard_2.js" />
+    <Content Include="Content\Template2\js\jquery.min.js" />
+    <Content Include="Content\Template2\js\jquery.nicescroll.js" />
+    <Content Include="Content\Template2\js\jquery.scrollTo.min.js" />
+    <Content Include="Content\Template2\js\jquery.slimscroll.js" />
+    <Content Include="Content\Template2\js\loader.js" />
+    <Content Include="Content\Template2\js\modernizr.min.js" />
+    <Content Include="Content\Template2\js\pace.min.js" />
+    <Content Include="Content\Template2\js\rwd-table.min.js" />
+    <Content Include="Content\Template2\js\waves.js" />
+    <Content Include="Content\Template2\js\wow.min.js" />
+    <Content Include="Content\_buttons.bootstrap.css" />
+    <Content Include="Content\_buttons.bootstrap.min.css" />
+    <Content Include="Content\_buttons.dataTables.css" />
+    <Content Include="Content\_buttons.dataTables.min.css" />
+    <Content Include="Content\_buttons.foundation.css" />
+    <Content Include="Content\_buttons.foundation.min.css" />
+    <Content Include="Content\_buttons.jqueryui.css" />
+    <Content Include="Content\_buttons.jqueryui.min.css" />
+    <Content Include="Content\_buttons.semanticui.css" />
+    <Content Include="Content\_buttons.semanticui.min.css" />
+    <Content Include="Content\_datatables.css" />
+    <Content Include="Content\_datatables.min.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\additional-methods.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="Content\images\Elate\css\blue.css.map" />
+    <Content Include="Content\images\Elate\css\bootstrap.css.map" />
+    <Content Include="Content\images\Elate\css\style.css.bak" />
+    <Content Include="Content\images\Elate\css\style.css.map" />
+    <Content Include="Content\images\Elate\css\style2.css.map" />
+    <Content Include="Content\images\Elate\css\style3.css.map" />
+    <Content Include="Content\images\Elate\css\style4.css.map" />
+    <Content Include="Content\images\Elate\js\google_map.js.bak" />
+    <Content Include="Content\images\Elate\fonts\bootstrap\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\images\Elate\fonts\bootstrap\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\Elate\fonts\bootstrap\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\images\Elate\fonts\bootstrap\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\images\Elate\fonts\bootstrap\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\images\Elate\fonts\icomoon\icomoon.eot" />
+    <Content Include="Content\images\Elate\fonts\icomoon\icomoon.svg" />
+    <Content Include="Content\images\Elate\fonts\icomoon\icomoon.ttf" />
+    <Content Include="Content\images\Elate\fonts\icomoon\icomoon.woff" />
+    <Content Include="Content\images\Elate\fonts\simple-line-icons\Simple-Line-Icons.eot" />
+    <Content Include="Content\images\Elate\fonts\simple-line-icons\Simple-Line-Icons.svg" />
+    <Content Include="Content\images\Elate\fonts\simple-line-icons\Simple-Line-Icons.ttf" />
+    <Content Include="Content\images\Elate\fonts\simple-line-icons\Simple-Line-Icons.woff" />
+    <Content Include="Content\images\Elate\fonts\simple-line-icons\Simple-Line-Icons.woff2" />
+    <Content Include="Scripts\contabilidad\FiltrosLocalStorage.js" />
+    <Content Include="Scripts\dataTables.dateRangeFilter.js" />
+    <Content Include="Content\_common.scss" />
+    <Content Include="Content\_mixins.scss" />
+    <Content Include="Content\Fecha y Numero de Resolucion.pdf" />
+    <Content Include="Content\Template2\css\bootstrap.min.css.map" />
+    <Content Include="Content\Template2\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\Template2\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\Template2\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\Template2\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\Template2\fonts\FontAwesome.otf" />
+    <Content Include="Content\Template2\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\Template2\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\Template2\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\Template2\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\Template2\fonts\ionicons.eot" />
+    <Content Include="Content\Template2\fonts\ionicons.ttf" />
+    <Content Include="Content\Template2\fonts\ionicons.woff" />
+    <Content Include="Content\Template2\fonts\Material-Design-Iconic-Font.eot" />
+    <Content Include="Content\Template2\fonts\Material-Design-Iconic-Font.ttf" />
+    <Content Include="Content\Template2\fonts\Material-Design-Iconic-Font.woff" />
+    <Content Include="Content\Template2\fonts\Simple-Line-Icons.eot" />
+    <Content Include="Content\Template2\fonts\Simple-Line-Icons.ttf" />
+    <Content Include="Content\Template2\fonts\Simple-Line-Icons.woff" />
+    <Content Include="Content\Template2\fonts\Simple-Line-Icons.woff2" />
+    <Content Include="Content\Template2\fonts\themify.eot" />
+    <Content Include="Content\Template2\fonts\themify.ttf" />
+    <Content Include="Content\Template2\fonts\themify.woff" />
+    <Content Include="Content\Template2\fonts\typicons.eot" />
+    <Content Include="Content\Template2\fonts\typicons.less" />
+    <Content Include="Content\Template2\fonts\typicons.ttf" />
+    <Content Include="Content\Template2\fonts\typicons.woff" />
+    <Content Include="Content\Template2\fonts\weathericons-regular-webfont.eot" />
+    <Content Include="Content\Template2\fonts\weathericons-regular-webfont.ttf" />
+    <Content Include="Content\Template2\fonts\weathericons-regular-webfont.woff" />
+    <Content Include="Content\Template2\fonts\weathericons-regular-webfont.woff2" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\css\bootstrap.min.css.map" />
+    <Content Include="fonts\Material-Design-Iconic-Font.eot" />
+    <Content Include="fonts\Material-Design-Iconic-Font.svg" />
+    <Content Include="fonts\Material-Design-Iconic-Font.ttf" />
+    <Content Include="fonts\Material-Design-Iconic-Font.woff" />
+    <Content Include="fonts\themify.eot" />
+    <Content Include="fonts\themify.svg" />
+    <Content Include="fonts\themify.ttf" />
+    <Content Include="fonts\themify.woff" />
+    <Content Include="fonts\Simple-Line-Icons.eot" />
+    <Content Include="fonts\Simple-Line-Icons.svg" />
+    <Content Include="fonts\Simple-Line-Icons.ttf" />
+    <Content Include="fonts\Simple-Line-Icons.woff" />
+    <Content Include="fonts\Simple-Line-Icons.woff2" />
+    <Content Include="fonts\ionicons.eot" />
+    <Content Include="fonts\ionicons.svg" />
+    <Content Include="fonts\ionicons.ttf" />
+    <Content Include="fonts\ionicons.woff" />
+    <Content Include="App_Data\clientesExport.xlsx" />
+    <Content Include="App_Data\EXCELDIARIO.xlsx" />
+    <Content Include="App_Data\EXCELMAYOR.xlsx" />
+    <Content Include="App_Data\exportFlujoCaja.xlsx" />
+    <Content Include="App_Data\ExportVentaCompraListado.xlsx" />
+    <Content Include="App_Data\honorariosExport.xlsx" />
+    <Content Include="App_Data\gastosExport.xlsx" />
+    <Content Include="App_Data\IvaNoRecuper.xlsx" />
+    <Content Include="App_Data\LibroHonorariosTemplate.xlsx" />
+    <Content Include="App_Data\liquidacionesExport.xlsx" />
+    <Content Include="App_Data\LibroTemplate.xlsx" />
+    <Content Include="App_Data\pagosExport.xlsx" />
+    <Content Include="App_Data\PROTOEXCEL.xlsx" />
+    <Content Include="App_Data\try conciliacion.xlsx" />
+    <Content Include="App_Data\LibroTemplate2.xlsx" />
+    <Content Include="App_Data\EstadoResultado.xlsx" />
+    <Content Include="App_Data\InformesBalance.xlsx" />
+    <Content Include="App_Data\InformesEstadoResultado.xlsx" />
+    <Content Include="App_Data\EXCELHONORARIOS.xlsx" />
+    <None Include="Properties\PublishProfiles\EFactu Deployment.pubxml" />
+    <None Include="Properties\PublishProfiles\EFactuDeploy.pubxml" />
+    <None Include="Properties\PublishProfiles\GaryFacturaLabs.pubxml" />
+    <None Include="Properties\PublishProfiles\GaryPublish1.pubxml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\dataTables.responsive.js" />
+    <Content Include="Scripts\html5shiv.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-3.0.0.js" />
+    <Content Include="Scripts\jquery-migrate.js" />
+    <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\jquery.dataTables.min.js" />
+    <Content Include="Scripts\jquery.Rut.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\metisMenu.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\morris.min.js" />
+    <Content Include="Scripts\raphael.min.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\sb-admin-2.js" />
+    <Content Include="Scripts\_buttons.bootstrap.js" />
+    <Content Include="Scripts\_buttons.bootstrap.min.js" />
+    <Content Include="Scripts\_buttons.colVis.js" />
+    <Content Include="Scripts\_buttons.colVis.min.js" />
+    <Content Include="Scripts\_buttons.flash.js" />
+    <Content Include="Scripts\_buttons.flash.min.js" />
+    <Content Include="Scripts\_buttons.foundation.js" />
+    <Content Include="Scripts\_buttons.foundation.min.js" />
+    <Content Include="Scripts\_buttons.html5.js" />
+    <Content Include="Scripts\_buttons.html5.min.js" />
+    <Content Include="Scripts\_buttons.jqueryui.js" />
+    <Content Include="Scripts\_buttons.jqueryui.min.js" />
+    <Content Include="Scripts\_buttons.print.js" />
+    <Content Include="Scripts\_buttons.print.min.js" />
+    <Content Include="Scripts\_buttons.semanticui.js" />
+    <Content Include="Scripts\_buttons.semanticui.min.js" />
+    <Content Include="Scripts\_dataTables.buttons.js" />
+    <Content Include="Scripts\_dataTables.buttons.min.js" />
+    <Content Include="Scripts\_datatables.js" />
+    <Content Include="Scripts\_datatables.min.js" />
+    <Content Include="Scripts\_jszip.js" />
+    <Content Include="Scripts\_jszip.min.js" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\Account\ConfirmEmail.cshtml" />
+    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
+    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\SendCode.cshtml" />
+    <Content Include="Views\Account\VerifyCode.cshtml" />
+    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
+    <Content Include="Views\Manage\ChangePassword.cshtml" />
+    <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\Manage\ManageLogins.cshtml" />
+    <Content Include="Views\Manage\SetPassword.cshtml" />
+    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
+    <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Home\FormFactura.cshtml" />
+    <Content Include="Views\Home\DatosEmpresa.cshtml" />
+    <Content Include="Views\Home\NuevoCliente.cshtml" />
+    <Content Include="Views\Shared\CError.cshtml" />
+    <Content Include="Views\Home\Homey.cshtml" />
+    <Content Include="Views\Home\MakeFacturaExp.cshtml" />
+    <Content Include="Views\Home\IngFacturaCompra.cshtml" />
+    <Content Include="Views\FMSend\DTERecibido.cshtml" />
+    <Content Include="Views\Home\Certificacion.cshtml" />
+    <Content Include="Views\Home\CuentaContable.cshtml" />
+    <Content Include="Views\Home\EstadoResultado.cshtml" />
+    <Content Include="Views\Home\EstadoResultadoPartial.cshtml" />
+    <Content Include="Views\Home\Honorarios.cshtml" />
+    <Content Include="Views\Home\SeleccionarEmisor.cshtml" />
+    <Content Include="Views\Account\AgregarUsuario.cshtml" />
+    <Content Include="Views\Home\ListarCliente.cshtml" />
+    <Content Include="Views\Home\EditarCliente.cshtml" />
+    <Content Include="Views\Home\MakeFactura.cshtml" />
+    <Content Include="Views\Home\InvitarUsuario.cshtml" />
+    <Content Include="Views\Home\ListaHonorarios.cshtml" />
+    <Content Include="Views\Home\InformeIngresos.cshtml" />
+    <Content Include="Views\Home\InformeResultados.cshtml" />
+    <Content Include="Views\Home\SeleccionarEmisorDesdeModulos.cshtml" />
+    <Content Include="Views\Home\MantenedorUsuarioModulo.cshtml" />
+    <Content Include="Views\Home\EditarReceptorModal.cshtml" />
+    <Content Include="Views\Home\DescuentoRecargoTempModal.cshtml" />
+    <Content Include="Views\Home\MakeFacturaRecurrente.cshtml" />
+    <Content Include="Views\Home\VLibroVentas.cshtml" />
+    <Content Include="Views\Home\VLibroCompras.cshtml" />
+    <Content Include="Views\Home\VLibroRemuneraciones.cshtml" />
+    <Content Include="Views\Home\VLibroHonorarios.cshtml" />
+    <Content Include="Views\Shared\ErrorP.cshtml" />
+    <Content Include="Views\FMSend\AdminFunciones.cshtml" />
+    <Content Include="Views\Contabilidad\NuevoClienteContable.cshtml" />
+    <Content Include="Views\Contabilidad\AdminUsuariosContables.cshtml" />
+    <Content Include="Views\Contabilidad\SeleccionarClienteContable.cshtml" />
+    <Content Include="Views\Contabilidad\ParametrizacionCliente.cshtml" />
+    <Content Include="Views\Contabilidad\EditarClienteContable.cshtml" />
+    <Content Include="Views\Contabilidad\IngresoCtaContable.cshtml" />
+    <Content Include="Views\Contabilidad\ListaCuentasContables.cshtml" />
+    <Content Include="Views\Contabilidad\IngresoVoucher.cshtml" />
+    <Content Include="Views\Contabilidad\ListaVoucher.cshtml" />
+    <Content Include="Views\Contabilidad\IngresoVoucherAuxiliarModel.cshtml" />
+    <Content Include="Views\Contabilidad\BalanceGeneral.cshtml" />
+    <Content Include="Views\Contabilidad\BalanceGeneralPartial.cshtml" />
+    <Content Include="Views\Contabilidad\LibroMayor.cshtml" />
+    <Content Include="Views\Contabilidad\LibroMayorPartial.cshtml" />
+    <Content Include="Views\Contabilidad\LibroDiarioPartial.cshtml" />
+    <Content Include="Views\Contabilidad\LibroDiario.cshtml" />
+    <Content Include="Views\Contabilidad\ListaVouchersBaja.cshtml" />
+    <Content Include="Views\Contabilidad\ListaCentroCosto.cshtml" />
+    <Content Include="Views\Contabilidad\IngresarDocumentoVenta.cshtml" />
+    <Content Include="Views\Contabilidad\IngresarDocumentoCompra.cshtml" />
+    <Content Include="Views\Contabilidad\LibroVenta.cshtml" />
+    <Content Include="Views\Contabilidad\LibroVentaPartial.cshtml" />
+    <Content Include="Views\Contabilidad\LibroCompraPartial.cshtml" />
+    <Content Include="Views\Contabilidad\LibroCompra.cshtml" />
+    <Content Include="Views\Contabilidad\ImportarDocumento.cshtml" />
+    <Content Include="Views\Contabilidad\ImportarBalance.cshtml" />
+    <Content Include="Views\Contabilidad\CargarLibros.cshtml" />
+    <Content Include="Views\Contabilidad\ImportaCartola.cshtml" />
+    <Content Include="Views\Contabilidad\ParcialSaldoLibro.cshtml" />
+    <Content Include="Views\Contabilidad\InfoImportada.cshtml" />
+    <Content Include="Views\Contabilidad\PanelClienteContable.cshtml" />
+    <Content Include="Views\Contabilidad\ListaItems.cshtml" />
+    <Content Include="Views\Remuneracion\ListadoEmpleado.cshtml" />
+    <Content Include="Views\Remuneracion\AgregarEmpleado.cshtml" />
+    <Content Include="Views\Remuneracion\EditarEmpleado.cshtml" />
+    <Content Include="Views\Home\ListarPersona.cshtml" />
+    <Content Include="Views\Home\ListarProveedor.cshtml" />
+    <Content Include="Views\Home\NuevoPersona.cshtml" />
+    <Content Include="Views\Home\NuevoProveedor.cshtml" />
+    <Content Include="Views\Home\EditarPersona.cshtml" />
+    <Content Include="Views\Home\EditarProveedor.cshtml" />
+    <Content Include="Views\Contabilidad\DisplayVoucherAuxiliarModel.cshtml" />
+    <Content Include="Views\Home\ListarClienteC.cshtml" />
+    <Content Include="Views\Home\EditarClienteC.cshtml" />
+    <Content Include="Views\Home\NuevoClienteC.cshtml" />
+    <Content Include="Views\Remuneracion\ListadoSucursal.cshtml" />
+    <Content Include="Views\Remuneracion\CargosEmpleado.cshtml" />
+    <Content Include="Views\Remuneracion\LiquidacionTest.cshtml" />
+    <Content Include="Views\Remuneracion\CambiarDatosVariables.cshtml" />
+    <Content Include="Views\Contabilidad\InformeEstadoResultado.cshtml" />
+    <Content Include="Views\Contabilidad\IEstadoResultado.cshtml" />
+    <Content Include="Views\Contabilidad\IEstadoResultadoPartial.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoCtaBrutoPartial.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoCtaBruto.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoEBITDA.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoEBITDAPartial.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoEBIT.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoEBITPartial.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoEBT.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoEBTPartial.cshtml" />
+    <Content Include="Views\Contabilidad\BAActivoCirculante.cshtml" />
+    <Content Include="Views\Contabilidad\BAActivoCirculantePartial.cshtml" />
+    <Content Include="Views\Contabilidad\BAActivoFijo.cshtml" />
+    <Content Include="Views\Contabilidad\BAActivoFijoPartial.cshtml" />
+    <Content Include="Views\Contabilidad\BAPasivoFijoCirculante.cshtml" />
+    <Content Include="Views\Contabilidad\BAPasivoFijoCirculantePartial.cshtml" />
+    <Content Include="Views\Contabilidad\BAPasivoFijoNoCorriente.cshtml" />
+    <Content Include="Views\Contabilidad\BAPasivoFijoNoCorrientePartial.cshtml" />
+    <Content Include="Views\Contabilidad\BAPasivoAndPatrimonioNeto.cshtml" />
+    <Content Include="Views\Contabilidad\BAPasivoAndPatrimonioNetoPartial.cshtml" />
+    <Content Include="Views\Contabilidad\BATotalActivos.cshtml" />
+    <Content Include="Views\Contabilidad\BATotalActivosPartial.cshtml" />
+    <Content Include="Views\Contabilidad\BATotalPasivos.cshtml" />
+    <Content Include="Views\Contabilidad\BATotalPasivosPartial.cshtml" />
+    <Content Include="Views\Contabilidad\LibroMayorTwo.cshtml" />
+    <Content Include="Views\Contabilidad\CtasContPresupuesto.cshtml" />
+    <Content Include="Views\Contabilidad\CentroCostosPresupuesto.cshtml" />
+    <Content Include="Views\Contabilidad\ComparacionCtaPresu.cshtml" />
+    <Content Include="Views\Contabilidad\SubSubCtaPresupuesto.cshtml" />
+    <Content Include="Views\Shared\_paginador.cshtml" />
+    <Content Include="Views\Contabilidad\LibroMayorDesdeModelo.cshtml" />
+    <Content Include="Views\Account\TusUsuarios.cshtml" />
+    <Content Include="Views\Account\AsignarCantidadUsuariosYClientes.cshtml" />
+    <Content Include="Views\Home\ReestablecerPrestador.cshtml" />
+    <Content Include="Views\Contabilidad\CargarLibrosHonorarios.cshtml" />
+    <Content Include="Views\Home\ListarHonorarios.cshtml" />
+    <Content Include="Views\Contabilidad\VistaPreviaLibroHonorario.cshtml" />
+    <Content Include="Views\Contabilidad\LibroDeHonorarios.cshtml" />
+    <Content Include="Views\Account\MisUsuarios.cshtml" />
+    <Content Include="Views\Account\AsignarPerfilUsuario.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ClasesDocsSII\" />
+    <Folder Include="Models\ModelsFacturaRecurrente\" />
+    <Folder Include="Views\Error\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="packages.config" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201612070215163_Reset_Cert.resx">
+      <DependentUpon>201612070215163_Reset_Cert.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612071823373_Migration1.resx">
+      <DependentUpon>201612071823373_Migration1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612072039388_Migration2.resx">
+      <DependentUpon>201612072039388_Migration2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612092223257_Migration3.resx">
+      <DependentUpon>201612092223257_Migration3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612102156418_Migration4.resx">
+      <DependentUpon>201612102156418_Migration4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612142007227_Migration5.resx">
+      <DependentUpon>201612142007227_Migration5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612142106162_Migration6.resx">
+      <DependentUpon>201612142106162_Migration6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612151813548_Migration7.resx">
+      <DependentUpon>201612151813548_Migration7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612292107197_Migration8.resx">
+      <DependentUpon>201612292107197_Migration8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612292125067_Migration9.resx">
+      <DependentUpon>201612292125067_Migration9.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612292318304_Migration10.resx">
+      <DependentUpon>201612292318304_Migration10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701142155138_Migration11.resx">
+      <DependentUpon>201701142155138_Migration11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701162159174_Migration12.resx">
+      <DependentUpon>201701162159174_Migration12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701162323041_Migration13.resx">
+      <DependentUpon>201701162323041_Migration13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701192130146_Migration14.resx">
+      <DependentUpon>201701192130146_Migration14.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701202051160_Migration15.resx">
+      <DependentUpon>201701202051160_Migration15.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701202245567_Migration16.resx">
+      <DependentUpon>201701202245567_Migration16.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701210824537_Migration17.resx">
+      <DependentUpon>201701210824537_Migration17.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701211434027_Migration18.resx">
+      <DependentUpon>201701211434027_Migration18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702162311176_Migration_19.resx">
+      <DependentUpon>201702162311176_Migration_19.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702212227320_Migration20.resx">
+      <DependentUpon>201702212227320_Migration20.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703032129199_Migration21.resx">
+      <DependentUpon>201703032129199_Migration21.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703032150413_Migration22.resx">
+      <DependentUpon>201703032150413_Migration22.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703110322178_Migration23.resx">
+      <DependentUpon>201703110322178_Migration23.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703110528356_Migration24.resx">
+      <DependentUpon>201703110528356_Migration24.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703140250120_Migration25.resx">
+      <DependentUpon>201703140250120_Migration25.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703142018318_Migration26.resx">
+      <DependentUpon>201703142018318_Migration26.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703182227136_Migration27.resx">
+      <DependentUpon>201703182227136_Migration27.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703182237591_Migration28.resx">
+      <DependentUpon>201703182237591_Migration28.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703182316064_Migration29.resx">
+      <DependentUpon>201703182316064_Migration29.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703190136374_Migration30.resx">
+      <DependentUpon>201703190136374_Migration30.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703200451099_Migration31.resx">
+      <DependentUpon>201703200451099_Migration31.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703212232260_Migration32.resx">
+      <DependentUpon>201703212232260_Migration32.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703222113006_Migration33.resx">
+      <DependentUpon>201703222113006_Migration33.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703232226190_Migration34.resx">
+      <DependentUpon>201703232226190_Migration34.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703312143366_Migration35.resx">
+      <DependentUpon>201703312143366_Migration35.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704062156203_Migration36.resx">
+      <DependentUpon>201704062156203_Migration36.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704072207366_Migration37.resx">
+      <DependentUpon>201704072207366_Migration37.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704110233153_Migration38.resx">
+      <DependentUpon>201704110233153_Migration38.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704122206593_Migration39.resx">
+      <DependentUpon>201704122206593_Migration39.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705020503511_Migration40.resx">
+      <DependentUpon>201705020503511_Migration40.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705292108058_Migration41.resx">
+      <DependentUpon>201705292108058_Migration41.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707171729104_Migration42.resx">
+      <DependentUpon>201707171729104_Migration42.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708190254164_Migration43.resx">
+      <DependentUpon>201708190254164_Migration43.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708280420020_Migration44.resx">
+      <DependentUpon>201708280420020_Migration44.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709082048459_Migration45.resx">
+      <DependentUpon>201709082048459_Migration45.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710130208080_Migration46.resx">
+      <DependentUpon>201710130208080_Migration46.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711281922035_Migration47.resx">
+      <DependentUpon>201711281922035_Migration47.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001240055286_EliminadoFlujoCajaModel.resx">
+      <DependentUpon>202001240055286_EliminadoFlujoCajaModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001240107091_EliminadoFlujoCajaNewModel.resx">
+      <DependentUpon>202001240107091_EliminadoFlujoCajaNewModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001240332069_EliminadoEgresosFijos.resx">
+      <DependentUpon>202001240332069_EliminadoEgresosFijos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001260029346_EliminadoF29.resx">
+      <DependentUpon>202001260029346_EliminadoF29.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001260033596_EliminadoCafHistorico.resx">
+      <DependentUpon>202001260033596_EliminadoCafHistorico.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001260053323_EliminadosCuatroTablas.resx">
+      <DependentUpon>202001260053323_EliminadosCuatroTablas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001260111568_ElimnadoLiquidacionesModel.resx">
+      <DependentUpon>202001260111568_ElimnadoLiquidacionesModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001260327262_EliminadoTresTablasRecurrentes.resx">
+      <DependentUpon>202001260327262_EliminadoTresTablasRecurrentes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001261726535_EliminadoMultiplesTablasFacturas.resx">
+      <DependentUpon>202001261726535_EliminadoMultiplesTablasFacturas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001262054466_EliminadoMultiplesTablasFacturacion2.resx">
+      <DependentUpon>202001262054466_EliminadoMultiplesTablasFacturacion2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001262059143_EliminadoQuickTransporteExportacion.resx">
+      <DependentUpon>202001262059143_EliminadoQuickTransporteExportacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001262111142_EliminadoPreferenciaReporteImpago.resx">
+      <DependentUpon>202001262111142_EliminadoPreferenciaReporteImpago.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001262130263_EliminadoMultiplesFacturacion.resx">
+      <DependentUpon>202001262130263_EliminadoMultiplesFacturacion.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49806</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:49806/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild" Condition="!$(Disable_CopyWebApplication) And '$(OutDir)' != '$(OutputPath)'">
+    <ItemGroup>
+      <RoslynFiles Include="$(CscToolPath)\*" />
+    </ItemGroup>
+    <MakeDir Directories="$(WebProjectOutputDir)\bin\roslyn" />
+    <Copy SourceFiles="@(RoslynFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" SkipUnchangedFiles="true" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

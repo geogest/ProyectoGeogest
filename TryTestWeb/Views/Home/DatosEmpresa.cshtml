@@ -1,0 +1,358 @@
+﻿@model QuickEmisorModel
+
+<body>
+    @{
+        List<string[]> lstDatosCafCargados = ParseExtensions.CAFCargados(Model.Certificados);
+    }
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
+    @using (Html.BeginForm("UpdateEmisor", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "datosUsuario" }))
+    {
+       
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Datos Tributarios de Empresa</h1>
+            </div>
+        </div>
+
+        <div class="panel panel-1">
+            <div class="panel-heading">
+                Datos Requeridos
+            </div>
+            <div class="panel-body">
+                <div class="row form-group">
+                    <div id="dialog" title="Revise los datos"></div>
+                    <div class="col-md-2">
+                        <label class="control-label" for="rut">RUT Empresa</label> @Html.ValidationMessageFor(m => m.RUTEmpresa, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.RUTEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" , @style= "text-transform:uppercase;", @rutValidator = "true"} })
+                    </div>
+                    <div class="col-md-7">
+                        <label class="control-label" for="razon">Razon Social</label> @Html.ValidationMessageFor(m => m.RazonSocial, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.RazonSocial, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                    </div>
+                    <div class="col-md-3">
+                        <label class="control-label" for="rutUsuario">RUT Usuario Sistema</label> @Html.ValidationMessageFor(m => m.RUTUsuario, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.RUTUsuario, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" , @style = "text-transform:uppercase;", @rutValidator = "true" } })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label class="control-label" for="Representante">Nombre Representante</label> @Html.ValidationMessageFor(m => m.Representante, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.Representante, new { htmlAttributes = new { @class = "form-control", @maxlength = "30" } })
+                    </div>
+                    <div class="col-md-3">
+                        <label class="control-label" for="rutRepresentante">RUT Representante</label> @Html.ValidationMessageFor(m => m.RUTRepresentante, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.RUTRepresentante, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" , @style = "text-transform:uppercase;", @rutValidator = "true" } })
+                    </div>
+
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="control-label" for="addDir">Direccion</label> @Html.ValidationMessageFor(m => m.Direccion, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control", @maxlength = "60" } })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label class="control-label" for="comuna">Comuna</label> @Html.ValidationMessageFor(m => m.Comuna, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.Comuna, new { htmlAttributes = new { @class = "form-control", @maxlength = "20" } })
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="control-label" for="ciudad">Ciudad/Localidad</label> @Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.Ciudad, new { htmlAttributes = new { @class = "form-control", @maxlength = "20" } })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label class="control-label" for="email">Email</label> @Html.ValidationMessageFor(m => m.EMail, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.EMail, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="control-label" for="telefono">Telefono</label> @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control", @maxlength = "20" } })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label class="control-label" for="giro">Giro</label> @Html.ValidationMessageFor(m => m.Giro, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.Giro, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
+                    </div>
+                   @if(ViewBag.TipoUsuario != null) { 
+                       if(ViewBag.TipoUsuario == "SuperAdmin") { 
+                        <div class="col-md-3">
+                            <label class="control-label" for="maxUsuariosParaEstaEmpresa">Usuarios Maximos Empresa</label> @Html.ValidationMessageFor(m => m.maxUsuariosParaEstaEmpresa, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.maxUsuariosParaEstaEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "80", @type= "number", @min="0"} })
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label" for="maxClientesContablesParaEstaEmpresa">Clientes Contables Maximos Empresa</label> @Html.ValidationMessageFor(m => m.maxClientesContablesParaEstaEmpresa, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.maxClientesContablesParaEstaEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "80", @type = "number", @min = "0" } })
+                        </div>
+                       }
+                   }
+
+
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Actividad Economica</label>
+                        <select id="acteco" name="acteco" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" multiple required>
+                            @Html.Raw(ViewBag.HtmlStr)
+                        </select>
+                        @*<label class="control-label" for="acteco">Actividad Economica</label> @Html.ValidationMessageFor(m => m.ActEcono, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.ActEcono, new { htmlAttributes = new { @class = "form-control", @maxlength = "6" } })*@
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">
+                        <label class="control-label" for="acteco">Fecha Resolucion SII</label> @Html.ValidationMessageFor(m => m.FechaResolucion, "", new { @class = "text-danger" })
+                        <input class ="form-control" type="text" name="FechaResolucion" id="FechaResolucion" value="@ParseExtensions.ToDD_MM_AAAA(Model.FechaResolucion)" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label" for="acteco">Numero de Resolucion SII</label> @Html.ValidationMessageFor(m => m.NumeroResolucion, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.NumeroResolucion, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label" for="acteco">Codigo Sucursal SII</label> @Html.ValidationMessageFor(m => m.CodigoSucursalSII, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.CodigoSucursalSII, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <p><a href="~/Content/Fecha%20y%20Numero%20de%20Resolucion.pdf">Instrucciones para obtener datos de resolucion y CAF</a></p>
+                <div class="row form-group">
+                    <div class="col-md-4">
+                        <a data-toggle="modal" data-target="#myModal" href="">Ver CAFs Cargados</a>
+                        <label class="control-label" for="caf">Cargar CAF</label>
+                        <input id="fileCAF" class="ignore" name="files" type="file" accept="application/xml" multiple>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label" for="certdig">Archivo Certificado Digital</label>
+                        <input id="fileCertificado" name="files" type="file" accept=".pfx">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Password Certificado Digital</label> @Html.ValidationMessageFor(m => m.CertificadosIDKey, "", new { @class = "text-danger" })
+                        <input class="form-control" id="PASS_DIGITAL_CERT" name="PASS_DIGITAL_CERT" type="password">
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">
+                        <label class="control-label" for="logo">Seleccionar Logo</label>
+                        <input name="files" id="file" type="file" accept="image/*">
+                        <p>Imagen no debe ser superior a 300Kb y el formato debe ser JPG o PNG o GIF</p>
+                    </div>
+                </div>
+
+
+                
+
+            </div>         
+        </div>
+        <div style="text-align: center;">
+            <input class="btn btn-1" value="Guardar Datos" name="Save" type="submit">
+        </div>
+        <br>
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">
+                                Certificados CAF
+                            </div>
+                            <div class="panel-body">
+                                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo CAF</th>
+                                            <th>Folio Desde</th>
+                                            <th>Folio Hasta</th>
+                                            <th>Fecha de Asignación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (string[] manicMonday in lstDatosCafCargados)
+                                        {
+                                            <tr class="odd gradeX">
+                                                <td>@manicMonday[0]</td>
+                                                <td>@manicMonday[1]</td>
+                                                <td>@manicMonday[2]</td>
+                                                <td>@manicMonday[3]</td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-red" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        
+    }
+
+
+    <style>
+
+        body {
+            color: #222f3f;
+        }
+
+        #datos {
+            padding: 10px;
+            display: inline-block;
+        }
+
+        .darkinput {
+            color: 222f3f;
+            background-color: #dde3ef;
+        }
+
+        .bigass {
+            width: 100%;
+            color: #222f3f;
+            background-color: #dde3ef;
+        }
+
+        .midass {
+            width: 80%;
+        }
+
+        .grayoutline {
+            border: 1px solid #e6e6e6;
+        }
+
+        .botonesDetalle {
+            background-color: #59ace0;
+            color: #ecf5f9;
+        }
+
+        .btnEnviar {
+            background-color: #495972;
+            color: #c4cdd9;
+        }
+
+        .porcentaje {
+            width: 10px;
+        }
+
+        hr {
+            margin-top: 7px;
+            margin-bottom: 7px;
+            border: 0;
+            border-top: 1px solid #80cde2;
+        }
+
+        label {
+            text-align: right;
+            clear: both;
+            float: left;
+            margin-right: 15px;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        input[type=text], [type=email] {
+            vertical-align: middle;
+            display: inline-block;
+        }
+    </style>
+    <script>
+
+        $( document ).ready( function () {
+            
+            $.datepicker.regional['es'] = {
+                closeText: 'Cerrar',
+                prevText: '<Ant',
+                nextText: 'Sig>',
+                currentText: 'Hoy',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                weekHeader: 'Sm',
+                dateFormat: 'dd-mm-yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['es']);
+
+            $("#FechaResolucion").datepicker();
+
+            $.validator.prototype.ruleValidationStatus = function (element) {
+                element = $(element)[0];
+                var rules = $(element).rules();
+                var errors = {};
+                for (var method in rules) {
+                    var rule = { method: method, parameters: rules[method] };
+                    try {
+                        var result = $.validator.methods[method].call(this, element.value.replace(/\r/g, ""), element, rule.parameters);
+
+                        errors[rule.method] = result;
+
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+                return errors;
+            }
+
+            $.validator.addMethod('accept', function () { return true; });
+
+            $("#datosUsuario").validate({
+                rules: {
+                    RUTEmpresa: { required: true},
+                    RazonSocial: "required",
+                    RUTUsuario: "required",
+                    Representante: "required",
+                    RUTRepresentante: "required",
+                    Direccion: "required",
+                    Comuna: "required",
+                    EMail: "required",
+                    Giro: "required",
+                    acteco: "required"
+                },
+                messages: {
+                    RUTEmpresa: "Debe ingresar un Rut Receptor válido.",
+                    RazonSocial: "Debe ingresar Razon Social del contribuyente.",
+                    RUTUsuario: "Debe ingresar un Rut válido.",
+                    Representante: "Debe ingresar un nombre.",
+                    RUTRepresentante: "Debe ingresar un Rut válido.",
+                    Direccion: "Debe ingresar Direccion del contribuyente.",
+                    Comuna: "Debe ingresar Comuna del contribuyente.",
+                    EMail: "Debe ingresar un email.",
+                    Giro: "Debe ingresar al menos un Giro del contribuyente.",
+                    acteco: "Debe ingresar al menos una Actividad Economica del contribuyente.",
+                }
+            });
+
+            $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
+            $('.selectpicker').selectpicker();
+        } );
+
+
+    </script>
+    <style>
+        .ui-dialog-titlebar { color:white;}
+
+.ui-draggable-handle {background:#ff4d4d;} 
+
+.ui-dialog 
+{
+position:fixed;
+}
+    </style>
+</body>

@@ -1,0 +1,37 @@
+﻿@model IList<LibroMayor>
+
+@{
+    ViewBag.Title = "LibroMayorDesdeModelo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2>LibroMayorDesdeModelo</h2>
+
+<div class="container">
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Fecha Contabilizacion</th>
+                <th>Comprobante</th>
+                <th>Glosa</th>
+                <th>Rut</th>
+                <th>Debe</th>
+                <th>Haber</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LibroMayor ItemLibro in Model) { 
+                <tr>
+                    <td>@ItemLibro.FechaContabilizacion</td>
+                    <td>@ItemLibro.Comprobante</td>
+                    <td>@ItemLibro.Glosa</td>
+                    <td>@ItemLibro.Rut</td>
+                    <td>@ItemLibro.Debe</td>
+                    <td>@ItemLibro.Haber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

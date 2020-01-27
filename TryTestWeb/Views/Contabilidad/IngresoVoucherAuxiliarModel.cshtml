@@ -1,0 +1,946 @@
+﻿
+@{int pocketCounter = 1;}
+@{int contadorDatePicker = 0;}
+@{
+    TipoAuxiliar ElTipoDeAuxiliar = TipoAuxiliar.ProveedorDeudor;
+    if (ViewBag.TipoAuxiliarAUsar != null)
+    {
+        ElTipoDeAuxiliar = (TipoAuxiliar)ViewBag.TipoAuxiliarAUsar;
+    }
+}
+@model AuxiliaresModel
+
+<form id="AUXForm">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1>Ingreso de Auxiliares</h1>
+        </div>
+        <input type="hidden" name="TipoAux" value="@((int)ElTipoDeAuxiliar)">
+        <div class="modal-body">
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-3"></div>
+                    <label class="col-lg-2 control-label">Cuenta Contable</label>
+                    <div class="col-lg-4">
+                        <select id="AUXcuenta" name="AUXcuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" readonly>
+                            @Html.Raw(ViewBag.HtmlStr)
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-3"></div>
+                    <label class="col-lg-2 control-label">Número Línea</label>
+                    <div class="col-lg-4">
+                        <input type="number" id="AUXitem" name="AUXitem" class="form-control" value="@ViewBag.AUXlineaDetalle" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-3"></div>
+                    <label class="col-lg-2 control-label">Valor Línea</label>
+                    <div class="col-lg-4">
+                        <input type="number" id="AUXvaloritem" name="AUXvaloritem" class="form-control" value="@ParseExtensions.DecimalToStringForRazor(ViewBag.AUXmontoTotal)" readonly />
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div id="ConjuntoDetallesAuxiliares">
+                @if (Model == null)
+                {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-2">
+                            <label class="control-label">Fecha</label>
+                            <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text"  value="" required/>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label" >Tipo</label>
+                            <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()" required>
+                                <option value="">Selecciona</option>
+                                <option value="CL">Cliente</option>
+                                <option value="PR">Proveedor</option>
+                                <option value="P">Persona</option>
+                                <option value="H">Honorarios</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label" >Razon Social</label>
+                            <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()" required>
+                            </select>
+                        </div>
+                       <div class="col-md-2">
+                           <label class="control-label" >Rut</label>
+                           <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly/>
+                       </div>
+
+                    </div>
+                </div>
+                }
+                else
+                {
+                    foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares.Take(1))
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    <label class="control-label">Fecha</label>
+                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="@ParseExtensions.ToDD_MM_AAAA(lineaDetalleAux.Fecha)" required />
+                                </div>
+                                <div class="col-md-2">
+                                    @{
+                                        int eleccionTipo = 0;
+                                        if (lineaDetalleAux.Individuo2.tipoReceptor == "CL")
+                                        {
+                                            eleccionTipo = 1;
+                                        }
+                                        else if (lineaDetalleAux.Individuo2.tipoReceptor == "PR")
+                                        {
+                                            eleccionTipo = 2;
+                                        }
+                                        else if (lineaDetalleAux.Individuo2.tipoReceptor == "P")
+                                        {
+                                            eleccionTipo = 3;
+                                        }
+                                        else if(lineaDetalleAux.Individuo2.tipoReceptor == "H")
+                                        {
+                                            eleccionTipo = 4;
+                                        }
+                                    }
+                                    <label class="control-label">Tipo</label>
+                                    <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()" required>
+                                        <option @(eleccionTipo == 0 ? "selected" : string.Empty) value="">Selecciona</option>
+                                        <option @(eleccionTipo == 1 ? "selected" : string.Empty) value="CL">Cliente</option>
+                                        <option @(eleccionTipo == 2 ? "selected" : string.Empty) value="PR">Proveedor</option>
+                                        <option @(eleccionTipo == 3 ? "selected" : string.Empty) value="P">Persona</option>
+                                        <option @(eleccionTipo == 4 ? "selected" : string.Empty) value="H">Honorarios</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">Razon Social</label>
+                                    <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()"  required>
+                                        <option value="@lineaDetalleAux.Individuo2.QuickReceptorModelID">@lineaDetalleAux.Individuo2.RazonSocial</option>
+                                    </select>
+                                    
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">Rut</label>
+                                    <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="@lineaDetalleAux.Individuo2.RUT" required readonly />
+                                </div>
+
+                            </div>
+                        </div>
+                    break;
+                }
+            }
+                <div class="row">
+                    <div class="col-md-11"></div>
+
+                    <div class="col-md-1">
+                        <a id="btn_agregar_fila_detalle" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                    </div>
+
+                </div>
+           <br />
+           <br />
+                <div></div>
+                    <table width="75%" class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Folio</th>
+                                @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                                {
+                                    <th>Valor Bruto</th>
+                                    <th>Tipo Retención</th>
+                                    <th>Retención</th>
+                                    <th>Valor Líquido</th>
+                                    <th></th>
+                                }
+                                else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                {
+                                    <th>Tipo DTE</th>
+                                    <th>Monto Neto</th>
+                                    <th>Monto Exento</th>
+                                    <th>Monto IVA</th>
+                                    <th>Monto Total</th>
+                                    <th> </th>
+                                    <th> </th>
+                                }
+                                else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                {
+                                    <th>Sueldo Líquido</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model == null)
+                            {
+
+                                <tr id="detalleAux">
+                                    <td class="form-group" width="11%" style="display:none;">
+                                        <input type="text" class="form-control " pull id="AUXfecha" name="AUXfecha" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                    <td style="display:none;">
+                                        <input class="form-control" type="text" name="tipoIndividuo" id="tipoIndividuo" value="" />
+                                    </td>
+                                    <td class="form-group" width="12%" style="display:none;">
+                                        <input type="text" class="form-control" id="AUXrut" onblur="CSGetPrestadorAuxiliar(this);" name="AUXrut" data-valRut="foo" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+
+                                    <td class="form-group" width="15%" style="display:none;">
+                                        <input class="form-control" type="text" id="AUXrazoncta" name="AUXrazoncta" value="" />
+                                    </td>
+                          
+                                    @if(ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) { 
+                                    <td class="form-group">
+                                        <input type="number" class="form-control" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                    }
+                                    else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                    {
+                                        <td class="form-group">
+                                            <input type="number" class="form-control Remuneracion" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                    }
+
+                                    @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                                    {
+
+                                        <td class="form-group">
+                                            <input type="number" class="form-control" name="AuxTotal" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                        <td class="form-group">
+                                            <select class="form-control" id="AUXtipoRetencion" name="AUXtipoRetencion" onclick="CuadrarValores(this)">
+                                                <option value="Selecciona">Selecciona</option>
+                                                <option value="Ret10">Retención 10%</option>
+                                                <option value="Ret1075">Retención 10.75%</option>
+                                                <option value="Ret20">Retención 20%</option>
+                                                <option value="RetNo">Sin Retención</option>
+                                            </select>
+                                        </td>
+                                        <td class="form-group">
+                                            <input readonly type="number" class="form-control" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty)  />
+                                        </td>
+                                        <td class="form-group">
+                                            <input readonly type="number" class="form-control" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty)  />
+                                        </td>
+                                    }
+                                    else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                    {
+                                        <td class="form-group">
+                                            <select id="AuxTipoDTE" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
+                                                @Html.Raw(ViewBag.TiposDTE)
+                                            </select>
+                                        </td>
+
+                                        <td class="form-group">
+                                            <input type="number" class="form-control" id="AUXNeto" name="AUXNeto" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                        <td class="form-group">
+                                            <input type="number" class="form-control" id="AUXExento" name="AUXExento" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                        <td class="form-group">
+                                            <input type="number" class="form-control" id="AUXIva" name="AUXIva" onfocusout="CuadrarIVAExplicito(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                        <td class="form-group">
+                                            <input type="number" class="form-control" id="AuxTotal" name="AuxTotal" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                    }else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                    {
+                                        <td class="form-group Remuneracion">
+                                            <input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal" required onfocusout="CuadrarValores(this)" value="" />
+                                        </td>
+                                    }
+                                    <td class="form-group">
+                                        <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux1)" tabstop="false">X</button>
+                                    </td>
+                                </tr>
+
+                            }
+                            else
+                            {
+                                contadorDatePicker = 1;
+                                foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares)
+                                {
+
+                                    <tr id="@Html.Raw("detalleAux" + pocketCounter)" >
+                                        <td class="form-group" width="11%" style="display:none;">
+                                            <input type="text" class="form-control " id="AUXfecha@(ViewBag.AUXlineaDetalle)_@(contadorDatePicker)" name="AUXfecha" value="@ParseExtensions.ToDD_MM_AAAA(lineaDetalleAux.Fecha)" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+
+                                        <td style="display:none;">
+                                            <input class="form-control" type="text" name="tipoIndividuo" id="tipoIndividuo" value="@lineaDetalleAux.Individuo2.tipoReceptor" />
+                                        </td>
+                                   
+
+                                        <td class="form-group" width="12%" style="display:none;">
+                                            <input type="text" class="form-control  hasDatepicker valid" id="AUXrut@(contadorDatePicker)" name="AUXrut" onblur="CSGetPrestadorAuxiliar(this);" data-valRut="foo" value="@lineaDetalleAux.Individuo2.RUT" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                        <td class="form-group" width="15%" style="display:none;">
+                                            <input type="text" class="form-control" id="AUXrazoncta@(contadorDatePicker)" name="AUXrazoncta" value="@lineaDetalleAux.Individuo2.RazonSocial" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+
+                                        @if(ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) { 
+                                        <td class="form-group">
+                                            <input type="number" class="form-control" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                        }
+                                        else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                        {
+                                            <td class="form-group">
+                                                <input type="number" class="form-control Remuneracion" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                            </td>
+                                        }
+                                        @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                                        {
+                   
+                                            <td class="form-group">
+                                                <input type="number" class="form-control" id="AuxTotal@(contadorDatePicker)" name="AuxTotal" required value="@lineaDetalleAux.ValorLiquido" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                            </td>
+
+                                            <td class="form-group">
+                                                <select class="form-control" id="AUXtipoRetencion@(contadorDatePicker)" name="AUXtipoRetencion" onclick="CuadrarValores(this)">
+                                                    <option value="Selecciona">Selecciona</option>
+                                                    <option value="Ret10">Retención 10%</option>
+                                                    <option value="Ret1075">Retención 10.75%</option>
+                                                    <option value="Ret20">Retención 20%</option>
+                                                    <option value="RetNo">Sin Retención</option>
+                                                    
+                                                </select>
+                                            </td>
+
+                                            <td class="form-group">
+                                                <input type="number" class="form-control" id="AUXValorRetencion@(contadorDatePicker)" name="AUXValorRetencion" value="@lineaDetalleAux.ValorRetencion"  @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
+                                            </td>
+                                            <td class="form-group">
+                                                <input type="number" class="form-control" id="AUXValorLiquido@(contadorDatePicker)" name="AUXValorLiquido" required value="@lineaDetalleAux.MontoTotalLinea"  @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
+                                            </td>
+                                        }
+                                        else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                        {
+                                            <td class="form-group">
+                                                <select id="AuxTipoDTE@(contadorDatePicker)" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
+                                                    @if (ViewBag.NOTOPERABLE == null)
+                                                    {
+                                                        @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsString((int)lineaDetalleAux.TipoDocumento))
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsStringSpecific((int)lineaDetalleAux.TipoDocumento))
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td class="form-group">
+                                                <input type="number" class="form-control" id="AUXNeto@(contadorDatePicker)" name="AUXNeto" value="@lineaDetalleAux.MontoNetoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                            </td>
+                                            <td class="form-group">
+                                                <input type="number" class="form-control" id="AUXExento@(contadorDatePicker)" name="AUXExento" value="@lineaDetalleAux.MontoExentoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                            </td>
+                                            <td class="form-group">
+                                                <input type="number" class="form-control" id="AUXIva@(contadorDatePicker)" name="AUXIva" value="@lineaDetalleAux.MontoIVALinea" onfocusout="CuadrarIVAExplicito(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                            </td>
+                                            <td class="form-group">
+                                                <input type="number" class="form-control" id="AUXTotal@(contadorDatePicker)" name="AuxTotal" value="@lineaDetalleAux.MontoTotalLinea" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                            </td>
+                                        }
+                                        else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                        {
+                                            <td class="form-group Remuneracion">
+                                                <input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal" required onfocusout="CuadrarValores(this)" value="@lineaDetalleAux.MontoTotalLinea" />
+                                            </td>
+                                        }
+
+                                        @if (ViewBag.NOTOPERABLE == null)
+                                        {
+                                            <td class="form-group">
+                                                <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux@(contadorDatePicker))" tabstop="false">X</button>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="form-group"></td>
+                                        }
+                                    </tr>
+
+                                    <script type="text/javascript">
+                                        $("#AUXfech@(ViewBag.AUXlineaDetalle)_@(contadorDatePicker)").datepicker();
+                                    </script>
+
+                                                        pocketCounter++;
+                                                        contadorDatePicker++;
+                                                    }
+                                                }
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+  
+            <br />
+            <div class="modal-footer">
+                @if (ViewBag.NOTOPERABLE == null)
+                {
+
+                    <div class="col-lg-3" id="avisito"></div>
+                    <button class="btn btn-success redondo btnPress" id="addAUX" disabled>Guardar Auxiliar</button>
+                }
+            </div>
+
+        </div>
+</form>
+
+<style>
+    .Remuneracion{
+        width:50%;
+    }
+</style>
+
+<script>
+
+
+    $(document).on("click", ".impuesto", function (e) {
+        $("#TheModalImpuestos").modal();
+    });
+</script>
+
+@if (ViewBag.NOTOPERABLE == null)
+{
+    <script>
+
+        var idRowCountAux = @(contadorDatePicker);
+
+
+        $("#btn_agregar_fila_detalle").on("click", function () {
+
+            // var keyCode = e.keyCode;
+            //if (keyCode !== 9) return;
+            var thisElement = $(this);
+            //console.log($('#ConjuntoDetallesAuxiliares tbody').html());
+            // if (thisElement.is('input:last')) {
+            //this is the last input of this row
+            idRowCountAux = idRowCountAux + 1;
+
+            var newRow = "";
+            @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+            {
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group"  width="12%" style="display:none;"><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td> <td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal' + idRowCountAux + '" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><select class="form-control" id="AUXtipoRetencion' + idRowCountAux + '" name="AUXtipoRetencion" onclick="CuadrarValores(this)"><option value="Selecciona">Selecciona</option><option value="Ret10">Retención 10%</option><option value="Ret1075">Retención 10.75%<option value="Ret20">Retención 20%</option><option value="RetNo">Sin Retención</option></select></td><td class="form-group"><input type="number" class="form-control" id="AUXValorRetencion' + idRowCountAux + '" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" readonly /></td><td class="form-group"><input type="number" class="form-control" id="AUXValorLiquido' + idRowCountAux + '" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" readonly/></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+                                    }
+            else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+            {
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group"  width="12%" style="display:none;"><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td><td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><select id="AuxTipoDTE' + idRowCountAux + '" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno">@Html.Raw(ViewBag.TiposDTE)</select></td><td class="form-group"><input type="number" class="form-control" id="AUXNeto'+ idRowCountAux +'" name="AUXNeto" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXExento'+ idRowCountAux +'" name="AUXExento" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXIva'+ idRowCountAux +'" name="AUXIva" required onfocusout="CuadrarIVAExplicito(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal'+ idRowCountAux +'" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+                                    }
+            else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+            {
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha ' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group" width="12%" style="display:none;"><input type="text" class="form-control" id="AUXrut' + idRowCountAux + '" name="AUXrut" required/></td><td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control Remuneracion" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required /></td><td class="form-group"><input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal' + idRowCountAux + '" onfocusout="CuadrarValores(this)" value=""></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+
+
+            }
+            $('#ConjuntoDetallesAuxiliares tbody').append(newRow);
+
+            // console.log(newRow);
+            // $('#ConjuntoDetallesAuxiliares tbody').html($('#ConjuntoDetallesAuxiliares tbody').html()+newRow);
+
+            $('#AUXfecha' + idRowCountAux).datepicker();
+
+
+            //$(".selectpicker").selectpicker('refresh');
+
+            $('[name="AUXfecha"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Debe ingresar una fecha."
+                    }
+                });
+            });
+            $('[name="AUXrut"]').each(function () {
+                $(this).rules('add', {
+                    required: {
+                        required: true,
+                        rut: true
+                    },
+                    messages: {
+                        required: "Debe ingresar un RUT para este auxiliar",
+                        rut: "Debe ingresar un RUT valido"
+                    }
+                });
+            });
+            $('[name="AUXrazoncta"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Debe ingresar una razon social."
+                    }
+                });
+            });
+            $('[name="AuxFolio"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    number: true,
+                    messages: {
+                        required: "Debe ingresar un folio."
+                    }
+                });
+            });
+
+
+            $('[name="tipoIndividuo"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Debe ingresar un prestador."
+                    }
+                });
+            });
+
+
+            @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+            {
+                <text>
+            $('[name="AuxTipoDTE"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    number: true,
+                    messages: {
+                        required: "Debe ingresar un tipo de documento."
+                    }
+                });
+            });
+            </text>
+            }
+            //}
+            //else {
+            //    console.log("failed");
+            // }
+
+        });
+        $('#ConjuntoDetallesAuxiliares').on('keydown', 'input', function (e) {
+            var keyCode = e.keyCode;
+            if (keyCode !== 9) return;
+            var thisElement = $(this);
+
+            if (thisElement.is('input:last')) {
+                //this is the last input of this row
+                idRowCountAux = idRowCountAux + 1;
+
+                @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+            {
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;><select  name="tipoIndividuo" class="selectpicker show-tick form-control" ><option value="">Seleccione</option><option value="CL">Cliente</option><option value="PR">Proveedor</option><option value="P">Persona</option></select></td><td class="form-group"  width="12%" style="display:none;><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td> <td class="form-group" width="15%" style="display:none;><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal' + idRowCountAux + '" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><select class="form-control" id="AUXtipoRetencion' + idRowCountAux + '" name="AUXtipoRetencion" onfocusout="CuadrarValores(this)"><option value="Selecciona">Selecciona</option><option value="Ret10">Retención 10%</option><option value="1075">Retención 10.75%<option value="Ret20">Retención 20%</option><option value="RetNo">Sin Retención</option></select></td><td class="form-group"><input type="number" class="form-control" id="AUXValorRetencion' + idRowCountAux + '" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" readonly/></td><td class="form-group"><input type="number" class="form-control" id="AUXValorLiquido' + idRowCountAux + '" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" readonly/></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+                                            }
+            else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+            {
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;><select  name="tipoIndividuo" class="selectpicker show-tick form-control" ><option value="">Seleccione</option><option value="CL">Cliente</option><option value="PR">Proveedor</option><option value="P">Persona</option></select></td><td class="form-group"  width="12%" style="display:none;><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td><td class="form-group" width="15%" style="display:none;><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><select id="AuxTipoDTE' + idRowCountAux + '" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno">@Html.Raw(ViewBag.TiposDTE)</select></td><td class="form-group"><input type="number" class="form-control" id="AUXNeto'+ idRowCountAux +'" name="AUXNeto" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXExento'+ idRowCountAux +'" name="AUXExento" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXIva'+ idRowCountAux +'" name="AUXIva" required onfocusout="CuadrarIVAExplicito(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal'+ idRowCountAux +'" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+
+            }
+            else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+            {
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha ' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group" width="12%" style="display:none;"><input type="text" class="form-control" id="AUXrut' + idRowCountAux + '" name="AUXrut" required/></td><td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control Remuneracion" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required /></td><td class="form-group"><input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal' + idRowCountAux + '" onfocusout="CuadrarValores(this)" value=""></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+            }
+                $('#ConjuntoDetallesAuxiliares tbody').append(newRow);
+
+                $('#AUXfecha'+idRowCountAux).datepicker();
+
+                //$(".selectpicker").selectpicker('refresh');
+
+
+                $('[name="AuxFolio"]').each(function () {
+                    $(this).rules('add', {
+                        required: true,
+                        number: true,
+                        messages: {
+                            required: "Debe ingresar un folio."
+                        }
+                    });
+                });
+
+                @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+            {
+                <text>
+                $('[name="AuxTipoDTE"]').each(function () {
+                    $(this).rules('add', {
+                        required: true,
+                        number: true,
+                        messages: {
+                            required: "Debe ingresar un tipo de documento."
+                        }
+                    });
+                });
+                </text>
+            }
+                //}
+                //else {
+                //    console.log("failed");
+            }
+        });
+
+        function AuxPrestadorSeleccionado() {
+
+            var Url = "@Url.Action("ObtenerPrestador", "Contabilidad")";
+            var Prestador = $('#TipoPrestador option:selected').val();
+
+            $.getJSON(Url, { TipoPrestador: Prestador }, function (data) {
+                if (data.ok == true) {
+
+                    $('#RazonPrestador').html(data.selectInput);
+                }
+            });
+        }
+
+        function ObtenerRUTPresSeleccionado() {
+            var Url = "@Url.Action("ObtenerRutPrestador","Contabilidad")";
+            var PrestadorID = $('#RazonPrestador option:selected').val();
+
+            $.getJSON(Url, { IDPrestador: PrestadorID }, function (data) {
+                if (data.ok == true) {
+                    $('#RutPrestador').val(data.RutPrestador);
+                }
+            });
+        }
+
+
+
+        function CSGetPrestadorAuxiliar(thingie) {
+            var TheTD = $(thingie).parent().parent().attr('id');
+            var tipo = $("#" + TheTD + " select[name='tipoIndividuo']").val();
+            if (tipo == "Seleccione") {
+                alert("Debe seleccionar un tipo antes de ingresar un rut");
+                return false;
+            }
+
+
+            // alert( $("#" + TheTD + " select[name='tipoIndividuo']").val());
+
+            var url = '@Url.Action("GetPrestadorByRUT")';
+            //console.log(thingie);
+            $.getJSON(url, { RUT: $(thingie).val(),  TIPO: tipo },
+                function (data) {
+                    if (data.ok == true)
+                    {
+                        //console.log(data.RazonSocial);
+                        var TheTD = $(thingie).parent().parent().attr('id');
+                        $("#" + TheTD + " input[name='AUXrazoncta']").val(data.RazonSocial);
+
+                    } else {
+                        var TheTD = $(thingie).parent().parent().attr('id');
+                        $("#" + TheTD + " input[name='AUXrazoncta']").val("");
+                    }
+                }
+            );
+        }
+
+        $(document).ready(function () {
+
+            $.validator.addMethod("rut", function (value, element) {
+                return this.optional(element) || $.Rut.validar(value);
+            }, "Este campo debe ser un rut valido.");
+
+            $.datepicker.regional['es'] = {
+                closeText: 'Cerrar',
+                prevText: '<Ant',
+                nextText: 'Sig>',
+                currentText: 'Hoy',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                weekHeader: 'Sm',
+                dateFormat: 'dd-mm-yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['es']);
+
+
+            // $(function () {
+
+            //alert($("#AUXfecha").val());
+
+            $("#AUXfecha").datepicker();
+            $('#FechaPrestador').datepicker();
+
+            // });
+
+            $("#AUXForm").validate({
+                ignore: [],
+                rules: {
+                    @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                {
+                @:AuxTipoDTE: "required",
+                                                        }
+                    AuxFolio: "required"
+                },
+                messages: {
+                    @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                {
+                @:AuxTipoDTE: "Debe seleccionar un tipo de documento para este auxiliar",
+                                                        }
+                    AuxFolio: "Debe ingresar un folio de documento"
+                }
+            });
+
+
+            // $(".selectpicker").selectpicker('refresh');
+        });
+
+
+        $('#addAUX').click(function () {
+
+            var Fecha = $('#FechaPrestador').val();
+            var TipoPrestador = $('#TipoPrestador option:selected').val();
+            var RazonPrestador = $('#RazonPrestador option:selected').text();
+            var RutPrestador = $('#RutPrestador').val();
+
+            $("input[name='AUXfecha']").each(function () {
+                $("input[name='AUXfecha']").val(Fecha);
+            });
+
+            $("input[name='tipoIndividuo']").each(function () {
+                $("input[name='tipoIndividuo']").val(TipoPrestador);
+            });
+
+            $("input[name='AUXrazoncta']").each(function () {
+                $("input[name='AUXrazoncta']").val(RazonPrestador);
+            });
+
+            $("input[name='AUXrut']").each(function () {
+                $("input[name='AUXrut']").val(RutPrestador);
+            });
+        });
+
+
+
+        $('#addAUX').click(function (e) {
+
+            e.preventDefault();
+            if ($('#AUXForm').valid() === true) {
+                var dataVal = $('#AUXForm').serialize();
+
+                dataVal = dataVal.replace('"', '');
+
+                // console.log(dataVal);
+
+                $.ajax({
+                    type: "POST",
+                    url: "IngresarAuxiliarTemp",
+                    content: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: dataVal,
+                    success: function (d) {
+                        $("#TheModal").modal('hide');
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        // TODO: Show error
+                    }
+                });
+            }
+        });
+
+        function TotalValor() {
+            var TotalValores = 0;
+            $("input[name='AUXmonto']").each(function () {
+                TotalValores = TotalValores + parseFloat($(this).val());
+            });
+
+            var TotValor = $("#AUXvaloritem").val();
+            if (TotValor == TotalValores) {
+                $("#avisito").hide();
+                $('#addAUX').prop('disabled', false);
+            }
+            else {
+                $("#avisito").show();
+                document.getElementById("avisito").textContent = "Montos NO Cuadran con total";
+                document.getElementById("avisito").style.fontWeight = "700";
+                document.getElementById("avisito").className = "alert alert-danger";
+                $('#addAUX').prop('disabled', true);
+            }
+
+        }
+
+        function ValidarTotales()
+        {
+            TotalValores = 0;
+            $("input[name='AUXValorLiquido']").each(function () {
+                TotalValores = TotalValores + parseFloat($(this).val());
+            });
+            TotValor = $("#AUXvaloritem").val();
+            if (TotValor == TotalValores)
+            {
+                $("#avisito").hide();
+                $('#addAUX').prop('disabled', false);
+            }
+            else {
+                $("#avisito").show();
+                document.getElementById("avisito").textContent = "Montos NO Cuadran con total";
+                document.getElementById("avisito").style.fontWeight = "700";
+                document.getElementById("avisito").className = "alert alert-danger";
+                $('#addAUX').prop('disabled', true);
+            }
+        }
+
+        function ValidarTotales2() {
+            TotalValores = 0;
+            $("input[name='AuxTotal']").each(function () {
+                TotalValores = TotalValores + parseFloat($(this).val());
+            });
+            TotValor = $("#AUXvaloritem").val();
+            if (TotValor == TotalValores) {
+                $("#avisito").hide();
+                $('#addAUX').prop('disabled', false);
+            }
+            else {
+                $("#avisito").show();
+                document.getElementById("avisito").textContent = "Montos NO Cuadran con total";
+                document.getElementById("avisito").style.fontWeight = "700";
+                document.getElementById("avisito").className = "alert alert-danger";
+                $('#addAUX').prop('disabled', true);
+            }
+        }
+
+        @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+    {
+        @:function CuadrarLiquido(inputThing)
+                                @:{
+                                @:    //debugger;
+                                @:    var TheTD = $(inputThing).parent().parent().attr('id');
+                                @:    var jAUXBruto = $("#" + TheTD + " input[name='AuxTotal']");
+                                @:    var jAUXRetencion = $("#" + TheTD + " input[name='AUXValorRetencion']");
+                                @:    var jAUXTotal = $("#" + TheTD + " input[name='AUXValorLiquido']");
+                                @:
+                                @:    valorLiquido = Math.round(nmbrize(jAUXBruto) / 0.9);
+                                @:    jAUXTotal.val(valorLiquido);
+                                @:    jAUXRetencion.val(valorLiquido - nmbrize(jAUXBruto))
+                                @:
+                                @:
+                                @:
+                                @:    ValidarTotales();
+                                @:}
+                                @:function CuadrarValores(inputThing)
+                                @:{
+                                @:    //debugger;
+                                @:    var TheTD = $(inputThing).parent().parent().attr('id');
+                                @:    var jAUXBruto = $("#" + TheTD + " input[name='AuxTotal']");
+                                @:    var jAUXRetencion = $("#" + TheTD + " input[name='AUXValorRetencion']");
+                                @:    var jAUXTotal = $("#" + TheTD + " input[name='AUXValorLiquido']");
+                                @:    var jAUXTipoRetencion = document.getElementById(inputThing.id);
+                                @:
+                                @:    //var selectedOption = jAUXTipoRetencion.options[jAUXTipoRetencion.selectedIndex].value;
+                                @:
+                                @:
+                                @:jAUXTipoRetencion.addEventListener('change', function () {
+                                @:    var selectedOption = this.options[jAUXTipoRetencion.selectedIndex];
+                                @:
+                                @:    if (selectedOption.text == "Retención 10%") {
+                                @:    valorRetencion = Math.round(nmbrize(jAUXBruto) * 0.1);
+                                @:    jAUXRetencion.val(valorRetencion);
+                                @:    jAUXTotal.val(nmbrize(jAUXBruto) - valorRetencion);
+                                @:    jAUXRetencion.removeAttr("onfocusout");
+                                @:    jAUXTotal.removeAttr("onfocusout");
+                                @:    }
+                                @:    else if(selectedOption.text == "Retención 10.75%"){
+                                @:    valorRetencion = Math.round(nmbrize(jAUXBruto) * 0.1075);
+                                @:    jAUXRetencion.val(valorRetencion);
+                                @:    jAUXTotal.val(nmbrize(jAUXBruto) - valorRetencion);
+                                @:    jAUXRetencion.removeAttr("onfocusout");
+                                @:    jAUXTotal.removeAttr("onfocusout");
+                                @:    }
+                                @:    else if (selectedOption.text == "Retención 20%") {
+                                @:    valorRetencion = Math.round(nmbrize(jAUXBruto) * 0.2);
+                                @:    jAUXRetencion.val(valorRetencion);
+                                @:    jAUXTotal.val(nmbrize(jAUXBruto) - valorRetencion);
+                                @:    jAUXRetencion.removeAttr("onfocusout");
+                                @:    jAUXTotal.removeAttr("onfocusout");
+                                @:    }
+                                @:    else if (selectedOption.text == "Sin Retención") {
+                                @:
+                                @:    jAUXRetencion.removeAttr("onfocusout");
+                                @:    jAUXRetencion.val("");
+                                @:
+                                @:    valorBruto = nmbrize(jAUXBruto);
+                                @:    jAUXTotal.val(valorBruto);
+                                @:    jAUXTotal.removeAttr("onfocusout");
+                                @:
+                                @:
+                                @:   }
+                                @:});
+                                @:
+                                @:
+                                @:
+                                @:
+                                @:    ValidarTotales();
+                                @:}
+                    }
+    else
+    {
+        @:function CuadrarValores(inputThing)
+                                @:{
+                                @:    var TheTD = $(inputThing).parent().parent().attr('id');
+                                @:    var jAUXNeto = $("#" + TheTD + " input[name='AUXNeto']");
+                                @:    var jAUXExento = $("#" + TheTD + " input[name='AUXExento']");
+                                @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
+                                @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
+                                @:  //  alert(nmbrize(jAUXTotal));
+                                @:
+                                @:    if (nmbrize(jAUXNeto) == 0 && (nmbrize(jAUXTotal)) != 0 && (nmbrize(jAUXIva)) == 0) {
+                                        @:          jAUXIva.val(Math.round( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  * 0.19 / 1.19));
+                                        @:          jAUXNeto.val( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  - nmbrize(jAUXIva));
+                                        @:    }else{
+                                        @:          jAUXIva.val(Math.round(nmbrize(jAUXNeto) * 0.19));
+                                        @:          jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
+                                        @:    }
+                                @:
+                                @:    ValidarTotales2();
+                                @:}
+                        @:function CuadrarIVAExplicito(inputThing)
+                                @:{
+                                @:    var TheTD = $(inputThing).parent().parent().attr('id');
+                                @:    var jAUXNeto = $("#" + TheTD + " input[name='AUXNeto']");
+                                @:    var jAUXExento = $("#" + TheTD + " input[name='AUXExento']");
+                                @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
+                                @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
+                                @:
+                                @:    jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
+                                @:    ValidarTotales2();
+                                @:}
+                    }
+
+
+
+        function nmbrize(passedValue)
+        {
+            //PASAR EL INPUT, ASIGNAR 0 DONDE CORRESPONDA Y LUEGO RETORNAR VALOR
+            newValue = passedValue.val();
+            newValue = +newValue || 0;
+            passedValue.val(newValue);
+            return newValue;
+        }
+
+        function removeRow(id) {
+            jQuery(id).remove();
+            TotalValor();
+        }
+    </script>
+}
+else
+{
+    <script>
+            $(document).ready(function () {
+
+    //    $(".selectpicker").selectpicker('refresh');
+    });
+
+    function CuadrarValores(inputThing) {
+    }
+
+    function CuadrarIVAExplicito(inputThing) {
+    }
+
+    function CuadrarLiquido(inputThing)
+    {
+    }
+    </script>
+}

@@ -1,0 +1,155 @@
+﻿@model TryTestWeb.Models.RegisterViewModelAddUser
+@{
+    ViewBag.Title = "Agregar Usuario";
+    var EnumValues = ParseExtensions.ObtenerValoresPosiblesEnum<Privilegios>().ToList();
+    EnumValues.RemoveAt(EnumValues.FindIndex(x => x == Privilegios.Administrador));
+    IList<SelectListItem> OwnedUsuarios = (IList<SelectListItem>)ViewBag.UsuariosPoseidos;
+}
+<br />
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">@ViewBag.Title</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Configuración</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Agregar Usuario
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+
+@using (Html.BeginForm("AgregarUsuario", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel panel-2 col-md-6">
+        <div class="row">
+            <div class="col-md-12 border-r-1">
+                <div class="panel-body">
+                    
+                        <h4>Crea un nuevo usuario para poder acceder a @ViewBag.NombreEmpresaActual con los privilegios dados.</h4>
+                        <hr />
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                    <div class="col-md-2"></div>
+                        <div class="row form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(m => m.RutUsuario, new { @class = "control-label" })
+
+                                @Html.TextBoxFor(m => m.RutUsuario, new { @class = "form-control text-box single-line", @rutValidator = "true" })
+                            </div>                       
+                        </div>
+
+                    <div class="col-md-2"></div>
+                        <div class="row form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(m => m.NombreUsuario, new { @class = "control-label" })
+
+                                @Html.TextBoxFor(m => m.NombreUsuario, new { @class = "form-control text-box single-line" })
+                            </div>
+                        </div>
+                    
+                    <div class="col-md-2"></div>
+                        <div class="row form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    <div class="col-md-2"></div>
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    <div class="col-md-2"></div>
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    <div class="col-md-2"></div>
+                        <div class="row form-group">
+                            <div class="col-md-8">
+                                <label class="control-label">Sistema por defecto:</label>
+                                <input class="form-control" type="text" name="name" value="Contabilidad" readonly />
+                            </div>
+                        </div>
+
+
+                        @*<div class="form-group">
+                                <div class="col-lg-2 text-right">
+                                    Usuario:
+                                </div>
+                                <div class="col-md-10">
+                                    <select id="usuarios" name="usuarios" class="selectpicker show-tick form-control" data-live-search="true">
+                                        @foreach (SelectListItem Usuarios in OwnedUsuarios)
+                                    {
+                                            <option value="@Usuarios.Value">@Usuarios.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>*@
+
+
+
+
+                        <div class="form-group" style="display:none;">
+                            <label class="control-label"> Privilegios:</label>
+                            <select id="priv" name="priv" class="form-control">
+                                @foreach (var TipoPrivilegio in EnumValues)
+                                {
+                                    <option value="@((int)TipoPrivilegio)">@ParseExtensions.EnumGetDisplayAttrib(TipoPrivilegio)</option>
+                                }
+                            </select>
+                        </div>
+                    <div class="col-md-2"></div>
+                        @if (ViewBag.Perfilamiento != null)
+                        {
+                            <div class="row form-group">
+                                <div class="col-md-8">
+                                    <label class="control-label"> Tipo Usuario:</label>
+                                    <select id="TipoUsuario" name="TipoUsuario" class="form-control">
+                                        <option>Selecciona</option>
+                                        @foreach (var TipoUsuario in ViewBag.Perfilamiento)
+                                        {
+                                            <option value="@TipoUsuario.PerfilUsuarioModelID">@TipoUsuario.NombrePerfil</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        }
+                    <div class="col-md-2"></div>
+                        <div class="row form-group">
+                            <div class="col-md-8">
+                                <input type="submit" class="btn btn-default btnPress" value="Agregar" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+}
+
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    @if (ViewBag.EmptyWarning != null)
+    {
+        @:ShowMessage('@ViewBag.EmptyWarning', 'Error');
+    }
+</script>

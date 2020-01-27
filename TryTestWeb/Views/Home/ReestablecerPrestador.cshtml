@@ -1,0 +1,367 @@
+﻿
+@{
+    ViewBag.Title = "ReestablecerPrestador";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model List<QuickReceptorModel>
+
+
+@using Microsoft.AspNet.Identity;
+
+
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Reestablecer Prestadores </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Prestadores</a>
+                </li>
+                <li class="active">
+                    Prestadores
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+
+@using (Html.BeginForm("ReestablecerPrestador", "Home", FormMethod.Post))
+{
+    <div class="row m-t-15">
+        <div class="col-md-12">
+            <div class="row form-group">
+                @if(Model.Count() == 0 && ViewBag.TipoPrestador == null) {
+                <div class="alert alert-warning" role="alert">Debes Seleccionar un tipo de prestador antes de ver el listado.</div>
+                }
+                <div class="form-group col-md-4">
+                    <label class="control-label">Tipo Prestador</label>
+                    <select class="form-control" id="TipoPrestador" name="TipoPrestador">
+                        <option value="">Selecciona</option>
+                        <option value="CL">Clientes</option>
+                        <option value="PR">Proveedores</option>
+                        <option value="P">Personas</option>
+                        <option value="H">Honorarios</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 centrar">
+                    <button type="submit" class="btn-sm btn-primary">Seleccionar</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+}
+
+<!-- Tabla -->
+<div class="row">
+    <div id="listaDerecho" class="col-lg-12">
+        @if (Model.Count() != 0)
+        {
+            <div class="alert alert-success"><h4 class="text-center">@ViewBag.TipoPrestador</h4></div>
+        }
+        @if(ViewBag.TipoPrestador != null && Model.Count() == 0)
+        {
+            <div class="alert alert-danger">No se encontraron registros de: @ViewBag.TipoPrestador</div>
+        }
+        @{int cont = 0; }
+        @if(Model.Count() != 0) { 
+        foreach (QuickReceptorModel Cliente in Model)
+        {
+            <div style="display:none;" class="alert alert-info" role="alert" id="alerta-exito">
+                Prestador Reestablecido con éxito.
+            </div>
+
+            <div class="row" id="Caja_@Cliente.QuickReceptorModelID" name="Caja">
+                <div class="col-lg-12">
+                    <div class="card-box m-b-10">
+                        <div class="table-box opport-box">
+
+                            <div class="col-lg-1">
+                                <div class="table-detail checkbx-detail">
+                                    <div class="checkbox checkbox-success m-r-15">
+                                        <input id="checkbox_@cont" onclick="javascript: seleccionaDetalle(@cont, this);" type="checkbox">
+                                        <label for="checkbox1"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-lg-1">
+                                 <div class="table-detail checkbx-detail">
+                                     <h5 class="m-t-0"><b>@(cont + 1)</b></h5>
+                                     <div class="member-info">
+                                         <p class="text-dark m-t-0">Nº</p>
+                                     </div>
+                                 </div>
+                             </div>-->
+                            <input id="Receptor" value="@Cliente.QuickReceptorModelID" style="display:none;" />
+                            <div class="col-lg-4">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>RUT @Cliente.RUT</b></h5>
+                                    <div class="member-info">
+                                        @{
+                                            String Contacto = Cliente.Contacto;
+                                            int limite2 = 24;
+                                            if (Cliente.Contacto == null)
+                                            {
+                                                Cliente.Contacto = string.Empty;
+                                            }
+                                            else
+                                            {
+                                                if (Cliente.Contacto.Length > limite2)
+                                                {
+                                                    Contacto = Cliente.Contacto.Substring(0, limite2 - 1) + "...";
+                                                }
+                                            }
+                                        }
+                                        @*<p class="text-dark m-b-0"><span class="text-muted">@Cliente.Contacto</span></p>*@
+                                        <p class="text-dark m-b-0"><span class="text-muted">@Cliente.Contacto</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="table-detail">
+                                    @{
+                                        String razon = Cliente.RazonSocial;
+                                        int limite = 20;
+                                        if (Cliente.RazonSocial.Length > limite)
+                                        {
+                                            razon = Cliente.RazonSocial.Substring(0, limite - 1) + "...";
+                                        } }
+
+                                    <h5 class="m-t-0"><b>@razon </b></h5>
+                                    @if(Cliente.Giro != null) { 
+                                    <div class="member-info">
+                                        @{
+                                            String Giro = Cliente.Giro;
+                                            int limite1 = 20;
+                                            if (Cliente.Giro.Length > limite1)
+                                            {
+                                                Giro = Cliente.Giro.Substring(0, limite1 - 1) + "...";
+                                            } }
+                                        @*<p class="text-dark m-b-0"><span class="text-muted">@Cliente.Giro</span></p>*@
+                                        <p class="text-dark m-b-0"><span class="text-muted">@Giro</span></p>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>Estado</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0"><span class="label label-danger">Inactivo</span></p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <div class="table-detail">
+                                    <a class="btn btn-success btn-sm redondo btnPress" href="#" id="ReceptorID" name="ReceptorID" onclick="AdvertenciaActivar(@Cliente.QuickReceptorModelID)">
+                                        <span class="glyphicon glyphicon-repeat"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+
+                            <div style="display:none;">
+                                <div id="Col1_@cont">
+                                    @Cliente.RazonSocial
+                                </div>
+                                <div id="Col2_@cont">
+                                    @Cliente.RUT
+                                </div>
+                                @if(Cliente.Giro != null){ 
+                                <div id="Col3_@cont">
+                                    @Cliente.Giro
+                                </div>
+                                }
+                                <div id="Col4_@cont">
+                                    @Cliente.NombreFantasia
+                                </div>
+                                <div id="Col5_@cont">
+                                    @Cliente.Direccion
+                                </div>
+                                <div id="Col6_@cont">
+                                    @Cliente.GetNewComunaName(User.Identity.GetUserId())
+                                </div>
+                                <div id="Col7_@cont">
+                                    @Cliente.GetNewRegionName(User.Identity.GetUserId())
+                                </div>
+
+
+                                <div id="Col9_@cont">
+                                    @Cliente.NombreContacto
+                                </div>
+                                <div id="Col8_@cont">
+                                    @Cliente.Contacto
+                                </div>
+                                <div id="Col10_@cont">
+                                    @Cliente.RUTSolicitante
+                                </div>
+
+                                <div id="Col12_@cont">
+                                    @Cliente.TelefonoContacto
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="Activar">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4>Reestablecer prestador</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h4>¿Estás seguro que deseas dar de reestablecer este prestador?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" id="cancelar" class="btn btn-primary" data-dissmiss="modal">Cancelar</a>
+                                <a href="#" class="btn btn-danger" id="btn-aceptar" name="btn-aceptar" data-dissmiss="modal" data-backdrop="false" onclick="ActivarPrestador()">Aceptar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @{cont++;
+                }
+            </div>
+
+                    }
+                   }
+
+    </div>
+
+
+
+    <div id="listaIzquierdo" class="col-lg-4" style="display:none;">
+        <div class="card-box">
+
+            <h4 class="page-header">Información Proveedor</h4>
+
+            <p class="text-dark m-b-5"><b>Razón Social:</b> <span class="text-muted"><div id="detCol1"></div></span></p>
+            <p class="text-dark m-b-5"><b>Rut:</b> <span class="text-muted"><div id="detCol2"></div> </span></p>
+            <p class="text-dark m-b-5"><b>Giro: </b> <span class="text-muted"><div id="detCol3"></div></span></p>
+            <p class="text-dark m-b-5"><b>Nombre Fantasía: </b> <span class="text-muted"><div id="detCol4"></div></span></p>
+            <p class="text-dark m-b-5"><b>Dirección: </b> <span class="text-muted"><div id="detCol5"></div></span></p>
+            <p class="text-dark m-b-5"><b>Comuna: </b> <span class="text-muted"><div id="detCol6"></div></span></p>
+            <p class="text-dark m-b-5"><b>Región: </b> <span class="text-muted"><div id="detCol7"></div></span></p>
+
+            <h4 class="page-header">Información Contacto Comercial</h4>
+            <p class="text-dark m-b-5"><b>Nombre Contacto: </b> <span class="text-muted"><div id="detCol9"></div></span></p>
+            <p class="text-dark m-b-5"><b>Correo: </b> <span class="text-muted"><div id="detCol8"></div></span></p>
+            <p class="text-dark m-b-5"><b>Telefono Contacto: </b> <span class="text-muted"><div id="detCol12"></div></span></p>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .centrar{
+        margin-top:25px;
+    }
+</style>
+
+<script>
+
+    function seleccionaDetalle(cont, dato)
+    {
+        if ($(dato).prop("checked") == false) {
+
+            if ($("#listaDerecho").attr("class") == "col-lg-12") {
+                $("#listaDerecho").attr("class", "col-lg-8");
+                $("#listaIzquierdo").removeAttr("style");
+            } else {
+                $("#listaDerecho").attr("class", "col-lg-12");
+                $("#listaIzquierdo").attr("style", "display:none;");
+            }
+
+            $("#detCol1").html($("#Col1_" + cont).html());
+            $("#detCol2").html($("#Col2_" + cont).html());
+            $("#detCol3").html($("#Col3_" + cont).html());
+            $("#detCol4").html($("#Col4_" + cont).html());
+            $("#detCol5").html($("#Col5_" + cont).html());
+            $("#detCol6").html($("#Col6_" + cont).html());
+            $("#detCol7").html($("#Col7_" + cont).html());
+            $("#detCol8").html($("#Col8_" + cont).html());
+            $("#detCol9").html($("#Col9_" + cont).html());
+            $("#detCol10").html($("#Col10_" + cont).html());
+
+            $("#detCol12").html($("#Col12_" + cont).html());
+            $("#detCol13").html($("#Col13_" + cont).html());
+
+        }
+        if ($(dato).prop("checked") == true) {
+
+            for (var i = 0; i < 10 ; i++) {
+                if (cont != i) {
+                    console.log(cont);
+                    $("#checkbox_" + i).removeAttr("checked");
+                }
+
+            }
+
+            if ($("#listaDerecho").attr("class") == "col-lg-12") {
+                $("#listaDerecho").attr("class", "col-lg-8");
+                $("#listaIzquierdo").removeAttr("style");
+            }
+
+            $("#detCol1").html($("#Col1_" + cont).html());
+            $("#detCol2").html($("#Col2_" + cont).html());
+            $("#detCol3").html($("#Col3_" + cont).html());
+            $("#detCol4").html($("#Col4_" + cont).html());
+            $("#detCol5").html($("#Col5_" + cont).html());
+            $("#detCol6").html($("#Col6_" + cont).html());
+            $("#detCol7").html($("#Col7_" + cont).html());
+            $("#detCol8").html($("#Col8_" + cont).html());
+            $("#detCol9").html($("#Col9_" + cont).html());
+            $("#detCol10").html($("#Col10_" + cont).html());
+
+            $("#detCol12").html($("#Col12_" + cont).html());
+            $("#detCol13").html($("#Col13_" + cont).html());
+
+        }
+
+        $('html,body').scrollTop(0);
+
+    }
+
+    function AdvertenciaActivar(ReceptorID) {
+        $("#ReceptorID").val(ReceptorID);
+        $("#Activar").modal("show");
+
+        $("#cancelar").click(function () {
+            $("#Activar").modal("hide");
+        });
+    }
+
+    function ActivarPrestador() {
+        var IDreceptor = $("#ReceptorID").val();
+
+        $("#btn-aceptar").attr("disabled", true);
+        $("#Activar").modal("hide");
+        $('#alerta-exito').css("display", "none");
+
+
+        $.ajax({
+            type: "POST",
+            url: "ActivarPrestador?IDreceptor=" + IDreceptor,
+            success: function (Result) {
+                $('#Caja_' + IDreceptor).remove();
+                $('.modal-backdrop').remove();
+                $('#alerta-exito').removeAttr("style");
+                $("#btn-aceptar").attr("disabled", false);
+            }
+        })
+    }
+
+</script>
+
+

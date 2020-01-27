@@ -1,0 +1,51 @@
+﻿@model IList<QuickEmisorModel>
+@{
+    ViewBag.Title = "SeleccionarEmisor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Seleccione con que compañia operar</h2>
+<table width="100%" class="table table-striped table-bordered table-hover" id="tablaCliente">
+    <thead>
+        <tr>
+            <th>Rut Empresa</th>
+            <th>Razon Social</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var Emisor in Model)
+            {
+                <tr id="@Emisor.QuickEmisorModelID">
+                    <td>@Emisor.RUTEmpresa</td>
+                    <td>@Emisor.RazonSocial</td>
+                    <td><a href="javascript:SelecCliente('@Emisor.QuickEmisorModelID');"><b>Seleccionar</b></a></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<script>
+  
+
+    function SelecCliente(idEmisor)
+    {
+        $.ajax({
+            url: "DoSeleccionarEmisor?EmisorID=" + idEmisor,
+            success: function (response)
+            {
+                if (response != null && response.success)
+                {
+                    document.location.href = response.inicio;//"/Home/Index";
+                }
+                else
+                {
+                    alert("No se puede operar con este emisor");
+                }
+            }
+        });
+    }
+</script> 

@@ -1,0 +1,501 @@
+﻿@model IList<CuentaContableModel>
+
+<div class="clearfix"></div>
+<form>
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group pull-right m-t-30">
+                <div class="button-list">
+                    <a onclick="javascript:NuevaCtaContable();" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a" id="AddEgreso">
+                        <span class="btn-label"><i class="ion-android-add"></i></span>Agregar
+                    </a>
+                </div>
+            </div>
+            <div class="page-header-2">
+                <h2 class="page-header">Plan de Cuentas</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Contabilidad</a>
+                    </li>
+                    <li>
+                        <a href="#">-</a>
+                    </li>
+                    <li class="active">
+                        Cuentas Contables
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+ 
+    @using (Html.BeginForm("ListaCuentasContables", "Contabilidad", FormMethod.Post))
+    {
+    <div class="row">
+        <div class="col-lg-2 form-group">
+            <label class="control-label">Código:</label>
+            <input type="number" class="form-control" name="codigo" id="codigo" value="@ViewBag.codigo" />
+</div>
+
+
+
+<div class="col-lg-2 form-group">
+            <label class="control-label">Nombre:</label>
+            <input type="text" class="form-control" name="nombre" id="nombre" value="@ViewBag.nombre" />
+        </div>
+
+
+        <div class="col-md-2" form-group>
+            <div style="text-align: center;">
+                <label class="control-label" style="color:transparent;"> _</label>
+                <button class="btn btn-1 btnPress form-control" type="submit"><i class="fa fa-search"></i> &nbsp; Buscar</button>
+            </div>
+        </div>
+    </div>
+    }
+   
+
+   
+    <!-- Filtros -->
+
+    <div class="row m-t-15">
+        <div class="col-md-12">
+
+            <div class="form-group">
+                <div class="col-md-2">
+
+                </div>
+
+                <div class="col-md-4">
+
+                </div>
+
+                <div class="col-md-2">
+
+                </div>
+
+                <div class="col-md-4">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Fin Filtros -->
+
+<div class="row m-t-10">
+    <div class="col-sm-12">
+        <div class="card-box">
+            <div class="table-rep-plugin">
+                <div class="table-responsive" data-pattern="priority-columns">
+                    <table id="CtaContableTable" class="table  table-striped">
+                        <thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Nombre</th>
+                                <th>Clasificación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (CuentaContableModel Cuenta in Model)
+                            {                                
+                                <tr>
+                                    <td>@Cuenta.CodInterno</td>
+                                    <td>@Cuenta.nombre</td>
+                                    <td>@Cuenta.Clasificacion.ToString()</td>
+                                    <td>@Cuenta.SubClasificacion.NombreInterno</td>
+                                    <td>@Cuenta.SubSubClasificacion.NombreInterno</td>
+                                    <td>
+                                        <a id="EditButton" onclick="getCtaContableEdit(@Cuenta.CuentaContableModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Editar Cuenta Contable!" data-original-title="Editar Cuenta Contable!"><i class="ion-edit"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL-->
+@using (Html.BeginForm("NuevaCtaContable", "Contabilidad", FormMethod.Post, new { id = "DatosCtaContable" }))
+{
+    <!--  Registrar Gastos -->
+    <div id="myModal" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Cuenta Contable</h4>
+                </div>
+                <div id="ModyBody" class="modal-body form-group">
+                    <div class="row">
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Nombre </label>
+                            <input type="text" class="form-control" name="nombrecta" id="nombrecta" required />
+                        </div>
+                        
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Código Sugerido</label>
+                            <input type="text" class="required form-control" name="codcta" id="codcta" readonly />
+                        </div>
+                    
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Centro Costo:</label>
+                            <select id="centroCosto" name="centroCosto" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Item:</label>
+                            <select id="item" name="item" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+
+                            </select>
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Análisis:</label>
+                            <select id="analisis" name="analisis" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+
+                            </select>
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Conciliación:</label>
+                            <select id="concilacion" name="concilacion" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Tiene Auxiliar :</label>
+                            <select id="auxiliar" name="auxiliar" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Clasificaciones:</label>
+                            <select id="clasificacion" name="clasificacion" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                @Html.Raw(ViewBag.osCuentasContables)
+                            </select>
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label" style="color:transparent;">___</label>
+                            <select id="subclasificacion" name="subclasificacion" class="required show-tick form-control" data-live-search="true" data-size="10" title="SubClasificación">
+                                @Html.Raw(ViewBag.HtmlStr)
+                            </select>
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label" style="color:transparent;">___</label>
+                            <select id="subsubclasificacion" name="subsubclasificacion" class="required show-tick form-control" data-live-search="true" data-size="10" title="SubSubClasificación">
+                                @Html.Raw(ViewBag.HtmlStr)
+                            </select>
+                        </div>
+                    </div>
+                   
+                    </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div> <!--  Fin -->
+}
+
+<!-- MODAL-->
+@using (Html.BeginForm("EditCtaContable", "Contabilidad", FormMethod.Post, new { id = "EditCtaContable" }))
+{
+    <!--   -->
+    <div id="editModal" class="modal fade in" role="dialog" aria-labelledby="myEditModalLabel" aria-hidden="true">
+        <input type="hidden" id="editFlag" name="editFlag" value="0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Cuenta Contable</h4>
+                </div>
+                <div id="ModyBody" class="modal-body form-group">
+                    <div class="row">
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Nombre </label>
+                            <input type="text" class="form-control" name="nombrectaedit" id="nombrectaedit" required />
+                        </div>
+
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Código Sugerido</label>
+                            <input type="text" class="required form-control" name="codctaedit" id="codctaedit" readonly />
+                        </div>
+                        @*<div class="col-lg-4 form-group">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="analisisedit" name="analisisedit"> Analisis </label>
+                            </div>
+                        </div>*@
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Centro Costo:</label>
+                            <select id="centroCostoE" name="centroCostoE" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <opton  value="2">NO</opton>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Item:</label>
+                            <select id="itemE" name="itemE" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Análisis:</label>
+                            <select id="analisisE" name="analisisE" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Conciliación:</label>
+                            <select id="concilacionE" name="concilacionE" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Tiene Auxiliar :</label>
+                            <select id="auxiliarE" name="auxiliarE" class="required form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Clasificaciones:</label>
+                            <input type="text" class="required form-control" name="clasificacionedit" id="clasificacionedit" readonly />
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label" style="color:transparent;">___</label>
+                            <input type="text" class="required form-control" name="subclasificacionedit" id="subclasificacionedit" readonly />
+                        </div>
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label" style="color:transparent;">___</label>
+                            <input type="text" class="required form-control" name="subsubclasificacionedit" id="subsubclasificacionedit" readonly />
+                        </div>
+                    </div>
+                    </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div> <!--  Fin  -->
+}
+
+<script>
+    function NuevaCtaContable()
+    {
+        $('#myModal').modal('show');
+    }
+
+    function EditCtaContable(valueID)
+    {
+        getCtaContableEdit(valueID);
+        
+    }
+
+    function getCtaContableEdit(value) {
+        var url = '@Url.Action("ObtenerCCEdit")';
+        var cID = value;
+        if (cID != 0)
+        {
+            $.getJSON(url, { IDCtaContable: cID },
+            function (data) {
+                if (data.ok == true) {
+                    $('#editFlag').val(data.jIDCuenta);
+                    $('#codctaedit').val(data.jCodInterno);
+                    $('#nombrectaedit').val(data.jNombreCuenta);
+                    $('#clasificacionedit').val(data.jClasificacion);
+                    $('#subclasificacionedit').val(data.jSubClasificacion);
+                    $('#subsubclasificacionedit').val(data.JSubSubClasificacion);
+                    $('#centroCostoE').val(data.jCentroCosto);
+                    $('#itemE').val(data.jItem);
+                    $('#analisisE').val(data.jAnalisis);
+                    $('#auxiliarE').val(data.JAuxiliar);
+                    $('#concilacionE').val(data.jConsiliacion);
+                 
+                    $('#editModal').modal('show');
+                }
+                else {
+                    $('#editFlag').val(0);
+                    $('#codctaedit').val('');
+                    $('#nombrectaedit').val('');
+                    $('#clasificacionedit').val('');
+                    $('#subclasificacionedit').val('');
+                    $('#subsubclasificacionedit').val('');
+                    $('#editModal').modal('hide');
+                    $('#centroCostoE').val(0);
+                    $('#itemE').val(0);
+                    $('#analisisE').val(0);
+                    $('#concilacionE').val(0);
+                    $('#auxiliarE').val('');
+                }
+            });
+        }        
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#DatosCtaContable').validate();
+
+        $("#DatosCtaContable").validate({
+            rules: {
+                'clasificacion': { valueNotEquals: 0 },
+                'subclasificacion': { valueNotEquals: 0 },
+                'subsubclasificacion': { valueNotEquals: 0 },
+                'codcta': { valueNotEquals: "" }
+            },
+            messages: {
+                'clasificacion': { valueNotEquals: "Debe seleccionar clasificacion" },
+                'subclasificacion': { valueNotEquals: "Debe seleccionar clasificacion" },
+                'subsubclasificacion': { valueNotEquals: "Debe seleccionar clasificacion" },
+                'codcta': { valueNotEquals: "Debe generarse un codigo" }
+            }
+        });
+    });
+
+    function pre_form_validate() {
+        var result = true;
+        $('#DatosCtaContable').validate();
+        $('#DatosCtaContable .form-group').each(function () {
+            if ($(this).hasClass('has-error')) {
+                result = false;
+                CheckSelects();
+                return false;
+            }
+        });
+        CheckSelects();
+        return result;
+    }
+
+    function CheckSelects() {
+        if ($("#clasificacion").val() === "" || $("#subclasificacion").val() === "" || $("#subsubclasificacion").val() == "") {
+            $(':input[type="submit"]').prop('disabled', true);
+        }
+        else {
+            $(':input[type="submit"]').prop('disabled', false);
+        }
+    }
+
+    document.getElementById("nombrecta").onchange = function () { pre_form_validate() };
+    document.getElementById("clasificacion").onchange = function () { GetSubClasfificacion(), pre_form_validate() };
+    document.getElementById("subclasificacion").onchange = function () { GetSubSubClasfificacion(), pre_form_validate() };
+    document.getElementById("subsubclasificacion").onchange = function () { getSugerido(), pre_form_validate() };
+
+    function GetSubClasfificacion(value) {
+        var url = '@Url.Action("ObtenerSubclasificacion")';
+        var cID = $("#clasificacion").val();
+        if (cID == 0)
+        {
+            var optionSelect = $('#subclasificacion');
+            optionSelect.find('option').remove();
+            $("#codcta").val('');
+            var optionSelectSubSub = $('#subsubclasificacion');
+            optionSelectSubSub.find('option').remove();
+            return;
+        }
+
+        $.getJSON(url, { Clasificacion: cID },
+            function (data) {
+                var optionSelect = $('#subclasificacion');
+                optionSelect.find('option').remove();
+                $("#codcta").val('');
+
+                var optionSelectSubSub = $('#subsubclasificacion');
+                optionSelectSubSub.find('option').remove();
+
+                optionSelect.append('<option value="0">Seleccionar</option>');
+                $.each(data, function (Value, Text) {
+                    optionSelect.append('<option value="' + Text.Value + '">' + Text.Text + '</option>');
+                });
+            }
+            );
+
+    }
+
+
+    function GetSubSubClasfificacion(value) {
+        var url = '@Url.Action("ObtenerSubSubclasificacion")';
+        var cID = $("#subclasificacion").val();
+        if (cID == 0)
+        {
+            var optionSelect = $('#subsubclasificacion');
+            optionSelect.find('option').remove();
+            $("#codcta").val('');
+            optionSelect.append('<option value="0">Seleccionar</option>');
+            return;
+        }
+
+        $.getJSON(url, { SubClasificacion: cID },
+            function (data) {
+                var optionSelect = $('#subsubclasificacion');
+                optionSelect.find('option').remove();
+                $("#codcta").val('');
+
+                optionSelect.append('<option value="0">Seleccionar</option>');
+                $.each(data, function (Value, Text) {
+                    optionSelect.append('<option value="' + Text.Value + '">' + Text.Text + '</option>');
+                });
+            }
+            );
+    }
+
+    function getSugerido(value) {
+        var url = '@Url.Action("ObtenerCodSugerido")';
+        var cID = $("#subsubclasificacion").val();
+        if (cID == 0)
+        {
+            $("#codcta").val('');
+            return;
+        }
+
+        $.getJSON(url, { SubSubClasificacion: cID },
+            function (data) {
+                var sub = cID.toString();
+                $("#codcta").val(data.a_stringSugerido);
+            }
+            )
+    }
+
+</script>

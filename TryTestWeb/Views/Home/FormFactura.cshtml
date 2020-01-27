@@ -1,0 +1,498 @@
+﻿@{
+    List<SelectListItem> listItems = ImpuestoAdicionalRetencionesModel.GetDropDownListHTML();  
+}
+<body>
+    <div id="factura" style="max-width:1000; padding-left:15px; padding-right:15px;">
+        @using (Html.BeginForm("MakeFactura", "Home", FormMethod.Post, new { id = "FormFactura" }))
+        {
+            <input value="33" name="TipoFactura" id="TipoFactura" type="hidden">
+            <input value="079193237" id="EFXP_CDG_SII_SUCUR" name="EFXP_CDG_SII_SUCUR" type="hidden">
+            <div class="row">
+                <div id="emisor">
+                    <div class="col-md-2" id="logo">
+                        <div class="row">
+                            <div class="col-md-12"><img src="EFXP%20Documento%20Tributario%20Electr%C3%B3nico_files/genLogo.jpg" alt="Logo de Empresa" align="left" height="150" width="150"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label">
+                                    <p>Ocultar Logo <input tabindex="" name="FONO_SI_NO" value="SiChecked" type="checkbox"></p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8" id="datosEmisor">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p><label class="control-label" for="RazonSocial_Emisor">Razon Social:</label><input readonly="readonly" class="bigass form-control" tabindex="1" maxlength="100" size="50" value="FUXON LIMITADA" name="RazonSocial_Emisor" type="text"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><label class="control-label">Folio:</label><input class="bigass form-control" tabindex="1" size="50" name="tmp_FOLIO" type="number"></p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>
+                                    <label class="control-label">Direccion:</label>
+                                    <select class="bigass form-control" name="EFXP_DIR_ORIGEN" required="">
+                                        <option selected="selected" value="AHUMADA 312  618">AHUMADA 312  618</option>
+                                    </select>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><label class="control-label">Comuna:</label><input class="bigass form-control" tabindex="3" maxlength="20" value="SANTIAGO" name="EFXP_CMNA_ORIGEN"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><label class="control-label">Ciudad / Localidad:</label><input maxlength="15" class="bigass form-control" size="15" tabindex="4" value="SANTIAGO" name="EFXP_CIUDAD_ORIGEN"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="datosFact">
+                        <h3 style="text-align: center;">Rut:<span id="Rut_Emisor">RUT</span></h3>
+                        <h3 style="text-align: center;"><span id="TIPO_DOC">TIPO_DOC</span></h3>
+                        <h3 style="text-align: center;">N°<span id="NumeroDoc">XX</span></h3>
+                        <p><label class="control-label">Empresa de Menor Tamaño</label> <input name="EMP_MENOR_TAMANO" tabindex="5" value="SiChecked" type="checkbox"></p>
+                    </div>
+                </div>
+            </div>
+            <div id="OtrosDatosEmisor">
+                <div class="row">
+                    <div class="col-md-1">
+                        <p><label class="control-label">Ocultar:</label><input tabindex="" name="FONO_SI_NO" value="SiChecked" type="checkbox"></p>
+                    </div>
+                    <div class="col-md-8">
+                        <p><label class="control-label">Email:</label><input class="bigass form-control" tabindex="7" maxlength="30" size="30" value="CONTACTO@ALEJANDROFICA.CL" name="EFXP_EMAIL_EMISOR" type="email"></p>
+                    </div>
+                    <div class="col-md-2">
+                        <p><label class="control-label">Teléfono:</label><input tabindex="8" class="bigass form-control" maxlength="14" size="12" value="2 29790419" name="EFXP_FONO_EMISOR"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            <label class="control-label">Giro:</label>
+                            <input autocomplete="on" class="bigass form-control" tabindex="9" maxlength="70" size="60" value="Servicos Informaticos Integrales Back Office" name="EFXP_GIRO_EMIS" type="text">
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10">
+                        <p>
+                            <label class="control-label">Actividad Económica:</label>
+                            <input required="" tabindex="10" maxlength="6" value="701009" name="EFXP_ACTECO" type="hidden">
+                            <select name="EFXP_ACTECO_SELECT" class="bigass form-control">
+                                <option selected="selected" value="701009"> COMPRA, VENTA Y ALQUILER (EXCEPTO AMOBLA </option>
+                                <option value="725000"> MANTENIMIENTO Y REPARACION DE MAQUINARIA </option>
+                                <option value="726000"> EMPRESAS DE SERVICIOS INTEGRALES DE INFO </option>
+                                <option value="743001"> EMPRESAS DE PUBLICIDAD </option>
+                                <option value="749401"> SERVICIOS DE REVELADO, IMPRESION, AMPLIA </option>
+                            </select>
+                        </p>
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <p>
+                            <label class="control-label">Fecha Emisión:</label>
+                            <input id="EFXP_FCH_EMIS" class="bigass form-control" name="EFXP_FCH_EMIS" type="text">
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div id="DatosReceptor">
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label class="control-label">Rut:</label>
+                        <input autocomplete="on" class="bigass form-control" maxlength="12" size="10" placeholder="11111111-1" id="EFXP_RUT_RECEP" name="EFXP_RUT_RECEP" type="text">
+                    </div>
+                    <div class="col-md-6"><label class="control-label">Razon Social:</label> <input class="bigass form-control" maxlength="100" tabindex="14" size="50" name="EFXP_RZN_SOC_RECEP" id="EFXP_RZN_SOC_RECEP" type="text"> </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6"><label class="control-label">Direccion:</label> <input autocomplete="on" class="bigass form-control" name="EFXP_DIR_RECEP" id="EFXP_DIR_RECEP" maxlength="70" size="50" type="text"> </div>
+                    <div class="col-md-3"><label class="control-label">Comuna:</label> <input class="bigass form-control" maxlength="20" tabindex="16" id="EFXP_CMNA_RECEP" name="EFXP_CMNA_RECEP" type="text"> </div>
+                    <div class="col-md-3"><label class="control-label">Ciudad/Localidad:</label> <input autocomplete="on" class="bigass form-control" maxlength="15" size="15" id="EFXP_CIUDAD_RECEP" name="EFXP_CIUDAD_RECEP" type="text"></div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12"><label class="control-label">Giro:</label> <input autocomplete="on" class="bigass form-control" name="EFXP_GIRO_RECEP" id="EFXP_GIRO_RECEP" type="text"></div>
+                </div>
+                <input name="EFXP_GIRO_RECEP_DEFUALT" value="" type="hidden">
+                <div class="row">
+                    <div class="col-md-6"><label class="control-label">Contacto:</label> <input class="bigass form-control" name="EFXP_CONTACTO" id="EFXP_CONTACTO" type="text"></div>
+                    <div class="col-md-6"><label class="control-label">Rut persona que solicita factura:</label> <input class="bigass form-control" name="EFXP_RUT_SOLICITA" id="EFXP_RUT_SOLICITA" placeholder="11111111-1" type="text"></div>
+                </div>
+            </div>
+            <hr>
+            <div id="Detalle">
+                <!-- onchange="insArr(this) -->
+                <div class="row form-group">
+                    <div class="col-md-1"><label class="control-label">Cod.Prod:</label> <input class="bigass form-control" placeholder="-" name="EFXP_COD_1" id="EFXP_COD_1" type="text"> </div>
+                    <!-- label class="control-label">Nombre Prod:</label> <input class="bigass form-control" name="EFXP_NMB_1" id="EFXP_NMB_1" type="text"> -->
+                    <div class="col-md-2"><label class="control-label">Descripcion:</label> <input class="bigass form-control" placeholder="Nombre del producto" name="EFXP_NMB_1" id="EFXP_NMB_1" type="text"> </div>
+                    <div class="col-md-1"><label class="control-label">Cantidad:</label> <input class="bigass form-control" placeholder="Cantidad" name="EFXP_QTY_1" id="EFXP_QTY_1" type="number"> </div>
+                    <div class="col-md-1"><label class="control-label">U.Medida:</label> <input class="bigass form-control" placeholder="Unidad de Medida" name="EFXP_UNMD_1" id="EFXP_UNMD_1" type="text"> </div>
+                    <div class="col-md-2"><label class="control-label">Precio:</label> <input class="bigass form-control" placeholder="Precio" name="EFXP_PRC_1" id="EFXP_PRC_1" type="number"> </div>
+                    <div class="col-md-2">
+                        <label class="control-label">Impuesto Adicional:</label>
+                        <select name="IMPUESTO_ADICIONAL_1" id="IMPUESTO_ADICIONAL_1" class="bigass form-control">
+                            <option value=@{@listItems[0].Value;}>@{@listItems[0].Text;}</option>
+                            <option value=@{@listItems[1].Value;}>@{@listItems[1].Text;}</option>
+                            <option value=@{@listItems[2].Value;}>@{@listItems[2].Text;}</option>
+                            <option value=@{@listItems[3].Value;}>@{@listItems[3].Text;}</option>
+                            <option value=@{@listItems[4].Value;}>@{@listItems[4].Text;}</option>
+                            <option value=@{@listItems[5].Value;}>@{@listItems[5].Text;}</option>
+                            <option value=@{@listItems[6].Value;}>@{@listItems[6].Text;}</option>
+                            <option value=@{@listItems[7].Value;}>@{@listItems[7].Text;}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1"><label class="control-label">%Desc:</label> <input class="bigass form-control" placeholder="% de Descuento" name="EFXP_PCTD_1" id="EFXP_PCTD_1" type="number"> </div>
+                    <div class="col-md-2"><label class="control-label">Subtotal:</label> <input class="bigass form-control" disabled name="EFXP_SUBT_1" id="EFXP_SUBT_1" type="number"> </div>
+                </div>
+            </div>
+            <hr>
+            <div id="ReferenciaYPago">
+                <div class="row">
+                    <div class="col-md-3">
+                        Referencias : Si/No
+                        <input name="REF_SI_NO" value="SiChecked" type="checkbox">
+                    </div>
+                    <div class="col-md-2">
+                        Info. Pago : Si/No
+                        <input name="PAGO_SI_NO" value="SiChecked" type="checkbox">
+                    </div>
+                    <div class="col-md-3">
+                        <input class="bigass botonesDetalle btn" onclick="removeLastRow();" name="REMOVE_DETALLE" value="Remueve linea de Detalle" type="button">
+                    </div>
+                    <div class="col-md-4">
+                        <input class="bigass botonesDetalle btn" onclick="addMoreRows(this.form);" name="AGREGA_DETALLE" value="Agrega linea de Detalle" type="button">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div id="Totales">
+                <div class="row">
+                    <div class="col-md-1 col-md-offset-4"><label class="control-label">SUBTOTAL:</label></div>
+                    <div class="col-md-3 col-md-offset-4"><input disabled="disabled" class="bigass form-control" maxlength="12" size="10" value="0" name="EFXP_SUBTOTAL" id="EFXP_SUBTOTAL" input="" type="text"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 col-md-offset-4"><label class="control-label">Desc. Global</label></div>
+                    <div class="col-md-3"><input class="bigass form-control" maxlength="10" size="10" value="0" name="EFXP_PCT_DESC" id="EFXP_PCT_DESC" input="" type="text"></div>
+                    <div class="col-md-1"><label class="control-label">Monto</label></div>
+                    <div class="col-md-3"><input disabled="disabled" class="bigass form-control" maxlength="12" size="10" value="0" name="EFXP_MNT_DESC" id="EFXP_MNT_DESC" type="text"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 col-md-offset-4"><label class="control-label" style="width: 30px; display:inline-block;">Monto Neto</label></div>
+                    <div class="col-md-3 col-md-offset-4"><input disabled="disabled" class="form-control" value="0" name="EFXP_MNT_NETO" id="EFXP_MNT_NETO" size="10" maxlength="10" type="text"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 col-md-offset-4"><label class="control-label">IVA:</label></div>
+                    <div class="col-md-3"><input class="bigass form-control" style="width:20%; display:inline-block;" value="19" name="EFXP_TASA_IVA" id="EFXP_TASA_IVA">%</div>
+                    <div class="col-md-1"><label class="control-label">Total IVA:</label></div>
+                    <div class="col-md-3"><input disabled="disabled" class="bigass form-control" maxlength="12" size="10" value="0" name="EFXP_IVA" id="EFXP_IVA" type="text"></div>
+                </div>
+                <input value="19" name="EFXP_TASA_IVA" id="EFXP_TASA_IVA" type="hidden">
+                <input value="" input="" name="IVA_TEMP" type="hidden">
+                <input value="" name="MNT_NETO_TEMP" type="hidden">
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-4"><label class="control-label">Total Impuesto Adicional</label></div>
+                <div class="col-md-2 col-md-offset-3"><input disabled="disabled" class="form-control" value="0" name="Impuesto_total" id="Impuesto_total" size="10" maxlength="10" type="text"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-1 col-md-offset-4"><label class="control-label">Monto TOTAL</label></div>
+                <div class="col-md-3 col-md-offset-4"><input disabled="disabled" class="form-control" value="0" name="EFXP_MNT_TOTAL" id="EFXP_MNT_TOTAL" size="10" maxlength="10" type="text"></div>
+            </div>
+            <div id="botones" style="clear:both; align:left;">
+                <input value="Validar y visualizar" name="Button_Update" class="button btnEnviar btn" type="submit">
+                <input onclick="limpiaDatos(this)" value="Limpiar" name="limpiar" class="button btnEnviar btn" type="button">
+                <input onclick="javascript:opcionClose();" value="Volver" name="Botton_Borrar" class="button btnEnviar btn" type="button">
+            </div>
+    }
+        <!--</form>  <input onclick="if (validaFacEx(this)) VIEW_EFXP.submit();" value="Validar y visualizar" name="Button_Update" class="button" type="button"> -->
+    </div>
+</body>
+<!-- <script src="~/Scripts/jquery-1.10.2.js"></script> -->
+<!-- <script src="~/Scripts/jquery-ui.js"></script> -->
+<!-- <link href="~/Content/jquery-ui.css" rel="stylesheet" type="text/css"> -->
+<script type="text/javascript">
+   $.validator.addMethod("rut", function (value, element) {
+       return this.optional(element) || $.Rut.validar(value);
+   }, "Este campo debe ser un rut valido.");
+
+
+
+   $(document).ready(function () {
+       //cantidad * precio
+       $('#EFXP_QTY_1').change(function (e) { calculate(rowCount); });
+       $('#EFXP_PRC_1').change(function (e) { calculate(rowCount); });
+       $('#EFXP_PCTD_1').change(function (e) { calculate(rowCount); });
+       $('#EFXP_PCT_DESC').change(function (e) { calculate(rowCount); });
+       $('#IMPUESTO_ADICIONAL_1').change(function (e) { calculate(rowCount); });
+
+   });
+   function calculate(ir) {
+
+       var cumulativoImpuesto = 0;
+       for (i = 1; i < ir + 1; i++) {
+           var step1 = $('#EFXP_QTY_' + i).val() * $('#EFXP_PRC_' + i).val();
+           var step2 = $('#EFXP_PCTD_' + i).val() / 100;
+           var step3 = JSON.parse($('#IMPUESTO_ADICIONAL_' + i).val())[1] / 100;
+           //var step4 = step3 * step1;
+           var step5 = step1 * step2;
+
+           $('#EFXP_SUBT_' + i).val(step1 - step5);
+           $('#EFXP_SUBTOTAL').val(CalcularTotal());
+
+           //descuento global 
+           var Gdesc = $('#EFXP_PCT_DESC').val() / 100;
+           var GvalorDescuento = $('#EFXP_SUBTOTAL').val() * Gdesc;
+           valorDescuento = GvalorDescuento.toFixed();
+           $('#EFXP_MNT_DESC').val(valorDescuento);
+           var GmontoNeto = $('#EFXP_SUBTOTAL').val() - GvalorDescuento;
+           $('#EFXP_MNT_NETO').val(GmontoNeto);
+
+           //IVA
+           var GValorIVA = $('#EFXP_TASA_IVA').val() / 100;
+           var GTotalIVA = GValorIVA * GmontoNeto;
+           var ivatotal = GTotalIVA.toFixed();
+           $('#EFXP_IVA').val(ivatotal);
+           GmontoTotal = GmontoNeto + GTotalIVA;
+           //   var montoTotal = GmontoTotal.toFixed();
+           //   $('#EFXP_MNT_TOTAL').val(montoTotal);
+
+           //Impuesto Total
+
+           var ValorImpuestoAdicionalLinea = $('#EFXP_SUBT_' + i).val() * step3;
+           ValorImpuestoAdicionalLinea = ValorImpuestoAdicionalLinea - (ValorImpuestoAdicionalLinea * Gdesc);
+           cumulativoImpuesto = cumulativoImpuesto + ValorImpuestoAdicionalLinea;
+
+           $('#Impuesto_total').val(cumulativoImpuesto);
+           GmontoTotal = GmontoTotal + cumulativoImpuesto;
+           var montoTotal = GmontoTotal.toFixed();
+           $('#EFXP_MNT_TOTAL').val(montoTotal);
+       }
+
+   }
+
+
+
+   /*montos totales*/
+   function CalcularTotal() {
+       var result = 0;
+       $('[name*="EFXP_SUBT_"]').each(function () {
+           result += parseFloat($(this).val(), 10);
+       });
+       return result;
+   }
+
+
+
+   $(document).ready(function () {
+
+
+
+       $("#FormFactura").validate({
+           rules: {
+               EFXP_FCH_EMIS: "required",
+               EFXP_RUT_RECEP: { required: true, rut: true },
+               EFXP_RZN_SOC_RECEP: "required",
+               EFXP_DIR_RECEP: "required",
+               EFXP_CMNA_RECEP: "required",
+               EFXP_CIUDAD_RECEP: "required",
+               EFXP_GIRO_RECEP: "required",
+               DESCRIP_01: "required",
+               EFXP_QTY_1: { required: true, number: true },
+               EFXP_SUBT_1: { required: true, number: true },
+
+
+           },
+           messages: {
+               EFXP_FCH_EMIS: "Debe ingresar una fecha para la emisión del documento",
+               EFXP_RUT_RECEP: "Debe ingresar un Rut Receptor válido.",
+               EFXP_RZN_SOC_RECEP: "Debe ingresar Razon Social del contribuyente receptor.",
+               EFXP_DIR_RECEP: "Debe ingresar Direccion del contribuyente receptor.",
+               EFXP_CMNA_RECEP: "Debe ingresar Comuna del contribuyente receptor.",
+               EFXP_CIUDAD_RECEP: "Debe ingresar Ciudad del contribuyente receptor.",
+               EFXP_GIRO_RECEP: "Debe ingresar Giro del contribuyente receptor.",
+               DESCRIP_01: "Debe ingresar nombre o descripcion del primer item del detalle.",
+               EFXP_QTY_1: "Cantidad de unidades del primer item del detalle debe ser mayor a 0.",
+               EFXP_SUBT_1: "El valor del subtotal debe ser mayor a 0."
+           },
+           email1: "Please enter a valid email address",
+           agree1: "Please accept our policy",
+
+           errorElement: "em",
+           errorPlacement: function (error, element) {
+               // Add the `help-block` class to the error element
+               error.addClass("help-block");
+
+               // Add `has-feedback` class to the parent div.form-group
+               // in order to add icons to inputs
+               element.parents(".col-sm-5").addClass("has-feedback");
+
+               if (element.prop("type") === "checkbox") {
+                   error.insertAfter(element.parent("label"));
+               } else {
+                   error.insertAfter(element);
+               }
+
+               // Add the span element, if doesn't exists, and apply the icon classes to it.
+               if (!element.next("span")[0]) {
+                   $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>").insertAfter(element);
+               }
+           },
+           success: function (label, element) {
+               // Add the span element, if doesn't exists, and apply the icon classes to it.
+               if (!$(element).next("span")[0]) {
+                   $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>").insertAfter($(element));
+               }
+           },
+           highlight: function (element, errorClass, validClass) {
+               $(element).parents(".col-sm-5").addClass("has-error").removeClass("has-success");
+               $(element).next("span").addClass("glyphicon-remove").removeClass("glyphicon-ok");
+           },
+           unhighlight: function (element, errorClass, validClass) {
+               $(element).parents(".col-sm-5").addClass("has-success").removeClass("has-error");
+               $(element).next("span").addClass("glyphicon-ok").removeClass("glyphicon-remove");
+           }
+       });
+   });
+</script>
+<script type="text/javascript">
+   var rowCount = 1;
+   function addMoreRows(frm) {
+       rowCount++;
+       var recRow = '<div class="row form-group" id="Detalle' + rowCount + '"> <div class="col-md-1"><input class="bigass form-control" placeholder="-" name="EFXP_COD_' + rowCount + '" id="EFXP_COD_' + rowCount + '" type="text"> </div> <div class="col-md-2"><input class="bigass form-control" placeholder ="Nombre del producto" name="EFXP_NMB_' + rowCount + '" id="EFXP_NMB_' + rowCount + '" type="text"> </div> <div class="col-md-1"><input class="bigass form-control" placeholder="Cantidad" name="EFXP_QTY_' + rowCount + '" id="EFXP_QTY_' + rowCount + '" type="number"> </div> <div class="col-md-1"><input class="bigass form-control" placeholder="Unidad de Medida" name="EFXP_UNMD_' + rowCount + '" id="EFXP_UNMD_' + rowCount + '" type="text"> </div> <div class="col-md-2"><input class="bigass form-control" placeholder ="Precio" name="EFXP_PRC_' + rowCount + '" id="EFXP_PRC_' + rowCount + '" type="number"> </div> <div class="col-md-2"><select name="IMPUESTO_ADICIONAL_' + rowCount + '" id="IMPUESTO_ADICIONAL_' + rowCount + '" class="bigass form-control" > <option value=@{@listItems[0].Value;}>@{@listItems[0].Text;}</option> <option value=@{@listItems[1].Value;}>@{@listItems[1].Text;}</option> <option value=@{@listItems[2].Value;}>@{@listItems[2].Text;}</option> <option value=@{@listItems[3].Value;}>@{@listItems[3].Text;}</option> <option value=@{@listItems[4].Value;}>@{@listItems[4].Text;}</option> <option value=@{@listItems[5].Value;}>@{@listItems[5].Text;}</option> <option value=@{@listItems[6].Value;}>@{@listItems[6].Text;}</option> <option value=@{@listItems[7].Value;}>@{@listItems[7].Text;}</option> </select> </div> <div class="col-md-1"><input class="bigass form-control" placeholder="% de Descuento" name="EFXP_PCTD_' + rowCount + '" id="EFXP_PCTD_' + rowCount + '" type="number"> </div> <div class="col-md-2"><input class="bigass form-control" disabled name="EFXP_SUBT_' + rowCount + '" id="EFXP_SUBT_' + rowCount + '" type="number"> </div> </div>';
+       jQuery('#Detalle').append(recRow);
+       $('[name*="DESCRIP_0"]').each(function () {
+           $(this).rules('add', {
+               required: true,
+               messages: {
+                   required: "Debe ingresar nombre o descripcion del primer item del detalle."
+               }
+           });
+       });
+       $('[name*="EFXP_QTY_"]').each(function () {
+           $(this).rules('add', {
+               required: true,
+               number: true,
+               messages: {
+                   required: "Cantidad de unidades del primer item del detalle debe ser mayor a 0."
+               }
+           });
+       });
+       $('[name*="EFXP_SUBT_"]').each(function () {
+           $(this).rules('add', {
+               required: true,
+               number: true,
+               messages: {
+                   required: "El valor del subtotal debe ser mayor a 0."
+               }
+           });
+       });
+
+       $('#EFXP_QTY_' + rowCount).change(function (e) { calculate(rowCount); });
+       $('#EFXP_PRC_' + rowCount).change(function (e) { calculate(rowCount); });
+       $('#EFXP_PCTD_' + rowCount).change(function (e) { calculate(rowCount); });
+
+       $('#IMPUESTO_ADICIONAL_' + rowCount).change(function (e) { calculate(rowCount); });
+
+   }
+
+   function removeLastRow() {
+       jQuery('#Detalle' + rowCount).remove();
+       rowCount--;
+       if (rowCount <= 0) {
+           rowCount = 0;
+       }
+       $('#EFXP_SUBTOTAL').val(CalcularTotal());
+   }
+
+   function removeRow(removeNum) {
+       jQuery('#Detalle' + removeNum).remove();
+   }
+
+</script>
+<script>
+   $.datepicker.regional['es'] = {
+       closeText: 'Cerrar',
+       prevText: '<Ant',
+       nextText: 'Sig>',
+       currentText: 'Hoy',
+       monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+       monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+       dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+       dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+       dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+       weekHeader: 'Sm',
+       dateFormat: 'dd/mm/yy',
+       firstDay: 1,
+       isRTL: false,
+       showMonthAfterYear: false,
+       yearSuffix: ''
+   };
+   $.datepicker.setDefaults($.datepicker.regional['es']);
+   $(function () {
+       $("#EFXP_FCH_EMIS").datepicker();
+   });
+</script>
+<style>
+    /*
+    body {
+        background-color: #384556;
+        color: #222f3f;
+    }
+    */
+    #factura {
+        background-color: #edf1f4;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    .darkinput {
+        color: 222f3f;
+        background-color: #dde3ef;
+    }
+
+    .bigass {
+        width: 100%;
+        color: #222f3f;
+        background-color: #dde3ef;
+    }
+
+    .midass {
+        width: 80%;
+    }
+
+    .grayoutline {
+        border: 1px solid #e6e6e6;
+    }
+
+    .botonesDetalle {
+        background-color: #59ace0;
+        color: #ecf5f9;
+    }
+
+    .btnEnviar {
+        background-color: #495972;
+        color: #c4cdd9;
+    }
+
+    .porcentaje {
+        width: 10px;
+    }
+
+    hr {
+        margin-top: 7px;
+        margin-bottom: 7px;
+        border: 0;
+        border-top: 1px solid #80cde2;
+    }
+
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+

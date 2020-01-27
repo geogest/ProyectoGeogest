@@ -1,0 +1,420 @@
+﻿@Styles.Render("~/Content/DataTables")
+@Scripts.Render("~/bundles/DataTables")
+
+
+
+<br>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-4">
+            <div class="panel-heading">
+                Administración Cuentas Contables
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-4" data-toggle="modal" data-target="#myModal"><i class="fa fa-money"></i>&nbsp; Agregar Item</button>
+                </div>
+                    <div class="col-md-3  pull-right">
+                        <button type="button" class="btn btn-1outline" data-toggle="modal" data-target="#myModal1"><i class="fa fa-list"></i>&nbsp; Agregar Cuenta Contable</button>
+                    </div>
+            </div>
+                <hr>
+                <br>
+                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cuenta Contable</th>
+                            <th>Glosa Cuenta Contable</th>
+                            <th>Fecha Documento</th>
+                            <th>Fecha Ingreso</th>
+                            <th>Monto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+@foreach (var Item in Model )
+{
+                                <tr class="odd gradeX">
+                                    <td>@Item.ItemContableModelID</td>
+                                    <td>@Item.CtaContable.Nombre</td>
+                                    <td>@Item.Glosa</td>
+                                    <td>@ParseExtensions.ToMM_DD_AAAA(Item.FechaDocumento)</td>
+                                    <td>@Item.FechaIngreso</td>
+                                    <td>@ParseExtensions.NumeroConPuntosDeMiles((int)Item.Monto)</td>
+                                    <td><a href="">Eliminar</a></td>
+                                </tr>
+}
+                    </tbody>
+
+                </table>
+                <div id="myModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog modal-lg">
+            @using (Html.BeginForm("ItemContableDO", "Home", FormMethod.Post, new { id = "ItemContableDO" }))
+            {
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Agregar Nuevo Item de Cuenta Contable</h4>
+                            </div>
+                            <div id="ModyBody" class="modal-body">
+                                
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="Cuenta" class="control-label">Cuenta Contable</label>
+                                        <select class="form-control required" id="CuentaContable" name="CuentaContable">
+                                            <optgroup label="ACTIVO CIRCULANTE">
+                                                <option value="111">Caja</option>
+                                                <option value="112">Caja Dolares</option>
+                                                <option value="113">Banco</option>
+                                                <option value="114">Retiro Inversion</option>
+                                                <option value="115">Deposito a Plazo</option>
+                                                <option value="116">Valor Negociable</option>
+                                                <option value="117">Deudor</option>
+                                                <option value="118">Deudor Venta</option>
+                                                <option value="119">Deudor Incobrable</option>
+                                                <option value="1110">Documento por Cobrar</option>
+                                                <option value="1111">Anticipo</option>
+                                                <option value="1112">Impuesto por Recuperar</option>
+                                                <option value="1113">Existencia</option>
+                                                <option value="1114">Gasto Anticipado</option>
+                                                <option value="1115">Cuenta Corriente Socio</option>
+                                                <option value="1116">Cuenta Obligada Socio</option>
+                                                <option value="1117">Gasto Diferido</option>
+                                                <option value="1118">Gasto Tributario</option>
+                                                <option value="1119">Importación en Transito</option>
+                                                <option value="1120">Gasto Rechazado</option>
+                                            </optgroup>
+                                            <optgroup label="ACTIVO FIJO">
+                                                <option value="121">Bienes Raices</option>
+                                                <option value="122">Vehiculos y Equipo Transporte</option>
+                                                <option value="123">Maquina y Equipo</option>
+                                                <option value="124">Depreciación Acumulada</option>
+                                                <option value="125">Depreciación Ejercicio</option>
+                                                <option value="126">Otros Activos Fijos</option>
+                                            </optgroup>
+                                            <optgroup label="OTROS ACTIVOS">
+                                                <option value="131">Derecho Otras Empresas</option>
+                                                <option value="132">Derecho De Llaves</option>
+                                                <option value="133">Fluctuación de Valores</option>
+                                                <option value="134">Marca Comercial</option>
+                                            </optgroup>
+                                            <optgroup label="CUENTAS DE ORDEN DEBE">
+                                                <option value="141">Boleta de Garantía</option>
+                                                <option value="142">Letra Descontada</option>
+                                                <option value="143">Documento en Garantía</option>
+                                                <option value="144">Acciones Suscritas</option>
+                                                <option value="145">Depreciación Acumulada Activos</option>
+                                                <option value="146">Pérdida del Ejercicio</option>
+                                            </optgroup>
+                                            <optgroup label="________________________"></optgroup>
+                                            <optgroup label="PASIVO CIRCULANTE">
+                                                <option value="211">Banco Acreedor</option>
+                                                <option value="212">Otro Acreedor</option>
+                                                <option value="213">Dividendo por Pagar</option>
+                                                <option value="214">Cuenta por Pagar</option>
+                                                <option value="215">Documento por Pagar</option>
+                                                <option value="216">Acreedores Varios</option>
+                                                <option value="217">Provision o Retension</option>
+                                                <option value="218">Impuesto Renta</option>
+                                                <option value="219">Ingreso Adelantado</option>
+                                                <option value="2110">Cuenta Traspaso</option>
+                                                <option value="2111">Cuenta Corriente Socio</option>
+                                                <option value="2112">Cuenta Proveedor</option>
+                                            </optgroup>
+                                            <optgroup label="PASIVO LARGO PLAZO">
+                                                <option value="221">Crédito Largo Plazo</option>
+                                                <option value="222">Aduana Diferido</option>
+                                                <option value="223">Documento por Pagar Largo Plazo</option>
+                                                <option value="224">Provisiones Varias</option>
+                                                <option value="225">Crédito Reajustable</option>
+                                            </optgroup>
+                                            <optgroup label="PATRIMONIO">
+                                                <option value="231">Capital</option>
+                                                <option value="232">Reserva de Revalorización</option>
+                                                <option value="233">Fluctuación de Valores</option>
+                                                <option value="234">Utilidad (Pérdida) Retención</option>
+                                            </optgroup>
+                                            <optgroup label="________________________"></optgroup>
+                                            <optgroup label="RESULTADOS/PERDIDAS">
+                                                <option value="311">Costo de Explotación</option>
+                                                <option value="312">Gasto de Administración</option>
+                                                <option value="313">Gasto Financiero</option>
+                                                <option value="314">Multas</option>
+                                                <option value="315">Gastos de Venta</option>
+                                                <option value="316">Egresos No Operacionales</option>
+                                                <option value="317">Correción Monetaria</option>
+                                            </optgroup>
+                                            <optgroup label="RESULTADOS/GANANCIA">
+                                                <option value="321">Ingreso de Explotación</option>
+                                                <option value="322">Venta Socio</option>
+                                                <option value="323">Venta NO Socio</option>
+                                                <option value="324">Reajustes</option>
+                                                <option value="325">Correción Monetaria</option>
+                                            </optgroup>
+                                        </select> 
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="glosa" class="control-label">Glosa Item</label>
+                                        <input type="text" class="form-control" id="Glosa" name="Glosa" placeholder="Descripción de Item">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="FechaDoc" class="control-label">Fecha Documento</label>
+                                        <input type="text" class="form-control" id="FechaDoc" name="FechaDoc">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="Monto" class="control-label">Monto</label>
+                                        <input type="number" class="form-control" id="Monto" name="Monto" placeholder="0">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="AddItem" id="AddItem" class="btn btn-4" ><i class="fa fa-money"></i>&nbsp; Agregar Item</button>
+                                
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            </div>
+                                
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div id="myModal1" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        @using (Html.BeginForm("CuentaContableDO", "Home", FormMethod.Post, new { id = "CuentaContableDO" }))
+            {
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Agregar Nuevo Item de Cuenta Contable</h4>
+                                </div>
+                                <div id="ModyBody" class="modal-body">
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label for="glosa" class="control-label">Nueva Cuenta</label>
+                                            <input type="text" class="form-control" id="Cta" name="Cta" placeholder="Nombre Nueva Cuenta">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="Cuenta" class="control-label">Tipo Cuenta</label>
+                                            <select class="form-control required" id="TipoContable" name="TipoContable">
+                                                    <option value="1">ACTIVO CIRCULANTE</option>
+                                                    <option value="2">ACTIVO FIJO</option>
+                                                    <option value="3">OTROS ACTIVOS</option>
+                                                    <option value="4">CUENTAS DE ORDEN DEBE</option>
+                                                    <option value="5">PASIVO CIRCULANTE</option>
+                                                    <option value="6">PASIVO LARGO PLAZO</option>
+                                                    <option value="7">PATRIMONIO</option>
+                                                    <option value="8">RESULTADOS/PERDIDAS</option>
+                                                    <option value="9">RESULTADOS/GANANCIA</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="AddCta" id="AddCta" class="btn btn-4"><i class="fa fa-list"></i>&nbsp; Agregar Nueva Cuenta</button>
+
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+
+    .container {
+        padding-top: 30px;
+        border: 3px solid #000;
+        width: 1000px !important;
+    }
+
+    .emisor {
+        font-size: 10px;
+    }
+
+    .factura {
+        border: solid 2px red;
+        color: #ff0000;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .sii {
+        color: #ff0000;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .fecha {
+        vertical-align: middle;
+    }
+
+    .receptor {
+        border-top: solid 2px #000;
+        border-bottom: solid 2px #000;
+        font-size: 12px;
+    }
+
+    .detalle {
+        /*border-bottom: solid 1px #000;*/
+    }
+
+    .montos {
+        border: solid 2px #000;
+    }
+
+    .DETAILBODY {
+        padding-top: 10px;
+    }
+
+    .detalles {
+        /*border: solid 1px #000;*/
+    }
+
+    .contorno {
+        border-top: solid 1px #000;
+        border-bottom: solid 1px #000;
+        display: table;
+    }
+
+    .final {
+        padding-top: 30px;
+    }
+
+    .rec {
+        border: 1px solid #000;
+    }
+
+    .modal-lg {
+        width: 80%;
+    }
+
+    th {
+        white-space: nowrap;
+    }
+
+    .btn-4 {
+    color: #fff;
+    background-color: #42B8CF;
+    border-color: #0F879E;
+}
+   
+</style>
+<script>
+
+
+	var oTable;
+
+	$(document).ready(function () {
+
+
+	    oTable = $('#dataTables-example').DataTable({
+
+
+
+
+	        "sPaginationType": "full_numbers",
+	        "footerCallback": function (row, data, start, end, display) {
+	            var api = this.api(), data;
+	            // Remove the formatting to get integer data for summation
+	            var intVal = function (i) {
+	                return typeof i === 'string' ? i.replace(/[\$,.]/g, '') * 1 : typeof i === 'number' ? i : 0;
+	            };
+
+	            // total_salary over all pages
+	            total_salary = api.column(6).data().reduce(function (a, b) {
+	                return intVal(a) + intVal(b);
+	            }, 0);
+
+	            // total_page_salary over this page
+	            total_page_salary = api.column(6, { page: 'current' }).data().reduce(function (a, b) {
+	                return intVal(a) + intVal(b);
+	            }, 0);
+
+	            total_page_salary = parseFloat(total_page_salary);
+	            total_salary = parseFloat(total_salary);
+
+
+	            // Update footer
+	            $('#totalSalary').html("Total $ " + total_page_salary.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " de $ " + total_salary.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."));
+	        },
+
+			responsive: true,
+			pageLength: 25,
+
+            //botones
+			dom: 'B<"clear">lfrtip',
+			sSearch:false,
+			buttons: true,
+			buttons: {
+			    buttons: ['excel'],
+			    buttons: [
+        { extend: 'excel', text: 'Exportar a Excel', className:'btn red' }]
+
+
+			},
+
+
+			"order": [[2, "desc"]],
+
+			"language": {
+			    "lengthMenu": "Mostrar _MENU_ resultados por página",
+			    "zeroRecords": "No se encontraron resultados - lo lamentamos",
+			    "info": "Mostrando página _PAGE_ de _PAGES_",
+			    "infoEmpty": "No hay resultados disponibles",
+			    "infoFiltered": "(Filtrando de _MAX_ resultados)",
+			  "sSearch": "Buscar: ",
+			    "paginate": {
+			        "first": "Primer",
+			        "last": "Último",
+			        "next": "Siguiente",
+			        "previous": "Anterior"
+			    },
+			}
+	    });
+
+
+
+
+		$.datepicker.setDefaults($.datepicker.regional['es']);
+		$("#FechaDoc").datepicker();
+		$("#max").datepicker();
+
+		$('#min').change(function () { oTable.draw(); });
+		$('#max').change(function () { oTable.draw(); });
+	});
+
+
+
+	function ModalCharge(_idFactura) {
+		var url = '@Url.Action("GetVisualizacionFactura")';
+		var facturaID = _idFactura;
+		$('#myModal').modal('hide');
+		$("#ModyBody").html("<div class='row'><div class='col-md-2 col-md-offset-5'><i class='fa fa-spinner fa-pulse fa-5x fa-fw center-block' style='color:#FF8613'></i><br><br></div></div>");
+		$('#myModal').modal('show');
+		$.getJSON(url, { facturaID: facturaID},
+
+			function (data) {
+				if (data.ok == false) {
+					$("#ModyBody").html("Factura no encontrada");
+
+				}
+				else {
+					$("#ModyBody").html(data.htmlModal);
+				}
+			}
+		);
+	}
+
+
+</script>

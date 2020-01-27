@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewBag.Title = "Honorarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Honorarios</h2>
+
+<div class="row form-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-8">
+                   Ingresar Honorarios
+                </div>
+
+            </div>
+        </div>
+        <div class="panel-body">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th>Fecha Doc</th>
+                        <th>Rut</th>
+                        <th>Nombre</th>
+                        <th>Glosa</th>
+                        <th>Monto Bruto</th>
+                        <th>Retencion 10%</th>
+                        <th>Monto Liquido</th>
+                    </tr>
+                </thead>
+
+                <tr>
+
+                    <td width="110px">
+                        <input type="text" class="form-control date" name="fechadoc" required />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="rut" id="rut" required />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="nombre" id="nombre" required />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="glosa" id="glosa" required />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="bruto" id="bruto" value="0" required />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="retencion" id="retencion" value="0" required />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="liquido" id="liquido" value="0" required />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false">X</button>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <div class="row">
+                <button type="submit" class="btn btn-primary center-block">Agregar Honorarios</button>
+            </div>
+        </div>
+       
+    </div>
+</div>
+

@@ -1,0 +1,82 @@
+﻿@using (Html.BeginForm("DTERecibido", "FMSend", FormMethod.Post, new { id = "DTERecibido" }))
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Factura de Compra Recibida</h1>
+        </div>
+    </div>
+    <div class="panel panel-2">
+        <div class="panel-heading">
+        </div>
+        <div class="panel-body">
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label class="control-label">Tipo Documento:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="" id="TipoDTEE" name="TipoDTEE" type="text">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Folio:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="" id="FolioE" name="FolioE" type="text">
+                </div>
+                </div>
+            <div class="row form-group">
+                <div class="col-md-2">
+                    <label class="control-label">Rut Emisor:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="11111111-1" id="RutE" name="RutE" type="text">
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">Razon Social Emisor:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="" id="RazonSocialE" name="RazonSocialE" type="text">
+                </div>
+                <div class="col-md-2">
+    <label class="control-label">Fecha DTE:</label>
+    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="" id="FechaE" name="FechaE" type="text">
+</div>
+
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-2">
+                    <label class="control-label">Monto Exento:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="0" id="MontoEXEE" name="MontoEXEE" type="text">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Monto Neto:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="0" id="MontoNetoE" name="MontoNetoE" type="text">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Monto Iva:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="0" id="MontoIvaE" name="MontoIvaE" type="text">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Monto Total:</label>
+                    <input autocomplete="on" class="form-control disabled" maxlength="12" size="10" placeholder="0" id="MontoTotalE" name="MontoTotalE" type="text">
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label class="control-label">Modificar Estado:</label>
+                    <select class="form-control custom-select" id="AcepE" name="AcepE" value="">
+                        <option value="">Seleccionar</option>
+                        <option value="1">Aceptado</option>
+                        <option value="2">Rechazado</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Glosa:</label>
+                    <input autocomplete="on" class="form-control" maxlength="12" size="10" placeholder="Descripcion de modificación" id="GlosaE" name="GlosaE" type="text">
+                </div>
+                </div>
+
+
+
+
+            </div>
+        <div style="text-align: center;">
+            <input value="Modificar" name="Button_Update" class="btn btn-primary" type="submit">
+            <br><br>
+        </div>
+    </div>
+}
+

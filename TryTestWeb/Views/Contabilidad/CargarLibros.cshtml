@@ -1,0 +1,106 @@
+﻿
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Cargar Libros</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Cargar Libros
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("ImportarLibroSIICentralizacion", "Contabilidad", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+{
+
+    <div class="col-m4-4">
+        <div class="row form-group">
+         
+            <div class="col-md-4">
+                <label>Establezca una fecha de contabilización*</label>
+                <input type="text" id="fecont" name="fecont" value="" placeholder="Ingresa una fecha de contabilización" class="form-control" autocomplete="off" required/>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="panel panel-cert">
+        <div class="panel-heading">
+            Importar CSV SII
+        </div>
+        <div class="panel-body">
+            <div  id="datos" class="row">
+                <div class="col-md-8">
+                    <label class="control-label" for="caf">Cargar .CSV</label>
+                    <input name="files" id="files" type="file" accept=".csv">
+                </div>
+                <div class="col-md-4" style="text-align: center;">
+                    <input  class="btn btn-primary redondo btnPress" value="Importar" name="Save" type="submit" />
+                </div>
+            </div>
+            <div class="row" id="carga" style="display:none;">
+                <center> <img src="~/Content/images/gif-load.gif" /> <br/> <br /> <b>Cargando...</b> </center>
+            </div>
+           
+
+           
+        </div>
+    </div>
+
+    <script>
+
+        //$(document).ready(function () {
+        //    $.datepicker.regional['es'] = {
+        //        closeText: 'Cerrar',
+        //        prevText: '<Ant',
+        //        nextText: 'Sig>',
+        //        currentText: 'Hoy',
+        //        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        //        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        //        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        //        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+        //        dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+        //        weekHeader: 'Sm',
+        //        dateFormat: 'dd-mm-yy',
+        //        firstDay: 1,
+        //        isRTL: false,
+        //        showMonthAfterYear: false,
+        //        yearSuffix: ''
+        //    };
+        //    $.datepicker.setDefaults($.datepicker.regional['es']);
+        //    $("#fecont").datepicker();
+        //})
+        $("#fecont").datepicker();
+
+        $(".btnPress").on("click", function () {
+
+            var FechaCont = document.querySelector("#fecont").value;
+
+            var valid = true;
+            if (FechaCont == null || FechaCont == "") {
+                alert("Ingresa una fecha de contabilización");
+                valid = false;
+            } else {
+                valid = true;
+                $("#files").attr("readonly", "true");
+                $("#datos").attr("style", "display:none;");
+                $("#carga").removeAttr("style");
+            }
+
+            //$(".btnPress").attr("disabled", "true");
+         
+        });
+
+    </script>
+}
+

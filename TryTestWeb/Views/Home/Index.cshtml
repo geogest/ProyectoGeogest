@@ -1,0 +1,370 @@
+
+
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn-group pull-right m-t-30">
+
+         
+              </div>
+        </div><!--col-lg-4-->
+    </div>
+
+
+
+
+
+@*<script type="text/javascript">
+    // Load google charts
+
+    $(document).ready(function () {
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChart2);
+        google.charts.setOnLoadCallback(drawChart3);
+        google.charts.setOnLoadCallback(drawChart4);
+        google.charts.setOnLoadCallback(drawChart5);
+        google.charts.setOnLoadCallback(drawChart6);
+
+        // Draw the chart and set the chart values
+        function drawChart() {
+
+            @{decimal VentasPagadas = 0; }
+            @{decimal VentasPendientes = 0; }
+
+            @if (ViewBag.VENTA_totales_pagadas_anual == 0 && ViewBag.VENTA_totales_NO_pagadas_anual == 0) {
+                VentasPagadas = 0.1m;
+                VentasPendientes = 0.1m;
+            } else {
+                VentasPagadas = ViewBag.VENTA_totales_pagadas_anual;
+                VentasPendientes = ViewBag.VENTA_totales_NO_pagadas_anual;
+            }
+
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Estado');
+            data.addColumn('number', 'Percentage');
+            data.addRows([
+               ['Pagados', @VentasPagadas],
+               ['Impagos',  @VentasPendientes]
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = {
+                legend: { position: 'bottom' },
+                pieHole: 0.4,
+                //'width': 250,
+                //'height': 200,
+                'colors': ['#0A5A98', '#5d9cec']
+            };
+
+            function VentasMesAnual() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var selekshun = data.getValue(selectedItem.row, 0);
+                    if (selekshun == 'Pagados') {
+                        window.location.href = '@Html.Raw(Url.Action("ListaFacturas", "Home", new { meses = 13, anno = DateTime.Now.Year, id_pagados = 1 }))';
+                    }
+                    else if (selekshun == 'Impagos') {
+                        window.location.href = '@Html.Raw(Url.Action("ListaFacturas", "Home", new { meses = 13, anno = DateTime.Now.Year, id_pagados = 2 }))';
+                    }
+                    else {
+                        window.location.href = '@Url.Action("ListaFacturas", "Home")';
+                    }
+                }
+            }
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+            chart.draw(data, options);
+            google.visualization.events.addListener(chart, 'select', VentasMesAnual);
+        }
+
+        // Draw the chart and set the chart values
+        function drawChart2() {
+
+            @{decimal ComprasPagadas = 0; }
+            @{decimal ComprasPendientes = 0; }
+
+            @if (ViewBag.COMPRA_anual_pagadas == 0 && ViewBag.COMPRA_anual_NO_pagadas == 0) {
+                ComprasPagadas = 0.1m;
+                ComprasPendientes = 0.1m;
+            } else {
+                ComprasPagadas = ViewBag.COMPRA_anual_pagadas;
+                ComprasPendientes = ViewBag.COMPRA_anual_NO_pagadas;
+            }
+
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Estado');
+            data.addColumn('number', 'Percentage');
+            data.addRows([
+               ['Pagados', @ComprasPagadas],
+               ['Impagos',  @ComprasPendientes]
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = {
+                legend: { position: 'bottom' },
+                pieHole: 0.4,
+                //'width': 250,
+                //'height': 200,
+                'colors': ['#00A944', '#81c868']
+            };
+
+            function ComprasMesAnual() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var selekshun = data.getValue(selectedItem.row, 0);
+                    if (selekshun == 'Pagados') {
+                        window.location.href = '@Html.Raw(Url.Action("DTEsRecibidos", "FMSend", new { meses = 13, anno = DateTime.Now.Year, id_pagados = 1 }))';
+                    }
+                    else if (selekshun == 'Impagos') {
+                        window.location.href = '@Html.Raw(Url.Action("DTEsRecibidos", "FMSend", new { meses = 13, anno = DateTime.Now.Year, id_pagados = 2 }))';
+                    }
+                    else {
+                        window.location.href = '@Url.Action("DTEsRecibidos", "FMSend")';
+                    }
+                }
+            }
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+            chart.draw(data, options);
+            google.visualization.events.addListener(chart, 'select', ComprasMesAnual);
+        }
+
+        // Draw the chart and set the chart values
+        function drawChart3() {
+
+            @{decimal GastosPagadas = 0; }
+            @{decimal GastosPendientes = 0; }
+
+            @if (ViewBag.OTROSEgresosFijos_anual_pagados_totales == 0 && ViewBag.OTROSEgresosFijos_anual_noPagados_totales == 0) {
+                GastosPagadas = 0.1m;
+                GastosPendientes = 0.1m;
+            } else {
+                GastosPagadas = ViewBag.OTROSEgresosFijos_anual_pagados_totales;
+                GastosPendientes = ViewBag.OTROSEgresosFijos_anual_noPagados_totales;
+            }
+
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Estado');
+            data.addColumn('number', 'Percentage');
+            data.addRows([
+               ['Pagados', @GastosPagadas],
+               ['Impagos',  @GastosPendientes]
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = {
+                legend: { position: 'bottom' },
+                pieHole: 0.4,
+               // 'width': 250,
+                //'height': 200,
+                'colors': ['#EBC301', '#ffbd4a']
+            };
+
+            function GastosMesAnual() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var selekshun = data.getValue(selectedItem.row, 0);
+                    if (selekshun == 'Pagados') {
+                        window.location.href = '@Html.Raw(Url.Action("ListaEgresosFijos", "Home", new { meses = 13, anno = DateTime.Now.Year, id_pagados = 1 }))';
+                    }
+                    else if (selekshun == 'Impagos') {
+                        window.location.href = '@Html.Raw(Url.Action("ListaEgresosFijos", "Home", new { meses = 13, anno = DateTime.Now.Year, id_pagados = 2 }))';
+                    }
+                    else {
+                        window.location.href = '@Url.Action("ListaEgresosFijos", "Home")';
+                    }
+                }
+            }
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart3'));
+            chart.draw(data, options);
+            google.visualization.events.addListener(chart, 'select', GastosMesAnual);
+        }
+
+        // Draw the chart and set the chart values
+        function drawChart4() {
+
+            @{decimal VentasMesPagadas = 0; }
+            @{decimal VentasMesPendientes = 0; }
+
+            @if (ViewBag.VENTA_totales_pagadas_mensual == 0 && ViewBag.VENTA_totales_NO_pagadas_mensual == 0) {
+                VentasMesPagadas = 0.1m;
+                VentasMesPendientes = 0.1m;
+            } else {
+                VentasMesPagadas = ViewBag.VENTA_totales_pagadas_mensual;
+                VentasMesPendientes = ViewBag.VENTA_totales_NO_pagadas_mensual;
+            }
+
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Estado');
+            data.addColumn('number', 'Percentage');
+            data.addRows([
+               ['Pagados', @VentasMesPagadas],
+               ['Impagos',  @VentasMesPendientes]
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = {
+                legend: { position: 'bottom' },
+                pieHole: 0.4,
+                //'width': 250,
+                //'height': 200,
+                //chartArea:{left:0,top:30,width:'80%',height:'80%'},
+                'colors': ['#0A5A98', '#5d9cec']
+            };
+
+            function VentasMes() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var selekshun = data.getValue(selectedItem.row, 0);
+                    if (selekshun == 'Pagados')
+                    {
+                        window.location.href = '@Url.Action("ListaFacturas", "Home", new { id_pagados = 1 })';
+                    }
+                    else if (selekshun == 'Impagos')
+                    {
+                        window.location.href = '@Url.Action("ListaFacturas", "Home", new { id_pagados = 2 })';
+                    }
+                    else
+                    {
+                        window.location.href = '@Url.Action("ListaFacturas", "Home")';
+                    }
+                }
+            }
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart4'));
+            chart.draw(data, options);
+            google.visualization.events.addListener(chart, 'select', VentasMes);
+        }
+
+
+        // Draw the chart and set the chart values
+        function drawChart5() {
+
+            @{decimal ComprasMesPagadas = 0; }
+            @{decimal ComprasMesPendientes = 0; }
+
+                            @if (ViewBag.COMPRA_Mensual_pagadas == 0 && ViewBag.COMPRA_Mensual_NO_pagadas == 0) {
+                                ComprasMesPagadas = 0.1m;
+                                ComprasMesPendientes = 0.1m;
+                            } else {
+                                ComprasMesPagadas = ViewBag.COMPRA_Mensual_pagadas;
+                                ComprasMesPendientes = ViewBag.COMPRA_Mensual_NO_pagadas;
+                            }
+
+
+                            var data = new google.visualization.DataTable();
+                            data.addColumn('string', 'Estado');
+                            data.addColumn('number', 'Percentage');
+                            data.addRows([
+
+
+                               ['Pagados', @ComprasMesPagadas],
+               ['Impagos',  @ComprasMesPendientes]
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = {
+                legend: { position: 'bottom' },
+                pieHole: 0.4,
+               // 'width': 250,
+                // 'height': 200,
+                'colors': ['#00A944', '#81c868']
+            };
+
+            function ComprasMes() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var selekshun = data.getValue(selectedItem.row, 0);
+                    if (selekshun == 'Pagados') {
+                        window.location.href = '@Url.Action("DTEsRecibidos", "FMSend", new { id_pagados = 1 })';
+                    }
+                    else if (selekshun == 'Impagos') {
+                        window.location.href = '@Url.Action("DTEsRecibidos", "FMSend", new { id_pagados = 2 })';
+                    }
+                    else {
+                        window.location.href = '@Url.Action("DTEsRecibidos", "FMSend")';
+                    }
+                }
+            }
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart5'));
+            chart.draw(data, options);
+            google.visualization.events.addListener(chart, 'select', ComprasMes);
+        }
+
+        // Draw the chart and set the chart values
+        function drawChart6() {
+
+            @{decimal GastosMesPagadas = 0; }
+            @{decimal GastosMesPendientes = 0; }
+
+                            @if (ViewBag.OTROSEgresosFijos_mensual_pagados_totales == 0 && ViewBag.OTROSEgresosFijos_mensual_noPagados_totales == 0) {
+                                GastosMesPagadas = 0.1m;
+                                GastosMesPendientes = 0.1m;
+                            } else {
+                                GastosMesPagadas = ViewBag.OTROSEgresosFijos_mensual_pagados_totales;
+                                GastosMesPendientes = ViewBag.OTROSEgresosFijos_mensual_noPagados_totales;
+                            }
+
+
+                            var data = new google.visualization.DataTable();
+                            data.addColumn('string', 'Estado');
+                            data.addColumn('number', 'Percentage');
+                            data.addRows([
+
+
+                               ['Pagados', @GastosMesPagadas],
+               ['Impagos',  @GastosMesPendientes]
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = {
+                legend: { position: 'bottom' },
+                pieHole: 0.4,
+               // 'width': 250,
+               // 'height': 200,
+                'colors': ['#EBC301', '#ffbd4a']
+            };
+
+            function GastosMes() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var selekshun = data.getValue(selectedItem.row, 0);
+                    if (selekshun == 'Pagados') {
+                        window.location.href = '@Url.Action("ListaEgresosFijos", "Home", new { id_pagados = 1 })';
+                    }
+                    else if (selekshun == 'Impagos') {
+                        window.location.href = '@Url.Action("ListaEgresosFijos", "Home", new { id_pagados = 2 })';
+                    }
+                    else {
+                        window.location.href = '@Url.Action("ListaEgresosFijos", "Home")';
+                    }
+                }
+            }
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart6'));
+            chart.draw(data, options);
+            google.visualization.events.addListener(chart, 'select', GastosMes);
+        }
+    });
+</script>*@ 
+
+
+
+
+
+
+

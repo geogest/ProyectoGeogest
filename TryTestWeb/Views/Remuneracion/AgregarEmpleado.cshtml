@@ -1,0 +1,1032 @@
+﻿
+@model EmpleadoModel
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+@{
+    ViewBag.Title = "AgregarEmpleado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+
+<style>
+    .border-r-1 {
+        border-right: 1px solid #dddddd !important;
+    }
+</style>
+
+<div id="datos">
+    <div class="row form-group">
+        @using (Html.BeginForm("InsertarEmpleado", "Remuneracion", FormMethod.Post, new { id = "InsertarEmpleado" }))
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header-2">
+                        <h2 class="page-header">Nuevo Empleado</h2>
+                        <ol class="breadcrumb">
+
+                            <li>
+                                <a href="#">Empleados</a>
+                            </li>
+                            <li class="active">
+                                Nuevo Empleado
+                            </li>
+                        </ol>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="panel panel-2">
+                <div class="row">
+                    <div class="col-md-12 border-r-1">
+
+                        <h3 class="panel-heading">Datos del empleado</h3>
+                        <div class="panel-body">
+
+
+
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="Nombre">Nombre</label>@Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.nombre, "", new { @class = "text-danger parsley-required" })
+
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label" for="apellidos">Apellidos</label>@Html.EditorFor(model => model.apellidos, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.apellidos, "", new { @class = "text-danger parsley-required" })
+                                </div>
+
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="rut">Rut</label>@Html.EditorFor(model => model.rut, new { htmlAttributes = new { @class = "form-control", @id = "rutEmp2", @onblur = "rutFormant('rutEmp2');" } })
+                                    @Html.ValidationMessageFor(m => m.rut, "", new { @class = "text-danger" })
+
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-4">
+                                        <label class="control-label" for="FechaDeNacimiento">Fecha de nacimiento</label>
+                                        <input class="form-control" type="text" name="FechaDeNacimiento" id="FechaDeNacimiento" value="" autocomplete="off" />
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="telefono">Telefono</label>
+                                    @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.telefono, "", new { @class = "text-danger parsley-required" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="control-label" for="direccion">Dirección</label>@Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.direccion, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                            </div>
+
+
+
+                            <div class="row form-group">
+                                <div class="col-md-8">
+                                    <label class="control-label" for="correo">Correo</label>@Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.correo, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+
+                                <div class="col-md-4">
+                                    <label class="control-label" for="region"><!--Ciudad/Localidad-->Región*</label>@Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger" })
+                                    <select name="idRegion" id="idRegion" onchange="javascript:cambiaComuna();" class="form-control select2-selection--single">
+                                        <option name="" value="">Seleccionar</option>
+
+                                        @foreach (var region in ViewBag.Regiones)
+
+                                        {
+
+                                            if (Model.idRegion == region.RegionModelsID)
+                                            {
+                                                <option selected value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+
+                                        }
+
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label" for="comuna">Comuna*</label>@Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger" })
+                                    <select id="idComuna" name="idComuna" class="form-control select2-selection--single">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var comuna in ViewBag.Comunas)
+                                        {
+
+                                            if (Model.idComuna == comuna.ComunaModelsID)
+                                            {
+                                                <option selected value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+                                            }
+
+                                        }
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+
+                                <div class="col-md-4">
+
+                                    <label class="control-label" for="genero">Genero</label>@Html.ValidationMessageFor(m => m.GeneroID, "", new { @class = "text-danger" })
+                                    <select id="GeneroID" name="GeneroID" class="form-control select2-selection--single">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var genero in ViewBag.Genero)
+                                        {
+
+                                            if (Model.GeneroID == genero.GeneroRemuModelsID)
+                                            {
+                                                <option selected value="@genero.GeneroRemuModelsID" name="@genero.GeneroRemuModelsID"> @genero.Genero</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@genero.GeneroRemuModelsID" name="@genero.GeneroRemuModelsID"> @genero.Genero</option>
+                                            }
+
+                                        }
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-4">
+                                    @* @Html.HiddenFor(model => model.Comunas)*@
+                                    <label class="control-label" for="comuna">Estado Civil</label>@Html.ValidationMessageFor(m => m.EstadoCivilID, "", new { @class = "text-danger" })
+                                    <select id="EstadoCivilID" name="EstadoCivilID" class="form-control select2-selection--single">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var ecivil in ViewBag.Ecivil)
+                                        {
+
+                                            if (Model.EstadoCivilID == ecivil.EstadoCivilRemuModelsID)
+                                            {
+                                                <option selected value="@ecivil.EstadoCivilRemuModelsID" name="@ecivil.EstadoCivilRemuModelsID"> @ecivil.EstadoCivil</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@ecivil.EstadoCivilRemuModelsID" name="@ecivil.EstadoCivilRemuModelsID"> @ecivil.EstadoCivil</option>
+                                            }
+
+                                        }
+                                    </select>
+
+                                </div>
+
+
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Nacionalidad</label>@Html.EditorFor(model => model.Nacionalidad, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.Nacionalidad, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div> <!--Row-->
+
+
+
+                    <div class="col-md-12">
+                        <div class="panel-body">
+                            <h3 class="panel-heading">Información de Contrato</h3>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label">Cargo</label>@Html.ValidationMessageFor(m => m.CargoID, "", new { @class = "text-danger" })
+                                    <select class="form-control select custom-select" id="CargoID" name="CargoID">
+                                        <option>Seleccionar</option>
+
+                                        @foreach (var cargo in ViewBag.Cargos)
+                                        {
+                                            if (Model.CargoID == cargo.CargoRemuModelsID)
+                                            {
+                                                <option selected value="@cargo.CargoRemuModelsID">@cargo.NombreCargo</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@cargo.CargoRemuModelsID">@cargo.NombreCargo</option>
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+                            <div class="col-md-4">
+                                <label>Horas Semanales Pactadas</label>@Html.EditorFor(model => model.HorasSem, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                @Html.ValidationMessageFor(m => m.HorasSem, "", new { @class = "text-danger" })
+                               
+                            </div>
+    
+                            </div><!--cargo contrato--->
+
+                            <div class="row form-group">
+
+                                <div class="col-md-4">
+                                    <label class="control-label">Tipo Contrato</label>@Html.ValidationMessageFor(m => m.TipoContratoID, "", new { @class = "text-danger" })
+                                    <select class="form-control select custom-select" id="TipoContratoID" name="TipoContratoID">
+                                        <option>Seleccionar</option>
+
+                                        @foreach (var contrato in ViewBag.TipoContrato)
+                                        {
+                                            if (Model.TipoContratoID == contrato.TipoContratoRemuModelsID)
+                                            {
+                                                <option selected value="@contrato.TipoContratoRemuModelsID">@contrato.TipoContrato</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@contrato.TipoContratoRemuModelsID">@contrato.TipoContrato</option>
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>Estado del contrato</label>@Html.ValidationMessageFor(m => m.EstadoContrato, "", new { @class = "text-danger" })
+                                    <select class="form-control" id="EstadoContrato" name="EstadoContrato">
+                                        <option value="Activo">Activo</option>
+                                        <option value="Inactivo">Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    @* @Html.HiddenFor(model => model.Comunas)*@
+                                    <label class="control-label" for="comuna">Sucursal*</label>@Html.ValidationMessageFor(m => m.SucursalID, "", new { @class = "text-danger" })
+                                    <select id="SucursalID" name="SucursalID" class="form-control select2-selection--single">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var sucursal in ViewBag.Sucursal)
+                                        {
+
+                                            if (Model.SucursalID == sucursal.SucursalRemuModelsID)
+                                            {
+                                                <option selected value="@sucursal.SucursalRemuModelsID" > @sucursal.NombreSucursal</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@sucursal.SucursalRemuModelsID" > @sucursal.NombreSucursal</option>
+                                            }
+
+                                        }
+                                    </select>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Sueldo Liquido</label>@Html.EditorFor(model => model.SueldoLiquido, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.SueldoLiquido, "", new { @class = "text-danger parsley-required" })
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Fecha de ingreso</label>
+                                    <input class="form-control" type="text" name="FechaDeIngreso" id="FechaDeIngreso" value="" autocomplete="off" />
+
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Afecto Ajuste Sueldo Base (Ley 20.281)</label>@Html.ValidationMessageFor(m => m.AjustSueldoBa, "", new { @class = "text-danger" })
+                                    <select class="form-control" id="AjustSueldoBa" name="AjustSueldoBa">
+                                        <option>Seleccionar</option>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Afecto Benef. Semana Corrida(Ley 20.281)</label>@Html.ValidationMessageFor(m => m.BenefSemCorrida, "", new { @class = "text-danger" })
+                                    <select class="form-control" id="BenefSemCorrida" name="BenefSemCorrida">
+                                        <option>Seleccionar</option>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!--Solo Maquetación-->
+
+
+
+                        </div>
+                    </div>
+                    <!--Fin Solo maquetación-->
+
+                    <div class="col-md-12">
+                        <div class="panel-body">
+                            <h3 class="panel-heading">Remuneración</h3>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="Tipo Sueldo Base">Tipo Sueldo Base*</label>@Html.ValidationMessageFor(m => m.TipoSueldoID, "", new { @class = "text-danger" })
+                                    <select id="TipoSueldoID" name="TipoSueldoID" class="form-control select2-selection--single">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var tipoSueldo in ViewBag.TipoSueldo)
+                                        {
+
+                                            if (Model.TipoSueldoID == tipoSueldo.TsueldoBaRemuModelsID)
+                                            {
+                                                <option selected value="@tipoSueldo.TsueldoBaRemuModelsID"> @tipoSueldo.Tsueldo</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@tipoSueldo.TsueldoBaRemuModelsID"> @tipoSueldo.Tsueldo</option>
+                                            }
+
+                                        }
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>$/Mes</label>@Html.EditorFor(model => model.Sueldomes, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.Sueldomes, "", new { @class = "text-danger parsley-required" })
+                                    
+
+                                </div>
+
+                            </div><!--cargo contrato--->
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="comuna">Gratificación Legal</label>@Html.ValidationMessageFor(m => m.GratificacionID, "", new { @class = "text-danger" })
+                                    <select id="GratificacionID" name="GratificacionID" class="form-control select2-selection--single">
+                                        <option value="">Seleccionar</option>
+                                        @foreach (var gratificacion in ViewBag.Gratificacion)
+                                        {
+
+                                            if (Model.GratificacionID == gratificacion.GratificacionRemuModelsID)
+                                            {
+                                                <option selected value="@gratificacion.GratificacionRemuModelsID"> @gratificacion.TipoGratificacion</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@gratificacion.GratificacionRemuModelsID"> @gratificacion.TipoGratificacion</option>
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>Asignación Zona Extrema (%)</label>@Html.EditorFor(model => model.AsigZonaExtre, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.AsigZonaExtre, "", new { @class = "text-danger parsley-required" })
+                                   
+
+                                </div>
+                               
+                            </div>
+
+                            <!--Solo Maquetación-->
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="panel-body">
+                            <h3 class="panel-heading">Información Previsional</h3>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label">AFP</label>@Html.ValidationMessageFor(m => m.AfpID, "", new { @class = "text-danger" })
+                                    <select class="form-control select custom-select" id="AfpID" name="AfpID">
+                                        <option>Seleccionar</option>
+
+                                        @foreach (var afp in ViewBag.Afp)
+                                        {
+                                            if (Model.AfpID == afp.AfpRemuModelsID)
+                                            {
+                                                <option selected value="@afp.AfpRemuModelsID">@afp.NombreAfp</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@afp.AfpRemuModelsID">@afp.NombreAfp</option>
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label">Tramo Familiar</label>@Html.ValidationMessageFor(m => m.AfpID, "", new { @class = "text-danger" })
+                                    <select class="form-control select custom-select" id="TramoID" name="TramoID">
+                                        <option>Seleccionar</option>
+
+                                        @foreach (var tramo in ViewBag.Tramo)
+                                        {
+                                            if (Model.TramoID == tramo.TramoFaRemuModelsID)
+                                            {
+                                                <option selected value="@tramo.TramoFaRemuModelsID">@tramo.TramoFa</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@tramo.TramoFaRemuModelsID">@tramo.TramoFa</option>
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Es Jubilado</label>@Html.ValidationMessageFor(m => m.Jubilado, "", new { @class = "text-danger" })
+                                    <select class="form-control" id="Jubilado" name="Jubilado">
+                                        <option>Selecciona</option>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Cargas Normales</label>@Html.EditorFor(model => model.CargasNormales, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.CargasNormales, "", new { @class = "text-danger parsley-required" })
+                                   
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Cargas Invalidas</label>@Html.EditorFor(model => model.CargasInvalidas, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.CargasInvalidas, "", new { @class = "text-danger parsley-required" })
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Seguro de Cesantia</label>@Html.ValidationMessageFor(m => m.SegCesantia, "", new { @class = "text-danger" })
+                                    <select class="form-control" name="SegCesantia" id="SegCesantia">
+                                        <option>Selecciona</option>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Afecto Seguro Accidentes</label>@Html.ValidationMessageFor(m => m.AfecSeguroAccidente, "", new { @class = "text-danger" })
+                                    <select class="form-control" name="AfecSeguroAccidente" id="AfecSeguroAccidente">
+                                        <option>Selecciona</option>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Fonasa/Isapre</label>
+                                    <select class="form-control" id="IsapreOfonasa" name="IsapreOfonasa">
+                                        <option>Selecciona</option>
+                                        <option id="Isapre" name="Isapre" value="Isapre">Isapre</option>
+                                        <option id="Fonasa" name="Fonasa" value="Fonasa">Fonasa</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4" id="caja-fonasa">
+                                    <label>Fonasa</label>
+                                    <select class="form-control" id="Fonasa" name="Fonasa">
+                                        <option selected value="Si">Fonasa 7%</option>
+                                    </select>
+                                </div>
+                            </div>
+                           
+
+                          
+                          <section id="caja-isapre">
+                            <div class="row form-group">
+
+                           
+                                    <div class="col-md-4">
+                                        <label class="control-label">Isapre</label>@Html.ValidationMessageFor(m => m.IsapreID, "", new { @class = "text-danger" })
+                                        <select class="form-control select custom-select" id="IsapreID" name="IsapreID">
+                                            <option>Seleccionar</option>
+
+                                            @foreach (var isapre in ViewBag.Isapre)
+                                            {
+                                                if (Model.IsapreID == isapre.IsapreRemuModelsID)
+                                                {
+                                                    <option selected value="@isapre.IsapreRemuModelsID">@isapre.NombreIsapre</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@isapre.IsapreRemuModelsID">@isapre.NombreIsapre</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Tipo de Pacto</label>
+                                    <select class="form-control" id="tipo-pacto">
+                                        <option>Selecciona</option>
+                                        <option value="7%">7%</option>
+                                        <option value="Pesos">Pesos</option>
+                                        <option value="UF">UF</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4" id="monto-pactado-pesos" >
+                                    <label>Monto Pactado Pesos</label>
+                                    <input class="form-control" type="number" name="MontoPactado" id="MontoPactado" value="" />
+                                </div>
+
+                                <div class="col-md-4" id="monto-pactado-uf">
+                                    <label>Monto Pactado UF</label>
+                                    <input class="form-control" type="number" name="name"  value="" />
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Moneda Monto GES</label>
+                                    <select class="form-control" id="Ges">
+                                        <option>Selecciona</option>
+                                        <option value="UF">UF</option>
+                                        <option value="Pesos">Pesos</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4" id="Ges-pesos">
+                                    <label>Monto GES Pesos</label>
+                                    <input class="form-control" type="number" id="GES" name="GES" value="" />
+                                </div>
+
+                                <div class="col-md-4" id="Ges-uf">
+                                    <label>Monto GES UF</label>
+                                    <input class="form-control" type="number" id="GES" name="GES" value="" />
+                                </div>
+                            </div>
+
+                            </section>
+
+                            <div class="row form-group">
+                                <h3>Pago Automático de Remuneración (PAR)</h3>
+
+                                <div class="col-md-4">
+                                    <label class="control-label">Tipo de Cuenta</label>@Html.ValidationMessageFor(m => m.TipoCuentaID, "", new { @class = "text-danger" })
+                                    <select class="form-control select custom-select" id="TipoCuentaID" name="TipoCuentaID">
+                                        <option>Seleccionar</option>
+
+                                        @foreach (var tcuenta in ViewBag.TipoCuenta)
+                                        {
+                                            if (Model.TipoCuentaID == tcuenta.TcuentaRemuModelsID)
+                                            {
+                                                <option selected value="@tcuenta.TcuentaRemuModelsID">@tcuenta.TipoCuenta</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@tcuenta.TcuentaRemuModelsID">@tcuenta.TipoCuenta</option>
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="row form-group">
+                                
+                                <br />
+                                <div class="col-md-4">
+                                    <label>N° de Cuenta</label>@Html.EditorFor(model => model.NumCuenta, new { htmlAttributes = new { @class = "form-control", @required = "true", @parsley_trigger = "change", @maxlength = "100" } })
+                                    @Html.ValidationMessageFor(m => m.NumCuenta, "", new { @class = "text-danger parsley-required" })
+
+                                   
+                                </div>
+
+                              
+                                <div class="col-md-4">
+                                    <label class="control-label">Institución</label>@Html.ValidationMessageFor(m => m.BancoID, "", new { @class = "text-danger" })
+                                    <select class="form-control select custom-select" id="BancoID" name="BancoID">
+                                        <option>Selecciona</option>
+
+                                        @foreach (var banco in ViewBag.Banco)
+                                        {
+                                            if (Model.BancoID == banco.BancoRemuModelsID)
+                                            {
+                                                <option selected value="@banco.BancoRemuModelsID">@banco.NombreBanco</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@banco.BancoRemuModelsID">@banco.NombreBanco</option>
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label>Ahorro Provisional Voluntario(APV)</label>
+                                    <select class="form-control" id="apv" name="apv">
+                                        <option>Selecciona</option>
+                                        
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <section id="apv-campos">
+                                <div class="row form-group">
+                                    <div class="col-md-4">
+                                        <label>Moneda Aporte</label>
+                                        <select class="form-control" id="MonedaAporte">
+                                            <option>Selecciona</option>
+                                            <option value="UF">UF</option>
+                                            <option value="Pesos">Pesos</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4" id="MontoAportePesos">
+                                        <label>Monto Aporte</label>
+                                        <input class="form-control" type="number" name="name" value="" />
+                                    </div>
+                                    <div class="col-md-4" id="MontoAporteUf">
+                                        <label>Monto Aporte UF</label>
+                                        <input class="form-control" type="number" name="name" value="" />
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-4">
+                                        <label>Régimen Tributario</label>
+                                        <select class="form-control">
+                                            <option value="Rebaja">Rebaja Impuesto Unico</option>
+                                            <option value="NoRebaja">No Rebaja Impuesto Unico</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Forma</label>
+                                        <select class="form-control">
+                                            <option value="Directo">Directo</option>
+                                            <option value="Indirecto">Indirecto</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-4">
+                                        <label class="control-label">Institución</label>@Html.ValidationMessageFor(m => m.ApvID, "", new { @class = "text-danger" })
+                                        <select class="form-control select custom-select" id="ApvID" name="ApvID">
+                                            <option>Selecciona</option>
+
+                                            @foreach (var apv in ViewBag.Apv)
+                                            {
+                                                if (Model.ApvID == apv.InsApvRemuModelsID)
+                                                {
+                                                    <option selected value="@apv.InsApvRemuModelsID">@apv.NombreInstitucion</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@apv.InsApvRemuModelsID">@apv.NombreInstitucion</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label> Período de Inicio</label>
+                                        <input id="apv-periodo-inicio" class="form-control" type="text" name="name" value="" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </section>
+
+                           
+                            
+                            
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-2">
+
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="@Url.Action("ListadoEmpleado", "Remuneracion")" class="btn btn-primary waves-effect waves-light"><span class="btn-label"><i class="ion-android-arrow-back"></i></span>Volver</a><br>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary waves-effect waves-light" value="InsertarEmpleado" name="Save" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                                </div>
+                                <div class="col-md-2">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div><br />
+                </div> <!--panel-->
+
+            </div>
+        }
+    </div>
+</div>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        cambiaComuna();
+        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
+        //$('.selectpicker').selectpicker();
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+        $("#FechaDeIngreso").datepicker();
+        $("#FechaDeNacimiento").datepicker();
+        $("#apv-periodo-inicio").datepicker();
+
+
+        SelectIsapreOfonasa();
+        SelectTipoDePacto();
+        SelectGes();
+        SelectApvOption();
+        SelectMonedaAporte();
+
+        $("#idRegion").select2();
+        $("#idComuna").select2();
+    });
+
+
+
+
+    function formateaRut(rut) {
+
+        var actual = rut.replace("/^0+/", "");
+        var rutPuntos = "";
+        if (actual != '' && actual.length > 1) {
+            var sinPuntos = actual.replace("/\./g", "");
+            var actualLimpio = sinPuntos.replace("/-/g", "");
+            var inicio = actualLimpio.substring(0, actualLimpio.length - 1);
+
+
+            var dv = actualLimpio.substring(actualLimpio.length - 1);
+            rutPuntos = inicio + "-" + dv;
+        }
+        return rutPuntos;
+    }
+
+        function rutFormant(idRut) {
+
+            var rut = document.getElementById(idRut).value;
+            if (rut.indexOf("-") == -1) {
+                document.getElementById(idRut).value = formateaRut(rut);
+            }
+
+
+        }
+        
+        function SelectIsapreOfonasa() {
+           
+            var IsaOfonasa = document.getElementById("IsapreOfonasa");
+            var Isapre = document.getElementById("caja-isapre");
+            var Fonasa = document.getElementById("caja-fonasa");
+
+            var selectedOption = IsaOfonasa.options[IsaOfonasa.selectedIndex].value;
+
+            if (selectedOption == "Selecciona") {
+                Isapre.style.display = "none";
+                Fonasa.style.display = "none";
+            }
+           
+            IsaOfonasa.addEventListener('change',
+              function () {
+
+                  var selectedOption = this.options[IsaOfonasa.selectedIndex];
+
+                  if (selectedOption.text == "Isapre") {
+                      Isapre.style.display = "block";
+                  } else {
+                      Isapre.style.display = "none";
+                  }
+
+                  if (selectedOption.text == "Fonasa") {
+                      Fonasa.style.display = "block";
+                    
+                  } else {
+                      Fonasa.style.display = "none";
+                  }
+                  console.log(selectedOption.value + ': ' + selectedOption.text);
+              });
+        }
+
+        function SelectTipoDePacto() {
+           
+            var SelectPacto = document.getElementById("tipo-pacto");
+            var InputPactoPesos = document.getElementById("monto-pactado-pesos");
+            var InputPactoUf = document.getElementById("monto-pactado-uf");
+
+            var selectedOption = SelectPacto.options[SelectPacto.selectedIndex].value;
+
+            if (selectedOption == "Selecciona") {
+                InputPactoPesos.style.display = "none";
+                InputPactoUf.style.display = "none";
+            }
+
+            SelectPacto.addEventListener('change', function () {
+
+                var selectedOption = this.options[SelectPacto.selectedIndex];
+
+                if (selectedOption.text == "Pesos") {
+                    InputPactoPesos.style.display = "block";
+                } else {
+                    InputPactoPesos.style.display = "none";
+                }
+
+                if (selectedOption.text == "UF") {
+                    InputPactoUf.style.display = "block";
+                } else {
+                    InputPactoUf.style.display = "none";
+                }
+
+            });
+
+        }
+
+        function SelectGes() {
+
+            var SelectGes = document.getElementById("Ges");
+            var GesPesos = document.getElementById("Ges-pesos");
+            var GesUf = document.getElementById("Ges-uf");
+
+            var selectedOption = SelectGes.options[SelectGes.selectedIndex].value;
+
+            if (selectedOption == "Selecciona") {
+                GesPesos.style.display = "none";
+                GesUf.style.display = "none";
+            }
+
+            SelectGes.addEventListener('change', function () {
+
+                var selectedOption = this.options[SelectGes.selectedIndex];
+
+                if (selectedOption.text == "Pesos") {
+                    GesPesos.style.display = "block";
+                } else {
+                    GesPesos.style.display = "none";
+                }
+
+                if (selectedOption.text == "UF") {
+                    GesUf.style.display = "block";
+                } else {
+                    GesUf.style.display = "none";
+                }
+            });
+
+        }
+
+        function SelectApvOption() {
+
+            var apv = document.getElementById("apv");
+            var apvCampos = document.getElementById("apv-campos");
+
+            var selectedOption = apv.options[apv.selectedIndex].value;
+
+            if (selectedOption == "Selecciona") {
+                apvCampos.style.display = "none";
+            }
+
+            apv.addEventListener('change', function () {
+
+                var selectedOption = this.options[apv.selectedIndex];
+
+                if (selectedOption.text == "Si") {
+                    apvCampos.style.display = "block";
+                } else {
+                    apvCampos.style.display = "none";
+                }
+
+            });
+        }
+
+        function SelectMonedaAporte() {
+
+            var MonedaAporte = document.getElementById("MonedaAporte");
+
+            var MaportePeso = document.getElementById("MontoAportePesos");
+            var MaporteUf = document.getElementById("MontoAporteUf");
+
+            var selectedOption = MonedaAporte.options[MonedaAporte.selectedIndex].value;
+
+            if (selectedOption == "Selecciona") {
+                MaportePeso.style.display = "none";
+                MaporteUf.style.display = "none";
+
+
+
+            }
+
+            MonedaAporte.addEventListener('change', function () {
+                var selectedOption = this.options[MonedaAporte.selectedIndex];
+
+                if (selectedOption.text == "Pesos") {
+                    MaportePeso.style.display = "block";
+                    
+                } else {
+                    MaportePeso.style.display = "none";
+                }
+
+                if(selectedOption.text == "UF"){
+                    MaporteUf.style.display = "block";
+                } else {
+                    MaporteUf.style.display = "none";
+                }
+            });
+        }
+
+
+        //$("#idRegion").on("change", function () {
+        function cambiaComuna() {
+
+            var idRegion = $("#idRegion option:selected").val();
+            var Region = $("#idRegion option:selected").text();
+            var IdComunaActiva = '@Model.idComuna';
+
+            if (Region == "Seleccionar") {
+                $("#idComuna").attr("disabled", "true");
+            } else {
+                $("#idComuna").removeAttr("disabled");
+            }
+            //  console.log(IdComunaActiva);
+            $("#idComuna option").each(function () {
+                var idRegionS = $(this).attr("name");
+                if (idRegion == idRegionS) {
+                    $(this).removeAttr('style');
+                } else {
+                    $(this).attr('style', "display:none;");
+                }
+
+                // console.log('opcion ' + $(this).text() + ' valor ' + $(this).attr('value'))
+            });
+
+            //vuelo a la opcion de inicio del select box
+            if (IdComunaActiva != "") {
+                $("#idComuna").val(IdComunaActiva);
+            }
+            else {
+                $("#idComuna").val("");
+            }
+        }
+
+</script>
+

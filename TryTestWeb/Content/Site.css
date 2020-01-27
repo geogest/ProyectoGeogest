@@ -1,0 +1,72 @@
+﻿body {
+    background-color: #384556;
+    color: #222f3f;
+}
+
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+#factura {
+    background-color: #edf1f4;
+}
+
+.darkinput {
+    color: #222f3f;
+    background-color: #dde3ef;
+}
+
+.bigass {
+    width: 100%;
+    color: #222f3f;
+    background-color: #dde3ef;
+}
+
+.midass {
+    width: 80%;
+}
+
+.grayoutline {
+    border: 1px solid #e6e6e6;
+}
+
+.botonesDetalle {
+    background-color: #59ace0;
+    color: #ecf5f9;
+}
+
+.btnEnviar {
+    background-color: #495972;
+    color: #c4cdd9;
+}
+
+.porcentaje {
+    width: 10px;
+}
+
+hr {
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border: 0;
+    border-top: 1px solid #80cde2;
+}
+
+
+/* Set padding to keep content from hitting the edges */
+/*.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+    */
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+
+/* Set width on the form input elements since they're 100% wide by default */
+/*
+input,
+select,
+textarea {
+}
+*/

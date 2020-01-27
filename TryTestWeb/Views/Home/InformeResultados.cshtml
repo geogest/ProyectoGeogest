@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "InformeResultados";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Page-Title -->
+@using (Html.BeginForm("InformeResultadosExport", "Home", FormMethod.Post, new { id = "MakeFacturaNeo" }))
+{
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn-group pull-right m-t-30">
+            <div class="button-list">
+                <button type="submit" name="Exportar" id="Exportar" class="btn btn-success pull-right" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                    <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                </button>
+            </div>
+        </div>
+        <div class="page-header-2">
+            <h2 class="page-header">Informe Estado de Resultado</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Informes</a>
+                </li>
+                <li class="active">
+                    Informe Estado de Resultado
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-2">
+        <label class="control-label">Seleccione Año</label>
+        <input type="number" class="form-control" name="AnioInput" id="AnioInput" value="@DateTime.Now.Year.ToString()" />
+    </div>
+    <div class="col-lg-3">
+        <label class="control-label">Seleccione Periodo</label>
+        <select class="form-control" name="Periodo" id="Periodo">
+            <option value="1" selected>Primer Semestre (Enero - Junio)</option>
+            <option value="2">Segundo Semestre (Julio - Diciembre)</option>
+            <option value="3">Total Año</option>
+        </select>
+    </div>
+    <div class="col-lg-7">
+
+    </div>
+</div>
+}
+<div class="row m-t-30">
+    <div class="col-lg-12">
+        <div id="parshial">
+            @Html.Partial("InformeResultadosPartial")
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#AnioInput").val(@DateTime.Now.Year);
+        filtrar(filtrarPeriodo);
+        $('#AnioInput').change(function (e) { filtrar(filtrarPeriodo); });
+        $('#Periodo').change(function (e) { filtrarPeriodo(); });
+    });
+
+    function filtrar(callback) {
+        var anio = $('#AnioInput').val();
+
+        $.ajax
+        ({
+            url: "InformeResultadosPartial?anio=" + anio,
+            success: function (html) {
+                $("#parshial").html(html);
+            }
+        }).done(function (data) { if (callback) { callback(); } else { console.log("NO CALLBACK") } });
+        
+    }
+
+    function filtrarPeriodo()
+    {
+        $("#PrimerSemestre").hide();
+        $("#SegundoSemestre").hide();
+        $("#TotalSemestre").hide();
+        var anio = $('#Periodo').val();
+        if (anio == 1)
+        {
+            $("#PrimerSemestre").show();
+        }
+        else if (anio == 2)
+        {
+            $("#SegundoSemestre").show();
+        }
+        else
+        {
+            $("#TotalSemestre").show();
+        }
+    }
+
+</script>

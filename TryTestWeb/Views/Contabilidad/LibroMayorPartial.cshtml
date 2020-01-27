@@ -1,0 +1,85 @@
+﻿@model IList<string[]>
+
+@{string[] rowThingie1 = ParseExtensions.obtieneUnicosEnLista(Model);
+
+
+    for (int i = 0; i < rowThingie1.Length; i++)
+    {
+
+        <h4>@rowThingie1[i]</h4>
+        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables">
+            <thead>
+                <tr>
+                    <th class="FontSize text-center"></th>
+                    <th class="FontSize text-center">FECHA CONTABILIZACION</th>
+                    <th class="FontSize text-center">COMPROBANTE</th>
+                    <th class="FontSize text-center">GLOSA</th>
+                    <th class="FontSize text-center">DEBE</th>
+                    <th class="FontSize text-center">HABER</th>
+                    <th class="FontSize text-center">SALDO</th>
+                    <th class="FontSize text-center">CC</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int totalHaber = 0; }
+                @{int totalDebe = 0; }
+
+                @foreach (string[] rowThingie2 in Model)
+                {
+
+                    if (rowThingie2[8] == rowThingie1[i])
+                    {
+
+
+                        string classAlign = "text-right";
+
+
+                       
+
+                        <tr class="odd gradeX">
+                            @for (int k = 0; k < rowThingie2.Length - 1; k++)
+                            {
+
+                                if (k == 1)
+                                {
+                                    classAlign = "text-left nowrappls";
+
+
+                                }
+                                if (k == 4)
+                                {
+                                    if (rowThingie2[k] != "-") {
+                                        totalDebe = totalDebe + Int32.Parse(rowThingie2[k].Replace(".",""));
+
+                                    }
+
+                                }
+                                if (k == 5) {
+                                    if (rowThingie2[k] != "-")
+                                    {
+                                        totalHaber = totalHaber + Int32.Parse(rowThingie2[k].Replace(".", ""));
+                                    }
+                                }
+
+                            <td class="@classAlign">@rowThingie2[k]</td>
+                            }
+
+                        </tr>
+
+                    }
+
+                }
+                <tr>
+                    <th class="FontSize text-center" colspan="3"></th>    
+                    <th class="FontSize text-right">TOTAL</th>                 
+                    <th class="FontSize text-right">@totalDebe</th>
+                    <th class="FontSize text-right">@totalHaber</th>
+                    @{int total = totalHaber -totalDebe ;}
+                    <th class="FontSize text-right">@total</th>
+                    <th class="FontSize text-center"></th>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+    }
+}

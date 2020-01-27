@@ -1,0 +1,347 @@
+﻿@model ClientesContablesModel
+@{
+    ViewBag.Title = "IngresoCliente";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+<div id="datos">
+    <div class="row form-group">
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-header-2">
+                    <h2 class="page-header">Nuevo Cliente Contable</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">Contabildad</a>
+                        </li>
+                        <li>
+                            <a href="#">-</a>
+                        </li>
+                        <li class="active">
+                            Nuevo Cliente Contable
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        @using (Html.BeginForm("NuevoClientePost", "Contabilidad", FormMethod.Post, new { enctype = "multipart/form-data", id = "DatosCliente" }))
+        {
+
+           <div class="panel panel-2">
+                <div class="row">
+                    <div class="col-md-6 border-r-1">
+                        <h3 class="panel-heading">Datos Empresa </h3>
+                        <div class="panel-body">
+
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="RazonSocial">Razón Social*</label>
+                                    @Html.EditorFor(model => model.RazonSocial, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m.RazonSocial, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label" for="RUTEmpresa">RUT Empresa*</label>
+                                    @Html.EditorFor(model => model.RUTEmpresa, new { htmlAttributes = new { @class = "form-control", @id = "rutEmp", @style = "text-transform:uppercase;" , @onblur = "rutFormant('rutEmp');"} })
+                                    @Html.ValidationMessageFor(m => m.RUTEmpresa, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="control-label" for="giro">Despcrición Giro*</label>
+                                    @Html.EditorFor(model => model.Giro, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m.Giro, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row form-group">
+
+                                <div class="col-md-12">
+                                    <label class="control-label">Actividad Economica</label>
+                                    <select id="idActividad" name="idActividad" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" multiple required>
+                                        @Html.Raw(ViewBag.HtmlStr)
+                                    </select>
+                                  
+                                </div>
+                               
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12 form-group">
+                                    <label class="control-label">Dirección</label>
+                                    @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </div>
+                            <div class="row form-group">
+
+
+
+
+                                <div class="col-md-6">
+
+                                    <label class="control-label" for="ciudad">Región*</label>@Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger" })
+                                    <select name="idRegion" id="idRegion" onchange="javascript:cambiaComuna();" class="form-control">
+                                        <option name="" value="">Seleccionar</option>
+                                        @foreach (var region in ViewBag.Regiones)
+                                        {
+
+                                            if (Model.idRegion == region.RegionModelsID)
+                                            {
+                                                <option selected value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@region.RegionModelsID">@region.nombre</option>
+                                            }
+
+
+                                        }
+
+
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger" })
+
+
+
+
+
+                                </div>
+                                <div class="col-md-6">
+
+                                    <label class="control-label" for="comuna">Comuna*</label>@Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger" })
+                                    <select class="form-control custom-select" id="idComuna" name="idComuna">
+
+                                        <option value=""> Seleccionar </option>
+                                        @foreach (var comuna in ViewBag.Comunas)
+                                        {
+
+
+
+                                            if (Model.idComuna == comuna.ComunaModelsID)
+                                            {
+                                                <option selected value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+                                            }
+                                            else
+                                            {
+
+                                                <option value="@comuna.ComunaModelsID" name="@comuna.idRegion"> @comuna.nombre</option>
+
+                                            }
+
+                                        }
+                                    </select>
+                                     @Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+
+
+                     </div>
+                </div>
+
+
+                    <div class="col-md-6">
+                        <h3 class="panel-heading">Datos Representante Legal</h3>
+                        <div class="panel-body">
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="nombreContacto">Nombre Representante Legal</label>
+                                    @Html.EditorFor(model => model.Representante, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m.Representante, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="EmailContacto">Rut Representante Legal</label>
+                                    @Html.EditorFor(model => model.RUTRepresentante, new { htmlAttributes = new { @class = "form-control" , @id = "rutEmp2", @onblur = "rutFormant('rutEmp2');" } })
+                                    @Html.ValidationMessageFor(m => m.RUTRepresentante, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="control-label" for="Telefono">Telefono Representante Legal</label>
+                                    @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!--Row-->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <a href = "@Url.Action("ListarCliente", "Home")" class="btn btn-success waves-effect waves-light"><span class="btn-label"><i class="ion-android-arrow-back"></i></span>Volver</a><br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <button class="btn btn-success waves-effect waves-light" value="Crear cliente Contable" name="Save" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><br />
+            </div> <!--panel-->
+
+
+            @*<br />
+                <div class="row form-group">
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Rut Empresa</label>
+                        @Html.EditorFor(model => model.RUTEmpresa, new { htmlAttributes = new { @class = "form-control", @style = "text-transform:uppercase;" } })
+                        @Html.ValidationMessageFor(m => m.RUTEmpresa, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3 form-group">
+                        <label class="control-label">Razon Social</label>
+                        @Html.EditorFor(model => model.RazonSocial, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.RazonSocial, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Rut Representante</label>
+                        @Html.EditorFor(model => model.RUTRepresentante, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.RUTRepresentante, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3 form-group">
+                        <label class="control-label">Nombre Representante</label>
+                        @Html.EditorFor(model => model.Representante, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.Representante, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 form-group">
+                        <label class="control-label">Direccion</label>
+                        @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Comuna</label>
+                        <select name="ComunaNumber" id="ComunaNumber">
+                            <option value="0">Comuna</option>
+                            @Html.Raw(ViewBag.opComuna)
+                        </select>
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Ciudad</label>
+                        @Html.EditorFor(model => model.Ciudad, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Telefono</label>
+                        @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">E-mail</label>
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 form-group">
+                        <label class="control-label">Giro</label>
+                        @Html.EditorFor(model => model.Giro, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-lg-6 form-group">
+                        <label class="control-label">Actividad Economica</label>
+                        @Html.EditorFor(model => model.ActEcono, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn btn-primary redondo btnPress">Agregar Cliente Contabilidad</button>
+                </div>*@
+        }
+
+
+        </div>
+
+
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+<script>
+
+    $( document ).ready( function () {
+        cambiaComuna();
+        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
+        //$('.selectpicker').selectpicker();
+       
+        $("#idComuna").select2();
+        $("#idRegion").select2();
+    
+    });
+</script>
+<script>
+
+        //$("#idRegion").on("change", function () {
+
+    function rutFormant(idRut) {
+
+        var rut = document.getElementById(idRut).value;
+        if (rut.indexOf("-") == -1) {
+            document.getElementById(idRut).value = formateaRut(rut);
+        }
+
+
+    }
+
+    function formateaRut(rut) {
+
+        var actual = rut.replace("/^0+/", "");
+        var rutPuntos = "";
+        if (actual != '' && actual.length > 1) {
+            var sinPuntos = actual.replace("/\./g", "");
+            var actualLimpio = sinPuntos.replace("/-/g", "");
+            var inicio = actualLimpio.substring(0, actualLimpio.length - 1);
+
+
+            var dv = actualLimpio.substring(actualLimpio.length - 1);
+            rutPuntos = inicio + "-" + dv;
+        }
+        return rutPuntos;
+    }
+
+    function cambiaComuna() {
+
+        var idRegion = $("#idRegion option:selected").val();
+        var Region = $("#idRegion option:selected").text();
+        var IdComunaActiva = '@Model.idComuna';
+
+        if (Region == "Seleccionar") {
+            $("#idComuna").attr("disabled", "true");
+        } else {
+            $("#idComuna").removeAttr("disabled");
+        }
+      //  console.log(IdComunaActiva);
+        $("#idComuna option").each(function () {
+            var idRegionS = $(this).attr("name");
+            if (idRegion == idRegionS) {
+                $(this).removeAttr('style');
+            } else {
+                $(this).attr('style', "display:none;");
+            }
+
+            // console.log('opcion ' + $(this).text() + ' valor ' + $(this).attr('value'))
+        });
+
+        //vuelo a la opcion de inicio del select box
+        if (IdComunaActiva != "") {
+            $("#idComuna").val(IdComunaActiva);
+        }
+        else {
+            $("#idComuna").val("");
+        }
+      
+
+
+    }
+
+           //$("#idComuna").selectpicker("refresh");
+
+      //  });
+
+
+
+</script>

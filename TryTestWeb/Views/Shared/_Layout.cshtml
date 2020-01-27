@@ -1,0 +1,1101 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    bool isCert = ParseExtensions.ItsUserOnCertificationEnvironment(User.Identity.GetUserId());
+    //bool isLibroNoHecho = ParseExtensions.MostrarAlertaLibro(User.Identity.GetUserId());
+    string logo = ParseExtensions.GetLogoHtml(User.Identity.GetUserId(), Session);
+    string RazonS = ParseExtensions.GetRazonS(User.Identity.GetUserId(), Session);
+    string RazonSocialClienteCont = ParseExtensions.GetRazonSocialClienteCont(User.Identity.GetUserId(), Session);
+
+    string MsgAlertaCertificadoDigital = string.Empty;
+    bool AlertarCertificadoDigital = false;
+
+    // AlertarCertificadoDigital = ParseExtensions.AlertarCertificadoDigitalNearExpiration(User.Identity.GetUserId(), out MsgAlertaCertificadoDigital, Session);
+
+
+    string VistaAccedida = ViewContext.RouteData.Values["action"].ToString();
+
+    //List<string> lstAdvertencias = ParseExtensions.Revisar_Advertir_CAF(User.Identity.GetUserId(), Session);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geogest</title>
+    <meta name="description" content="Sistema de contabilidad" />
+    <meta name="keywords" content="Facturación, Electrónica, Contabilidad, SII, administración" />
+    <meta name="author" content="geogest1.cl" />
+    <meta name="copyright" content="Propietario del copyright Geogest" />
+    <meta http-equiv=”Content-Language” content=”es” />
+ 
+    <!-- AMA [20-03-2018] : Se generan cambios de layout-->
+    @Styles.Render("~/bundles/template2css")
+
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/JQueros")
+  
+    
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/bundles/HTML5Shiv")
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119864475-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-119864475-1');
+    </script>
+
+
+</head>
+
+<body class="fixed-left">
+    
+    <!-- Begin page -->
+    <div id="wrapper" class="forced">
+        <!-- Top Bar Start -->
+        <div class="topbar">
+            <!-- LOGO -->
+            <div class="topbar-left">
+                <div class="text-center">
+                    @*<a href="@Url.Action("Index", "Home")" class="logo"><i class="fa fa-edge icon-c-logo"></i><span>E-Factu</span></a>*@
+                    <!-- Image Logo here -->
+                    <a href="@Url.Action("SeleccionarEmisorDesdeModulos", "Home")" class="logo">
+                    <i class="fa icon-c-logo"><img src="~/Content/images/Logo/simbologeo.png" height="60" /></i>
+                        <span class="text-center"><img src="~/Content/images/Logo/logogeogest.png" height="63" width="240" /></span>
+                    </a>
+                </div>
+            </div>
+            <div class="navbar navbar-default" role="navigation">
+                <div class="container">
+
+                    <div class="pull-left">
+                        <button class="button-menu-mobile open-left waves-effect waves-light">
+                            <i class="md md-menu"></i>
+                        </button>
+                        <span class="clearfix"></span>
+                    </div>
+                    <ul class="nav navbar-nav hidden-xs">
+                        <li><a href="https://desk.zoho.com/portal/efactu/home" target="_blank" class="waves-effect waves-light">Soporte</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ayuda <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><i class="ion-help"></i><span> Registar Clientes</span></a></li>
+                                <li><a href="#"><i class="ion-help"></i><span> Crear Facturas</span></a></li>
+                                <li><a href="#"><i class="ion-help"></i><span> Crear Nota de Crédito</span></a></li>
+                                <li><a href="#"><i class="ion-help"></i><span> Crear Nota de Débito</span></a></li>
+                                <li><a href="#"><i class="ion-help"></i><span> Registar Gastos</span></a></li>
+                                <li><a href="#"><i class="ion-help"></i><span> Facturas Recibidas</span></a></li>
+                                <li><a href="#"><i class="ion-help"></i><span> Registrar Pagos</span></a></li>
+                            </ul>
+                        </li>
+                        @if (!string.IsNullOrWhiteSpace(RazonSocialClienteCont))
+                        {
+                        <li class="waves-effect waves-light">
+                            <a href="#">
+                                <b class="text-white">USTED ESTÁ TRABAJANDO EN:&nbsp;&nbsp;&nbsp;@RazonSocialClienteCont</b>
+                            </a>
+                        </li>
+                         }
+                        @if (ParseExtensions.ItsUserOnCertificationEnvironment(User.Identity.GetUserId()))
+                        {
+                            <li><a href="#" class="waves-effect waves-light"><i class="ion-alert-circled"></i><span><b> Certificación SII</b></span></a></li>
+                        }
+
+                       
+              
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right pull-right">
+
+                        @Html.Partial("_LoginPartial")
+
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========== Left Sidebar Start ========== -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="left side-menu" id="barralateral">
+                <div class="sidebar-inner slimscrollleft">
+                    <!--- Divider -->
+                    <ul id="sidebar-menu">
+                        <ul>
+                            <li class="text-muted menu-title">@RazonS @*Navegación*@</li>
+                          
+                            @if (VistaAccedida != "SeleccionarClienteContable")
+                            {
+
+
+                                            if (ModuloHandler.FuncionRequerida(HttpContext.Current, "Index"))
+                                            {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-home-outline"></i> <span>Inicio </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            <a href="@Url.Action("Index", "Home")"><i class="ion-pie-graph"></i> Panel de Control</a>
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "AdminFunciones") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ImportDocumentsAction") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "DatosEmpresa") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "AgregarUsuario") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "InvitarUsuario") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "Certificacion") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "Register") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ProgramacionEnvioInformes") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "MisUsuarios") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "AsignarCantidadUsuariosYClientes") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "AsignarPerfilUsuario")
+                                    )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-gear-outline"></i> <span> Configuración </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "AdminFunciones"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("AdminFunciones", "FMSend")">Administrar Modulos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ImportDocumentsAction"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ImportDocuments", "FMSend")">Importar DTE</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "DatosEmpresa"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("DatosEmpresa", "Home")">Datos Empresa</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ProgramacionEnvioInformes"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ProgramacionEnvioInformes", "Home")">Informes</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "AgregarUsuario"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("AgregarUsuario", "Account")">Invitar Usuario</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InvitarUsuario"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InvitarUsuario", "Home")">Asignar Permisos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "Certificacion"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("Certificacion", "Home")">Menu Certificacion</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "Register"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("Register", "Account")">Agregar Nueva Empresa</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "MisUsuarios"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("MisUsuarios", "Account")">Mis Usuarios</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "AsignarCantidadUsuariosYClientes"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("AsignarCantidadUsuariosYClientes", "Account")">Cantidad Usuarios y CC</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "AsignarPerfilUsuario"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("AsignarPerfilUsuario", "Account")">Asignar Perfil a usuario</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarCliente") == true)
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-people-outline"></i> <span> Clientes </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarCliente"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListarCliente", "Home")"><i class="ion-person-stalker"></i>Listado Clientes</a>
+                                                </li>
+                                            }
+
+
+                                        </ul>
+                                    </li>
+                                }
+
+
+
+
+
+
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaFacturas") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaNotaCredito") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaNotaDebito") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroViewerVentas") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaFacturasRecurrentes"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-paper-outline"></i> <span> Ventas </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaFacturas"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaFacturas", "Home"@*, new { tipo = "1" }*@)"><i class="ion-ios7-star"></i>Facturas</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaFacturasRecurrentes"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaFacturasRecurrentes", "Home")"><i class="ion-pie-graph"></i>Fact. Recurrentes</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaNotaCredito"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaNotaCredito", "Home"@*, new { tipo = "2" }*@)"><i class="ion-ios7-star-half"></i>Notas Créditos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaNotaDebito"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaNotaDebito", "Home"@*, new { tipo = "3" }*@)"><i class="ion-ios7-star-outline"></i>Notas Débitos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroViewerVentas"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("LibroViewerVentas", "FMSend")"><i class="ion-pie-graph"></i>Libro Ventas</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "DTEsRecibidos") || ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroViewerCompras"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-albums-outline"></i> <span> Compras </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "DTEsRecibidos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("DTEsRecibidos", "FMSend")"><i class="ion-ios7-cloud-upload"></i>Fact. Recibidas</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroViewerCompras"))
+                                            {
+                                                <li>
+
+                                                    <a href="@Url.Action("LibroViewerCompras", "FMSend")"><i class="ion-pie-graph"></i>Libro Compras</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaEgresosFijos") || ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaLiquidaciones") || ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaHonorarios"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-calculator-outline"></i> <span> Gastos </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaEgresosFijos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaEgresosFijos", "Home")"><i class="ion-ios7-pricetags-outline"></i>Gastos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaLiquidaciones"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaLiquidaciones", "Home")"><i class="ion-ios7-browsers"></i>Liquidaciones</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaHonorarios"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaHonorarios", "Home")"><i class="ion-ios7-browsers"></i>Honorarios</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "Index"))
+                                            {
+                                                <li>
+
+                                                    <a href="@Url.Action("VLibroHonorarios", "Home")"><i class="ion-pie-graph"></i>Libro Honorarios</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "Index"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("VLibroRemuneraciones", "Home")" data-toggle="tooltip" data-placement="bottom" title="Libro Remuneraciones" data-original-title="Libro Remuneraciones"><i class="ion-pie-graph"></i>Libro Remunera...</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaPagos"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-cart-outline"></i> <span> Pagos </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            <li>
+                                                <a href="@Url.Action("ListaPagos", "Home")"><i class="ion-cash"></i>Listado Pagos</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                }
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaF29"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="md-account-balance"></i> <span>Declaraciones </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            <li>
+                                                <a href="@Url.Action("ListaF29", "Home")">Listado Declaración (F29)</a>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                }
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeIngresos") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeEgresos") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeResultados") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "VFlujoCaja") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "InformePagos") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeGastos") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeClientesDeudores"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-folder-outline"></i> <span>Informes </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeIngresos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InformeIngresos", "Home")">Informe Ventas</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeEgresos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InformeEgresos", "Home")">Informe Egresos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformePagos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InformePagos", "Home")">Informe Pagos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeClientesDeudores"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InformeClientesDeudores", "Home")">Clientes Deudores</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeGastos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InformeGastos", "Home")">Informe Gastos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeResultados"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InformeResultados", "Home")">Informe Resultados</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "VFlujoCaja"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("VFlujoCaja", "Home")">Flujo de Caja</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ter"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-bookmarks-outline"></i> <span>Tributación </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ter"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ter", "Home")">Informe 14Ter</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeF29"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-folder-outline"></i> <span>Declaraciones </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "InformeF29"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("InformeF29", "Home")">Pre-Formulario 29</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "PanelClienteContable") || ModuloHandler.FuncionRequerida(HttpContext.Current, "SeleccionarClienteContable") ||
+                    ModuloHandler.FuncionRequerida(HttpContext.Current, "AdminUsuariosContables"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-calculator"></i> <span> Inicio Contabilidad  </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "PanelClienteContable"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("PanelClienteContable", "Contabilidad")"> Dashboard Contabilidad</a>
+                                                </li>
+
+
+                                            }
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "SeleccionarClienteContable"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("SeleccionarClienteContable", "Contabilidad")">Seleccionar Cliente Contable</a>
+                                                </li>
+                                            }
+
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "AdminUsuariosContables"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("AdminUsuariosContables", "Contabilidad")">Admin Usuarios Contables</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarClienteC") == true ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarProveedor") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarPersona") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarHonorarios") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ReestablecerPrestador")
+                                    )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-person-stalker"></i> <span> Prestadores </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarClienteC"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListarClienteC", "Home")"><i class="ion-person-stalker"></i>Clientes</a>
+                                                </li>
+                                            }
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarProveedor"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListarProveedor", "Home")"><i class="ion-person-stalker"></i>Proveedores</a>
+                                                </li>
+                                            }
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarPersona"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListarPersona", "Home")"><i class="ion-person-stalker"></i>Personas</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarHonorarios"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListarHonorarios", "Home")"><i class="ion-person-stalker"></i>Honorarios</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ReestablecerPrestador"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ReestablecerPrestador", "Home")"><i class="ion-person-stalker"></i>Reestablecer Prestadores</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EditarClienteContable") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ParametrizacionCliente") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "NuevoClienteContable") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaCuentasContables") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaCentroCosto"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-android-contact"></i> <span> Cliente Contable </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "NuevoClienteContable"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("NuevoClienteContable", "Contabilidad")">Nuevo Cliente Contable</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EditarClienteContable"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("EditarClienteContable", "Contabilidad")">Editar Cliente Contable</a>
+                                                </li>
+                                            }
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ParametrizacionCliente"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ParametrizacionCliente", "Contabilidad")">Parametros Cliente</a>
+                                                </li>
+                                            }
+
+
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaCuentasContables"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaCuentasContables", "Contabilidad")">Plan de Cuentas</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CtasContPresupuesto"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("CtasContPresupuesto", "Contabilidad")">Plan de Cuentas Presupuesto</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ComparacionCtaPresu"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ComparacionCtaPresu", "Contabilidad")">Comparacion Cuenta Contable & Presupuesto</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "SubSubCtaPresupuesto"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("SubSubCtaPresupuesto", "Contabilidad")">Plan de Cuentas SubSubClasificacion Presupuesto</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaItems"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaItems", "Contabilidad")">Items</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaCentroCosto"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaCentroCosto", "Contabilidad")">Centros de Costo</a>
+                                                </li>
+                                            }
+                                     
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CentroCostosPresupuesto"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("CentroCostosPresupuesto", "Contabilidad")">Centros de Costo Presupuesto</a>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </li>
+                                }
+
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IngresoVoucher") ||
+                        ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVoucher") ||
+                        ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVouchersBaja")
+
+                       )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-android-note"></i> <span> Voucher </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IngresoVoucher"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("IngresoVoucher", "Contabilidad")">Ingresar Voucher</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVoucher"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaVoucher", "Contabilidad")">Lista Vouchers</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVouchersBaja"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaVouchersBaja", "Contabilidad")">Vouchers Borrados</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBancaria") ||
+                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaConciliacion")
+
+           )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-bookmarks-outline"></i> <span> Conciliación </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBancaria"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ConciliacionBancaria", "Contabilidad")">Conciliacion Bancaria</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaConciliacion"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaConciliacion", "Contabilidad")">Lista Conciliaciones</a>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoFijo") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoCirculante") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoCirculante") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoNoCorriente") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoAndPatrimonioNeto") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalActivos") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalPasivos")
+
+                                    )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-stats-bars"></i> <span> Balance </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BalanceGeneral", "Contabilidad")">Balance General</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalActivos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BATotalActivos", "Contabilidad")">Total Activos</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoFijo"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BAActivoFijo", "Contabilidad")">Total Activo Fijo</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoCirculante"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BAActivoCirculante", "Contabilidad")">Total Activo Circulante</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoCirculante"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BAPasivoFijoCirculante", "Contabilidad")">Total Pasivo circulante</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoNoCorriente"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BAPasivoFijoNoCorriente", "Contabilidad")">Total Pasivo No Corriente</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoAndPatrimonioNeto"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BAPasivoAndPatrimonioNeto", "Contabilidad")">Total Patrimonio Neto</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalPasivos"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("BATotalPasivos", "Contabilidad")">Total Pasivos</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                if(
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA")||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT")||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT")||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoBruto")
+                                    )
+                                {
+                                    <li class="has_sub">
+                                      <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-bookmarks-outline"></i><span>Estado de Resultados</span><span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado"))
+                                            {
+                                            <li>
+                                                <a href="@Url.Action("IEstadoResultado","Contabilidad")">Resultado del Ejercicio</a>
+                                            </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("EstadoResultadoEBITDA","Contabilidad")">EBITDA</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("EstadoResultadoEBIT","Contabilidad")">EBIT</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("EstadoResultadoEBT","Contabilidad")">EBT</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoCtaBruto"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("EstadoResultadoCtaBruto","Contabilidad")">Margen Bruto</a>
+                                                </li>
+                                            }
+                                            
+                                  
+                                        </ul>
+                                    </li>
+                                }
+
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "GetExcelReporteIvaProporcional")
+
+                        )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-document-text"></i> <span> Informe </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "GetExcelReporteIvaProporcional"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("GetExcelReporteIvaProporcional", "Contabilidad")">Generar IVA Proporcional</a>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroVenta") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroCompra") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios")
+
+                    )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-android-book"></i> <span> Libro </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("LibroDiario", "Contabilidad")">Libro Diario</a>
+                                                </li>
+                                            }
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("LibroMayorTwo", "Contabilidad")">Libro Mayor</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("LibroDeHonorarios", "Contabilidad")">Libro Honorarios</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroVenta"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("LibroVenta", "Contabilidad")">Libro Venta</a>
+                                                </li>
+                                            }
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroCompra"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("LibroCompra", "Contabilidad")">Libro Compra</a>
+                                                </li>
+                                            }
+
+
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IngresarDocumentoVenta") ||
+                    ModuloHandler.FuncionRequerida(HttpContext.Current, "IngresarDocumentoCompra")
+        )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-bookmarks-outline"></i> <span> Documentos </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IngresarDocumentoVenta"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("IngresarDocumentoVenta", "Contabilidad")">Ingresar Documento Venta</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IngresarDocumentoCompra"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("IngresarDocumentoCompra", "Contabilidad")">Ingresar Documento Compra</a>
+                                                </li>
+                                            }
+
+
+                                        </ul>
+                                    </li>
+                                }
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ImportarDocumento") ||
+                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ImportarBalance") ||
+                     ModuloHandler.FuncionRequerida(HttpContext.Current, "CargarLibros") ||
+                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ImportaCartola") ||
+                     ModuloHandler.FuncionRequerida(HttpContext.Current, "CargarLibrosHonorarios")
+                 )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-merge"></i> <span> Importar </span> <span class="menu-arrow"></span></a>
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ImportarDocumento"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ImportarDocumento", "Contabilidad")">Importar XML</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ImportarBalance"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ImportarBalance", "Contabilidad")">Importar Balance</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CargarLibros"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("CargarLibros", "Contabilidad")">Importar Libros SII</a>
+                                                </li>
+                                            }
+
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CargarLibrosHonorarios"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("CargarLibrosHonorarios", "Contabilidad")">Importar Libros SII Honorarios</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+
+
+                            }
+
+
+                           
+
+                        <!-- //if (ModuloHandler.FuncionAnyContabilidad(HttpContext.Current))-->
+
+                           <!--Remuneraciones-->
+                       @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListadoEmpleado"))
+                       {
+                             <li class="has_sub">
+                                <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-people-outline"></i> <span>Empleados</span> <span class="menu-arrow"></span></a>
+                                <ul class="list-unstyled">
+                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListadoEmpleado"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("ListadoSucursal", "Remuneracion")"><i class="ion-person-stalker"></i>Sucursales</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("ListadoEmpleado", "Remuneracion")"><i class="ion-person-stalker"></i>Listado de Empleados</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
+
+                       }
+
+                        </ul>
+
+                        </ul>
+                </div>
+            </div>
+        }
+        <div>
+            <div class="content-page">
+                <!-- Start content -->
+                <div class="content">
+                    <div id="alert_container">
+                    </div>
+                    <div class="container">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+            <footer class="footer">
+                © 2018. All rights reserved GeoGest. -- Versión: 10.0.1
+            </footer>
+
+        </div>
+
+        <!-- AMA [20-03-2018] : Se generan cambios de layout-->
+        @Scripts.Render("~/bundles/template2js")
+        @Scripts.Render("~/bundles/jqueryval")
+
+
+        <script type="text/javascript">
+           
+            @if (VistaAccedida != null && (VistaAccedida == "SeleccionarEmisorDesdeModulos" || VistaAccedida == "SeleccionarClienteContable"))
+            {
+                @:$("#wrapper").attr('class', 'forced enlarged');
+                        }
+
+            $(document).ready(function () {
+                $(window).keydown(function (event) {
+                    if (event.keyCode == 13) {
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+
+                $.validator.addMethod("rutValidator", function (value, element) {
+                    return this.optional(element) || $.Rut.validar(value);
+                }, "Debe ingresar un rut valido.");
+            });
+
+
+            if ($('[type="date"]').prop('type') != 'date') {
+                $('[type="date"]').datepicker({ dateFormat: 'dd-mm-yy' });
+            }
+
+            $('input.date').datepicker({ dateFormat: 'dd-mm-yy' });
+
+            function ShowMessage(message, messagetype) {
+                var cssclass;
+                var color;
+                switch (messagetype) {
+                    case 'Success':
+                        cssclass = 'alert-success'
+                        color = '#5FBEAA'
+                        break;
+                    case 'Error':
+                        cssclass = 'alert-danger'
+                        color = '#F05050'
+                        break;
+                    case 'Warning':
+                        cssclass = 'alert-warning'
+                        color = '#F2AE43'
+                        break;
+                    default:
+                        cssclass = 'alert-info'
+                }
+                $('#alert_container').append('<div id="alert_div" style="width: 60%; opacity: 1; color: white ;  background :' + color + '; position: absolute; right : 2% ; z-index: 99; margin: 0 0.5%; " class="m-t-40 alert ' + cssclass + ' alert-dismissable"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><span>' + message + '</span></div>');
+            }
+
+            @*@foreach (string alerta in lstAdvertencias)
+            {
+                @:ShowMessage('@alerta', 'Error');
+            }*@
+
+            @if(AlertarCertificadoDigital)
+            {
+                @:ShowMessage('@MsgAlertaCertificadoDigital', 'Error');
+            }
+
+            @if (TempData["ProblemasPagos"] != null)
+            {
+                @:ShowMessage('@TempData["ProblemasPagos"].ToString()', 'Error');
+            }
+            @if(TempData["Error"] != null)
+            {
+                @:ShowMessage('@TempData["Error"].ToString()', 'Error');
+            }
+            @if(TempData["Alerta"] != null)
+            {
+                @:ShowMessage('@TempData["Alerta"].ToString()', 'Warning');
+            }
+            @if (TempData["Correcto"] != null)
+            {
+                @:ShowMessage('@TempData["Correcto"].ToString()', 'Success');
+            }
+
+
+
+        </script>
+
+        <style>
+            .alert.alert-server {
+                margin-bottom: 0;
+                border-radius: 0;
+                padding-left: 330px;
+            }
+
+            .messagealert {
+                width: 100%;
+                position: fixed;
+                top: 0px;
+                z-index: 100000;
+                padding: 0;
+                font-size: 15px;
+            }
+        </style>
+
+        <script>
+            var resizefunc = [];
+        </script>
+
+
+
+
+
+    </div></body>
+</html>

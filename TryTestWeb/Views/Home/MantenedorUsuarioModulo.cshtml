@@ -1,0 +1,59 @@
+﻿@model IList<SelectListItem>
+@{
+    ViewBag.Title = "Mantenedor Usuario Modulo";
+    var EnumValues = ParseExtensions.ObtenerValoresPosiblesEnum<Privilegios>().ToList();
+    var Funciones = (List<FuncionesModel>)ViewBag.ListaFunciones;
+    EnumValues.RemoveAt(EnumValues.FindIndex(x => x == Privilegios.Administrador));
+}
+
+<h2>Mantenedor privilegios funciones</h2>
+
+@using (Html.BeginForm("AsignarModulo", "Home", FormMethod.Post, new { id = "DatosInvitacion"}))
+{
+    <h4>Asigna acceso a u modulo a un usuario especifico</h4>
+    <br />
+
+    <div class="panel-body">
+
+        <div class="row form-group">
+            <div class="col-lg-4">
+                <label class="control-label">Asignar Modulo a Usuario:</label>           
+                <select id="usuarios" name="usuarios" class="selectpicker show-tick form-control" data-live-search="true">
+                    @foreach (SelectListItem Usuarios in Model)
+                    {
+                        <option value="@Usuarios.Value">@Usuarios.Text</option>
+                    }
+                </select>
+            </div>
+    
+            <div class="col-lg-4">
+                <label class="control-label">La funcion:</label>  
+                <select id="funcion" name="funcion" class="form-control">
+                    @foreach (var Funcion in Funciones)
+                    {
+                        <option value="@(Funcion.FuncionesModelID)">@Funcion.NombreFuncion</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-4">
+                <label class="control-label">Con el Privilegio de:</label>
+                <select id="priv" name="priv" class="form-control">
+                    @foreach (var TipoPrivilegio in EnumValues)
+                    {
+                        <option value="@((int)TipoPrivilegio)">@ParseExtensions.EnumGetDisplayAttrib(TipoPrivilegio)</option>
+                    }
+                </select>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <button type="submit" class="btn btn-primary redondo btnPress pull-right">Cambiar Privilegios</button>
+        </div>
+    </div>
+}

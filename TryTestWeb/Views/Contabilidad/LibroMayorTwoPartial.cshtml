@@ -1,0 +1,133 @@
+﻿@model IList<string[]>
+
+@{ string[] rowThingie1 = ParseExtensions.obtieneUnicosEnLista(Model);
+
+    for (int i = 0; i < rowThingie1.Length; i++)
+    {
+        <h4>@rowThingie1[i]</h4>
+        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th class="FontSize text-center">#</th>
+                    <th class="FontSize text-center">FECHA CONTABILIZACIÓN</th>
+                    <th class="FontSize text-center">COMPROBANTE</th>
+                    <th class="FontSize text-center">GLOSA</th>
+                    <th class="FontSize text-center">RUT</th>
+                    <th class="FontSize text-center">DEBE</th>
+                    <th class="FontSize text-center">HABER</th>
+                    <th class="FontSize text-center">SALDO</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @{int totalHaber = 0;}
+                @{int totalDebe = 0;}
+               
+
+                @foreach (string[] ListaLibMayor in Model)
+                {
+                    if (ListaLibMayor[8] == rowThingie1[i])
+                    {
+                        string classAlign = "text-right";
+                       
+
+
+                        <tr class="odd gradeX">
+                            @for (int k = 0; k < ListaLibMayor.Length - 1; k++)
+                            {
+                                if (k == 1)
+                                {
+                                    classAlign = "text-left nowrappls";
+                                }
+                                if(k == 5 || k == 6 || k == 7)
+                                {
+                                    classAlign = "text-left nowrappls monto"; //con el fin de hacer el separador de miles con javascript
+
+                                }
+
+                                if (k == 5)
+                                {
+                                    if (ListaLibMayor[k] != "-")
+                                    {
+                                        totalDebe = totalDebe + Int32.Parse(ListaLibMayor[k]);//Int32.Parse(ListaLibMayor[k].Replace(".", ""));
+                                       
+                                    }
+                                }
+
+                                if (k == 6)
+                                {
+                                    if (ListaLibMayor[k] != "-")
+                                    {
+                                        totalHaber = totalHaber + Int32.Parse(ListaLibMayor[k]);//.Replace(".", ""));
+                                       
+
+
+                                    }
+                                }
+
+                                <td class="@classAlign">@ListaLibMayor[k]</td>
+                            }
+                        </tr>
+                    }
+
+
+        
+
+                }
+                <tr>
+                    <th class="FontSize text-center" colspan="4"></th>
+                    <th class="FontSize text-right">TOTAL</th>
+                    <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(totalDebe)</th>
+                    <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(totalHaber)</th>
+                    @{int total = totalHaber - totalDebe;}
+                    <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(Math.Abs(total))</th>
+
+                </tr>
+            </tbody>
+
+        </table>
+
+
+ }
+
+    @:<table class="table table-striped table-bordered table-hover" id="dataTables-example">
+        <thead>
+
+        <th class="FontSize text-center" colspan="4">-</th>
+        <th class="FontSize text-center">TOTAL</th>
+        <th class="FontSize text-center">DEBE</th>
+        <th class="FontSize text-center">HABER</th>
+        <th class="FontSize text-center">SALDO</th>
+        </thead>
+
+
+        <tbody>
+            @foreach (string[] Totales in Model)
+            {
+                <tr>
+                    @for (int i = 0; i < Totales.Length; i++)
+                    {
+
+                        if (Totales[4] == "Total Final:")
+                        {
+
+                            <th class="FontSize text-center">@Totales[i]</th>
+
+                        }
+                    }
+                </tr>
+
+            }
+        </tbody>
+
+
+
+    @:</table>
+
+
+
+}
+
+
+
+

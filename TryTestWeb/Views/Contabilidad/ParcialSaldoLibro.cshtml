@@ -1,0 +1,71 @@
+﻿@model IList<string[]>
+
+
+<div class="panel-heading">
+    Libro Mayor
+</div>
+<div class="panel-body">
+    <table width="100%" id="TablaLibroMayor" class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Comprobante</th>
+                <th>Glosa</th>
+                <th>Debe</th>
+                <th>Haber</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (string[] rowThingie in Model)
+                {
+                    <tr>
+                        <td class="nowrappls">@rowThingie[1]</td>
+                        <td>@rowThingie[2]</td>
+                        <td>@rowThingie[3]</td>
+                        <td>@rowThingie[4]</td>
+                        <td>@rowThingie[5]</td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+        <tfoot>
+            @if (ViewBag.totalDebe != null)
+            {
+                <tr>
+                    <td><strong>TOTALES</strong></td>
+                    <td></td>
+                    <td></td>
+                    <td><strong>@ParseExtensions.NumberWithDots_para_BalanceGeneral(ViewBag.totalDebe)</strong></td>
+                    <td><strong>@ParseExtensions.NumberWithDots_para_BalanceGeneral(ViewBag.totalHaber)</strong></td>
+                </tr>
+            }
+        </tfoot>
+    </table>
+    <br />
+    <div class="row">
+        <div class="col-lg-9">
+            <strong> Saldo según Libro Mayor</strong>
+        </div>
+        <div class="col-lg-3">
+            @if (ViewBag.totalDebe != null)
+            {
+                <strong id="saldoLibro">@ParseExtensions.NumberWithDots_para_BalanceGeneral(ViewBag.totalDebe - ViewBag.totalHaber) </strong>
+            }
+        </div>
+    </div>
+</div>
+<span style="display:none;" id="saldolibroraw">@(ViewBag.totalDebe - ViewBag.totalHaber)</span>
+
+
+@if (ViewBag.TotalDebe != null)
+{
+    <script>
+        $(document).ready(function() {
+        $("#TablaSaldoLibro").text("@ParseExtensions.NumberWithDots_para_BalanceGeneral(ViewBag.totalDebe - ViewBag.totalHaber)");
+        });
+    </script>
+}
+

@@ -1,0 +1,234 @@
+﻿@model List<UsuarioModel>
+
+<br />
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn-group pull-right m-t-40">
+            <div class="button-list">
+                <a class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal"
+                   data-overlaySpeed="200" data-overlayColor="#36404a" href="@Url.Action("AgregarUsuario","Account")">
+                    <span class="btn-label"><i class="ion-android-add"></i></span>
+                    Agregar
+                </a>
+            </div>
+        </div>
+        <div class="page-header-2">
+            <h2 class="page-header">Mis Usuarios </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Usuarios</a>
+                </li>
+                <li class="active">
+                    Usuarios
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b class="color">
+    Aquí puedes configurar a tus usuarios.
+    </b>
+    <br />
+    <b class="color">
+       Selecciona el boton de editar para cambiar, nombre, rut y el acceso a clientes contables que tendrá el usuario.
+    </b>
+    
+</div>
+
+
+<div class="row">
+    <div id="listaDerecho" class="col-md-12">
+        @foreach (UsuarioModel Usuario in Model)
+        {
+            <div class="row" name="Caja" id="Caja_@Usuario.UsuarioModelID">
+                <div class="col-md-12">
+                    <div class="card-box m-b-10">
+                        <div class="table-box opport-box">
+
+                            <div class="col-md-3">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>RUT @Usuario.RUT</b></h5>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="table-detail">
+                                    @{
+                                        string Nombre = Usuario.Nombre;
+                                        int limite = 20;
+                                        if (Usuario.Nombre.Length > limite)
+                                        {
+                                            Nombre = Usuario.Nombre.Substring(0, limite - 1) + "...";
+                                        }
+                                    }
+                                    <h5 class="m-t-0">@Nombre</h5>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>Estado</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0"><span class="label label-success">Activo</span></p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="table-detail">
+                                    <a id="EditButton" onclick="ObtenerConfiguracionUsuario(@Usuario.UsuarioModelID);" class="btn btn-primary btn-sm redondo btnPress" href="#">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+       
+            </div>
+        }
+    </div>
+</div>
+
+
+@using (Html.BeginForm("GuardarConfiguracionUsuario", "Account", FormMethod.Post))
+{
+    <div id="myModal2" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <input type="hidden" id="editFlag" name="editFlag" value="0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Configuracion del usuario</h4>
+                </div>
+                <div id="ModyBody" class="modal-body">
+                    <div class="row m-t-10">
+                        <input type="text" style="display:none;" id="IDUsuario" name="IDUsuario" class="form-control">
+                        <div class="col-lg-6">
+                            <label><b>Nombre:</b></label>
+                            <input required type="text" id="NombreUsuario" name="NombreUsuario" class="form-control">
+                        </div>
+                        <div class="col-lg-6">
+                            <label><b>Rut:</b></label>
+                            <input required type="text" id="RutUsuario" name="RutUsuario" class="form-control">
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <h5><b>Asignar acceso clientes contables </b></h5>
+                    <b> (MANTENER PRESIONADA LA TECLA "CTRL" AL SELECCIONAR)</b>
+                    <div class="row m-t-10">
+                        <div class="col-md-12">
+                            <select class="form-control selectpicker show-tick" id="ClientesContables" name="ClientesContables" data-live-search="true" data-size="10"  multiple>
+                               
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div> <!--  Fin Registar Gastos -->
+}
+
+<div class="modal fade" id="DarDeBaja">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Dar de baja prestador</h4>
+            </div>
+            <div class="modal-body">
+                <h4>¿Estás seguro que deseas dar de baja a este prestador?</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="cancelar" class="btn btn-primary" data-dissmiss="modal">Cancelar</a>
+                <a href="#" class="btn btn-danger" id="btn-aceptar" name="btn-aceptar" data-dissmiss="modal" data-backdrop="false" onclick="DarDeBajaPrestador()">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #ClientesContables{
+        height:250px;
+    }
+    .color{
+        color: black;
+    }
+</style>
+
+<script>
+
+
+
+
+    function NuevoProveedor() {
+        $('#myModal').modal('show');
+    }
+
+    function ObtenerConfiguracionUsuario(ID) {
+        debugger;
+        var url = '@Url.Action("ObtenerConfiguracionUsuario","Account")';
+        var Usuario = ID;
+        if (Usuario != 0) {
+            $.getJSON(url, { UsuarioID: Usuario },
+            function (data) {
+
+                if (data.ok == true) {
+                    console.log(data);
+                    
+                    $('#IDUsuario').val(Usuario);
+                    $('#NombreUsuario').val(data.UsuarioNombre);
+                    $('#RutUsuario').val(data.UsuarioRUT);
+                    $('#ClientesContables').html(data.ListadoClientes);
+
+                    $('#myModal2').modal('show');
+                  
+                }
+                else {
+                    $('#IDUsuario').val(0);
+                    $('#NombreUsuario').val('');
+                    $('#myModal2').modal('hide');
+                }
+            });
+        }
+    }
+
+    function AdvertenciaDarDeBaja(ReceptorID) {
+        $("#ReceptorID").val(ReceptorID);
+        $("#DarDeBaja").modal("show");
+
+        $("#cancelar").click(function () {
+            $("#DarDeBaja").modal("hide");
+        });
+    }
+
+    function DarDeBajaPrestador() {
+        var IDreceptor = $('#ReceptorID').val();
+
+        $("#btn-aceptar").attr("disabled", true);
+        $('#DarDeBaja').modal("hide");
+        $('#alerta-exito').css("display", "none");
+
+        $.ajax({
+            type: "POST",
+            url: "DarDeBajaPrestador?IDreceptor=" + IDreceptor,
+            success: function (Result) {
+                $('#Caja_' + IDreceptor).remove();
+                $('.modal-backdrop').remove();
+                $('#alerta-exito').removeAttr("style");
+                $('#btn-aceptar').attr('disabled', false);
+            }
+        })
+    }
+
+</script>
+
+

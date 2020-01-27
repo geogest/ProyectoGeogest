@@ -1,0 +1,611 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de facturación y contabilidad online">
+    <meta name="author" content="FacturaLabs">
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <title>FacturaLabs | Facturación Electrónica y Contabilidad</title>
+
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+
+    <!-- Bootstrap core CSS -->
+    <link href="Content/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Owl Carousel CSS -->
+    <link href="Content/css/owl.carousel.css" rel="stylesheet">
+    <link href="Content/css/owl.theme.default.min.css" rel="stylesheet">
+
+    <!-- Icon CSS -->
+    <link href="Content/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="Content/css/style.css" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119864475-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-119864475-1');
+    </script>
+
+
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<body data-spy="scroll" data-target="#navbar-menu">
+
+    <!-- Navbar -->
+    <div class="navbar navbar-custom sticky navbar-fixed-top" role="navigation" id="sticky-nav">
+        <div class="container">
+
+            <!-- Navbar-header -->
+            <div class="navbar-header">
+
+                <!-- Responsive menu button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <!-- LOGO -->
+                @*<a class="navbar-brand logo" href="index.html">
+                    E-<span class="text-custom">Factu</span>
+
+                </a>*@
+                
+
+            </div>
+            <!-- end navbar-header -->
+            <!-- menu -->
+            <div class="navbar-collapse collapse" id="navbar-menu">
+                <a href="@Url.Action("Homey","Home")" class="logo">
+                    <i class="icon-c-logo"><img src="~/Content/images/logo_facturalabs@2x.png" height="37"/></i>
+                </a>
+                <!-- Navbar right -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active">
+                        <a href="#home" class="nav-link">Inicio</a>
+                    </li>
+                    <li>
+                        <a href="#features" class="nav-link">Productos</a>
+                    </li>
+                    <li>
+                        <a href="#pricing" class="nav-link">Planes</a>
+                    </li>
+                    <li>
+                        <a href="#clients" class="nav-link">Contacto</a>
+                    </li>
+                    <li>
+                        <a class="btn btn-custom-bordered navbar-btn" style="background-color: #81c868;" href="@Url.Action("Login", "Account", new RouteValueDictionary(new { demo = "1" }))" >Demo</a>
+                    </li>
+                    <li><a> </a></li>
+                    <li>
+                        <a class="btn btn-custom-bordered navbar-btn" href="@Url.Action("Login", "Account")">Login</a>
+                    </li>
+                    <!--  <li>
+                          <a href="" class="btn btn-white-bordered navbar-btn">Contacto</a>
+
+                      </li>-->
+                </ul>
+
+            </div>
+            <!--/Menu -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- End navbar-custom -->
+    <!-- HOME -->
+    <section class="home bg-img-1" id="home">
+        <div class="bg-overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 text-center">
+                    <div class="home-fullscreen">
+                        <div class="full-screen">
+                            <div class="home-wrapper home-wrapper-alt">
+                                <h1 class="font-light text-white">Todo en Uno!, Sistema de contabilidad y facturación para  pequeñas y medianas empresas</h1>
+                                <h4 class="text-white">No pagues de más, ahora tendrás todo lo que necesitas en un solo lugar, sistema pensado para empresas con 14TER (Contabilidad Simplificada)</h4>
+
+                                <a href="#pricing" class="btn btn-custom">Contrata tu plan</a>
+                                <a href="#clients" class="btn btn-success">Contáctanos</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 text-center">
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END HOME -->
+    <!-- Features -->
+    <section class="section" id="features">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h1 class="title">Software de Factura Electrónica y Contabilidad</h1>
+                    <p class="text-muted sub-title">podrás facturar y manejar el estado de pago de todas tus compras y ventas de una forma sencilla</p>
+                </div>
+            </div> <!-- end row -->
+
+
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="Content/images/home_seo2_icon1.png" class="img-responsive" height="110" width="110">
+                        <div class="text-muted">
+                            <h3>Documentos tributarios</h3>
+                            <p>
+                                Tendrás la posibilidad de trabajar con distintos Documentos tributario autorizados por SII Facturas Afectas y Exentas nacionales, Notas de Crédito y débito, ademas podrás registrar otros gastos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="Content/images/home_seo2_icon4.png" class="img-responsive" height="110" width="110">
+                        <div class="text-muted">
+                            <h3>Recaudaciones y pagos</h3>
+                            <p>
+                                Nuestro sistema te permite registrar todas las transacciones asociadas a las facturas de ventas y compras como también a los otros otros gastos permitiendo llevar un control y gestión.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="Content/images/home_seo2_icon3.png" class="img-responsive" height="110" width="110">
+                        <div class="text-muted">
+                            <h3>Reportes en general</h3>
+                            <p>
+                                Con nuestro módulo de reportes tendrás una visión en tiempo real de tu negocio, podrás consultar tus reportes de ventas, compras, pagos pendiente, otros gastos, 14Ter, boletas de honorario.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="~/Content/images/opt1.png" class="img-responsive" height="110" width="110">
+                        <div class="text-muted">
+                            <h3>Control de Gastos y Pagos</h3>
+                            <p>
+                                Ahora con nuestra plataforma, podras controlar tus gastos que no sean facturados y adjuntar tus comprobantes, además podras llevar el registro de pago asociado a cada uno de ellos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="~/Content/images/opt3.png" class="img-responsive" height="110" width="110">
+                        <div class="text-muted">
+                            <h3>Libros Tributarios Contables</h3>
+                            <p>
+                                Si bien los libros tributarios ya no son obligatorios por el SII, nostors de igual formas los disponemos para que puedan ser utilizados en caso de ser necesario.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="~/Content/images/opt2.png" class="img-responsive" height="110" width="110">
+                        <div class="text-muted">
+                            <h3>Flujo de Caja Contable</h3>
+                            <p>
+                                Nuestro sistema te permite visualizar tu flujo de caja para un periodo seleccionado con la finalidad de entregar informacion para la toma de deciciones y conocer el estado de salud de tu empresa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+
+        </div> <!-- end row -->
+        </div> <!-- end container -->
+    </section>
+    <!-- end Features -->
+    <!-- Features Alt -->
+    <section class="section p-t-0">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="feat-description m-t-20">
+                        <h4>Te presentamos FacturaLabs un sistema unificado pensado en tus necesidades.</h4>
+                        <h4>Olvídate de tu contador, FacturaLabs se preocupará de todo.</h4>
+                        <p class="text-muted">Herramienta construída pensada en la usabilidad para personas como tú, adaptada a las necesidades de empresas, emprendedores, pymes donde tienes todo lo que necesitas para mantener la contabilidad al día, llevar las finanzas y generar documentos tributarios de una manera simple y por sobre todo fácil.</p>
+                        <!--  <a href="" class="btn btn-custom">Learn More</a> -->
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-sm-offset-1">
+                    <img src="Content/images/mac_1.png" alt="img" class="img-responsive m-t-20">
+                </div>
+
+            </div><!-- end row -->
+
+        </div> <!-- end container -->
+    </section>
+    <!-- end features alt -->
+    <!-- Publicidad -->
+    <section class="section bg-img-2">
+        <div class="bg-overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <h1 class="font-light text-white">"Nos caracterizamos por nuestra flexibilidad y compromiso con nuestros clientes"</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Publicidad -->
+    <!-- PRICING -->
+    <section class="section" id="pricing">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h3 class="title">Te invitamos a conocer nuestros planes</h3>
+                    <p class="text-muted sub-title">Contamos con los mejores planes del mercado para que no pages de más, crecemos junto a tu empresa.</p>
+                </div>
+            </div> <!-- end row -->
+
+
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1">
+                    <div class="row">
+
+                        <!--Pricing Column-->
+                        <article class="pricing-column col-lg-4 col-md-4">
+                            <div class="inner-box">
+                                <div class="plan-header text-center">
+                                    <h3 class="plan-title">STANDARD</h3>
+                                    <h2 class="plan-price">1,0 UF/Mes</h2>
+                                    <div class="plan-duration">(Más IVA)</div>
+                                </div>
+                                <ul class="plan-stats list-unstyled">
+                                    <li> <i class="pe-7s-server"></i>Cantidad Usuarios <b>1</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Factura Venta <b>Ilimitado</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Factura Compra <b>Ilimitado</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Ingreso Gastos <b>No</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Registro Pagos <b>No</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Informe  14 TER <b>No</b></li>
+                                    <li> <i class="pe-7s-tools"></i>Informes Varios <b>No</b></li>
+                                    <li> <i class="pe-7s-tools"></i>Pre Formulario 29 <b>No</b></li>
+                                    <li> <i class="pe-7s-tools"></i>Pre Formulario 22 <b>No</b></li>
+                                    <li> <i class="pe-7s-tools"></i>Pre Declaracion Jurada <b>No</b></li>
+                                    <li> <i class="pe-7s-mail-open"></i>Soporte Técnico <b>Si</b></li>
+                                </ul>
+
+                                <div class="text-center">
+                                    <a href="#clients" class="btn btn-sm btn-success">¡Lo Quiero!</a>
+                                </div>
+                            </div>
+                        </article>
+
+
+                        <!--Pricing Column-->
+                        <article class="pricing-column col-lg-4 col-md-4">
+                            <div class="inner-box active">
+                                <div class="plan-header text-center">
+                                    <h3 class="plan-title">ENTERPRISE</h3>
+                                    <h2 class="plan-price">1,5 UF/Mes</h2>
+                                    <div class="plan-duration">(Más IVA)</div>
+                                </div>
+                                <ul class="plan-stats list-unstyled">
+                                    <li> <i class="pe-7s-graph"></i>Cantidad Usuarios <b>2</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Factura Venta <b>Ilimitado</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Factura Compra <b>Ilimitado</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Ingreso Gastos <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Registro Pagos <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Informe  14 TER <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Informes Varios <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Pre Formulario 29 <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Pre Formulario 22 <b>No</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Pre Declaracion Jurada <b>No</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Soporte Técnico <b>Si</b></li>
+                                </ul>
+
+                                <div class="text-center">
+                                    <a href="#clients" class="btn btn-sm btn-success">¡Lo Quiero!</a>
+                                </div>
+                            </div>
+                        </article>
+
+
+                        <!--Pricing Column-->
+                        <article class="pricing-column col-lg-4 col-md-4">
+                            <div class="inner-box">
+                                <div class="plan-header text-center">
+                                    <h3 class="plan-title">CUSTOMER</h3>
+                                    <h2 class="plan-price">3,0 UF/Mes</h2>
+                                    <div class="plan-duration">(Más IVA)</div>
+                                </div>
+                                <ul class="plan-stats list-unstyled">
+                                    <li> <i class="pe-7s-graph"></i>Cantidad Usuarios <b>3</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Factura Venta <b>Ilimitado</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Factura Compra <b>Ilimitado</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Ingreso Gastos <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Registro Pagos <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Informe  14 TER <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Informes Varios <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Pre Formulario 29 <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Pre Formulario 22 <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Pre Declaracion Jurada <b>Si</b></li>
+                                    <li> <i class="pe-7s-graph"></i>Soporte Técnico <b>Si</b></li>
+                                </ul>
+
+                                <div class="text-center">
+                                    <a href="#clients" class="btn btn-sm btn-success">¡Lo Quiero!</a>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+                </div><!-- end col -->
+
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <div class="inner-box">
+                            <h3 class="title">Nuevo Plan Multi-Empresa </h3>
+                            <h5 class="text-muted sub-title">Diseñados para personas que cuentan con más de una empresa</h5>
+                            <h2 class="plan-price">7,5 UF/Mes más IVA</h2>
+                            <h5 class="text-muted sub-title">Tendrás todos los Beneficios del Plan "CUSTOMER" y podrás administrar hasta 6 empresas.</h5>
+                            <h5 class="text-muted sub-title">Si requieres administrar más de 6 empresas, consulta por planes especiales.</h5>
+                            <a href="#clients" class="btn btn-sm btn-success text-center">¡Lo Quiero!</a>
+                        </div>
+                    </div>
+                </div> <!-- end row -->
+            </div>
+            <!-- end row -->
+
+            
+
+        </div> <!-- end container -->
+    </section>
+    <!-- End Pricing -->
+    <!-- Testimonials section -->
+    <section class="section bg-img-1">
+        <div class="bg-overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+                    <div class="owl-carousel text-center">
+                        <div class="item">
+                            <div class="testimonial-box">
+                                <h2>Excelente soporte, nos mantuvo actualizados a medida que avanzaba en el tema entregándonos una solución.</h2>
+                                <img src="Content/images/user.jpg" class="testi-user img-circle" alt="testimonials-user">
+                                <p>-</p>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="testimonial-box">
+                                <h2>Flexible, transparentes y un muy buen equipo contable, no existen cobros fantasmas dentro del servicio y la atención es excelente.</h2>
+                                <img src="Content/images/user2.jpg" class="testi-user img-circle" alt="testimonials-user">
+                                <p>-</p>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="testimonial-box">
+                                <h2>La plataforma cuenta con todo lo necesario para nuestra empresa pequena, en función al precio una muy buena oportunidad.</h2>
+                                <img src="Content/images/user3.jpg" class="testi-user img-circle" alt="testimonials-user">
+                                <p>-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="clients">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h3 class="title">Deseas contratar un plan o tienes alguna duda,¡Contáctanos!...</h3>
+                    <p class="text-muted sub-title">Uno de nuestros ejecutivos se pondrá en contacto para resolver tus inquietudes</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    @using (Html.BeginForm("SendCorreo", "Home", FormMethod.Post, new { id = "FormFactura" }))
+                    {
+                        <div class="row row-bottom-padded-md">
+                            <div class="col-md-12"></div>
+                            <div class="col-md-12 to-animate text-center">
+                                <h3>Formulario</h3>
+                                <div class="form-group ">
+                                    <label for="nameContact" class="sr-only">Nombre Contacto</label>
+                                    <input id="nameContact" name="nameContact" class="form-control" placeholder="Nombre Contacto" type="text">
+                                </div>
+                                <div class="form-group ">
+                                    <label for="nameEmpresa" class="sr-only">Nombre Empresa</label>
+                                    <input id="nameEmpresa" name="nameEmpresa" class="form-control" placeholder="Nombre Empresa" type="text">
+                                </div>
+                                <div class="form-group ">
+                                    <label for="email" class="sr-only">Email</label>
+                                    <input id="email" name="email" class="form-control" placeholder="Email" type="email">
+                                </div>
+                                <div class="form-group ">
+                                    <label for="phone" class="sr-only">Teléfono</label>
+                                    <input id="phone" name="phone" class="form-control" placeholder="Teléfono" type="text">
+                                </div>
+                                <div class="form-group ">
+                                    <label for="message" class="sr-only">Mensaje</label>
+                                    <textarea name="message" id="message" cols="30" rows="5" class="form-control" placeholder="Mensaje"></textarea>
+                                </div>
+                                <div class="form-group ">
+                                    <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LeqAk8UAAAAAGX88c__hAA-oizzvtD6vRoY5Mix"></div>
+                                </div>
+                                <div class="form-group ">
+                                    <input class="btn btn-primary btn-lg" value="Enviar" id="submitBtn" disabled type="submit">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <h2 class="text-center"><span class="text-custom">¡Datos de Contacto!</span></h2>
+                    <br/>
+                    <div class="col-sm-6 col-md-6">
+                        <div>
+                            <i class="glyphicon glyphicon-exclamation-sign"></i>
+                            <label class="text-inner">Mesa de Ayuda: +569 68375722</label>
+                            <br />
+                            <i class="glyphicon glyphicon-exclamation-sign"></i>
+                            <label class="text-inner">Email: soporte@facturalabs.cl</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6">
+                        <div>
+                            <i class="glyphicon glyphicon-exclamation-sign"></i>
+                            <label class="text-inner">Área Comercial: +569 68375722</label>
+                            <br />
+                            <i class="glyphicon glyphicon-exclamation-sign"></i>
+                            <label class="">Email: ventas@facturalabs.cl</label>
+                        </div>
+                    </div>
+
+                 </div>
+            </div>
+
+            <!-- end row -->
+
+
+            <div class="row text-center">
+                <div class="col-sm-12">
+                  <!--  <ul class="list-inline client-list">
+                        <li><a href="" title="Microsoft"><img src="Content/images/microsoft.png" alt="clients"></a></li>
+                        <li><a href="" title="Google"><img src="Content/images/google.png" alt="clients"></a></li>
+                        <li><a href="" title="Instagram"><img src="Content/images/instagram.png" alt="clients"></a></li>
+                        <li><a href="" title="Converse"><img src="Content/images/converse.png" alt="clients"></a></li>
+                    </ul> -->
+                </div> <!-- end Col -->
+            </div><!-- end row -->
+        </div>
+    </section>
+
+    <!--End  Clients -->
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    @*<a class="navbar-brand logo" href="index.html">
+                        E<span class="text-custom">-</span>Factu
+                    </a>*@
+                    <a href="@Url.Action("Homey","Home")" class="navbar-brand logo">
+                        <span><img src="~/Content/images/logoBlanco@2x.png" height="40" /></span>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-lg-offset-3 col-md-7">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#features">Producto</a></li>
+                        <li><a href="#pricing">Planes</a></li>
+                        <li><a href="#clients">Contáctanos</a></li>
+                        <li><a href="#"></a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                    <ul class="social-icons">
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>                       
+                    </ul>
+                </div>
+            </div> <!-- end row -->
+        </div> <!-- end container -->
+    </footer>
+    <!-- End Footer -->
+    <!-- Back to top -->
+    <a href="#" class="back-to-top" id="back-to-top"> <i class="fa fa-angle-up"></i> </a>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="Content/js/jquery-2.1.4.min.js"></script>
+    <script src="Content/js/bootstrap.min.js"></script>
+
+    <script>
+        function recaptchaCallback() {
+            $('#submitBtn').removeAttr('disabled');
+        };
+    </script>
+
+    <!-- Jquery easing -->
+    <script type="text/javascript" src="Content/js/jquery.easing.1.3.min.js"></script>
+
+    <!-- Owl Carousel -->
+    <script type="text/javascript" src="Content/js/owl.carousel.min.js"></script>
+
+    <!--sticky header-->
+    <script type="text/javascript" src="Content/js/jquery.sticky.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/jquery.validate.js"></script>
+   
+    <!--common script for all pages-->
+    <script src="Content/js/jquery.app.js"></script>
+
+    <script type="text/javascript">
+            $('.owl-carousel').owlCarousel({
+                loop:true,
+                margin:10,
+                nav:false,
+                autoplay: true,
+                autoplayTimeout: 4000,
+                responsive:{
+                    0:{
+                        items:1
+                    }
+                }
+            })
+    </script>
+
+    <script>
+
+        $("#FormFactura").validate({
+            ignore: [],
+            rules: {
+                nameContact: "required",
+                nameEmpresa: "required",
+                email: "required",
+                phone: "required",
+                message: "required",
+            },
+            errorPlacement: function (error, element) {
+                element.attr("placeholder", error.text());
+            }
+        });
+    </script>
+
+</body>
+</html>

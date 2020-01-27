@@ -1,0 +1,270 @@
+﻿@model PaginadorModel
+
+<!-- Page-Title -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <br />
+        @using (Html.BeginForm("GetExcelLibroVenta", "Contabilidad", FormMethod.Post))
+        {
+            <div class="pull-right">
+                <br />
+                <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                    <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                </button>
+                <br />
+            </div>
+                <br />
+        }
+
+        <h2 class="page-header">Libro de Venta</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Contabilidad Reportes</a>
+            </li>
+            <li>
+                <a href="#">-</a>
+            </li>
+            <li class="active">
+                Libro de Venta
+            </li>
+        </ol>
+    </div>
+</div>
+<br />
+
+<div class="form-group">
+    <div class="row">
+        <div class="card-box">
+            <div class="row form-group">
+                @using (Html.BeginForm("LibroVenta","Contabilidad", FormMethod.Post)) { 
+                <div class="col-md-2">
+                    <label>Cantidad de Registros</label>
+                    <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="0">Todos</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 form-group">
+                    <label class="control-label">Año</label>
+                    <input type="text" class="form-control" name="Anio" id="Anio" value="@DateTime.Now.Year.ToString()" />
+                </div>
+                <div class="col-md-2 form-group">
+                    <label for="" class="control-label">Mes</label>
+                    <select name="Mes" id="Mes" class="form-control">
+                        <option value="0">Todos</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-2 form-group">
+                    <label class="control-label">Rut</label>
+                    <input type="text" class="form-control" id="Rut" name="Rut" maxlength="10" value=""/>
+                </div>
+                <div class="col-lg-2 form-group">
+                    <label class="control-label">Razon Social</label>
+                    <input type="text" class="form-control" id="RazonSocial" name="RazonSocial" value=""/>
+                </div>
+               
+                <div class="col-lg-2 form-group">
+                    <label class="control-label">Fecha Inicio</label>
+                    <input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" value=""/>
+                </div>
+                <div class="col-lg-2 form-group">
+                    <label class="control-label">Fecha Fin</label>
+                    <input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" value=""/>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
+                </div>
+                }
+            </div>
+                
+
+            <div class="panel-body" id="parshial" style="font-size:13px;">
+                @if(Model.ResultStringArray.Count() == 0)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        No se encontraron registros.
+                    </div>
+                }
+                @if(Model.ResultStringArray.Count() > 0) { 
+                <table class="table table-responsive table-striped table-bordered table-hover" id="dataTables">
+                    <thead>
+                        <tr>
+                            <th class="FontSize text-center"></th>
+                            <th class="FontSize text-center" style="width:85px">Fecha</th>
+                            <th class="FontSize text-center">Fecha Contabilización</th>
+                            <th class="FontSize text-center">Tipo Documento</th>
+                            <th class="FontSize text-center">Folio Documento</th>
+                            <th class="FontSize text-center">Cliente</th>
+                            <th class="FontSize text-center" style="width:90px">Rut</th>
+                            <th class="FontSize text-center">Monto Exento</th>
+                            <th class="FontSize text-center">Monto Afecto</th>
+                            <th class="FontSize text-center">Iva</th>
+                            <th class="FontSize text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (string[] rowThingie in Model.ResultStringArray)
+                        {
+                            @: <tr class="odd gradeX">
+                            for (int i = 0; i < rowThingie.Length - 1; i++)
+                            {
+                                string classAlign = "text-right";
+                                if (i == 0)
+                                {
+                                    classAlign = "text-left";
+                                }
+                                if (i == 10)
+                                {
+                                    classAlign = "hide";
+                                }
+                                if (i == 11)
+                                {
+                                    classAlign = "hide";
+                                }
+                                <td class="@classAlign" @*style="white-space: nowrap;"*@>@rowThingie[i]</td>
+                            }
+                         @:</tr>
+                        }
+                    </tbody>
+                </table>
+                }
+              @{ Html.RenderPartial("_paginador", Model); }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .centrar{
+        margin-top:25px;
+    }
+</style>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#libroTitle").text("@ViewBag.AnioFrontEnd");
+
+        ObtenerInputs();
+        GuardarSeleccionado();
+        ObtenerSeleccionado();
+        CondicionesParaLimpiar();
+    });
+    function CondicionesParaLimpiar() {
+        //Eliminamos la memoria de los Storage solo si se recarga la página sin realizar ninguna busqueda.
+        var Click = false;
+        $('#Guardar').on("click", function () {
+            Click = true;
+        });
+        $('#Paginador li').on("click", function () {
+            Click = true;
+        });
+        $(window).on("beforeunload", function () {
+            if (Click == false) {
+                localStorage.removeItem("MesAguardar");
+                localStorage.removeItem("CantidadDeRegistros");
+                localStorage.removeItem("CuentaContable");
+                localStorage.removeItem("RazonSocialAGuardar");
+                localStorage.removeItem("AnioAGuardar");
+                localStorage.removeItem("FechaInicioAGuardar");
+                localStorage.removeItem("FechaFinAGuardar");
+                localStorage.removeItem("RutAGuardar");
+            }
+        });
+    }
+
+
+    function GuardarSeleccionado() {
+        var MesSeleccionado = $("#Mes option:selected").text();
+        $('#Mes').on('change', function () {
+            MesSeleccionado = $("#Mes option:selected").text();
+            $('#Guardar').on('click', function () {
+                localStorage.setItem("MesAguardar", MesSeleccionado);
+            });
+        });
+
+        var CantRegistrosSelect = $('#cantidadRegistrosPorPagina option:selected').text();
+        $('#cantidadRegistrosPorPagina').on('change', function () {
+            CantRegistrosSelect = $('#cantidadRegistrosPorPagina option:selected').text();
+            $('#Guardar').on('click', function () {
+                localStorage.setItem("CantidadDeRegistros", CantRegistrosSelect);
+            });
+        });
+    }
+
+    function ObtenerSeleccionado() {
+        $('#Mes option').each(function () {
+            let valorSeleccionado = $(this).text();
+            var ObtenerMesSeleccionado = localStorage.getItem("MesAguardar");
+
+            if (ObtenerMesSeleccionado == valorSeleccionado) {
+                let AñadirAtributo = $(this).attr("selected", "selected");
+            }
+        });
+
+        $('#cantidadRegistrosPorPagina option').each(function () {
+            let valorSeleccionado = $(this).text();
+            var ObtenerCantidadRegistros = localStorage.getItem("CantidadDeRegistros");
+
+            if (ObtenerCantidadRegistros == valorSeleccionado) {
+                let AñadirAtributo = $(this).attr("selected", "selected");
+            }
+        });
+    }
+
+    function ObtenerInputs() {
+
+        var RazonSocial = document.getElementById("RazonSocial");
+        var Anio = document.getElementById("Anio");
+        var FechaInicio = document.getElementById("FechaInicio");
+        var FechaFin = document.getElementById("FechaFin");
+        var Rut = document.getElementById("Rut");
+
+        $('#Guardar').on('click', function () {
+            localStorage.setItem("AnioAGuardar", Anio.value);
+            localStorage.setItem("RazonSocialAGuardar", RazonSocial.value);
+            localStorage.setItem("FechaInicioAGuardar", FechaInicio.value);
+            localStorage.setItem("FechaFinAGuardar", FechaFin.value);
+            localStorage.setItem("RutAGuardar", Rut.value);
+        });
+
+        var ObtenerAnio = localStorage.getItem("AnioAGuardar");
+        var ObtenerRazonSocial = localStorage.getItem("RazonSocialAGuardar");
+        var ObtenerFechaInicio = localStorage.getItem("FechaInicioAGuardar");
+        var ObtenerFechaFin = localStorage.getItem("FechaFinAGuardar");
+        var ObtenerRut = localStorage.getItem("RutAGuardar");
+
+        if (ObtenerAnio != null) {
+            Anio.value = ObtenerAnio;
+        }
+        if (ObtenerRazonSocial != null) {
+            RazonSocial.value = ObtenerRazonSocial;
+        }
+        if (ObtenerRut != null) {
+            Rut.value = ObtenerRut;
+        }
+        if (ObtenerFechaInicio != null && ObtenerFechaFin != null) {
+            FechaInicio.value = ObtenerFechaInicio;
+            FechaFin.value = ObtenerFechaFin;
+        }
+    }
+
+</script>
+

@@ -1,0 +1,1320 @@
+﻿@using System.Linq
+@model Tuple<List<CentroCostoModel>, List<string[]>>
+@{ClientesContablesModel objCliente = (ClientesContablesModel)ViewBag.oClienteContable; }
+@{int codeBehindRowCount = 1; }
+@{
+    ViewBag.Title = "IngresoVoucher";
+}
+
+@if (ViewBag.vbVoucherModel != null)
+{
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header-2">
+                <h2 class="page-header">Editar Voucher</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Contabildad</a>
+                    </li>
+                    <li>
+                        <a href="#">-</a>
+                    </li>
+                    <li class="active">
+                        Editar Voucher
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header-2">
+                <h2 class="page-header">Agregar Voucher</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Contabildad</a>
+                    </li>
+                    <li>
+                        <a href="#">-</a>
+                    </li>
+                    <li class="active">
+                        Agregar Voucher
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Latest compiled and minified CSS 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
+
+   
+@using (Html.BeginForm("NuevoVoucher", "Contabilidad", FormMethod.Post, new { id = "DatosVoucher" }))
+{
+    if (ViewBag.vbVoucherModel != null)
+    {
+        <input type="hidden" name="editFlag" value="@(((VoucherModel)ViewBag.vbVoucherModel).VoucherModelID)">
+    }
+    <br />
+    <div class="row">
+
+        <div class="col-lg-2">
+            <label class="control-label">Numero Voucher</label>
+            <input type="number" readonly class="form-control" name="numVoucher" id="numVoucher" value="@(ViewBag.NumVoucher)" required />
+        </div>
+
+        <div class="col-lg-2 form-group">
+            <label class="control-label">Fecha Contabilización</label>
+            @if (ViewBag.FechaEmisionEdit != null)
+            {
+                <input type="text" class="form-control" name="fecha" id="fecha" value="@(ViewBag.FechaEmisionEdit)" required />
+            }
+            else
+            {
+                <input type="text" class="form-control" name="fecha" id="fecha" value="@(ParseExtensions.ToDD_MM_AAAA(DateTime.Now))" required />
+            }
+
+            
+        </div>
+
+   
+        <div class="col-lg-2 form-group">
+            <label class="control-label">Tipo de Voucher</label>
+            <select class="form-control" name="tipo" id="tipo">
+                @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
+            </select>
+        </div>
+        <div class="col-lg-4 form-group">
+            <label class="control-label">Glosa</label>
+            <input type="text" class="form-control" name="glosa" id="glosa" value="@(ViewBag.GlosaVoucherEdit)" required />
+        </div>
+        <div class="col-lg-1  form-group">
+            <!--<label>Duplicar Glosa</label><br/>--><br/>
+           <a class="btn btn-default" id="duplica" name="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa" ><i class="fa fa-copy"></i></a>
+            <!--<div class="checkbox">
+                <label><input type="checkbox" id="duplica" name="duplica" onchange="DuplicaGlosa(this)"> Duplicar Glosa </label>
+            </div>-->
+        </div>
+        <div class="col-lg-2  form-group"></div>
+        
+
+      
+     </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-lg-8">
+                        Items de Voucher
+                    </div>
+                        
+                    @if (Model.Item2 != null && Model.Item2.Count > 0 && (Request.QueryString["ncc"] == null && ViewBag.ncc == null))
+                    {
+                        <div class="col-lg-3">
+                            <label class="control-label">Contra Cuenta:</label>
+                            <select id="contracuenta" name="contracuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10">
+                                @Html.Raw(ViewBag.HtmlStr)
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <a id="btn_agregar_fila" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                        </div> 
+
+                    }
+                    else
+                    {
+                      <div class="col-md-4">
+                            <a id="btn_agregar_fila" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                        </div> 
+                    }
+
+
+
+
+                </div>
+            </div>
+            <div class="panel-body" id="detalle">
+                <table id="tablaWord" width="100%" class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th></th>
+                  
+                            <th>Cuenta Contable</th>
+                            <th>Glosa</th>
+                            <th>CC</th>                                        
+                            <th>Monto Debe</th>
+                            <th>Monto Haber</th>
+                        </tr>
+                    </thead>
+                   
+                    @if (Model.Item2 != null && Model.Item2.Count > 0)
+                    {
+                        
+                        @:<tboby  id="tablaBodyWord">
+                        for (int i = 0; i < Model.Item2.Count(); i++)
+                        {
+                            string[] detalleImportacion = Model.Item2[i];
+                            <tr id="detalle@(codeBehindRowCount)">
+                                <td class="form-group">
+                                    <a  id="@codeBehindRowCount" onclick="cargaModal(this);" class="btn btn-success btn-sm redondo btnPress">AUX</a>
+                                 
+                                </td>
+                                <td class="form-group" id="EditVoucher" name="EditVoucher" style="display:none">
+                                    <input type="text" class="form-control" id="fechadoc@(codeBehindRowCount)" data-toggle="modal" name="fechadoc" value="@detalleImportacion[0]" required />
+                                   
+                                </td>
+                                <td class="form-group" id="cuentaCont2">
+                                    <select id="ctacont_@codeBehindRowCount" onchange="cambiaCC(this);" name="ctacont"  data-item="idItem_@i" data-auxiliar="@codeBehindRowCount"  data-cc="centrocosto_@i"  data-rut="rutCP"  class=" form-control custom-select" title="Seleccionar" required>
+                                        @Html.Raw(ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelected(objCliente, ParseExtensions.ParseInt(detalleImportacion[1])))
+                                              
+                                       
+                                    </select>
+                                  
+                                </td>
+                                <td class="form-group">
+                                    <input type="text" class="form-control" name="glosaDetalle" id="glosaDetalle@(codeBehindRowCount)" value="@detalleImportacion[2]" required />
+                                  
+
+                                </td>
+                                <td class="form-group">
+                                    
+                                    <select id="centrocosto_@i"   data-seleccion="@detalleImportacion[5]" name="centrocosto" class="selectpicker show-tick form-control" data-live-search="true" title="Seleccionar">
+                                        <option value="-1">Seleccionar</option>
+                                        @foreach (CentroCostoModel CentroCosto in Model.Item1)
+                                        {
+
+                                                        if(ParseExtensions.ParseInt(detalleImportacion[5]) == CentroCosto.CentroCostoModelID)
+                                                        {
+                                                            <option  selected value="@CentroCosto.CentroCostoModelID"> @CentroCosto.Nombre  </option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option  value="@CentroCosto.CentroCostoModelID"> @CentroCosto.Nombre  </option>
+                                                        }
+                                        }
+                                    </select>
+                                  
+                                </td> 
+
+                                @*<td class="form-group" style="display:none;">
+
+                                    <select data-seleccion="@detalleImportacion[6]" class="form-control custom-select" id="idItem_@i" name="idItem">
+
+                                        <option value="-1"> Seleccionar </option>
+                                        @foreach (var item in ViewBag.items)
+                                        {
+
+                                            if (ParseExtensions.ParseInt(detalleImportacion[6]) == item.ItemModelID)
+                                            {
+                                                <option selected value="@item.ItemModelID"> @item.NombreItem</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.ItemModelID"> @item.NombreItem</option>
+                                            }
+
+
+                                        }
+                                    </select>*@
+
+
+
+                                @*</td>*@
+
+                                
+
+                           
+                                <td class="form-group">
+                                    <input type="number" class="form-control" name="debe" id="debe" onchange="Totales()" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" value="@detalleImportacion[3]" required />
+                                 
+                                </td>
+                                <td class="form-group">
+                                    <input type="number" class="form-control" name="haber" id="haber" onchange="Totales()" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" value="@detalleImportacion[4]" required />
+                                  
+                                </td>
+                                <td class="form-group">
+                                    <button type="button" class="btn btn-danger btn-sm redondo btnPress" onclick="removeRow(detalle@(codeBehindRowCount))" tabindex="-1" tabstop="false">X</button>
+                                 
+                                </td>
+                            </tr>
+                            <script type="text/javascript">
+                                $("[name=ctacont]").last().val(@detalleImportacion[1]);
+                                $("#fechadoc@(codeBehindRowCount)").datepicker();
+                                $("#fecha").datepicker();
+                            </script>
+                            codeBehindRowCount++;
+                        }
+                        @:</tboby>
+                    }
+                    else
+                    {
+                        <tr id="detalle1">
+                            <td class="form-group">
+                                <a  id="1" onclick="cargaModal(this);" class="btn btn-success btn-sm redondo btnPress"  >AUX</a>
+                            </td>
+                            <td class="form-group" id="fedoc" style="display:none">
+                                <input type="text" class="form-control" id="fechadoc" name="fechadoc" value="@(ParseExtensions.ToDD_MM_AAAA(DateTime.Now))" required />
+                            </td>
+                            <td class="form-group" id="cuentaCont">
+                                <select id="ctacont_1" name="ctacont" onchange="cambiaCC(this);" data-item="idItem"  data-cc="centrocosto" data-rut="rutCP" data-auxiliar="1" class="selectpicker ctacont show-tick form-control" data-live-search="true" data-size="10" required>
+                                    @Html.Raw(ViewBag.HtmlStr)
+                                </select>
+                            </td>
+                            <td class="form-group">
+                                <input type="text" class="form-control" name="glosaDetalle" id="glosaDetalle" required />
+                            </td>
+                            <td class="form-group">
+
+                                <select id="centrocosto" name="centrocosto"  class="selectpicker show-tick form-control" data-live-search="true" title="Ninguno">
+                                    <option value="-1">Seleccion</option>
+                                    @foreach (CentroCostoModel CentroCosto in Model.Item1)
+                                    {
+                                        <option value="@CentroCosto.CentroCostoModelID">@CentroCosto.Nombre</option>
+                                    }
+                                </select>
+                               
+
+                            </td>
+
+                            @*<td class="form-group">
+                                
+                                <select  class="form-control custom-select" id="idItem" name="idItem">
+
+                                    <option value="-1"> Seleccionar </option>
+                                    @foreach (var item in ViewBag.items)
+                                    {   
+                                        <option value="@item.ItemModelID"  > @item.NombreItem</option>
+
+                                      
+
+                                    }
+                                </select>
+
+
+
+                            </td>*@
+                            
+                         
+
+
+                            
+                            <td class="form-group">
+                                <input type="number" class="form-control" name="debe" id="debe" onchange="Totales()" min="0" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" required />
+                            </td>
+                            <td class="form-group">
+                                <input type="number" class="form-control" name="haber" id="haber" onchange="Totales()" min="0" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" required />
+                            </td>
+                            <td class="form-group">
+                                <button type="button" class="btn btn-danger btn-sm redondo btnPress" onclick="removeRow(detalle1)" tabindex="-1" tabstop="false">X</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+                @*<input class="btn-info btn pull-right" onclick="removeLastRow()" value="Borrar Ultima Linea" type="button">*@
+            </div>
+            <div class="panel-footer text-center">
+                <div class="row ">
+                    <div class="col-lg-8 form-group">
+
+                    </div>
+                    <div class="col-lg-2 form-group ">
+                        <span><strong>TOTAL DEBE</strong></span>
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <span><strong>TOTAL HABER</strong></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 form-group">
+
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <span>$<span id="TotDebe"></span></span>
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <span>$<span id="TotHaber"></span></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 form-group pull-right">
+                        <div id="aviso"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="TheModal">
+        <div class="modal-dialog modal-xlg" role="document" id="modalParcialShow">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">Ingreso de Auxiliares</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-3"></div>
+                                <label class="col-lg-2 control-label">Cuenta Contable</label>
+                                <div class="col-lg-4">
+                                    <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno">
+                                        @Html.Raw(ViewBag.HtmlStr)
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-3"></div>
+                                <label class="col-lg-2 control-label">Numero Item</label>
+                                <div class="col-lg-4">
+                                    <input type="number" id="item" name="item" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-3"></div>
+                                <label class="col-lg-2 control-label">Valor Item</label>
+                                <div class="col-lg-4">
+                                    <input type="number" id="valoritem" name="valoritem" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Rut Cta Cte</label>
+                                <input type="text" class="form-control" name="rutcta" id="rutcta" />
+                            </div>
+                            <div class="col-lg-4 form-group">
+                                <label class="control-label">Razon Social Cta Cte</label>
+                                <input type="text" class="form-control" name="razoncta" id="razoncta" />
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Numero Doc</label>
+                                <input type="text" class="form-control" name="numdoc" id="numdoc" />
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Valor</label>
+                                <input type="text" class="form-control" name="valor" id="valor" />
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Fecha Vencimiento</label>
+                                <input type="text" class="form-control" name="fechapago" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="modal-footer">
+                            <button class="btn btn-success redondo btnPress" onclick="@Url.Action("");">Guardar Auxiliar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+if (ViewBag.vbVoucherModel != null)
+{
+    <div class="row">
+        <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress">Editar Voucher</button>
+    </div>
+
+    
+    }
+    else
+    {
+    <div class="row">
+        <button id="submitButton" type="submit"  class="btn btn-primary pull-right redondo btnPress">Guardar Voucher</button>
+    </div>
+    <br />
+
+   @*<a href="@Session["Url"]"> <input type="button"  class="btn btn-primary pull-right" value="Seguir Editando" /></a>*@
+   
+
+    }
+
+
+}
+
+
+<style>
+    .modal-xlg{
+        width:70%;
+    }
+    #cuentaCont{
+        width:220px;
+    }
+    #cuentaCont2{
+        width:220px !important;
+    }
+
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        var i = 1;
+        $('#tablaWord tr').each(function(){
+                //console.log($(this).html());
+                cambiaCCI(document.getElementById("ctacont_"+i));
+            //console.log(i)
+                i++;
+
+           
+        });
+
+        $("select").select2();
+
+        
+       
+
+        //$("#ctacont").val()
+        cambiaCC(document.getElementById("ctacont"));
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+
+        //$(function () {
+            $("#fecha").datepicker();
+            $("#fechadoc").datepicker();
+            $("#fechapago").datepicker();
+            
+        //});
+
+            //var fechaContabilizacion = document.getElementById('fecha').value;
+            //var feDoc = document.getElementById('fechadoc').value;
+
+            //fechaContabilizacion.addEventListener('change',() => {
+              // fechaContabilizacion.value = feDoc.value;
+        //});
+        // Obtener el valor de la fecha en caso de que se escriba a mano.
+            //$('#fecha').keyup(function() {
+               // var value = $(this).val();
+                //$('#fechadoc').val(value);
+            //});
+        //-------------------------------------------------------------
+
+     
+
+        $.validator.addMethod("validaItems",
+        function(value, element) {
+            //console.log( $(element).find("option[data-activo='si']").length);
+
+            if( $(element).find("option[data-activo='si']").length > 0){
+                if( value != -1  ){
+                    return true ;
+                }else{
+                    return false;
+                }
+            }else{
+                return true;
+            }
+
+           /// alert($(element).find("option").length);
+           // alert(value+"=>"+ element);
+
+        },
+        "Debe selecionar un items"
+        );
+
+        $.validator.addMethod("validaCentroCosto",
+       function(value, element) {
+
+           if( $(element).find("option[data-activo='si']").length > 0){
+               if( value != -1  ){
+                   return true ;
+               }else{
+                   return false;
+               }
+           }else{
+               return true;
+           }
+
+       },
+       "Debe selecionar un centro de costo"
+       );
+
+
+        $("#DatosVoucher").validate({
+            ignore: [],
+            rules: {
+                fecha: "required",
+                glosa: "required",
+                numVoucher: { required: true, number: true },
+                fechadoc: "required",
+                ctacont: { required: true },
+                glosaDetalle: "required",
+                debe: { required: true, number: true },
+                haber: { required: true, number: true },
+                //idItem:{ validaItems: true   },
+                centrocosto:{ validaCentroCosto: true   }
+            },
+            messages: {
+
+                fecha: "Debe ingresar una fecha",
+                glosa: "Debe ingresar una glosa",
+                numVoucher: "Debe ingresar un numero de voucher",
+                fechadoc: "El documento debe tener una fecha",
+                ctacont: {required : "Debe seleccionar cuenta contable" },
+                glosaDetalle: "El detalle requiere glosa",
+                debe: "Monto invalido",
+                haber: "Monto invalido",
+                //idItem : "Debe seleccionar un item",
+                centrocosto: "Debe seleccionar una centro de costo"
+            }
+        });
+       // $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
+        //$.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
+    });
+
+
+    @*$(document).ready(function() {
+        $('#DatosVoucher').validator();
+        @if (ViewBag.CentroDeCostoEdit != null)
+        {
+            @:$("#centrocost").val(@((int)ViewBag.CentroDeCostoEdit));
+        }
+    });*@
+
+    function pre_form_validate(){
+        var hasErrors = $("#DatosVoucher").validate().errorList.length; //$('form[id="DatosVoucher"]').validator('validate').has('.has-error').length
+        if (hasErrors)
+        {
+            $(".has-error:first :input").focus();
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+    }
+
+    //Tab Mixed
+    function SinVacios(esto){
+        if( $(esto).val() == false )
+        {
+            $(esto).val("0");
+        }
+    }
+
+    function EliminarCero(esto){
+        $(esto).select();
+    };
+
+    function removeRow(id){
+        jQuery(id).remove();
+        Totales();
+    }
+
+    function removeLastRow() {
+        jQuery('#detalle' + idRowCount).remove();
+        idRowCount--;
+        if (idRowCount <= 0) {
+            idRowCount = 0;
+        }
+        Totales();
+    }
+
+    function DuplicaGlosa() {
+        var glosa = document.getElementById("glosa").value;
+       // if (checkboxElem.checked) {
+        $("input[name='glosaDetalle']").each(function () {
+            $("input[name='glosaDetalle']").val(glosa);
+        });
+        //}
+    }
+
+    function DuplicaFechaCont(){
+        var FechaCont = document.getElementById("fecha").value;
+        $("input[name='fechadoc']").each(function(){
+            $("input[name='fechadoc']").val(FechaCont);
+        });
+    }
+
+    var idRowCount = @codeBehindRowCount;
+
+    //Hace falta perfeccionar función.
+    $("#btn_agregar_fila").on("click", function(){
+
+        var $this = $(this);
+        $lastTr = $('tr:last', $('table'));
+        $lastTd = $('td:nth-last-child(2)', $lastTr);
+
+//        if (($(e.target).closest('td')).is($lastTd)) {
+
+            //SinVacios(this);
+            if(pre_form_validate() == false)
+            {
+                //e.preventDefault();
+                return;
+            }
+            // console.log($('#tablaBodyWord').closest('tr'));
+            idRowCount = idRowCount + 1;
+
+            var fecha = document.getElementById("fecha").value;
+            var glosa = $("input[name=glosaDetalle]:last").val();
+
+
+
+            var newRow = '<tr id="detalle' + idRowCount + '"><td class="form-group"><a onclick="cargaModal(this);"  id="'+idRowCount+'" class="btn btn-success btn-sm redondo  btnPress"  disabled="disabled" >AUX</a></td><td class="form-group" id="fedocNewRow'+idRowCount+'" style="display:none"><input type="text" class="form-control" id="fechadoc'+idRowCount+'" name="fechadoc" value="'+fecha+'" style="display:none" required/></td><td class="form-group"><select id="ctacont_'+idRowCount+'" onchange="cambiaCC(this);"  name="ctacont" data-auxiliar="'+idRowCount+'" data-item="idItem_'+idRowCount+'"  data-cc="centrocost_'+idRowCount+'" data-rut="rutCP_'+idRowCount+'" class="" data-live-search="true" data-size="10" required>@Html.Raw(ViewBag.HtmlStr)</select></td><td class="form-group"><input type="text" class="form-control" name="glosaDetalle" id="glosaDetalle'+idRowCount+'" value="'+glosa+'" required/></td> <td class="form-group"> <select  id="centrocost_'+idRowCount+'" name="centrocosto" class="selectpicker show-tick form-control" data-live-search="true" title="Seleccionar"><option value="-1">Seleccion</option> @foreach (CentroCostoModel CentroCosto in Model.Item1){ <option value="@CentroCosto.CentroCostoModelID">@CentroCosto.Nombre</option>} </select></td><td class="form-group"<td class="form-group"><input type="number" class="form-control" name="debe" id="debe" onchange="Totales()" min="0" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" required/></td><td class="form-group"><input type="number" class="form-control" name="haber" id="haber" onchange="Totales()" min="0" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" required/></td><td class="form-group"><button type="button"  class="btn btn-danger btn-sm redondo btnPress" tabindex = "-1" onclick="removeRow(detalle' + idRowCount + ')">X</button></td></tr>';
+            //  $('#tablaWord tbody').append(newRow);
+        $(newRow).insertAfter($('#tablaWord tr:last').closest('tr'));
+
+    
+
+            // $('.selectpicker').selectpicker();
+            //$('#DatosVoucher').validator('update');
+            //alert("pasa");
+
+            $('select').select2();
+
+        // cambiaCC($('#tablaWord tr:last').closest('tr'));
+        //  console.log("#fechadoc"+idRowCount);
+            //$("#fechadoc"+idRowCount).hide();
+            $("#fechadoc"+idRowCount).datepicker();
+
+            //$('#fecha').keyup(function() {
+               // var value = $(this).val();
+                //for (var i = 1; i < 30; i++) {
+                   // numeroFila = $('#fechadoc'+i).val(value);
+                //}
+            //});
+
+
+            //$('[name="fechadoc"]').each(function () {
+            $("#id"+idRowCount).rules('add', {
+                required: true,
+                messages: {
+                    required: "Debe ingresar una fecha."
+                }
+            });
+
+            $("#idItem_"+idRowCount).rules('add', {
+                validaItems: true,
+                messages: {
+                    validaItems : "Debe seleccionar un item"
+                }
+            });
+
+            $("#centrocost_"+idRowCount).rules('add', {
+                validaCentroCosto : true,
+                messages: {
+                    validaCentroCosto : "Debe seleccionar una centro de costo"
+                }
+            });
+
+
+
+            $("#glosaDetalle"+idRowCount).rules('add', {
+                required: true,
+                messages: {
+                    required: "El detalle requiere glosa."
+                }
+            });
+
+      //  }
+
+    });
+
+
+    $('table').on('keydown', 'input', function (e) {
+        var keyCode = e.keyCode;
+        if (keyCode !== 9) return;
+
+
+
+   // $("#btn_agregar_fila").on("click", function(){
+        var $this = $(this);
+        $lastTr = $('tr:last', $('table'));
+        $lastTd = $('td:nth-last-child(2)', $lastTr);
+
+        if (($(e.target).closest('td')).is($lastTd)) {
+
+            //SinVacios(this);
+            if(pre_form_validate() == false)
+            {
+                //e.preventDefault();
+                return;
+            }
+           // console.log($('#tablaBodyWord').closest('tr'));
+            idRowCount = idRowCount + 1;
+
+            var fecha = document.getElementById("fecha").value;
+            var glosa = $("input[name=glosaDetalle]:last").val();
+
+
+
+            var newRow = '<tr id="detalle' + idRowCount + '"><td class="form-group"><a onclick="cargaModal(this);" id="'+idRowCount+'" class="btn btn-success btn-sm redondo  btnPress"  disabled="disabled" >AUX</a></td><td style="display:none" ><input type="text" class="form-control" id="fechadoc'+idRowCount+'"  name="fechadoc" value="'+fecha+'" required/></td><td class="form-group"><select id="ctacont_'+idRowCount+'" onchange="cambiaCC(this);"  name="ctacont" data-auxiliar="'+idRowCount+'" data-item="idItem_'+idRowCount+'"  data-cc="centrocost_'+idRowCount+'" data-rut="rutCP_'+idRowCount+'" class="selectpicker ctacont show-tick form-control" data-live-search="true" data-size="10" required>@Html.Raw(ViewBag.HtmlStr)</select></td><td class="form-group"><input type="text" class="form-control" name="glosaDetalle" id="glosaDetalle'+idRowCount+'" value="'+glosa+'" required/></td> <td class="form-group"> <select  id="centrocost_'+idRowCount+'" name="centrocosto" class="selectpicker show-tick form-control" data-live-search="true" title="Seleccionar"><option value="-1">Seleccion</option> @foreach (CentroCostoModel CentroCosto in Model.Item1){ <option value="@CentroCosto.CentroCostoModelID">@CentroCosto.Nombre</option>} </select></td><td class="form-group"><input type="number" class="form-control" name="debe" id="debe" onchange="Totales()" min="0" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" required/></td><td class="form-group"><input type="number" class="form-control" name="haber" id="haber" onchange="Totales()" min="0" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" required/></td><td class="form-group"><button type="button"  class="btn btn-danger btn-sm redondo btnPress" tabindex = "-1" onclick="removeRow(detalle' + idRowCount + ')">X</button></td></tr>';
+          //  $('#tablaWord tbody').append(newRow);
+            $(newRow).insertAfter($('#tablaWord tr:last').closest('tr'));
+           // $('.selectpicker').selectpicker();
+            //$('#DatosVoucher').validator('update');
+            //alert("pasa");
+
+            // cambiaCC($('#tablaWord tr:last').closest('tr'));
+            $("#ctacont_"+idRowCount).select2();
+            //$("#form-group"+idRowCount).hide();
+            
+
+            $("#fechadoc"+idRowCount).datepicker();
+
+
+            //$('[name="fechadoc"]').each(function () {
+            $("#id"+idRowCount).rules('add', {
+                required: true,
+                messages: {
+                    required: "Debe ingresar una fecha."
+                }
+            });
+
+              $("#idItem_"+idRowCount).rules('add', {
+                validaItems: true,
+                    messages: {
+                        validaItems : "Debe seleccionar un item"
+                    }
+                });
+
+              $("#centrocost_"+idRowCount).rules('add', {
+                  validaCentroCosto : true,
+                  messages: {
+                      validaCentroCosto : "Debe seleccionar una centro de costo"
+                  }
+              });
+
+
+
+                $("#glosaDetalle"+idRowCount).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "El detalle requiere glosa."
+                    }
+                });
+            //});
+        }
+    });
+
+    //  });
+
+
+    @*function addMoreRows(DatosVoucher) {
+        var recRow = '<hr><div class="row" ><div class="col-lg-2 form-group"><label class="control-label">Fecha Doc</label><input type="text" class="form-control date" id="fechadoc" name="fechadoc" /></div><div class="col-lg-2 form-group"><label class="control-label">Rut Documento</label><input type="text" class="form-control" name="rutdoc" id="rutdoc" /></div><div class="col-lg-2 form-group"><label class="control-label">Razon Social Doc</label><input type="text" class="form-control" name="rsdoc" id="rsdoc" /></div><div class="col-lg-4 form-group"><label class="control-label">Glosa</label><input type="text" class="form-control" name="glosaDetalle" id="glosaDetalle" /></div><div class="col-lg-2 form-group"><label class="control-label">Cuenta Contable</label><select id="ctacont" name="ctacont" class="selectpicker show-tick form-control" data-live-search="true" data-size="10">@Html.Raw(ViewBag.HtmlStr)</select></div></div><div class="row"><div class="col-lg-2 form-group"><label class="control-label">Pagado</label><select class="form-control" name="pago" id="pago"><option value="0">No Pagado</option><option value="1">Pagado</option></select></div><div class="col-lg-4 form-group"><label class="control-label">Info Pago</label><input type="text" class="form-control" name="infopago" id="infopago" /></div><div class="col-lg-2 form-group"><label class="control-label">Fecha Vence Pago</label><input type="text" class="form-control date" name="fechapago" /></div><div class="col-lg-2 form-group"><label class="control-label">Monto Debe</label><input type="number" class="form-control" name="debe" id="debe" onchange="Totales()" value="0" /></div><div class="col-lg-2 form-group"><label class="control-label">Monto Haber</label><input type="number" class="form-control" name="haber" id="haber" onchange="Totales()" value="0" /></div></div>';
+        jQuery('#detalle').append(recRow);
+        $('.selectpicker').selectpicker();
+        $(function () {
+            $("#fecha").datepicker();
+            $("#fechadoc").datepicker();
+            $("#fechapago").datepicker();
+        });
+    }*@
+
+    function Totales() {
+        var TotDebe = 0;
+        var TotHaber = 0;
+        $("input[name='debe']").each(function () {
+            TotDebe = TotDebe + parseFloat($(this).val());
+            TotDebeString = TotDebe.toString();
+            document.getElementById("TotDebe").textContent = TotDebeString;
+
+        });
+        $("input[name='haber']").each(function () {
+            TotHaber = TotHaber + parseFloat($(this).val());
+            TotHaberString = TotHaber.toString();
+            document.getElementById("TotHaber").textContent = TotHaberString;
+        });
+
+
+
+        if (TotDebe == TotHaber) {
+            if(TotDebe == 0 & TotHaber == 0)
+            {
+                $("#aviso").hide();
+                $(':input[type="submit"]').prop('disabled', true);
+                //$('#DatosVoucher').validator('validate');
+            }
+            else
+            {
+                $("#aviso").show();
+                document.getElementById("aviso").textContent = "Montos Cuadrados";
+                document.getElementById("aviso").style.fontWeight = "700";
+                document.getElementById("aviso").className = "alert alert-success";
+                $(':input[type="submit"]').prop('disabled', false);
+                //$('#DatosVoucher').validator('validate');
+            }
+        }
+        else {
+            $("#aviso").show();
+            document.getElementById("aviso").textContent = "Montos NO Cuadrados, por diferencia de "+Math.abs(TotDebe-TotHaber);
+            document.getElementById("aviso").className = "alert alert-danger";
+            document.getElementById("aviso").style.fontWeight = "700";
+            $(':input[type="submit"]').prop('disabled', true);
+            //$('#DatosVoucher').validator('validate');
+        }
+    }
+    $("#duplica").on("click", function(){
+       // console.log("pasa");
+        DuplicaGlosa();
+    });
+
+    $("#submitButton").on("click", function(){
+        DuplicaFechaCont();
+    });
+    //$(document).on("click", ".auxButton", function (e) {
+
+    function cargaModal(instancia){
+        //alert($(instancia).attr("disabled"));
+        if($(instancia).attr("disabled") ==  "disabled"){
+            return false;
+        }
+       // alert("pasa");
+        var thisElement = $(instancia);
+
+        //console.log(thisElement);
+        //  NumeroItem
+        var jsLineaDetalle = thisElement.attr('id');
+        //  CodCuentaContable
+        //alert('#ctacont_'+jsLineaDetalle);
+        var jsCodCuentaContable = thisElement.closest('tr').find('#ctacont_'+jsLineaDetalle ).val();
+
+        //  ValorItem
+        var jsMontoDebe = thisElement.closest('tr').find('#debe').val();
+        var jsMontoHaber = thisElement.closest('tr').find('#haber').val();
+        var jsTotalConciliacion = 0;
+        if(jsMontoHaber > jsMontoDebe)
+            jsTotalConciliacion = jsMontoHaber;
+        else
+            jsTotalConciliacion = jsMontoDebe;
+        //alert(jsCodCuentaContable);
+        //llamada
+
+
+       //console.log(jsLineaDetalle+"=>"+ jsCodCuentaContable +"=>"+ jsTotalConciliacion );
+        $.ajax
+        ({
+            url: "IngresoVoucherAuxiliarModel?lineaDetalle=" + jsLineaDetalle + "&valueCuentaContable=" + jsCodCuentaContable + "&montoTotal=" + jsTotalConciliacion + "",
+            success: function (html) {
+               // console.log(html);
+                $("#modalParcialShow").html(html);
+                $("#TheModal").modal();
+
+            }
+        });
+
+    }
+
+    $(".auxButton_1").on("click", function () {
+        var thisElement = $(this);
+
+        //console.log(thisElement);
+        //  NumeroItem
+        var jsLineaDetalle = thisElement.attr('id');
+        //  CodCuentaContable
+        //alert('#ctacont_'+jsLineaDetalle);
+        var jsCodCuentaContable = thisElement.closest('tr').find('#ctacont_'+(parseInt(jsLineaDetalle)-1 )).val();
+
+        //  ValorItem
+        var jsMontoDebe = thisElement.closest('tr').find('#debe').val();
+        var jsMontoHaber = thisElement.closest('tr').find('#haber').val();
+        var jsTotalConciliacion = 0;
+        if(jsMontoHaber > jsMontoDebe)
+            jsTotalConciliacion = jsMontoHaber;
+        else
+            jsTotalConciliacion = jsMontoDebe;
+        //alert(jsCodCuentaContable);
+        //llamada
+        $.ajax
+        ({
+            url: "IngresoVoucherAuxiliarModel?lineaDetalle=" + jsLineaDetalle + "&valueCuentaContable=" + jsCodCuentaContable + "&montoTotal=" + jsTotalConciliacion + "",
+            success: function (html) {
+                $("#modalParcialShow").html(html);
+                $("#TheModal").modal();
+
+            }
+        });
+
+    });
+
+    @if(Model.Item2 != null && Model.Item2.Count > 0)
+    {
+        @:$(document).ready(function () { Totales(); });
+    }
+
+    /*
+    $('#DatosVoucher').submit(function(){
+        data = JSON.stringify($('form').serializeObject()),
+        $.ajax({
+            url: "VerificarAuxiliares?data="+data,
+            success: function (data) {
+                var isSuccessful = (data.ok == true);
+
+                if (isSuccessful)
+                {
+                    //$(this).unbind('submit').submit();
+                    return true;
+                }
+                else
+                {
+                    callAux = data.reqAux;
+                    $("#"+callAux).click();
+                    return false;
+                }
+            }
+        });
+        return false;
+    });*/
+
+
+    @if (ViewBag.hacerAuxiliarOpcional == null || (bool)ViewBag.hacerAuxiliarOpcional == false)
+    {
+
+        @://console.log("error");
+        @:$("#submitButton").click(function (e) {
+        @:    e.preventDefault();
+        @:    if(pre_form_validate() == false)
+        @:    {
+        @:        return false;
+        @:    }
+        @:    if(valido_lineas_a_enviar() == false)
+        @:    {
+        @:        return false;
+        @:    }
+        @:
+        @:    data = JSON.stringify($('form').serializeObject()),
+        @:    $.ajax({
+        @:    url: "VerificarAuxiliares?data="+data,
+        @:        success: function (data) {
+        @:            var isSuccessful = (data.ok == true);
+        @:
+        @:           // alert(isSuccessful);
+        @:            if (isSuccessful)
+        @:            {
+        @:
+            @:                $('form[id="DatosVoucher"]').submit();
+            @:            }
+        @:            else
+        @:            {
+        @:                msg = data.msg;
+        @:                if(msg)
+        @:                {
+        @:                    alert(msg);
+        @:                }
+        @:                else
+        @:                {
+        @:                  callAux = data.reqAux;
+        @:                  $("#"+callAux).click();
+        @:                }
+        @:            }
+        @:        }
+        @:    });
+        @:    return false;
+        @:});
+            }
+
+    function valido_lineas_a_enviar(){
+
+        //alert("valido");
+
+
+
+    }
+
+    function cambiaCCI(e){
+
+        //alert("pasa");
+        //console.log($(e).html());
+        var item  =  $(e).find(':selected').data('item');
+        var lugarItem  =  $(e).data('item');
+        //console.log("item: "+item);
+        // console.log(lugarItem);
+
+        var cc  =  $(e).find(':selected').data('cc');
+        var lugarCC =  $(e).data('cc');
+        console.log(cc);
+        //console.log(lugarCC);
+
+       // console.log(e);
+        var tieneAuxiliar  =  $(e).find(':selected').data('auxiliar');
+        //console.log(tieneAuxiliar);
+        var lugarAuxiliar  =  $(e).data('auxiliar');
+
+
+        if(item == 1){
+            // alert("pasa");
+           // var idItemSeleted =  $("#"+lugarItem).data("seleccion");
+           // $("#"+lugarItem).val(-1);
+            //$("#"+lugarItem).removeAttr("disabled");
+           // alert(parseInt(idItemSeleted ) );
+
+            $("#"+lugarItem+" option").each(function(){
+                if( $(this).val() != -1){
+
+                    $(this).removeAttr('style');
+                    $(this).attr('data-activo', "si");
+                }
+
+            });
+
+
+
+           // $("#"+lugarItem).val(parseInt(idItemSeleted ));
+
+        }else{
+            $("#"+lugarItem).val(-1);
+            //$("#"+lugarItem).attr("disabled", "");
+            $("#"+lugarItem+" option").each(function(){
+
+                if( $(this).val() != -1){
+                    $(this).attr('style', "display:none;");
+                    $(this).removeAttr("data-activo");
+                }
+
+
+            });
+
+        }
+
+        //  console.log(tieneAuxiliar);
+
+       // console.log(cc);
+        if(cc == 1){
+            //$("#"+lugarCC).val(-1);
+            // $("#"+lugarCC).removeAttr("disabled");
+            $("#"+lugarCC+" option").each(function(){
+                if( $(this).val() != -1){
+
+                    $(this).removeAttr('style');
+                    $(this).attr('data-activo', "si");
+                }
+
+            });
+        }else{
+
+
+            $("#"+lugarCC).val(-1);
+
+            // $("#"+lugarCC).attr("disabled", "");
+            $("#"+lugarCC+" option").each(function(){
+                // console.log(lugarCC);
+                if( $(this).val() != -1){
+                    // console.log("pasa por aqui?");
+                    $(this).attr('style', "display:none;");
+                    $(this).removeAttr("data-activo");
+                }
+
+
+            });
+
+        }
+
+
+        if(tieneAuxiliar == 1){
+            $("#"+lugarAuxiliar).removeAttr("disabled");
+        }else{
+            //alert(lugarAuxiliar);
+            $("#"+lugarAuxiliar).attr("disabled", "true");
+
+        }
+
+    }
+    function cambiaCC(e){
+
+        //alert("pasa");
+        //console.log($(e).html());
+        var item  =  $(e).find(':selected').data('item');
+        var lugarItem  =  $(e).data('item');
+        //console.log("item: "+item);
+       // console.log(lugarItem);
+
+        var cc  =  $(e).find(':selected').data('cc');
+        var lugarCC =  $(e).data('cc');
+        //console.log(cc);
+        //console.log(lugarCC);
+
+       // var rut  =  $(e).find(':selected').data('analisis');
+       // var lugarRut  =  $(e).data('rut');
+
+        var tieneAuxiliar  =  $(e).find(':selected').data('auxiliar');
+        var lugarAuxiliar  =  $(e).data('auxiliar');
+
+
+        if(item == 1){
+            // alert("pasa");
+
+            $("#"+lugarItem).val(-1);
+            //$("#"+lugarItem).removeAttr("disabled");
+
+            $("#"+lugarItem+" option").each(function(){
+                if( $(this).val() != -1){
+                    $(this).removeAttr('style');
+                    $(this).attr('data-activo', "si");
+                }
+
+            });
+
+            //console.log("pasa");
+            //console.log(lugarItem);
+            /*
+            $("#"+lugarItem).rules('add', {
+                validaItems: true,
+                messages: {
+                    validaItems : "Debe seleccionar un item"
+                }
+            });
+
+
+           */
+
+
+        }else{
+            $("#"+lugarItem).val(-1);
+            //$("#"+lugarItem).attr("disabled", "");
+            $("#"+lugarItem+" option").each(function(){
+
+                if( $(this).val() != -1){
+                    $(this).attr('style', "display:none;");
+                    $(this).removeAttr("data-activo");
+                }
+
+
+            });
+
+        }
+
+      //  console.log(tieneAuxiliar);
+
+//        console.log(cc);
+        if(cc == 1){
+            $("#"+lugarCC).val(-1);
+            // $("#"+lugarCC).removeAttr("disabled");
+            $("#"+lugarCC+" option").each(function(){
+                if( $(this).val() != -1){
+
+                    $(this).removeAttr('style');
+                    $(this).attr('data-activo', "si");
+                }
+
+            });
+        }else{
+
+
+            $("#"+lugarCC).val(-1);
+
+            // $("#"+lugarCC).attr("disabled", "");
+            $("#"+lugarCC+" option").each(function(){
+               // console.log(lugarCC);
+                if( $(this).val() != -1){
+                   // console.log("pasa por aqui?");
+                    $(this).attr('style', "display:none;");
+                    $(this).removeAttr("data-activo");
+                }
+
+
+            });
+
+        }
+
+
+        if(tieneAuxiliar == 1){
+            $("#"+lugarAuxiliar).removeAttr("disabled");
+        }else{
+            //alert(lugarAuxiliar);
+            $("#"+lugarAuxiliar).attr("disabled", "true");
+
+        }
+        /*
+        if(rut == 1){
+            //habilito solo los clientes
+            $("#"+lugarRut).val(-1);
+            //$("#"+lugarRut).removeAttr("disabled");
+
+
+            $("#"+lugarRut+" option").each(function(){
+                var tipo = $(this).data("tipo");
+                if( $(this).val() != -1 || tipo == 1){
+                    $(this).removeAttr('style');
+                }else{
+                    $(this).attr('style', "display:none;");
+                }
+
+            });
+
+
+
+
+        }else if (rut == 2){
+
+            $("#"+lugarRut).val(-1);
+            $("#"+lugarRut+" option").each(function(){
+                var tipo = $(this).data("tipo");
+                if( $(this).val() != -1 || tipo == 2){
+                    $(this).removeAttr('style');
+                }else{
+                    $(this).attr('style', "display:none;");
+                }
+
+            });
+        }
+        else{
+            $("#"+lugarRut).val(-1);
+            // $("#"+lugarRut).attr("disabled", "");
+            $("#"+lugarRut+" option").each(function(){
+
+                if( $(this).val() == -1){
+                    $(this).removeAttr('style');
+                }else{
+                    $(this).attr('style', "display:none;");
+                }
+
+            });
+
+        }*/
+    }
+
+
+    (function() {
+        $.fn.serializeObject = function() {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+    })(jQuery)
+
+
+</script>

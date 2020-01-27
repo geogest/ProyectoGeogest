@@ -1,0 +1,247 @@
+﻿
+@{int pocketCounter = 1;}
+@{
+    TipoAuxiliar ElTipoDeAuxiliar = TipoAuxiliar.ProveedorDeudor;
+    if (ViewBag.TipoAuxiliarAUsar != null)
+    {
+        ElTipoDeAuxiliar = (TipoAuxiliar)ViewBag.TipoAuxiliarAUsar;
+    }
+}
+@model AuxiliaresModel
+
+<form id="AUXForm">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1>Vista Auxiliares</h1>
+        </div>
+        <input type="hidden" name="TipoAux" value="@((int)ElTipoDeAuxiliar)">
+        <div class="modal-body">
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-3"></div>
+                    <label class="col-lg-2 control-label">Cuenta Contable</label>
+                    <div class="col-lg-4">
+                        <select id="AUXcuenta" name="AUXcuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" readonly>
+                            @Html.Raw(ViewBag.HtmlStr)
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-3"></div>
+                    <label class="col-lg-2 control-label">Número Línea</label>
+                    <div class="col-lg-4">
+                        <input type="number" id="AUXitem" name="AUXitem" class="form-control" value="@ViewBag.AUXlineaDetalle" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-3"></div>
+                    <label class="col-lg-2 control-label">Valor Línea</label>
+                    <div class="col-lg-4">
+                        <input type="text" id="AUXvaloritem" name="AUXvaloritem" class="form-control" value="@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.AUXmontoTotal)" readonly />
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div id="ConjuntoDetallesAuxiliares">
+                <table  class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">Tipo</th>
+                            <th class="text-center">Rut</th>
+                            <th class="text-center">Razon Social</th>
+                            <th class="text-center">Folio</th>
+                            @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                            {
+                                <th class="text-center">Valor Bruto</th>
+                                <th class="text-center">Retencion</th>
+                                    <th class="text-center">Valor Liquido</th>
+                                    <th class="text-center"></th>
+                            }
+                            else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                            {
+                                <th class="text-center">Tipo DTE</th>
+                                <th class="text-center">Monto Neto</th>
+                                    <th class="text-center">Monto Exento</th>
+                                    <th class="text-center">Monto IVA</th>
+                                    <th class="text-center">Monto Total</th>
+                                    <th class="text-center"> </th>
+                                    <th class="text-center"> </th>
+                            }else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                            {
+                                <th class="text-center">Sueldo Liquido</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null)
+                        {
+
+                            <tr id="detalleAux1">
+                                <td class="form-group" width="11%">
+                                    <input readonly  type="text" class="form-control " pull id="AUXfecha" name="AUXfecha" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                </td>
+                                <td>
+                                    <select disabled name="tipoIndividuo" class="selectpicker show-tick form-control">
+                                        <option values="">Seleccione</option>
+                                        <option values="CL">Cliente</option>
+                                        <option values="PR">Proveedor</option>
+                                        <option values="P">Persona</option>
+                                    </select>
+                                </td>
+                                <td class="form-group" width="12%">
+                                    <input readonly type="text" class="form-control" id="AUXrut" onblur="CSGetPrestadorAuxiliar(this);" name="AUXrut" data-valRut="foo" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                </td>
+
+                                <td class="form-group" width="15%">
+                                    <input readonly type="text" class="form-control" id="AUXrazoncta" name="AUXrazoncta" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                </td>
+
+                                <td class="form-group">
+                                    <input readonly type="number" class="form-control" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                </td>
+                                @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                                {
+                                    <td class="form-group">
+                                        <input readonly type="number" class="form-control" name="AUXValorLiquido" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                    <td class="form-group">
+                                        <input  readonly type="number" class="form-control" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                    <td class="form-group">
+                                        <input readonly type="number" class="form-control" name="AuxTotal" required onfocusout="CuadrarLiquido(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                }
+                                else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                {
+                                    <td class="form-group">
+                                        <select disabled id="AuxTipoDTE
+                                                " name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
+                                            @Html.Raw(ViewBag.TiposDTE)
+                                        </select>
+                                    </td>
+
+                                    <td class="form-group">
+                                        <input readonly type="number" class="form-control" id="AUXNeto" name="AUXNeto" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                    <td class="form-group">
+                                        <input readonly type="number" class="form-control" id="AUXExento" name="AUXExento" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                    <td class="form-group">
+                                        <input readonly type="number" class="form-control" id="AUXIva" name="AUXIva" onfocusout="CuadrarIVAExplicito(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                    <td class="form-group">
+                                        <input readonly type="number" class="form-control" id="AuxTotal" name="AuxTotal" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    </td>
+                                } 
+                                <td class="form-group" style="display:none;">
+                                    <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux1)" tabstop="false">X</button>
+                                </td>
+                            </tr>
+
+                        }
+                        else
+                        {
+                            int contadorDatePicker = 1;
+                            foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares)
+                            {
+
+                                <tr id="@Html.Raw("detalleAux" + pocketCounter)">
+                                    <td class="form-group" width="11%">
+                                       @ParseExtensions.ToDD_MM_AAAA(lineaDetalleAux.Fecha)
+                                    </td>
+                                    <td>
+
+                                        @if(lineaDetalleAux.Individuo2.tipoReceptor == "PR")
+                                        {
+                                           <p>Proveedor</p>
+                                        }else if(lineaDetalleAux.Individuo2.tipoReceptor == "CL")
+                                        {
+                                            <p>Cliente</p>
+                                        }else if(lineaDetalleAux.Individuo2.tipoReceptor == "P")
+                                        {
+                                            <p>Persona</p>
+                                        }else if(lineaDetalleAux.Individuo2.tipoReceptor == "H")
+                                        {
+                                            <p>Honorario</p>
+                                        }
+                                        else
+                                        {
+                                            <p>No Seleccionó tipo</p>
+                                        }
+                                    </td>
+
+                                    <td class="form-group" width="12%">
+                                        @lineaDetalleAux.Individuo2.RUT
+                                    </td>
+                                    <td class="form-group" width="15%">
+                                        @lineaDetalleAux.Individuo2.RazonSocial
+                                    </td>
+
+                                    <td class="form-group">
+                                        @lineaDetalleAux.Folio
+                                    </td>
+                                    @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                                    {
+                                        <td class="form-group">
+                                             @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.ValorLiquido)
+                                        </td>
+                                        <td class="form-group">
+                                            @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.ValorRetencion)
+                                        </td>
+                                        <td class="form-group">
+                                           @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoTotalLinea)
+                                        </td>
+                                    }
+                                    else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                    {
+                                        <td class="form-group">
+                                            
+                                     
+                                         @ParseExtensions.EnumGetDisplayAttrib(lineaDetalleAux.TipoDocumento)
+                                            
+                                          
+                                        </td>
+                                        <td class="form-group">
+                                            @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoNetoLinea)
+                                        </td>
+                                        <td class="form-group">
+                                            @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoExentoLinea)
+                                        </td>
+                                        <td class="form-group">
+                                            @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoIVALinea)
+                                        </td>
+                                        <td class="form-group">
+                                           @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoTotalLinea)
+                                        </td>
+                                    } else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                    {
+                                        <td class="form-group">
+                                            @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoTotalLinea)
+                                        </td>
+                                    }
+                                </tr>
+
+
+
+                                pocketCounter++;
+                                contadorDatePicker++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <br />
+            <div class="modal-footer">
+            </div>
+
+        </div>
+    </div>
+</form>
+
+

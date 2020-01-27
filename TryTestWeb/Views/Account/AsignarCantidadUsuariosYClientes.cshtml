@@ -1,0 +1,104 @@
+﻿@model IList<UsuarioModel>
+@{
+    ViewBag.Title = "AsignarCantidadUsuariosYClientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Administrador Usuarios</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Configuracion</a>
+                </li>
+                <li>
+                    <a href="#">Admin</a>
+                </li>
+                <li class="active">
+                    Administrador Usuarios
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("AsignarCantidadUsuariosYClientesUpdate", "Account", FormMethod.Post))
+{
+    <div class="container">
+        <div class="row">
+            <div class="row form-group">
+                <div class="col-md-2">
+                    <label class="control-label">Usuarios Representantes</label>
+                    <select class="form-control" id="UsuarioID" name="UsuarioID">
+                        <option>Selecciona</option>
+                        @foreach (UsuarioModel Usuario in Model)
+                        {
+                            <option value="@Usuario.UsuarioModelID">@Usuario.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Max Usuarios x Empresa</label>
+                    <input type="number" class="form-control" id="MaxUsuarios" name="MaxUsuarios" />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="control-label">Max Clientes Contables</label>
+                    <input type="number" class="form-control" id="MaxClientesCont" name="MaxClientesCont" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success centrar">Guardar Cambios</button>
+                </div>
+            </div>
+
+            @{int rowCount = 0; }
+             <div class="form-group">
+                  <div class="col-md-12">
+                      <table class="table table-responsive">
+                          <thead>
+                              <tr>
+                                  <th>Correlativo</th>
+                                  <th>Nombre Empresa</th>
+                                  <th>Nombre Usuario</th>
+                                  <th>Cantidad Maxima Usuarios</th>
+                                  <th>Cantidad Maxima Clientes Contables</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  @foreach (string[] UserEmpresa in ViewBag.tablaUsuarioEmpresa)
+                                  {
+                                      rowCount++;
+                                     @:<tr>
+                                     <td>@rowCount</td>
+                                      for (int i = 0; i < UserEmpresa.Length; i++)
+                                      {
+                                         
+                                          <td>@UserEmpresa[i]</td>
+                                      }
+                                     @:</tr>
+                                  }
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>     
+            </div>
+
+        </div>
+      
+    </div>
+
+    
+    
+    
+
+    
+}
+<style>
+    .centrar{
+        margin-top:25px;
+    }
+</style>

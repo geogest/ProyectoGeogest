@@ -1,0 +1,172 @@
+﻿@model DatosVariablesRemuModels
+
+@{
+    ViewBag.Title = "CambiarDatosEstaticos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2>CambiarDatosEstaticos</h2>
+
+@using (Html.BeginForm("UpdateDatosVariables", "Remuneracion", FormMethod.Post, new { id = "InsertarDatos" }))
+{
+    <div class="row form-group">
+        <div class="col-md-4">
+
+            @foreach (var utm in ViewBag.UTM)
+
+            {
+
+                <label class="control-label" for="Nombre">Valor UTM</label>
+                <input type="number" value="@utm.ValorUtm" class="form-control" />
+            }
+
+        </div>
+
+
+        <div class="col-md-4">
+            @foreach (var uf in ViewBag.UF)
+
+            {
+
+                <label class="control-label" for="Nombre">Valor UF</label>
+                <input type="number" value="@uf.ValorUf" class="form-control" />
+            }
+
+        </div>
+
+
+
+    </div>
+   
+    
+    
+    <div class="row form-group">
+        <h2>Valores Sueldo Mínimo</h2>
+        <div class="col-md-4">
+            @foreach (var sminimo in ViewBag.SueldoMinimo)
+
+            {
+
+                <label class="control-label" for="Nombre">Sueldo Mínimo Dependiente e Independiente</label>
+                <input type="number" value="@sminimo.SdepAndIndep" class="form-control" />
+
+                <label class="control-label" for="Nombre">Manores de 18 - mayores de 65</label>
+                <input type="number" value="@sminimo.Men18May65" class="form-control" />
+
+                <label class="control-label" for="Nombre">Trabajador Casa Particular</label>
+                <input type="number" value="@sminimo.TcasaParticular" class="form-control" />
+
+                <label class="control-label" for="Nombre">Sin Remuneración</label>
+                <input type="number" value="@sminimo.NoRemuValor" class="form-control" />
+
+
+            }
+
+        </div>
+    </div>
+
+    <div class="row form-group">
+        
+        <div class="col-md-4">
+            <h3>Tasa Afp dependiente</h3>
+
+            @foreach (var afp in ViewBag.Afp)
+
+            {
+                if (afp.NombreAfp == "Capital")
+                {
+                    <label class="control-label" for="Nombre">Capital</label>
+                    <input type="number" value="@afp.TasaAfpDependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "Cuprum")
+                {
+                    <label class="control-label" for="Nombre">Cuprum</label>
+                    <input type="number" value="@afp.TasaAfpDependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "Habitat")
+                {
+                    <label class="control-label" for="Nombre">Habitat</label>
+                    <input type="number" value="@afp.TasaAfpDependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "Modelo")
+                {
+                    <label class="control-label" for="Nombre">Modelo</label>
+                    <input type="number" value="@afp.TasaAfpDependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "PlanVital")
+                {
+                    <label class="control-label" for="Nombre">Plan Vital</label>
+                    <input type="number" value="@afp.TasaAfpDependiente" class="form-control" />
+                }
+                
+                if (afp.NombreAfp == "ProVida")
+                {
+                    <label class="control-label" for="Nombre">Pro Vida</label>
+                    <input type="number" value="@afp.TasaAfpDependiente" class="form-control" />
+                }
+            }
+        </div>
+
+        <div class="col-md-4">
+            <h3>Tasa Afp Independiente</h3>
+
+            @foreach (var afp in ViewBag.Afp)
+
+            {
+                if (afp.NombreAfp == "Capital")
+                {
+                    <label class="control-label" for="Nombre">Capital</label>
+                    <input type="number" value="@afp.TasaAfpIndependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "Cuprum")
+                {
+                    <label class="control-label" for="Nombre">Cuprum</label>
+                    <input type="number" value="@afp.TasaAfpIndependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "Habitat")
+                {
+                    <label class="control-label" for="Nombre">Habitat</label>
+                    <input type="number" value="@afp.TasaAfpIndependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "Modelo")
+                {
+                    <label class="control-label" for="Nombre">Modelo</label>
+                    <input type="number" value="@afp.TasaAfpIndependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "PlanVital")
+                {
+                    <label class="control-label" for="Nombre">Plan Vital</label>
+                    <input type="number" value="@afp.TasaAfpIndependiente" class="form-control" />
+                }
+
+                if (afp.NombreAfp == "ProVida")
+                {
+                    <label class="control-label" for="Nombre">Pro Vida</label>
+                    <input type="number" value="@afp.TasaAfpIndependiente" class="form-control" />
+                }
+            }
+        </div>
+
+    </div>
+
+
+
+
+    <div class="col-md-4">
+        <button class="btn btn-primary waves-effect waves-light" value="UpdateDatosVariables" name="Save" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+    </div>
+
+
+}
+
+<div>
+    
+</div>

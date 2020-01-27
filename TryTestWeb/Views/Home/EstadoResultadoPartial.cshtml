@@ -1,0 +1,517 @@
+﻿@model EstadoResultadoModel
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-1">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>Ingresos Total</h4>
+                    </div>
+                    <div class="col-md-4 pull-right">
+                        <input type="number" class="form-control" style="font-weight:700;" id="suma" placeholder="" value="0" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <div class="row form-group">
+                            <label for="cuenta" class="col-md-8 control-label">Cantidad Total de DTE Emitidos:</label>
+                            <div class="col-md-4">
+
+                                <input type="number" class="form-control" id="cuenta" placeholder="" value="0" readonly>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="33" class="col-md-8 control-label">Ventas con Facturas con Iva:</label>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="33" placeholder="" value="0" readonly>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="34" class="col-md-8 control-label">Ventas con Facturas Exentas:</label>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="34" placeholder="" value="0" readonly>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="110" class="col-md-8 control-label">Ventas con Facturas Exportación:</label>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="110" placeholder="" value="0" readonly>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="3941" class="col-md-8 control-label">Ventas con Boletas:</label>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="3941" placeholder="" value="0" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <label for="56" class="col-md-8 control-label">Notas de Débito:</label>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="56" placeholder="" value="0" readonly>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="IngresosVarios" class="col-md-8 control-label">Ingresos Varios:</label>
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.IngresosVarios, new { htmlAttributes = new { @class = "form-control", @id = "IngresosVarios" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="panel panel-cert">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-xs-7">
+                <h4>Gastos Total</h4>
+            </div>
+            <div class="col-xs-3">
+                <input type="number" class="form-control" style="font-weight:700;" id="suma1" placeholder="" value="" readonly>
+            </div>
+            <div class="col-xs-2">
+                <button class="btn btn-default" style="color:orangered;" value="Actualizar Datos" name="Save" id="Save" type="submit">Actualizar Datos</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" style="height: 746px;">
+        <div class="row form-group">
+            <label for="provee" class="col-xs-7 control-label">Proveedores:</label>
+            <div class="col-xs-5">
+                @*//pendiente*@
+                <input type="number" class="form-control" id="provee" placeholder="" value="0" readonly>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="61" class="col-xs-7 control-label">Notas de Crédito:</label>
+            <div class="col-xs-5">
+                <input type="number" class="form-control" id="61" placeholder="" value="0" readonly>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="ivas" class="col-xs-7 control-label">IVA de ventas:</label>
+            <div class="col-xs-5">
+                <input type="number" class="form-control" id="ivas" placeholder="" value="0" readonly>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="HonorBrut" class="col-md-7 control-label">Bruto Honorarios:</label>
+            <div class="col-xs-5">
+                @Html.EditorFor(model => model.BrutoHonorarios, new { htmlAttributes = new { @class = "form-control", @id = "HonorBrut" } })
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="RemuBrut" class="col-md-7 control-label">Bruto Remuneraciones:</label>
+            <div class="col-xs-5">
+                @Html.EditorFor(model => model.BrutoRemuneraciones, new { htmlAttributes = new { @class = "form-control", @id = "RemuBrut" } })
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="GastosVarios" class="col-md-7 control-label">Gastos Varios:</label>
+            <div class="col-xs-5">
+                @Html.EditorFor(model => model.GastosVarios, new { htmlAttributes = new { @class = "form-control", @id = "GastosVarios" } })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<hr />
+<div class="row" style="overflow:scroll;">
+    <div class="col-lg-7">
+
+    </div>
+    <h1>INGRESOS</h1>
+    <table class="table table-responsive table-bordered">
+        <thead>
+            <tr>
+                <th class="col-lg-2"></th>
+                <th>ENERO</th>
+                <th>FEBRERO</th>
+                <th>MARZO</th>
+                <th>ABRIL</th>
+                <th>MAYO</th>
+                <th>JUNIO</th>
+                <th>JULIO</th>
+                <th>AGOSTO</th>
+                <th>SEPTIEMBRE</th>
+                <th>OCTUBRE</th>
+                <th>NOVIEMBRE</th>
+                <th>DICIEMBRE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Por Ventas con facturas con IVA</td>
+                <td><span id="tabla33" name="tabla33"></span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Por Ventas con facturas Exentas</td>
+                <td id="tabla34" name="tabla34"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Por Ventas con facturas EXPORTACION</td>
+                <td id="tabla110" name="tabla110"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Por Ventas con BOLETAS</td>
+                <td id="tabla3941" name="tabla3941"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><strong>TOTAL INGRESOS DEL MES</strong></td>
+                <td><strong id="tablatotalingresos" name="tablatotalingresos"></strong></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+        </tfoot>
+    </table>
+    <br />
+    <h1>EGRESOS</h1>
+    <table class="table table-responsive table-bordered">
+        <thead>
+            <tr>
+                <th class="col-lg-2"></th>
+                <th>ENERO</th>
+                <th>FEBRERO</th>
+                <th>MARZO</th>
+                <th>ABRIL</th>
+                <th>MAYO</th>
+                <th>JUNIO</th>
+                <th>JULIO</th>
+                <th>AGOSTO</th>
+                <th>SEPTIEMBRE</th>
+                <th>OCTUBRE</th>
+                <th>NOVIEMBRE</th>
+                <th>DICIEMBRE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>FIJOS</strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Proveedores</td>
+                <td><span id="tablaprovee" name="tablaprovee"></span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>IVA de Ventas</td>
+                <td id="tablaIva" name="tablaIva"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>GANANCIA/PERDIDA</h1>
+    <table class="table table-responsive table-bordered">
+        <thead>
+            <tr>
+                <th class="col-lg-2"></th>
+                <th>ENERO</th>
+                <th>FEBRERO</th>
+                <th>MARZO</th>
+                <th>ABRIL</th>
+                <th>MAYO</th>
+                <th>JUNIO</th>
+                <th>JULIO</th>
+                <th>AGOSTO</th>
+                <th>SEPTIEMBRE</th>
+                <th>OCTUBRE</th>
+                <th>NOVIEMBRE</th>
+                <th>DICIEMBRE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <tr>
+                <td><strong>Ganancia o Perdida Diferencia</strong></td>
+                <td><strong id="tablaganancia" name="tablaganancia"></strong></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    #divEgreso input {
+        font-size: 12px;
+    }
+</style>
+
+<script>
+
+    function TotalEgreso() {
+        var ProveeValue = parseInt($("#provee").val());
+        var NotasCreditoValue = parseInt($("#61").val())
+        var IvasValue = parseInt($("#ivas").val());
+        var HonorBrutoValue = parseInt($("#HonorBrut").val());
+        var RemuBrutoValue = parseInt($("#RemuBrut").val());
+        var GastosVariosValue = parseInt($("#GastosVarios").val());
+        var TotalTotalEgreso = ProveeValue + NotasCreditoValue + IvasValue + HonorBrutoValue + RemuBrutoValue + GastosVariosValue;
+        $("#suma1").val(TotalTotalEgreso);
+    }
+
+    function TotalIngreso() {
+        var FactElecValue = parseInt($("#33").val());
+        var FactElecExValue = parseInt($("#34").val());
+        var FactExpValue = parseInt($("#110").val());
+        var BoletasValue = parseInt($("#3941").val());
+        var NotaDebValue = parseInt($("#56").val());
+        var IngresosVariosValue = parseInt($("#IngresosVarios").val());
+        var TotalTotalIngreso = FactElecValue + FactElecExValue + FactExpValue + BoletasValue + NotaDebValue + IngresosVariosValue;
+        $("#suma").val(TotalTotalIngreso);
+    }
+
+  
+
+ 
+
+
+
+    function Ganancia() {
+        var TotalEgresos = parseInt($("#suma1").val());
+        var GananciA = parseInt($("#suma").val()) - TotalEgresos;
+        $("#ganancia").val(GananciA);
+        if (GananciA < 0) {
+            document.getElementById("ganancia").style.color = "red";
+        }
+        else {
+            document.getElementById("ganancia").style.color = "black";
+        }
+        var x = $('#ganancia').val();
+        var numeroConPuntitos = Miles(x);
+        $("#ganancia").val(numeroConPuntitos);
+
+    }
+
+
+
+
+    function Traspasa() {
+        var url = '@Url.Action("VistaFlujoCajaGet")';
+        var periodo = $("#Periodo").val();
+        var anio = $("#Anio").val();
+
+        $.getJSON(url, { periodo: periodo, anio: anio },
+
+            function (data) {
+                if (data.ok == false) {
+
+                }
+                else {
+                    $("#cuenta").val(data.cuenta);
+                    $("#suma").val(data.suma);
+                    $("#33").val(data.ingreso33);
+                    $("#34").val(data.ingreso34);
+                    $("#110").val(data.ingreso110);
+                    $("#3941").val(data.ingreso3941);
+                    $("#61").val(data.egreso61);
+                    $("#56").val(data.ingreso56);
+                    $("#ivas").val(data.egresoIva);
+                    $("#ingpagado").val(data.totalPagadosVenta);
+                    $("#egrpagado").val(data.totalPagadosCompra);
+                    $("#provee").val(data.totalProveedores);
+
+                    //tabla
+                    //ingresos
+                    $("#tabla33").text(data.ingreso33);
+                    $("#tabla34").text(data.ingreso34);
+                    $("#tabla110").text(data.ingreso110);
+                    $("#tabla3941").text(data.ingreso3941);
+                    $("#tablatotalingresos").text(data.ingreso3941 + data.ingreso110 + data.ingreso34 + data.ingreso33);
+                    //egresos
+                    //fijos
+                    $("#tablaprovee").text(data.totalProveedores);
+                    $("#tablaIva").text(data.egresoIva);
+ 
+
+
+
+                    TotalEgreso();
+                    TotalIngreso();
+                    Ganancia();
+                    //total fijo
+                    $("#tablatotalegresos").text( data.totalProveedores + data.egresoIva);
+
+                    $("#tablaganancia").text($("#ganancia").val());
+
+                }
+            }
+            );
+    }
+
+    $(document).ready(function () {
+
+        $("#IngresosVarios").change(function () {
+            TotalEgreso();
+            TotalIngreso();
+            Traspasa();
+            Ganancia();
+        });
+
+        $("#HonorBrut").change(function () {
+            TotalEgreso();
+            TotalIngreso();
+            Traspasa();
+            Ganancia();
+        });
+
+        $("#RemuBrut").change(function () {
+            TotalEgreso();
+            TotalIngreso();
+            Traspasa();
+            Ganancia();
+        });
+
+        $("#GastosVarios").change(function () {
+            TotalEgreso();
+            TotalIngreso();
+            Traspasa();
+            Ganancia();
+        });
+
+      
+
+        Traspasa();
+    });
+
+    function Miles(nStr) {
+        nStr += '';
+        x = nStr.split(',');
+        x1 = x[0];
+        x2 = x.length > 1 ? ',' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + '.' + '$2');
+        }
+        return x1 + x2;
+    }
+
+    function LlenarTabla() {
+
+    }
+</script>
+

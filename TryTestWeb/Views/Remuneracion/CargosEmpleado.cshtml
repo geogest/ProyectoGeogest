@@ -1,0 +1,56 @@
+﻿@model List<CargoRemuModels>
+
+@{
+    ViewBag.Title = "CargosEmpleado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2>CargosEmpleado</h2>
+
+@using (Html.BeginForm("InsertarCargo", "Remuneracion", FormMethod.Post, new { id = "InsertarCargo" }))
+{
+   
+    
+    <div class="form-horizontal">
+        <h4>CargoRemuModels</h4>
+        <hr />
+      
+        <div class="form-group">
+            <div class="col-md-10">
+                <input class="form-control" type="text" name="NombreCargo" id="NombreCargo" value="" />
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Crear Cargo" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nombre Cargo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int count = 0;}
+        @foreach (var Cargos in Model)
+        {
+            <tr>
+                <th scope="row">@(count + 1)</th>
+                <td>@Cargos.NombreCargo</td>
+            </tr>
+
+            {
+                count++;
+            }
+        }
+    </tbody>
+</table>

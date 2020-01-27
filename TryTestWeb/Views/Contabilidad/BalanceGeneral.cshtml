@@ -1,0 +1,108 @@
+﻿@model IList<string[]>
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Balance General</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad Reportes</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Balance General
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <div class="row form-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Año</label>
+                        <input type="text" class="form-control" name="AnioBalance" id="AnioBalance" value="@DateTime.Now.Year.ToString()" />
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label for="" class="control-label">Mes:</label>
+                        <select name="MesBalance" id="MesBalance" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Fecha Inicio</label>
+                        <input type="text" class="form-control date" name="fechainicio" id="fechainicio" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Fecha Fin</label>
+                        <input type="text" class="form-control date" name="fechafin" id="fechafin" />
+                    </div>
+                    @using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
+                    {
+                        <div class="col-md-2" form-group>
+                            <div style="text-align: center;">
+                                <label class="control-label" style="color:transparent;"> _</label>
+                                <button class="btn btn-1 btnPress form-control" value="Exportar" name="Save" type="submit"><i class="fa fa-file-excel-o"></i> &nbsp; Exportar</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="panel-body" id="parshial">
+                @if(Model.Count() == 3)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        No se encontraron registros.
+                    </div>
+                }else { 
+                @Html.Partial("BalanceGeneralPartial", Model)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#fechainicio').change(function (e) { filtrar(); });
+        $('#fechafin').change(function (e) { filtrar(); });
+        $('#AnioBalance').change(function (e) { filtrar(); });
+        $('#MesBalance').change(function (e) { filtrar(); });
+    });
+
+    function filtrar()
+    {
+        var Anio = $('#AnioBalance').val();
+        var Mes = $('#MesBalance').val();
+
+        var fechaInicio = $('#fechainicio').val();
+        var fechaFin = $('#fechafin').val();
+        $.ajax
+        ({
+            url: "BalanceGeneralPartial?FechaInicio=" + fechaInicio + "&FechaFin=" + fechaFin +"&Anio="+ Anio +"&Mes="+Mes,
+            success: function (html)
+            {
+                $("#parshial").html(html);
+            }
+        });
+    }
+</script>

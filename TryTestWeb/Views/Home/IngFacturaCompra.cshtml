@@ -1,0 +1,229 @@
+﻿@model QuickDetalleLibroCompraModel
+
+@using (Html.BeginForm("MakeFacturaCompra", "Home", FormMethod.Post, new { id = "MakeFacturaCompra" }))
+{
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Creación de DTE</h1>
+            <h3 class="page-header">Nota: Para SET BASICO EXENTO, todos los documentos afectos deben llevar codigo IVA NO RECUPERABLE: Compras destinadas a IVA a ge... y Factor Proporcionalidad 0</h3>
+            <h3 class="page-header">Para todo documento que tenga MONTOS AFECTOS, Se debe calcular su IVA e ingresarlo en campo MONTO IVA</h3>
+            <h3 class="page-header">Nota: Para notas de credito que anulan, los montos deben ser identicos de la factura de referencia</h3>
+        </div>
+    </div>
+    <div class="panel panel-1">
+        <div class="panel-heading">
+            Tipo Documento y Folio
+        </div>
+        <div class="panel-body">
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label class="control-label" for="TpoDoc">Tipo Documento: </label>
+                    <select name="TpoDoc" id="TpoDoc" class="form-control required input-invalid" title="Tipo de documento" aria-required="true">
+                        <option value="">Seleccione tipo de Documento</option>
+                        <optgroup label="DTE Electrónicos">
+                            <option value="33">Factura Electrónica</option>
+                            <option value="34">Factura Electrónica exenta</option>
+                            <option value="43">Factura de Liquidacion Electrónica</option>
+                            <option value="46">Factura de Compra Electrónica</option>
+                            <option value="110">Factura Exportación Electrónica</option>
+                            <option value="52">Guía de Despacho Electrónica</option>
+                            <option value="56">Nota de Débito Electronica</option>
+                            <option value="61">Nota de Crédito Electronica</option>
+                            <option value="110">Factura Exportación Electrónica</option>
+                            <option value="111">Nota de Débito de Exportación Electronica</option>
+                            <option value="112">Nota de Crédito de Exportación Electronica</option>
+                            <option value="39">Boleta Electrónica</option>
+                            <option value="41">Boleta Electrónica Exenta</option>
+                            </optgroup>
+                        <optgroup label="DTE Manuales">
+                            <option value="30">Factura</option>
+                            <option value="32">Factura Exenta</option>
+                            <option value="40">Liquidación Factura</option>
+                            <option value="45">Factura Compra</option>
+                            <option value="50">Guía de Despacho</option>
+                            <option value="55">Nota de Débito</option>
+                            <option value="60">Nota de Crédito</option>
+                            <option value="101">Factura de Exportación</option>
+                        </optgroup>
+</select>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Fecha Emisión:</label>
+                    @Html.EditorFor(model => model.FchDoc, new { htmlAttributes = new { @class = "form-control", @name = "FchDoc", @id = "FchDoc" } })
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Folio:</label>
+                    @Html.EditorFor(model => model.NroDoc, new { htmlAttributes = new { @class = "form-control", @name = "NroDoc", @type = "number", @placeholder = "", @maxlength = "10" } })
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tab-content">
+        <!--Receptor-->
+        <div class="panel panel-2">
+            <div class="panel-heading">Datos Emisor</div>
+            <div id="DatosReceptor" class="panel-body">
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label class="control-label">Rut Documento:</label>
+                        @Html.EditorFor(model => model.RUTDoc, new { htmlAttributes = new { @class = "form-control", @autocomplete = "on", @maxlength = "12", @size = "10", @placeholder = "11111111-1", @name = "RUTDoc", @type = "text", @style = "text-transform:uppercase;" } })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Razon Social:</label>
+                        @Html.EditorFor(model => model.RznSoc, new { htmlAttributes = new { @class = "form-control", @maxlength = "50", @tabindex = "14", @size = "50", @name = "RznSoc", @id = "RznSoc", @type = "text" } })
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--Fin Receptor-->
+
+    <div class="panel panel-3">
+        <div class="panel-heading">
+            Totales
+        </div>
+        <div class="panel-body">
+            <div id="Totales">
+                
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="control-label">Monto Neto</label>
+                            @Html.EditorFor(model => model.MntNeto, new { htmlAttributes = new { @type = "number", @name = "MntNeto", @id = "MntNeto", @class = "form-control", @value = "0" } })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="control-label">Monto IVA</label>
+                            @Html.EditorFor(model => model.MntIVA, new { htmlAttributes = new { @type = "number", @name = "MntIVA", @id = "MntIVA", @class = "form-control" } })
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">IVA No Recuperable</label>
+                            @Html.EnumDropDownListFor(x => x.CodigoIVANoRecuperable, "Para IVA no recuperable seleccionar codigo", new  { @class = "form-control", @name = "IVANoRec", @id = "IVANoRec"})
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">Factor Proporcionalidad</label>
+                            @Html.EditorFor(model => model.FactorProporcionalidad, new { htmlAttributes = new { @type = "number", @name = "FactPropor", @id = "FactPropor", @class = "form-control", @step = "any" } })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="control-label">Monto Exento</label>
+                            @Html.EditorFor(model => model.MntExe, new { htmlAttributes = new { @type = "number", @name = "MntExe", @id = "MntExe", @class = "form-control" } })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="control-label">Monto Total</label>
+                            @Html.EditorFor(model => model.MntTotal, new { htmlAttributes = new { @type = "number", @name = "MntTotal", @id = "MntTotal", @class = "form-control" } })
+                        </div>
+                    </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-4">
+        <div class="panel-heading">
+            Impuestos (Opcionales)
+        </div>
+        <div class="panel-body">
+            <div id="Impuestos">
+                <div class="row" id="Impuestos1">
+                    <div class="col-md-4">
+                        <label class="control-label">Impuesto Adicional:</label>
+                        <select name="ImpAdic1" id="ImpAdic1" class="form-control">
+                            <option value="[0,0]">Ninguno</option>
+                            <option value="[23,15]">Art. de Oro, Joyas y Pieles Finas (15%)</option>
+                            <option value="[44,15]">Tapices, Casas Rodantes, Caviar y Armas de Aire (15%)</option>
+                            <option value="[24,31.5]">Licores, Pisco, Destilados (31.5%)</option>
+                            <option value="[25,20.5]">Vinos, Chichas, Sidras (20.5%)</option>
+                            <option value="[26,20.5]">Cervezas y Otras Bebidas Alcoholicas (20.5%)</option>
+                            <option value="[27,10]">Aguas Minerales y Bebidas Analcoholicas (10%)</option>
+                            <option value="[271,18]">Bebidas Analcoholicas con alto contenido de Azucar (18%)</option>
+                            <option value="[15,19]">IVA Retenido Total</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Monto Impuesto</label>
+                        <input type="number" name="MntImp1" id="MntImp1" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-3">
+                    <input class="btn-2outline btn" onclick="removeLastRow();" name="REMOVE_DETALLE" value="Remueve linea de Impuesto" type="button">
+                </div>
+                <div class="col-md-3 col-md-offset-3">
+                    <input class="btn btn-2" onclick="addMoreRows(this.form);" name="AGREGA_DETALLE" value="Agrega linea de Impuesto" type="button">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <input value="Ingresar Documento" name="Button_Update" class="btn btn-primary" type="submit">
+    </div>
+
+}
+
+<script>
+    var rowCount = 1;
+
+    function addMoreRows(frm) {
+        rowCount++;
+        var recRow = '<div class="row" id="Impuestos' + rowCount + '"><div class="col-md-4"><select name="ImpAdic' + rowCount + '" id="ImpAdic' + rowCount + '" class=" form-control"> <option value="[0,0]">Ninguno</option> <option value="[23,15]">Art. de Oro, Joyas y Pieles Finas (15%)</option> <option value="[44,15]">Tapices, Casas Rodantes, Caviar y Armas de Aire (15%)</option> <option value="[24,31.5]">Licores, Pisco, Destilados (31.5%)</option> <option value="[25,20.5]">Vinos, Chichas, Sidras (20.5%)</option> <option value="[26,20.5]">Cervezas y Otras Bebidas Alcoholicas (20.5%)</option> <option value="[27,10]">Aguas Minerales y Bebidas Analcoholicas (10%)</option> <option value="[271,18]">Bebidas Analcoholicas con alto contenido de Azucar (18%)</option> <option value="[15,19]">IVA Retenido Total</option> </select> </div><div class="col-md-4"><input type="number" name="MntImp' + rowCount + '" id="MntImp' + rowCount + '" class="form-control"> </div></div>';
+        jQuery('#Impuestos').append(recRow);
+
+    }
+
+    function removeLastRow() {
+        jQuery('#Impuestos' + rowCount).remove();
+        rowCount--;
+        if (rowCount <= 0) {
+            rowCount = 0;
+        }
+
+    }
+</script>
+<script>$(document).ready(function () {
+    $.datepicker.regional['es'] = {
+        closeText: 'Cerrar',
+        prevText: '<Ant',
+        nextText: 'Sig>',
+        currentText: 'Hoy',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+        dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    };
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+    $(function () {
+        $("#FchDoc").datepicker();
+    });
+
+    $.validator.addMethod('date',
+    function (value, element, params) {
+        if (this.optional(element)) {
+            return true;
+        }
+
+        var ok = true;
+        try {
+            $.datepicker.parseDate('dd-mm-yy', value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    });
+});
+</script>

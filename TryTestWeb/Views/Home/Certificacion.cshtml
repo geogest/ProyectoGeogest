@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Certificacion";
+}
+<br>
+<div class="row">
+    <div class="col-md-12" style="color:#ddd">
+        <h1 class="page-header">Menu Certificación</h1>
+    </div>
+</div>
+
+<div class="panel panel-cert">
+    <div class="panel-heading">
+        Proceso de Certificación
+    </div>
+    <div class="panel-body">
+        <h1>1.- Set de Prueba y Simulación</h1>
+        <ul class="card-box m-b-10">
+            <li>
+                <a href="@Url.Action("SpecialMenu", "FMSend")" style="color:#000000;"><i class="fa fa-sign-out fa-paper-plane"></i> - Menu Especial : Estado Numeros</a>
+            </li>           
+            <li>
+                <a href="@Url.Action("MakeFacturaG", "Home", new { opt = "1" })" style="color:#000000;"><i class="fa fa-edit fa-fw"></i> - Crear DTE</a>
+            </li>
+            <li>
+                <a href="@Url.Action("ListaFactCert", "Home")" style="color:#000000;"><i class="fa fa-table fa-fw"></i> - DTEs Creados</a>
+            </li>
+            <li>
+                <a href="@Url.Action("ListaFacturasNotSent", "FMSend")" style="color:#000000;"><i class="fa fa-sign-out fa-fw"></i> - Emitir DTEs Creados</a>
+            </li>
+            <li>
+                <a href="@Url.Action("ListaFacturasLibro", "FMSend")" style="color:#000000;"><i class="fa fa-sign-out fa-paper-plane"></i> - Enviar Libro de Ventas</a>
+            </li>
+            <li>
+                <a href="@Url.Action("IngFacturaCompra", "Home", new { opt = "1" })" style="color:#000000;"><i class="fa fa-edit fa-fw"></i> - Crear DTE de Compra</a>
+            </li>
+            <li>
+                <a href="@Url.Action("ListaFacturasLibroCompra", "FMSend")" style="color:#000000;"><i class="fa fa-sign-out fa-paper-plane"></i> - Enviar Libro de Compra</a>
+            </li>
+        </ul>
+        <h1>2.-  Set de Intercambio</h1>
+        <ul class="card-box m-b-10">
+            <li>
+                <a href="https://www4.sii.cl/pfeInternet/#menu" style="color:#000000;"><i class="fa fa-download" aria-hidden="true"></i> - Bajar archivos XML </a>
+            </li>
+            <li>
+                <a href="@Url.Action("ProcessResultEnvio", "FMSend")" style="color:#000000;"><i class="fa fa-cog fa-spin fa-fw"></i> - Procesar Archivos</a>
+            </li>
+            <li>
+                <a href="https://www4.sii.cl/pfeInternet/#menu" style="color:#000000;"><i class="fa fa-upload" aria-hidden="true"></i> - Cargar archivos XML </a>
+            </li>
+        </ul>
+        <h1>3.-  Muestras Impresas</h1>
+        <ul class="card-box m-b-10">
+            <li>
+                <a href="https://www4.sii.cl/pfeInternet/" style="color:#000000;"><i class="fa fa-download" aria-hidden="true"></i> - Registrar Empresa y Cargar Archivos</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MakePDFTrackID", "FMSend")" style="color:#000000;"><i class="fa fa-spinner fa-pulse fa-fw"></i> - Procesar Archivos</a>
+            </li>
+        </ul>
+</div>
+        <a href="http://www.sii.cl/factura_electronica/factura_mercado/proc_postulacion.htm">
+            <div class="panel-footer">
+                <span class="pull-left"><b> Ver Documentación </b><i class="fa fa-arrow-circle-right"></i></span>
+                @*<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>*@
+                <div class="clearfix"></div>
+            </div>
+        </a>
+    </div>

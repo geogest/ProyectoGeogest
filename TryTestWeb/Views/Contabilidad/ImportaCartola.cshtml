@@ -1,0 +1,144 @@
+﻿
+@{
+    ViewBag.Title = "importacartola";
+}
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Importar Cartola Bancaria</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Importar Cartola Bancaria
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("NuevaCartolaManual", "Contabilidad", FormMethod.Post, new { id = "NuevaCartolaManual" }))
+{
+    <br />
+    <div class="row">
+        <div class="col-lg-2 form-group">
+            <label class="control-label">Fecha Emisión</label>
+            <input type="text" class="form-control date" name="fechacartola" id="fechacartola" required />
+        </div>
+    </div>
+    <div class="row" id="detalle">
+        <table class="table form-group" width="100%">
+            <thead>
+                <tr>
+                    <th>Fecha Movimiento</th>
+                    <th>Glosa</th>
+                    <th>Cargo</th>
+                    <th>Abono</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control date" name="fechamov" required />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="glosamov" required />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="cargo" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="abono" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <button type="submit" class="btn btn-primary redondo btnPress pull-right">Ingresar Movimientos</button>
+    </div>
+}
+
+<script>
+    var rowNumber = 1;
+
+    $(document).ready(function () {
+        //$('#NuevaCartolaManual').validator();
+
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+
+        $("#fechacartola").datepicker();
+        $("#fechamov").datepicker();
+    });
+
+    function pre_form_validate() {
+        var result = true;
+        //$('#NuevaCartolaManual').validator('validate');
+        $('#NuevaCartolaManual .form-group').each(function () {
+            if ($(this).hasClass('has-error')) {
+                result = false;
+                return false;
+            }
+        });
+        return result;
+    }
+
+    function SinVacios(esto) {
+        if ($(esto).val() == '') {
+            $(esto).val('0');
+        }
+    }
+
+    function EliminarCero(esto) {
+        if ($(esto).val() == 0) {
+            $(esto).val('');
+        }
+    };
+
+    $('table').on('keydown', 'input', function (e) {
+        var keyCode = e.keyCode;
+        if (keyCode !== 9) return;
+
+        if (pre_form_validate() == false)
+            return;
+
+        var $this = $(this),
+        $lastTr = $('tr:last', $('table')),
+        $lastTd = $('td:last', $lastTr);
+        var newRow = '<tr><td><input type="text" class="form-control date" id="fechamov'+ rowNumber +'" name="fechamov" required /></td><td><input type="text" class="form-control" name="glosamov" required /></td><td><input type="number" class="form-control" name="cargo" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)"/></td><td><input type="number" class="form-control" name="abono" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" /></td></tr>';
+        if (($(e.target).closest('td')).is($lastTd)) {
+            $(newRow).insertAfter($(this).closest('tr'));
+            $("#fechamov" + rowNumber).datepicker();
+            rowNumber++;
+            //$('#NuevaCartolaManual').validator('update');
+        }
+        //if ($('[type="date"]').prop('type') != 'date') {
+        //    $('[type="date"]').datepicker({ dateFormat: 'dd-mm-yy' });
+        //}
+        //$('input.date').datepicker({ dateFormat: 'dd-mm-yy' });
+        
+    });
+</script>

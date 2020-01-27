@@ -1,0 +1,265 @@
+﻿@model List<QuickReceptorModel>
+
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn-group pull-right m-t-40">
+                <div class="button-list">
+                    <a onclick="NuevoProveedor()" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal"
+                       data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="ion-android-add"></i></span>
+                        Agregar
+                    </a>
+                </div>
+        </div>
+        <div class="page-header-2">
+            <h2 class="page-header">Prestadores Honorarios </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Prestadores Honorarios</a>
+                </li>
+                <li class="active">
+                    Honorarios
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div id="listarDerecho" class="col-md-12">
+        <div style="display:none;" class="alert alert-success" role="alert" id="alerta-exito">
+            Prestador dado de baja con éxito.
+        </div>
+        @foreach (QuickReceptorModel ReceptorHonor in Model)
+        {
+        <div class="row" name="Caja" id="Caja_@ReceptorHonor.QuickReceptorModelID">
+            <div class="col-md-12">
+                <div class="card-box m-b-10">
+                    <div class="table-box opport-box">
+
+                        <div class="col-md-3">
+                            <div class="table-detail">
+                                <h5 class="m-t-0">RUT @ReceptorHonor.RUT </h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="table-detail">
+                                @{ 
+                                    string Nombre = ReceptorHonor.RazonSocial;
+                                    int limite = 35;
+                                    if(ReceptorHonor.RazonSocial.Length > limite)
+                                    {
+                                        Nombre = ReceptorHonor.RazonSocial.Substring(0, limite - 1) + "...";
+                                    }
+                                }
+                                <h5 class="m-t-0">@Nombre</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-lg-3">
+                            <div class="table-detail">
+                                <h5 class="m-t-0"><b>Estado</b></h5>
+                                <div class="member-info">
+                                    <p class="text-dark m-b-0"><span class="label label-success">Activo</span></p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="table-detail">
+                                <a id="EditButton" onclick="getPhonorarioEdit(@ReceptorHonor.QuickReceptorModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Editar Prestador" data-original-title="Editar Prestador"><i class="ion-edit"></i></a>
+                                <a href="#" id="ReceptorID" name="ReceptorID" onclick="AdvertenciaDarDeBaja(@ReceptorHonor.QuickReceptorModelID)" class="btn btn-danger btn-sm redondo btnPress">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+
+@using (Html.BeginForm("NuevoClienteHonorario", "Home", FormMethod.Post, new { id = "IngresoPhonorario" }))
+{
+    <!--  Registrar Gastos -->
+    <div id="myModal" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <input type="hidden" id="editFlag" name="editFlag" value="0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Ingresar nuevo Prestador de Honorarios</h4>
+                </div>
+                <div id="ModyBody" class="modal-body">
+                    <div class="row m-t-10">
+                        <div class="col-lg-6">
+                            <label><b>Nombre:</b></label>
+                            <input required type="text" id="NombrePHonor" name="NombrePHonor" class="form-control">
+                        </div>
+                        <div class="col-lg-6">
+                            <label><b>Rut:</b></label>
+                            <input required type="text" id="RutPHonor" name="RutPHonor" maxlength="10" onblur = "rutFormant('RutPHonor');" class="form-control">
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Ingresar</button>
+                </div>
+            </div>
+        </div>
+    </div> <!--  Fin Registar Gastos -->
+}
+
+
+
+@using (Html.BeginForm("EditarPHonorario", "Home", FormMethod.Post, new { id = "IngresoCCForm" }))
+{
+    <!--  Registrar Gastos -->
+    <div id="myModal2" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <input type="hidden" id="editFlag" name="editFlag" value="0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Editar Prestador</h4>
+                </div>
+                <div id="ModyBody" class="modal-body">
+                    <div class="row m-t-10">
+                        <input type="text" style="display:none;" id="IDPrestadorE" name="IDPrestadorE" class="form-control">
+                        <div class="col-lg-6">
+                            <label><b>Nombre:</b></label>
+                            <input required type="text" id="NombrePHonorE" name="NombrePHonorE" class="form-control">
+                        </div>
+                        <div class="col-lg-6">
+                            <label><b>Rut:</b></label>
+                            <input required type="text" id="RutPHonorE" name="RutPHonorE" maxlength="10" onblur = "rutFormant('RutPHonorE');" class="form-control">
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div> <!--  Fin Registar Gastos -->
+}
+
+<div class="modal fade" id="DarDeBaja">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Dar de baja prestador</h4>
+            </div>
+            <div class="modal-body">
+                <h4>¿Estás seguro que deseas dar de baja a este prestador?</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="cancelar" class="btn btn-primary" data-dissmiss="modal">Cancelar</a>
+                <a href="#" class="btn btn-danger" id="btn-aceptar" name="btn-aceptar" data-dissmiss="modal" data-backdrop="false" onclick="DarDeBajaPrestador()">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function NuevoProveedor() {
+        $('#myModal').modal('show');
+    }
+
+    function getPhonorarioEdit(ID) {
+        var url = '@Url.Action("ObtenerPHonorario", "Home")';
+        var PrestadorHonorario = ID;
+        if (PrestadorHonorario != 0) {
+            $.getJSON(url, { IDPrestador: PrestadorHonorario },
+            function (data) {
+
+                if (data.ok == true) {
+                    console.log(data);
+                    $('#IDPrestadorE').val(PrestadorHonorario);
+                    $('#NombrePHonorE').val(data.NombrePrestador);
+                    $('#RutPHonorE').val(data.RutPrestador);
+
+                    $('#myModal2').modal('show');
+                }
+                else {
+                    $('#IDPrestador').val(0);
+                    $('#NombrePHonorE').val('');
+                    $('#myModal2').modal('hide');
+                }
+            });
+        }
+    }
+
+    function AdvertenciaDarDeBaja(ReceptorID) {
+        $("#ReceptorID").val(ReceptorID);
+        $("#DarDeBaja").modal("show");
+
+        $("#cancelar").click(function () {
+            $("#DarDeBaja").modal("hide");
+        });
+    }
+
+    function DarDeBajaPrestador() {
+        var IDreceptor = $('#ReceptorID').val();
+
+        $("#btn-aceptar").attr("disabled", true);
+        $('#DarDeBaja').modal("hide");
+        $('#alerta-exito').css("display", "none");
+
+        $.ajax({
+            type: "POST",
+            url: "DarDeBajaPrestador?IDreceptor=" + IDreceptor,
+            success: function (Result) {
+                $('#Caja_' + IDreceptor).remove();
+                $('.modal-backdrop').remove();
+                $('#alerta-exito').removeAttr("style");
+                $('#btn-aceptar').attr('disabled', false);
+            }
+        })
+    }
+
+
+    function rutFormant(idRut) {
+
+        var rut = document.getElementById(idRut).value;
+        if (rut.indexOf("-") == -1) {
+            document.getElementById(idRut).value = formateaRut(rut);
+        }
+
+
+    }
+
+    function formateaRut(rut) {
+
+        var actual = rut.replace("/^0+/", "");
+        var rutPuntos = "";
+        if (actual != '' && actual.length > 1) {
+            var sinPuntos = actual.replace("/\./g", "");
+            var actualLimpio = sinPuntos.replace("/-/g", "");
+            var inicio = actualLimpio.substring(0, actualLimpio.length - 1);
+
+
+            var dv = actualLimpio.substring(actualLimpio.length - 1);
+            rutPuntos = inicio + "-" + dv;
+        }
+        return rutPuntos;
+    }
+
+</script>
+

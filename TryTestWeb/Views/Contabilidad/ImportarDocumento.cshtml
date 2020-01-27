@@ -1,0 +1,42 @@
+﻿
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Centralizacion</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Centralizacion
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("ImportLibroXML", "Contabilidad", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <br>
+    <div class="panel panel-cert">
+        <div class="panel-heading">
+            Importar XML
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label" for="caf">Cargar .XML / .CSV DTE</label>
+                    <input name="files" type="file" accept=".xml,.csv" multiple>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <input class="btn btn-primary redondo btnPress" value="Importar" name="Save" type="submit">
+            </div>
+        </div>
+    </div>
+}

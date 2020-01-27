@@ -1,0 +1,160 @@
+﻿@model IList<SubSubClasificacionCtaContable>
+@{
+    ViewBag.Title = "SubSubCtaPresupuesto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using Microsoft.AspNet.Identity;
+
+<div class="clearfix"></div>
+<form>
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header-2">
+                <h2 class="page-header">Establecer Presupuesto SubSubClasifcacion</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Contabilidad</a>
+                    </li>
+                    <li>
+                        <a href="#">-</a>
+                    </li>
+                    <li class="active">
+                        Cuentas Contables
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("SubSubCtaPresupuesto", "Contabilidad", FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col-lg-2 form-group">
+                <label class="control-label">Código:</label>
+                <input type="number" class="form-control" name="codigo" id="codigo" value="@ViewBag.codigo" />
+            </div>
+
+
+
+            <div class="col-lg-2 form-group">
+                <label class="control-label">Nombre:</label>
+                <input type="text" class="form-control" name="nombre" id="nombre" value="@ViewBag.nombre" />
+            </div>
+
+
+            <div class="col-md-2" form-group>
+                <div style="text-align: center;">
+                    <label class="control-label" style="color:transparent;"> _</label>
+                    <button class="btn btn-1 btnPress form-control" type="submit"><i class="fa fa-search"></i> &nbsp; Buscar</button>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+    <!-- Filtros -->
+
+    <div class="row m-t-15">
+        <div class="col-md-12">
+
+            <div class="form-group">
+                <div class="col-md-2">
+
+                </div>
+
+                <div class="col-md-4">
+
+                </div>
+
+                <div class="col-md-2">
+
+                </div>
+
+                <div class="col-md-4">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Fin Filtros -->
+
+
+<div class="row m-t-10">
+    <div class="col-sm-8">
+        <div class="card-box">
+            @using (Html.BeginForm("SubSubCtaPresupuesto", "Contabilidad", FormMethod.Post))
+            {
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6"><button type="submit" class="btn btn-success pull-right Guardar">Guardar Cambios</button></div>
+                </div>
+
+                <div class="table-rep-plugin">
+                    <div class="table-responsive" data-pattern="priority-columns">
+                        <table id="CtaContableTable" class="table  table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Codigo</th>
+                                    <th class="text-center">Nombre</th>
+                                    <th class="text-center">Tiene Presupuesto?</th>
+                                    <th class="text-center">Establecer Presupuesto</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @{ int SubSubID = 0;}
+                                @foreach(SubSubClasificacionCtaContable SubSubCta in Model)
+                                {
+
+                                    <tr>
+                                        @{SubSubID = SubSubCta.SubSubClasificacionCtaContableID;}
+                                        <td>@SubSubCta.CodigoInterno</td>
+                                        <td>@SubSubCta.NombreInterno</td>
+                                        <td><input class="centro" type="checkbox" name="PresuCheck" id="PresuCheck_@SubSubID" onclick="CheckFunction(this,@SubSubID)" value="" /></td>
+                                        <td><input class="form-control" type="number" name="Presupuesto" id="Presupuesto_@SubSubID" value="@Convert.ToInt32(SubSubCta.GetPresupuesto(User.Identity.GetUserId(),SubSubID))" readonly /></td>
+                                        <td style="display:none;"><input type="number" name="subsubid" id="subsubid" value="@SubSubID" /></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    td {
+        text-align: center;
+    }
+
+    .Guardar {
+        margin-bottom: 20px;
+    }
+</style>
+
+<script>
+
+    function CheckFunction(CheckSeleccionado, id) {
+
+        var CheckBox = document.getElementById(CheckSeleccionado.id);
+        var InputPresupuesto = document.getElementById("Presupuesto_"+id);
+
+        if (CheckBox.checked == true) {
+            InputPresupuesto.removeAttribute("readonly");
+        } else {
+            InputPresupuesto.setAttribute("readonly","readonly");
+        }
+
+    }
+
+</script>
+

@@ -1,0 +1,224 @@
+
+  /* codigo penny */
+  
+  /*colores paneles
+  1 #055767
+  2 #266A77
+  3 #0F879E
+  4 #42B8CF */
+  
+    .panel-1 {
+  border-color: #055767;
+}
+.panel-1 > .panel-heading {
+  border-color: #055767;
+  color: white;
+  background-color: #055767;
+}
+.panel-1 > a {
+  color: #055767;
+}
+.panel-1 > a:hover {
+  color: #055767;
+}
+
+   .panel-2 {
+  border-color: #266A77;
+}
+.panel-2 > .panel-heading {
+  border-color: #266A77;
+  color: white;
+  background-color: #266A77;
+}
+.panel-2 > a {
+  color: #266A77;
+}
+.panel-2 > a:hover {
+  color: #266A77;
+}
+
+  .panel-3 {
+  border-color: #0F879E;
+}
+.panel-3 > .panel-heading {
+  border-color: #0F879E;
+  color: white;
+  background-color: #0F879E;
+}
+.panel-3 > a {
+  color: #0F879E;
+}
+.panel-3 > a:hover {
+  color: #0F879E;
+}
+
+  .panel-4 {
+  border-color: #42B8CF;
+}
+.panel-4 > .panel-heading {
+  border-color: #42B8CF;
+  color: white;
+  background-color: #42B8CF;
+}
+.panel-4 > a {
+  color: #42B8CF;
+}
+.panel-4 > a:hover {
+  color: #42B8CF;
+}
+
+.panel-cert {
+  border-color: #FF8613;
+}
+.panel-cert > .panel-heading {
+  border-color: #FF8613;
+  color: white;
+  background-color: #FF8613;
+}
+.panel-cert > a {
+  color: #FF8613;
+}
+.panel-cert > a:hover {
+  color: #FF8613;
+}
+
+.panel-egre {
+  border-color: #FFA44E;
+}
+.panel-egre > .panel-heading {
+  border-color: #FFA44E;
+  color: white;
+  background-color: #FFA44E;
+}
+.panel-egre > a {
+  color: #FFA44E;
+}
+.panel-egre > a:hover {
+  color: #FFA44E;
+}
+
+.panel-egre1 {
+  border-color: #FFBD7D;
+}
+.panel-egre1 > .panel-heading {
+  border-color: #FFBD7D;
+  color: white;
+  background-color: #FFBD7D;
+}
+.panel-egre1 > a {
+  color: #FFBD7D;
+}
+.panel-egre1 > a:hover {
+  color: #FFBD7D;
+}
+
+.panel-mora {
+  border-color: #8000ff;
+}
+.panel-mora > .panel-heading {
+  border-color: #8000ff;
+  color: white;
+  background-color: #9933ff;
+}
+.panel-mora > a {
+  color: #9933ff;
+}
+.panel-mora > a:hover {
+  color: #9933ff;
+}
+
+.panel-red1 {
+  border-color: #ff8080;
+}
+.panel-red1 > .panel-heading {
+  border-color: #ff8080;
+  color: white;
+  background-color: #ff8080;
+}
+.panel-red1 > a {
+  color: #ff8080;
+}
+.panel-red1 > a:hover {
+  color: #ff8080;
+}
+
+.panel-red2 {
+  border-color: #ff4d4d;
+}
+.panel-red2 > .panel-heading {
+  border-color: #ff4d4d;
+  color: white;
+  background-color: #ff4d4d;
+}
+.panel-re2 > a {
+  color: #ff4d4d;
+}
+.panel-red2 > a:hover {
+  color: #ff4d4d;
+}
+
+hr{
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border: 0;
+    border-top: 1px solid #0F879E !important;
+}
+
+.btn-1{
+    color: #fff;
+    background-color: #0F879E;
+    border-color: #266A77;
+}
+
+.btn-1outline{
+    color: #0F879E;
+    background-color: #fff;
+    border-color: #266A77;
+}
+
+.btn-2{
+    color: #fff;
+    background-color: #FF8613;
+    border-color: #FFBC7D;
+}
+
+
+.btn-2outline{
+    color: #FFBC7D;
+    background-color: #fff;
+    border-color: #FFBC7D;
+}
+
+.btn-mora{
+    color: #fff;
+    background-color: #9933ff;
+    border-color: #8000ff;
+}
+
+
+.btn-moraoutline{
+    color: #9933ff;
+    background-color: #fff;
+    border-color: #9933ff;
+}
+
+.btn-4 {
+    color: #fff;
+    background-color: #42B8CF;
+    border-color: #0F879E;
+}
+
+a{
+    color: #0F879E;
+    text-decoration: none;
+}
+.sidebar .sidebar-nav.navbar-collapse {
+    padding-top: 50px;
+}
+
+.upcase {
+    text-transform:uppercase;
+}
+
+
+

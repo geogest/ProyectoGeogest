@@ -1,0 +1,1044 @@
+﻿@using Microsoft.AspNet.Identity
+@model Tuple<QuickEmisorModel, bool>
+@{
+    List<SelectListItem> listItems = ImpuestoAdicionalRetencionesModel.GetDropDownListHTML();
+    List<SelectListItem> lstValidDocs = ParseExtensions.TipoCAFCargados(Model.Item1.Certificados);
+    List<QuickReceptorModel> lstReceptoresUsuarios = (List<QuickReceptorModel>)ViewBag.ConjuntoReceptores;
+}
+
+
+@using (Html.BeginForm("MakeFacturaNeo_Make", "Home", FormMethod.Post, new { id = "MakeFacturaNeo" }))
+{
+    <input value="1" name="MakeNew" id="MakeNew" type="hidden">
+
+    if (Model.Item2 == false)
+    {
+        <input value="0" name="opt" id="opt" type="hidden" />
+    }
+
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header-2">
+                <h1 class="page-header">Facturar</h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Ventas</a>
+                    </li>
+                    <li>
+                        <a href="#">Listado de Facturas</a>
+                    </li>
+                    <li class="active">
+                        Facturar
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+<div class="panel panel-2">
+    <div class="panel-heading">
+        <h3>Datos Factura</h3>
+    </div>
+        <div class="panel-body" id="DatosReceptor">
+            <div class="row">
+                <div class="col-lg-6">
+                    <select name="tipodoc" id="tipodoc" class="form-control">
+                        <option value="">Seleccione tipo de Documento</option>
+                        @foreach (SelectListItem tipoDocConCafCargados in lstValidDocs)
+                        {
+                            <option value="@tipoDocConCafCargados.Value">@tipoDocConCafCargados.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-5" id="zonaSelectReceptor">
+                    <select id="id_receptor" name="id_receptor" class="selectpicker show-tick form-control" data-live-search="true">
+                        <option value="">Seleccione Cliente</option>
+                        @foreach (QuickReceptorModel ReceptorUsuario in lstReceptoresUsuarios)
+                        {
+                            <option value="@ReceptorUsuario.QuickReceptorModelID">@(ReceptorUsuario.RazonSocial + " - " + ReceptorUsuario.RUT)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-1">
+                    <a onclick="callEditReceptor();" class="btn btn-icon waves-effect waves-light btn-primary pull-left" data-toggle="tooltip" title="Editar Cliente!"><i class="ion-edit"></i></a>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4 m-t-15">
+                    <input id="EFXP_FOLIO" class="form-control" name="EFXP_FOLIO" type="number" placeholder="Folio">
+                </div>
+                <div class="col-lg-4 m-t-15">
+                    <input id="EFXP_FCH_EMIS" class="form-control" name="EFXP_FCH_EMIS" type="text" placeholder="Fecha Emisión">
+                </div>
+                <div class="col-lg-4 m-t-15">
+                    <select class="form-control custom-select" id="fechavenc" name="fechavenc" value="0">
+                        <option value="0">Seleccione Vencimiento</option>
+                        <option value="1">Pago inmediato</option>
+                        <option value="30">30 días</option>
+                        <option value="60">60 días</option>
+                        <option value="90">90 días</option>
+                        <option value="120">120 días</option>
+                        <option value="150">150 días</option>
+                        <option value="180">180 días</option>
+                        <option value="180">180 días</option>
+                        <option value="210">210 días</option>
+                        <option value="240">240 días</option>
+                        <option value="270">270 días</option>
+                        <option value="300">300 días</option>
+                        <option value="330">330 días</option>
+                        <option value="360">360 días</option>
+                    </select>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+    <div id="DetalleDiv">
+        <div class="panel panel-3">
+            <div class="panel-heading">               
+                <div class="col-md-10">
+                    <h3>Detalle Producto o Servicio</h3>
+                </div>
+
+                <div class="col-md-1">
+                    <a  onclick="removeLastRow();" name="REMOVE_DETALLE" value="Remover ITEM" class="btn btn-icon waves-effect waves-light btn-danger pull-right"><i class="ion-android-close"></i></a>
+                    @*<input class="btn-2outline btn pull-right" onclick="removeLastRow();" name="REMOVE_DETALLE" value="Remover ITEM" type="button">*@
+                </div>
+                <div class="col-md-1">
+                    <a onclick="addMoreRows(this.form);" name="AGREGA_DETALLE" value="Agrega ITEM" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                    @*<input class="btn btn-2 pull-right" onclick="addMoreRows(this.form);" name="AGREGA_DETALLE" value="Agrega ITEM" type="button">*@
+                </div>
+            </div>
+            <div class="panel-body">
+                <div id="Detalle">
+                    <div class="row">
+                        <div id="IndicadorServicio" class="col-md-2" style="display:none;">
+                            <label for="" class="control-label">Indicador de Servicio</label>
+                            <select name="IndServicioBoleta" id="IndServicioBoleta" class="form-control">
+                                <option value="">Seleccionar</option>
+                                <option value="1">Boletas de servicios periódicos</option>
+                                <option value="2">Boletas de servicios periódicos domiciliarios</option>
+                                <option value="3">Boletas de venta y servicios</option>
+                                <option value="4">Boleta de Espectáculo emitida por cuenta de Terceros</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row m-t-30">
+                        <div class="col-md-2">
+                             <label class="control-label text-center">Descripción</label> 
+                             <input class="form-control" placeholder="Nombre del producto" name="EFXP_NMB_1" id="EFXP_NMB_1" type="text" maxlength="75"> 
+                        </div>
+                        <div class="col-md-1">
+                            <label class="control-label text-center">Cantidad</label> 
+                            <input class="form-control" placeholder="Cantidad" name="EFXP_QTY_1" id="EFXP_QTY_1" type="number" lang="en-150">
+                         </div>
+                        <div class="col-md-1">
+                             <label class="control-label text-center">Medida</label>
+                             <input class="form-control" placeholder="Unidad de Medida" name="UnmdItem_1" id="UnmdItem_1" type="text" maxlength="4">
+                        </div>
+                        <div class="col-md-2">
+                             <label class="control-label text-center">Precio</label>
+                             <input class="form-control" placeholder="Precio" name="EFXP_PRC_1" id="EFXP_PRC_1" type="number" lang="en-150"> 
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label">Impuesto Adicional</label>
+                            <select name="IMPUESTO_ADICIONAL_1" id="IMPUESTO_ADICIONAL_1" class="form-control">
+                                <option value="[0,0]">Ninguno</option>
+                                <option value="[23,15]">Art. de Oro, Joyas y Pieles Finas (15%)</option>
+                                <option value="[44,15]">Tapices, Casas Rodantes, Caviar y Armas de Aire (15%)</option>
+                                <option value="[24,31.5]">Licores, Pisco, Destilados (31.5%)</option>
+                                <option value="[25,20.5]">Vinos, Chichas, Sidras (20.5%)</option>
+                                <option value="[26,20.5]">Cervezas y Otras Bebidas Alcoholicas (20.5%)</option>
+                                <option value="[27,10]">Aguas Minerales y Bebidas Analcoholicas (10%)</option>
+                                <option value="[271,18]">Bebidas Analcoholicas con alto contenido de Azucar (18%)</option>
+                                <option value="[15,19]">IVA Retenido Total</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="control-label text-center">Exento</label>
+                            <input class="form-control" placeholder="" name="EFXP_EXENTO_1" id="EFXP_EXENTO_1" type="checkbox">
+                        </div>
+                        <div class="col-md-1">
+                             <label class="control-label text-center">Des/Rec</label>
+                             <input class="form-control" id="DscRcgEdit" value="Editar" type="button" onclick="callEditDscRcg(1);"> 
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label text-center">Subtotal</label> 
+                            <input class="form-control" disabled="" name="EFXP_SUBT_1" id="EFXP_SUBT_1" type="number"> 
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div id="ReferenciaYPago" class="m-t-30">
+                    <div class="row">
+                        @if (ParseExtensions.ItsUserOnCertificationEnvironment(User.Identity.GetUserId()) == true)
+                        {
+                            <div class="col-md-3">
+                                Referencias : Si/No
+                                <input id="REF_SI_NO" name="REF_SI_NO" value="SiChecked" type="checkbox">
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div id="Referencias" style="display: none;">
+                    <hr>
+                    <div id="ReferenciasDetail">
+                        <div class="row form-group">
+                            <div class="col-md-3">
+                                @*
+                                    <label class="control-label">Operación</label>
+                                    <select class="form-control" name="CodOperacion1" id="CodOperacion1" value="">
+                                        <option value="">Seleccionar</option>
+                                        <option value="1">Anula documento de referencia</option>
+                                        <option value="2">Corrige texto de documento de referencia</option>
+                                        <option value="3">Corrige montos</option>
+                                    </select>*@
+                            </div>
+                            <div class="col-md-5"><label class="control-label">Motivo</label> <input class="form-control" placeholder="Escriba el motivo" name="motivo1" id="motivo1" type="text" maxlength="90"> </div>
+                            <div class="col-md-3">
+                                <label class="control-label">Tipo Documento</label>
+                                <select class="form-control" name="TipoDocRef1" id="TipoDocRef1" value="">
+                                    <option value="">Seleccionar</option>
+                                    <option value="30">Factura</option>
+                                    @*<option value="32">Factura de venta bienes y servicios no afectos o exentos de IVA</option>*@
+                                    @*<option value="35">Boleta</option>*@
+                                    @*<option value="38">Boleta exenta</option>*@
+                                    <option value="45">Factura de compra</option>
+                                    <option value="55">Nota de débito</option>
+                                    <option value="60">Nota de crédito</option>
+                                    @*<option value="40">Liquidación Factura</option>*@
+                                    @*<option value="43">Liquidación-Factura Electrónica</option>*@
+                                    <option value="33">Factura Electrónica</option>
+                                    <option value="34">Factura No Afecta o Exenta Electrónica</option>
+                                    @*<option value="39">Boleta Electrónica</option>*@
+                                    @*<option value="41">Boleta Exenta Electrónica</option>*@
+                                    <option value="46">Factura de Compra Electrónica.</option>
+                                    <option value="56">Nota de Débito Electrónica</option>
+                                    <option value="61">Nota de Crédito Electrónica</option>
+                                    <option value="50">Guía de Despacho.</option>
+                                    <option value="52">Guía de Despacho Electrónica</option>
+                                    @*<option value="103">Liquidación</option>*@
+                                    @*<option value="110">Factura de Exportación Electrónica</option>*@
+                                    @*<option value="111">Nota de Débito de Exportación Electrónica</option>*@
+                                    @*<option value="112">Nota de Crédito de Exportación Electrónica</option>*@
+                                    <option value="801">Orden de Compra</option>
+                                    @*<option value="802">Nota de pedido</option>*@
+                                    @*<option value="803">Contrato</option>*@
+                                    @*<option value="804">Resolución</option>*@
+                                    @*<option value="805">Proceso ChileCompra</option>*@
+                                    @*<option value="806">Ficha ChileCompra</option>*@
+                                    @*<option value="807">DUS</option>*@
+                                    @*<option value="808">B/L (Conocimiento de embarque)</option>*@
+                                    @*<option value="809">AWB (Air Will Bill)</option>*@
+                                    @*<option value="810">MIC/DTA</option>*@
+                                    @*<option value="811">Carta de Porte</option>*@
+                                    @*<option value="812">Resolución del SNA donde califica Servicios de Exportación</option>*@
+                                    @*<option value="813">Pasaporte</option>*@
+                                    @*<option value="814">Certificado de Depósito Bolsa Prod. Chile.</option>*@
+                                    @*<option value="815">Vale de Prenda Bolsa Prod. Chile</option>*@
+                                    <option value="-4444">SET</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1"><label class="control-label">Folio</label> <input class="form-control" placeholder="" name="ref_folio1" id="ref_folio1" type="text"> </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-md-offset-1">
+                        <input class="btn-2outline btn" onclick="removeLastRef();" name="REMOVE_REF" value="-" type="button">
+                    </div>
+                    <div class="col-md-3 col-md-offset-1">
+                        <input class="btn btn-2" onclick="addMoreRef(this.form);" name="AGREGA_REF" value="+" type="button">
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-4">
+        <div class="panel-heading">
+            Totales
+        </div>
+        <div class="panel-body">
+            <div id="Totales">
+                <div class="row">
+                    <div class="col-md-1 col-md-offset-4"><label class="control-label">SUBTOTAL:</label></div>
+                    <div class="col-md-3 col-md-offset-4"><input disabled="disabled" class="form-control" maxlength="12" size="10" value="0" name="EFXP_SUBTOTAL" id="EFXP_SUBTOTAL" input="" type="text"></div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label class="control-label">Descuento global afecta items exentos:</label>
+                        <input class="form-control" placeholder="Unidad de Medida" name="EFXP_DESC_GLOB_AFFECTS_EXE" id="EFXP_DESC_GLOB_AFFECTS_EXE" type="checkbox" checked>
+                    </div>
+
+                    <div class="col-md-1"><label class="control-label">Desc. Global</label></div>
+                    <div class="col-md-3"><input class="form-control" maxlength="10" size="10" value="0" name="EFXP_PCT_DESC" id="EFXP_PCT_DESC" input="" type="text"></div>
+                    <div class="col-md-1"><label class="control-label">Monto</label></div>
+                    <div class="col-md-3"><input disabled="disabled" class="form-control" maxlength="12" size="10" value="0" name="EFXP_MNT_DESC" id="EFXP_MNT_DESC" type="text"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 col-md-offset-4"><label class="control-label" style="width: 30px; display:inline-block;">Monto Exento</label></div>
+                    <div class="col-md-3"><input disabled="disabled" class="form-control" value="0" name="EFXP_MNT_EXENTO" id="EFXP_MNT_EXENTO" size="10" maxlength="10" type="text"></div>
+                    <div class="col-md-1"><label class="control-label" style="width: 30px; display:inline-block;">Monto Neto</label></div>
+                    <div class="col-md-3"><input disabled="disabled" class="form-control" value="0" name="EFXP_MNT_NETO" id="EFXP_MNT_NETO" size="10" maxlength="10" type="text"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 col-md-offset-4"><label class="control-label">IVA:</label></div>
+                    <div class="col-md-3"><input class="form-control" style="width:20%; display:inline-block;" value="19" name="EFXP_TASA_IVA" id="EFXP_TASA_IVA">%</div>
+                    <div class="col-md-1"><label class="control-label">Total IVA:</label></div>
+                    <div class="col-md-3"><input disabled="disabled" class="form-control" maxlength="12" size="10" value="0" name="EFXP_IVA" id="EFXP_IVA" type="text"></div>
+                </div>
+                <input value="19" name="EFXP_TASA_IVA" id="EFXP_TASA_IVA" type="hidden">
+                <input value="" input="" name="IVA_TEMP" type="hidden">
+                <input value="" name="MNT_NETO_TEMP" type="hidden">
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-4"><label class="control-label">Total Impuesto Adicional</label></div>
+                <div class="col-md-2 col-md-offset-3"><input disabled="disabled" class="form-control" value="0" name="Impuesto_total" id="Impuesto_total" size="10" maxlength="10" type="text"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-1 col-md-offset-4"><label class="control-label">Monto TOTAL</label></div>
+                <div class="col-md-3 col-md-offset-4"><input disabled="disabled" class="form-control" value="0" name="EFXP_MNT_TOTAL" id="EFXP_MNT_TOTAL" size="10" maxlength="10" type="text"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirmar</h4>
+                </div>
+                <div id="ModyBody" class="modal-body text-center form-group">
+                    ¿Esta seguro de querer emitir este documento?
+
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button class="btn btn-1 form-control" id="Button_Update" value="Button_Update" name="Button_Update" type="submit"><i class="fa fa-file-o"></i> &nbsp; Si</button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button type="button" class="btn btn-default form-control" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center;">
+        <input id="botonEmitirDocumentoModal" value="Emitir Documento" type="button" name="modal" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    </div>
+
+
+}
+
+
+<!-- Modal Editar Cliente -->
+<div id="ModalEditReceptor" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Editar Datos Cliente</h4>
+            </div>
+            <div id="ReceptorSeleccionado" class="modal-body">
+
+            </div>
+        </div>
+    </div>        
+</div>
+
+<!-- Modal Descuento Recargo -->
+<div id="ModalEditDescuentoRecargo" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Agregar Descuento/Recargo</h4>
+            </div>
+            <div id="DescuentoRecargoBody" class="modal-body">
+
+            </div>
+        </div>
+     </div>
+</div>
+
+
+
+<script type="text/javascript">
+    var refCount = 1;
+
+    $.validator.addMethod("rut", function (value, element) {
+        return this.optional(element) || $.Rut.validar(value);
+    }, "Este campo debe ser un rut valido.");
+
+
+
+    $(document).ready(function () {
+        //cantidad * precio
+        $('#EFXP_QTY_1').change(function (e) { calculate(rowCount); });
+        $('#EFXP_PRC_1').change(function (e) { calculate(rowCount); });
+        $('#ValorDR_1').change(function (e) { calculate(rowCount); });
+        $('#EFXP_PCT_DESC').change(function (e) { calculate(rowCount); });
+        $('#IMPUESTO_ADICIONAL_1').change(function (e) { calculate(rowCount); });
+        $('#EFXP_EXENTO_').change(function (e) { calculate(rowCount) });
+        $('#TpoValor_1').on('change', function () { calculate(rowCount) });
+        $('#TpoMov_1').on('change', function () { calculate(rowCount) });
+        $('#EFXP_DESC_GLOB_AFFECTS_EXE').on('change', function () { calculate(rowCount) });
+
+
+    });
+
+    function callEditReceptor() {
+        var IDReceptor = $('#id_receptor').val();
+        $.ajax
+            ({
+                url: "EditarReceptorModal?IDReceptor=" + IDReceptor,
+                success: function (html) {
+                    $("#ReceptorSeleccionado").html(html);
+                    $("#ModalEditReceptor").modal();
+                }
+            });
+
+    }
+
+    function calculate(ir) {
+
+        var cumulativoImpuesto = 0;
+
+        var subTotalNoExentos = 0;
+        var subTotalExentos = 0;
+
+        for (i = 1; i < ir + 1; i++) {
+            var step1 = $('#EFXP_QTY_' + i).val() * $('#EFXP_PRC_' + i).val();
+            var step5 = 0;
+
+            /*
+            var SELECTEDVALUE = $('#TpoValor_' + i).val();
+            if (SELECTEDVALUE == "%") {
+                var step2 = $('#ValorDR_' + i).val() / 100;
+                var step5 = step1 * step2;
+            }
+            if (SELECTEDVALUE == "$") {
+                var step2 = $('#ValorDR_' + i).val();
+                var step5 = step2;
+            }
+            if (SELECTEDVALUE == "") {
+                $('#ValorDR_' + i).val(0);
+                var step5 = 0;
+            }*/
+
+            var step3 = JSON.parse($('#IMPUESTO_ADICIONAL_' + i).val())[1] / 100;
+
+
+            var SELECTEDVALUE = $('#TpoMov_' + i).val();
+            /*
+            if (SELECTEDVALUE == "R") {
+                $('#EFXP_SUBT_' + i).val(+step1 + +step5);
+            }
+            if (SELECTEDVALUE == "D") {
+                $('#EFXP_SUBT_' + i).val(step1 - step5);
+            }*/
+            //if (SELECTEDVALUE == "") {
+                $('#EFXP_SUBT_' + i).val(step1);
+            //}
+            $('#EFXP_SUBTOTAL').val(CalcularTotal());
+
+            if ($('#EFXP_EXENTO_' + i).is(':checked')) {
+                //Monto Exentos
+                subTotalExentos += (step1 - step5);
+            }
+            else {
+                subTotalNoExentos += (step1 - step5);
+            }
+
+            $('#EFXP_MNT_EXENTO').val(subTotalExentos.toFixed());
+
+            //descuento global
+            var Gdesc = $('#EFXP_PCT_DESC').val() / 100;
+            var GvalorDescuento = $('#EFXP_SUBTOTAL').val() * Gdesc;
+            Exento = 0
+            if ($('#EFXP_DESC_GLOB_AFFECTS_EXE').is(':checked') == false) {
+                for (var j = 1; j < rowCount + 1; j++) {
+                    if ($('#EFXP_EXENTO_' + j).is(':checked')) {
+                        var Exento = +$('#EFXP_SUBT_' + j).val();
+                    }
+                }
+            }
+
+            var Gexento = Exento * Gdesc;
+            var GdescArreglado = GvalorDescuento - Gexento;
+            valorDescuento = GdescArreglado.toFixed();
+            $('#EFXP_MNT_DESC').val(valorDescuento);
+            var GmontoNeto = $('#EFXP_SUBTOTAL').val() - GdescArreglado;
+            $('#EFXP_MNT_NETO').val(GmontoNeto);
+
+            //IVA
+
+            var GValorIVA = $('#EFXP_TASA_IVA').val() / 100;
+            var GTotalIVA = GValorIVA * (subTotalNoExentos);//GmontoNeto;
+            if (GTotalIVA < 0)
+                GTotalIVA = 0;
+            var ivatotal = GTotalIVA.toFixed();
+            $('#EFXP_IVA').val(ivatotal);
+            GmontoTotal = GmontoNeto + GTotalIVA - GvalorDescuento;
+
+            //Impuesto Total
+            var ValorImpuestoAdicionalLinea = $('#EFXP_SUBT_' + i).val() * step3;
+            ValorImpuestoAdicionalLinea = ValorImpuestoAdicionalLinea - (ValorImpuestoAdicionalLinea * Gdesc);
+            cumulativoImpuesto = cumulativoImpuesto + ValorImpuestoAdicionalLinea;
+
+            $('#Impuesto_total').val(cumulativoImpuesto);
+            GmontoTotal = GmontoTotal + cumulativoImpuesto;
+            var montoTotal = GmontoTotal.toFixed();
+            $('#EFXP_MNT_TOTAL').val(montoTotal);
+        }
+
+    }
+
+
+
+    /*montos totales*/
+    function CalcularTotal() {
+        var result = 0;
+        $('[name*="EFXP_SUBT_"]').each(function () {
+            result += parseFloat($(this).val(), 10);
+        });
+        return result;
+    }
+
+
+
+    $(document).ready(function () {
+
+
+
+        $("#MakeFacturaNeo").validate({
+            ignore: [],
+            rules: {
+                EFXP_FCH_EMIS: "required",
+                EFXP_RUT_RECEP: { required: true, rut: true },
+                EFXP_RZN_SOC_RECEP: "required",
+                EFXP_DIR_RECEP: "required",
+                EFXP_CMNA_RECEP: "required",
+                EFXP_CIUDAD_RECEP: "required",
+                EFXP_GIRO_RECEP: "required",
+                EFXP_NMB_1: "required",
+                EFXP_QTY_1: { required: true, number: true },
+                EFXP_PRC_1: { required: true, number: true },
+            },
+            messages: {
+                EFXP_FCH_EMIS: "Debe ingresar una fecha para la emisión del documento",
+                EFXP_RUT_RECEP: "Debe ingresar un Rut Receptor válido.",
+                EFXP_RZN_SOC_RECEP: "Debe ingresar Razon Social del contribuyente receptor.",
+                EFXP_DIR_RECEP: "Debe ingresar Direccion del contribuyente receptor.",
+                EFXP_CMNA_RECEP: "Debe ingresar Comuna del contribuyente receptor.",
+                EFXP_CIUDAD_RECEP: "Debe ingresar Ciudad del contribuyente receptor.",
+                EFXP_GIRO_RECEP: "Debe ingresar Giro del contribuyente receptor.",
+                EFXP_NMB_1: "Debe ingresar nombre o descripcion del primer item del detalle.",
+                EFXP_QTY_1: "Cantidad de unidades del primer item del detalle debe ser mayor a 0.",
+                EFXP_PRC_1: "Debe ingresar un valor."
+            },
+            email1: "Please enter a valid email address",
+            agree1: "Please accept our policy",
+
+            errorElement: "em",
+            errorPlacement: function (error, element) {
+                // Add the `help-block` class to the error element
+                error.addClass("help-block");
+
+                // Add `has-feedback` class to the parent div.form-group
+                // in order to add icons to inputs
+                element.parents(".col-sm-5").addClass("has-feedback");
+
+                if (element.prop("type") === "checkbox") {
+                    error.insertAfter(element.parent("label"));
+                } else {
+                    error.insertAfter(element);
+                }
+
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+                if (!element.next("span")[0]) {
+                    $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>").insertAfter(element);
+                }
+            },
+            invalidHandler: function (form) {
+                //alert('feo');
+                $("#dialog").text("Uno o más campos requeridos estan vacios");
+                $("#dialog").dialog({
+                    open: function () {
+                        $(this).closest(".ui-dialog")
+                        .find(".ui-dialog-titlebar-close")
+                        .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+                    }
+                });
+                return false;
+            },
+            success: function (label, element) {
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+                if (!$(element).next("span")[0]) {
+                    $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>").insertAfter($(element));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).parents(".col-sm-5").addClass("has-error").removeClass("has-success");
+                $(element).next("span").addClass("glyphicon-remove").removeClass("glyphicon-ok");
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).parents(".col-sm-5").addClass("has-success").removeClass("has-error");
+                $(element).next("span").addClass("glyphicon-ok").removeClass("glyphicon-remove");
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    var rowCount = 1;
+    function addMoreRows(frm) {
+        rowCount++;
+        var recRow = ' <div class="row form-group" id="Detalle' + rowCount + '"> <div class="col-md-2"><input class="form-control" placeholder="Nombre del producto" name="EFXP_NMB_' + rowCount + '" id="EFXP_NMB_' + rowCount + '" type="text" maxlength="75"> </div> <div class="col-md-1"><input class="form-control" placeholder="Cantidad" name="EFXP_QTY_' + rowCount + '" id="EFXP_QTY_' + rowCount + '" type="number" lang="en-150"> </div> <div class="col-md-1"><input class="form-control" placeholder="Unidad de Medida" name="UnmdItem_' + rowCount + '" id="UnmdItem_' + rowCount + '" type="text" maxlength="4"></div> <div class="col-md-2"><input class="form-control" placeholder="Precio" name="EFXP_PRC_' + rowCount + '" id="EFXP_PRC_' + rowCount + '" type="number" lang="en-150" value="0"> </div> <div class="col-md-2"> <select name="IMPUESTO_ADICIONAL_' + rowCount + '" id="IMPUESTO_ADICIONAL_' + rowCount + '" class=" form-control"> <option value=@{@listItems[0].Value;}>@{@listItems[0].Text;}</option> <option value=@{@listItems[1].Value;}>@{@listItems[1].Text;}</option> <option value=@{@listItems[2].Value;}>@{@listItems[2].Text;}</option> <option value=@{@listItems[3].Value;}>@{@listItems[3].Text;}</option> <option value=@{@listItems[4].Value;}>@{@listItems[4].Text;}</option> <option value=@{@listItems[5].Value;}>@{@listItems[5].Text;}</option> <option value=@{@listItems[6].Value;}>@{@listItems[6].Text;}</option> <option value=@{@listItems[7].Value;}>@{@listItems[7].Text;}</option> <option value=@{@listItems[8].Value;}>@{@listItems[8].Text;}</option> </select> </div> <div class="col-md-1"><input class="form-control" name="EFXP_EXENTO_' + rowCount + '" id="EFXP_EXENTO_' + rowCount + '" type="checkbox"> </div> <div class="col-md-1"> <input class="form-control" id="DscRcgEdit" value="Editar" type="button" onclick="callEditDscRcg(' + rowCount + ');"> </div> <div class="col-md-2"> <input class="form-control" disabled="" name="EFXP_SUBT_' + rowCount + '" id="EFXP_SUBT_' + rowCount + '" type="number" lang="en-150"> </div> </div>'
+        jQuery('#Detalle').append(recRow);
+        $('[name*="DESCRIP_0"]').each(function () {
+            $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Debe ingresar nombre o descripcion del primer item del detalle."
+                }
+            });
+        });
+        $('[name*="EFXP_QTY_"]').each(function () {
+            $(this).rules('add', {
+                required: true,
+                number: true,
+                messages: {
+                    required: "Cantidad de unidades del primer item del detalle debe ser mayor a 0."
+                }
+            });
+        });
+        $('[name*="EFXP_SUBT_"]').each(function () {
+            $(this).rules('add', {
+                required: true,
+                number: true,
+                messages: {
+                    required: "El valor del subtotal debe ser mayor a 0."
+                }
+            });
+        });
+
+        $('#EFXP_QTY_' + rowCount).change(function (e) { calculate(rowCount); });
+        $('#EFXP_PRC_' + rowCount).change(function (e) { calculate(rowCount); });
+        $('#ValorDR_' + rowCount).change(function (e) { calculate(rowCount); });
+
+        $('#IMPUESTO_ADICIONAL_' + rowCount).change(function (e) { calculate(rowCount); });
+        $('#EFXP_EXENTO_' + rowCount).change(function (e) { calculate(rowCount) });
+        $('#TpoValor_' + rowCount).change(function (e) { calculate(rowCount) });
+        $('#TpoMov_' + rowCount).change(function (e) { calculate(rowCount) });
+
+    }
+
+    function callEditDscRcg(lineaDetalle) {
+        var linDetalle = lineaDetalle;
+        $.ajax
+            ({
+                url: "DescuentoRecargoTempModal?lineaDetalle=" + linDetalle,
+                success: function (html) {
+                    $("#DescuentoRecargoBody").html("");
+                    $("#DescuentoRecargoBody").html(html);
+                    $("#ModalEditDescuentoRecargo").modal();
+                }
+            });
+    }
+
+    function removeLastRow() {
+        jQuery('#Detalle' + rowCount).remove();
+        rowCount--;
+        if (rowCount <= 0) {
+            rowCount = 0;
+        }
+        $('#EFXP_SUBTOTAL').val(CalcularTotal());
+    }
+
+    function removeRow(removeNum) {
+        jQuery('#Detalle' + removeNum).remove();
+    }
+
+    //----------------------
+
+
+    function addMoreRef(frm) {
+        refCount++;
+        var recRow = '<div class="row form-group" id="Referencias' + refCount + '"> <div class="col-md-3">@*<select class="form-control" name="CodOperacion' + refCount + '" id="CodOperacion' + refCount + '" value=""> <option value="">Seleccionar</option> <option value="1">Anula documento de referencia</option> <option value="2">Corrige texto de documento de referencia</option> <option value="3">Corrige montos</option> </select>*@ </div> <div class="col-md-5"><input class="form-control" placeholder="Escriba el motivo" name="motivo' + refCount + '" id="motivo' + refCount + '" type="text" maxlength="90"> </div> <div class="col-md-3"><select class="form-control" name="TipoDocRef' + refCount + '" id="TipoDocRef' + refCount + '" value=""> <option value="">Seleccionar</option> <option value="30">Factura</option> <option value="32">Factura de venta bienes y servicios no afectos o exentos de IVA</option> <option value="35">Boleta</option> <option value="38">Boleta exenta</option> <option value="45">Factura de compra</option> <option value="55">Nota de débito</option> <option value="60">Nota de crédito</option> <option value="40">Liquidación Factura</option> <option value="43">Liquidación-Factura Electrónica</option> <option value="33">Factura Electrónica</option> <option value="34">Factura No Afecta o Exenta Electrónica</option> <option value="39">Boleta Electrónica</option> <option value="41">Boleta Exenta Electrónica</option> <option value="46">Factura de Compra Electrónica.</option> <option value="56">Nota de Débito Electrónica</option> <option value="61">Nota de Crédito Electrónica</option> <option value="50">Guía de Despacho.</option> <option value="52">Guía de Despacho Electrónica</option> <option value="103">Liquidación</option> <option value="110">Factura de Exportación Electrónica</option> <option value="111">Nota de Débito de Exportación Electrónica</option> <option value="112">Nota de Crédito de Exportación Electrónica</option> <option value="801">Orden de Compra</option> <option value="802">Nota de pedido</option> <option value="803">Contrato</option> <option value="804">Resolución</option> <option value="805">Proceso ChileCompra</option> <option value="806">Ficha ChileCompra</option> <option value="807">DUS</option> <option value="808">B/L (Conocimiento de embarque)</option> <option value="809">AWB (Air Will Bill)</option> <option value="810">MIC/DTA</option> <option value="811">Carta de Porte</option> <option value="812">Resolución del SNA donde califica Servicios de Exportación</option> <option value="813">Pasaporte</option> <option value="814">Certificado de Depósito Bolsa Prod. Chile.</option> <option value="815">Vale de Prenda Bolsa Prod. Chile</option> <option value="-4444">SET</option></select> </div> <div class="col-md-1"><input class="form-control" placeholder="" name="ref_folio' + refCount + '" id="ref_folio' + refCount + '" type="text"> </div> </div>';
+        jQuery('#ReferenciasDetail').append(recRow);
+    }
+
+    function removeLastRef() {
+        jQuery('#Referencias' + refCount).remove();
+        refCount--;
+        if (refCount <= 1) {
+            refCount = 1;
+        }
+    }
+
+    function removeRef(removeNum) {
+        jQuery('#Referencias' + removeNum).remove();
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+        $(function () {
+            $("#EFXP_FCH_EMIS").datepicker();
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#EFXP_RUT_RECEP").autocomplete({
+            source: '@Url.Action("AutocompleteRutReceptor")',
+            change: function (event, ui) { CSGetReceptorInfo($("#EFXP_RUT_RECEP").val()); }
+        });
+    });
+
+    function CSGetReceptorInfo(value) {
+
+        var url = '@Url.Action("GetReceptorByRUT")';
+
+        $.getJSON(url, { RUT: $("#EFXP_RUT_RECEP").val() },
+            function (data) {
+                if (data.ok == true) {
+                    $("#MakeNew").val(0);
+                    $("#EFXP_RZN_SOC_RECEP").val(data.rzSocial);
+                    $("#EFXP_DIR_RECEP").val(data.direccion);
+                    $("#EFXP_CIUDAD_RECEP").val(data.ciudad);
+                    $("#EFXP_GIRO_RECEP").val(data.giro);
+                    $("#EFXP_CONTACTO").val(data.contacto);
+                    $('#EFXP_CMNA_RECEP').val(data.comuna);
+                    $('#email').val(data.emailCobranza);
+                    $('#telefono').val(data.telefonoCobranza)
+                }
+                else {
+                    $("#MakeNew").val(1);
+                }
+
+            }
+            );
+    }
+    function CalculateAllAgain() {
+        for (iw = 1; iw < rowCount + 1; iw++) {
+            calculate(iw);
+        }
+    }
+
+    $('#tipodoc').on('change', function () {
+
+        var SELECTEDVALUE = this.value;
+        if (SELECTEDVALUE == "") {
+            $("#TIPO_DOC").text("[TIPO DOCUMENTO]");
+            $("#NumeroDoc").text("XX");
+            return;
+        }
+
+        else if (SELECTEDVALUE == 33) {
+            $("#TIPO_DOC").text("FACTURA ELECTRÓNICA");
+            var isDisabled = $("#EFXP_RUT_RECEP").is('[readonly]');
+            if (isDisabled) {
+                $("#EFXP_RUT_RECEP").attr("readonly", false);
+            }
+            $("#ExpTab").prop("disabled", true);
+            $("#TabExp").css("display", "none");
+            $("#TabGuia").css("display", "none");
+            $("#GuiaTab").css("display", "none");
+            $("#receptor").addClass("active in");
+            $("#TabReceptor").addClass("active");
+            $("#ExpTab").removeClass("active in");
+            $("#IndicadorServicio").css("display", "none");
+
+            //IVA
+            $("#EFXP_TASA_IVA").val(19);
+
+
+            CalculateAllAgain();
+
+        }
+        else if (SELECTEDVALUE == 34) {
+            $("#TIPO_DOC").text("FACTURA ELECTRÓNICA EXENTA");
+            var isDisabled = $("#EFXP_RUT_RECEP").is('[readonly]');
+            if (isDisabled) {
+                $("#EFXP_RUT_RECEP").attr("readonly", false);
+            }
+            $("#EFXP_TASA_IVA").val(0);
+
+            //iva
+            GTotalIVA = 0;
+            CalculateAllAgain();
+
+            //fin iva
+            $("#ExpTab").prop("disabled", true);
+            $("#TabExp").css("display", "none");
+            $("#TabGuia").css("display", "none");
+            $("#GuiaTab").css("display", "none");
+            $("#receptor").addClass("active in");
+            $("#TabReceptor").addClass("active");
+            $("#ExpTab").removeClass("active in");
+            $("#IndicadorServicio").css("display", "none");
+
+        }
+        else if (SELECTEDVALUE == 110) {
+            $("#TIPO_DOC").text("FACTURA EXPORTACIÓN ELECTRÓNICA");
+            $("#EFXP_RUT_RECEP").val("55555555-5");
+            $("#EFXP_RUT_RECEP").attr("readonly", true);
+            $("#ExpTab").prop("disabled", false);
+            $("#TabExp").css("display", "block");
+            $("#TabGuia").css("display", "none");
+            $("#GuiaTab").css("display", "none");
+            $("#receptor").addClass("active in");
+            $("#IndicadorServicio").css("display", "none");
+            //iva
+            $("#EFXP_TASA_IVA").val(0);
+            GTotalIVA = 0;
+            CalculateAllAgain();
+
+        }
+        else if (SELECTEDVALUE == 52) {
+            $("#TIPO_DOC").text("GUIA DE DESPACHO");
+            var isDisabled = $("#EFXP_RUT_RECEP").is('[readonly]');
+            if (isDisabled)
+                if (("#EFXP_RUT_RECEP").prop("readonly")) {
+                    $("#EFXP_RUT_RECEP").attr("readonly", false);
+                }
+            $("#TabExp").css("display", "none");
+            $("#GuiaTab").css("display", "block");
+            $("#TabGuia").css("display", "block");
+            $("#receptor").addClass("active in");
+            $("#IndicadorServicio").css("display", "none");
+
+            //iva
+            $("#EFXP_TASA_IVA").val(19);
+            var GValorIVA = $('#EFXP_TASA_IVA').val() / 100;
+            var GTotalIVA = GValorIVA * (subTotalNoExentos);//GmontoNeto;
+            if (GTotalIVA < 0)
+                GTotalIVA = 0;
+            var ivatotal = GTotalIVA.toFixed();
+            $('#EFXP_IVA').val(ivatotal);
+            CalculateAllAgain();
+
+        }
+        else if (SELECTEDVALUE == 39) {
+            $("#TIPO_DOC").text("BOLETA ELECTRÓNICA");
+            var isDisabled = $("#EFXP_RUT_RECEP").is('[readonly]');
+            if (isDisabled) {
+                $("#EFXP_RUT_RECEP").attr("readonly", false);
+            }
+            $("#ExpTab").prop("disabled", true);
+            $("#TabExp").css("display", "none");
+            $("#TabGuia").css("display", "none");
+            $("#GuiaTab").css("display", "none");
+            $("#receptor").addClass("active in");
+            $("#TabReceptor").addClass("active");
+            $("#ExpTab").removeClass("active in");
+            $("#IndicadorServicio").css("display", "block");
+            for (var k = 1; k < rowCount + 1; k++) {
+                $("#EFXP_EXENTO_" + k).prop("checked", false);
+                $("#EFXP_EXENTO_" + k).prop("disabled", false);
+                $("#IMPUESTO_ADICIONAL_" + k).val("[0,0]");
+                $("#IMPUESTO_ADICIONAL_" + k).prop("disabled", true);
+                //iva
+                $("#EFXP_TASA_IVA").val(19);
+                CalculateAllAgain();
+            }
+        }
+        else if (SELECTEDVALUE == 41) {
+            $("#TIPO_DOC").text("BOLETA ELECTRÓNICA EXENTA");
+            var isDisabled = $("#EFXP_RUT_RECEP").is('[readonly]');
+            if (isDisabled) {
+                $("#EFXP_RUT_RECEP").attr("readonly", false);
+            }
+            $("#ExpTab").prop("disabled", true);
+            $("#TabExp").css("display", "none");
+            $("#TabGuia").css("display", "none");
+            $("#GuiaTab").css("display", "none");
+            $("#receptor").addClass("active in");
+            $("#TabReceptor").addClass("active");
+            $("#ExpTab").removeClass("active in");
+            $("#IndicadorServicio").css("display", "block");
+            for (var k = 1; k < rowCount + 1; k++) {
+                $("#EFXP_EXENTO_" + k).prop("checked", false);
+                $("#EFXP_EXENTO_" + k).prop("disabled", true);
+                $("#IMPUESTO_ADICIONAL_" + k).val("[0,0]");
+                $("#IMPUESTO_ADICIONAL_" + k).prop("disabled", true);
+                //iva
+                $("#EFXP_TASA_IVA").val(0);
+
+
+                GTotalIVA = 0;
+                CalculateAllAgain();
+            }
+        }
+        CSGetLastFolio(this.value);
+    });
+
+    
+
+    function CSGetLastFolio(sel) {
+        var url = '@Url.Action("GetFolioByDocType")';
+        var selectedTipo = sel;
+
+
+        $.getJSON(url, { TipoDOC: selectedTipo },
+        function (data) {
+            if (data.ok == false)
+            {
+                ShowMessage(data.errorMsg, data.errorStyle);
+                $("#EFXP_FOLIO").val("");
+                $('#Button_Update').attr('disabled', 'disabled');
+                $('#botonEmitirDocumentoModal').attr('disabled', 'disabled');
+            }
+            else {
+                $("#NumeroDoc").text(data.folio);
+                $("#EFXP_FOLIO").val(data.folio);
+                $('#Button_Update').removeAttr('disabled');
+                $('#botonEmitirDocumentoModal').removeAttr('disabled');
+            }
+        }
+        );
+    }
+
+    $(document).ready(function () {
+        $("#EFXP_FOLIO").change(function () {
+            $("#NumeroDoc").text($("#EFXP_FOLIO").val());
+        });
+    });
+
+    $('#REF_SI_NO').click(function () {
+        if ($(this).is(':checked')) {
+            $("#Referencias").show();
+        } else {
+            $("#Referencias").hide();
+        }
+    });
+
+
+</script>
+
+<style>
+    .ui-dialog-titlebar {
+        color: white;
+    }
+
+    .ui-draggable-handle {
+        background: #ff4d4d;
+    }
+
+    .ui-dialog {
+        position: fixed;
+    }
+
+    /*.ui-dialog-titlebar-close {
+
+    }*/
+
+    .nav-tabs {
+        background-color: #fff;
+    }
+
+        .nav-tabs > li > a {
+        }
+
+        .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+            background-color: #0F879E;
+            border: medium none;
+            color: white;
+        }
+
+    #datosFact {
+        border-style: solid;
+        border-color: red;
+        border-width: 1px;
+    }
+
+    #factura {
+        background-color: white;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    .darkinput {
+        color: #222f3f;
+        background-color: #dde3ef;
+    }
+
+    .bigass {
+        width: 100%;
+        color: #222f3f;
+        background-color: #dde3ef;
+    }
+
+    .midass {
+        width: 80%;
+    }
+
+    .grayoutline {
+        border: 1px solid #e6e6e6;
+    }
+
+    .botonesDetalle {
+        background-color: #59ace0;
+        color: #ecf5f9;
+    }
+
+    .btnEnviar {
+        background-color: #495972;
+        color: #c4cdd9;
+    }
+
+    .porcentaje {
+        width: 10px;
+    }
+
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+

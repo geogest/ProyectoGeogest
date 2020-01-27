@@ -1,0 +1,35 @@
+﻿@model IList<string[]>
+<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables">
+    <thead>
+        <tr>
+            <th class="FontSize text-center"></th>
+            <th class="FontSize text-center">FECHA CONTABILIZACIÓN</th>
+            <th class="FontSize text-center">COMPROBANTE</th>
+            <th class="FontSize text-center">GLOSA</th>
+            <th class="FontSize text-center">DEBE</th>
+            <th class="FontSize text-center">HABER</th>
+            <th class="FontSize text-center">C.CUENTA</th>
+            <th class="FontSize text-center">CUENTA</th>
+            <th class="FontSize text-center">CC</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (string[] rowThingie in Model)
+        {
+            @:<tr class="odd gradeX">
+            for (int i = 0; i < rowThingie.Length; i++)
+            {
+                string classAlign = "text-left";
+                if (i == 1)
+                {
+                    classAlign = "text-left nowrappls";
+                }
+                <td class="@classAlign">@rowThingie[i]</td>
+            }
+            @:</tr>
+        }
+    </tbody>
+</table>
+<script>
+    $("#libroTitle").text("@ViewBag.AnioFrontEnd");
+</script>

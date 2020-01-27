@@ -1,0 +1,400 @@
+﻿@model IList<string[]>
+@{
+    ViewBag.Title = "InformeEstadoResultado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@{string[] rowThingie1 = ParseExtensions.obtieneUnicosEnLista(Model);}
+
+
+@{<br />
+<h3>Ingresos, Egresos, Activos, Pasivos.</h3>
+
+    string[] Ingresos = new string[rowThingie1.Count()];
+    string[] Egresos = new string[rowThingie1.Count()];
+    string[] Activo = new string[rowThingie1.Count()];
+    string[] Pasivo = new string[rowThingie1.Count()];
+
+
+
+    string ingreso = "[5";
+    string egreso = "[4";
+    string activo = "[1";
+    string pasivo = "[2";
+
+
+
+    if (rowThingie1.Count() > 0)
+    {
+        for (int i = 0; i < rowThingie1.Count(); i++)
+        {
+            if (ingreso == rowThingie1[i].Substring(0, 2))
+            {
+                Ingresos[i] = rowThingie1[i];
+            }
+            if (egreso == rowThingie1[i].Substring(0, 2))
+            {
+                Egresos[i] = rowThingie1[i];
+            }
+            if (activo == rowThingie1[i].Substring(0, 2))
+            {
+                Activo[i] = rowThingie1[i];
+            }
+
+            if (pasivo == rowThingie1[i].Substring(0, 2))
+            {
+                Pasivo[i] = rowThingie1[i];
+            }
+        }
+    }
+
+}
+
+<div id="#principal" class="container">
+    <br />
+    <h2>Informe Estado Resultado</h2>
+    <br />
+
+    <!--Filtros-->
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label>Año</label>
+            <input type="type" name="name" value="" class="form-control" />
+        </div>
+    
+        <div class="col-md-3">
+            <label>Periodo</label>
+            <input type="type" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <!--Fin Filtros-->
+
+    
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3>Resultados Año: @DateTime.Now.ToString("yyyy")</h3></div>
+        <!--Tabla de Resultados-->
+        <table class="table table-responsive">
+
+            <thead>
+            <th>Tipo de Cuenta</th>
+            <th>Enero</th>
+            <th>Febrero</th>
+            <th>Marzo</th>
+            <th>Abril</th>
+            <th>Mayo</th>
+            <th>Junio</th>
+            <th>Julio</th>
+            <th>Agosto</th>
+            <th>Septiembre</th>
+            <th>Octubre</th>
+            <th>Noviembre</th>
+            <th>Diciembre</th>
+            <th>Total Haber</th>
+            <th>Total Debe</th>
+            </thead>
+            <tbody>
+                @{int totalHaber = 0; }
+                @{int totalDebe = 0; }
+
+        <tr>
+            <th>Ingreso</th>
+        </tr>
+    @if (rowThingie1.Count() > 0)
+    {
+        for (int i = 0; i < rowThingie1.Count() -1; i++)
+        {
+            if (ingreso == rowThingie1[i].Substring(0, 2))
+            {
+                Ingresos[i] = rowThingie1[i]; // Aquí imprimir el tipo de cuenta y  luego colocar los  totales al lado y eliminar las filas que salen del detalle del voucher. (Solo necesitamos el tipo de cuenta con su total).
+                <tr>
+                    <td>@Ingresos[i]</td>
+                </tr>
+            }
+            foreach (string[] rowThingie2 in Model)
+            {
+                if (ingreso == rowThingie1[i].Substring(0, 2))
+                {
+                    Ingresos[i] = rowThingie1[i];
+
+                    if (rowThingie2[8] == Ingresos[i])
+                    {
+                        for (int k = 0; k < rowThingie2.Length - 1; k++)
+                        {
+
+                            if (k == 4)
+                            {
+                                if (rowThingie2[k] != "-")
+                                {
+                                    totalDebe = totalDebe + Int32.Parse(rowThingie2[k].Replace(".", ""));
+                                           
+                                         }
+
+                                    }
+                                    if (k == 5)
+                                    {
+                                        if (rowThingie2[k] != "-")
+                                        {
+                                            totalHaber = totalHaber + Int32.Parse(rowThingie2[k].Replace(".", ""));
+
+                                }
+                            }
+
+
+                        }
+
+
+                    }
+
+                }
+
+
+
+            }
+
+
+
+        }
+
+        <tr>
+            <th>Total H: @totalHaber</th>
+        </tr>
+                <tr>
+                    <th>Total D: @totalDebe</th>
+                </tr>
+        int totalCuenta = totalHaber - totalDebe;
+        <tr>
+            <th>Total Cuenta: @totalCuenta</th>
+        </tr>
+    }
+
+                <tr>
+                    <th>Egreso</th>
+                </tr>
+                @if (rowThingie1.Count() > 0)
+                {
+                    for (int i = 0; i < rowThingie1.Count(); i++)
+                    {
+
+                        if (egreso == rowThingie1[i].Substring(0, 2))
+                        {
+                            Egresos[i] = rowThingie1[i]; // Aquí imprimir el tipo de cuenta y  luego colocar los  totales al lado y eliminar las filas que salen del detalle del voucher. (Solo necesitamos el tipo de cuenta con su total).
+                            <tr>
+                                <td>@Egresos[i]</td>
+                            </tr>
+                        }
+                        foreach (string[] rowThingie2 in Model)
+                        {
+                            if (egreso == rowThingie1[i].Substring(0, 2))
+                            {
+                                Egresos[i] = rowThingie1[i];
+
+                                if (rowThingie2[8] == Egresos[i])
+                                {
+                                    for (int k = 0; k < rowThingie2.Length - 1; k++)
+                                    {
+
+                                        if (k == 4)
+                                        {
+                                            if (rowThingie2[k] != "-")
+                                            {
+                                                totalDebe = totalDebe + Int32.Parse(rowThingie2[k].Replace(".", ""));
+
+
+                                            }
+
+                                        }
+                                        if (k == 5)
+                                        {
+                                            if (rowThingie2[k] != "-")
+                                            {
+                                                totalHaber = totalHaber + Int32.Parse(rowThingie2[k].Replace(".", ""));
+
+
+                                            }
+                                        }
+
+
+                                    }
+
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                    <tr>
+                        <th>Total H: @totalHaber</th>
+                    </tr>
+                    <tr>
+                        <th>Total D: @totalDebe</th>
+                    </tr>
+                    int totalCuenta = totalHaber - totalDebe;
+                    <tr>
+                        <th>Total Cuenta: @totalCuenta</th>
+                    </tr>
+                }
+              
+        
+           
+         
+
+            <tr>
+                <th>Activo</th>
+            </tr>
+            @if (rowThingie1.Count() > 0)
+            {
+                for (int i = 0; i < rowThingie1.Count(); i++)
+                {
+                    if (activo == rowThingie1[i].Substring(0, 2))
+                    {
+                        Activo[i] = rowThingie1[i]; // Aquí imprimir el tipo de cuenta y  luego colocar los  totales al lado y eliminar las filas que salen del detalle del voucher. (Solo necesitamos el tipo de cuenta con su total).
+                        <tr>
+                            <td>@Activo[i]</td>
+                       </tr>
+                    }
+                    foreach (string[] rowThingie2 in Model)
+                    {
+                        if (activo == rowThingie1[i].Substring(0, 2))
+                        {
+                            Activo[i] = rowThingie1[i];
+
+                            if (rowThingie2[8] == Activo[i])
+                            {
+                                for (int k = 0; k < rowThingie2.Length - 1; k++)
+                                {
+
+                                    if (k == 4)
+                                    {
+                                        if (rowThingie2[k] != "-")
+                                        {
+                                            totalDebe = totalDebe + Int32.Parse(rowThingie2[k].Replace(".", ""));
+
+
+                                        }
+
+                                    }
+                                    if (k == 5)
+                                    {
+                                        if (rowThingie2[k] != "-")
+                                        {
+                                            totalHaber = totalHaber + Int32.Parse(rowThingie2[k].Replace(".", ""));
+
+                                        }
+                                    }
+
+
+                                }
+
+
+                            }
+
+                        }
+
+                    }
+
+                }
+                <tr>
+                    <th>Total H: @totalHaber</th>
+                </tr>
+                <tr>
+                    <th>Total D: @totalDebe</th>
+                </tr>
+                int totalCuenta = totalHaber - totalDebe;
+                <tr>
+                    <th>Total Cuenta: @totalCuenta</th>
+                </tr>
+            }
+          
+
+            <tr>
+                <th>Pasivo</th>
+            </tr>
+            
+           
+               @if (rowThingie1.Count() > 0)
+               {
+                   for (int i = 0; i < rowThingie1.Count(); i++)
+                   {
+
+                       if (pasivo == rowThingie1[i].Substring(0, 2))
+                       {
+                           Pasivo[i] = rowThingie1[i]; // Aquí imprimir el tipo de cuenta y  luego colocar los  totales al lado y eliminar las filas que salen del detalle del voucher. (Solo necesitamos el tipo de cuenta con su total).
+                           <tr>
+                               <td>@Pasivo[i]</td>
+                           </tr>
+                        
+                       }
+
+                       foreach (string[] rowThingie2 in Model)
+                       {
+                           if (pasivo == rowThingie1[i].Substring(0, 2))
+                           {
+                               Pasivo[i] = rowThingie1[i];
+
+                               if (rowThingie2[8] == Pasivo[i])
+                               {
+                                   for (int k = 0; k < rowThingie2.Length - 1; k++)
+                                   {
+
+                                       if (k == 4)
+                                       {
+                                           if (rowThingie2[k] != "-")
+                                           {
+                                               totalDebe = totalDebe + Int32.Parse(rowThingie2[k].Replace(".", ""));
+
+
+                                           }
+
+                                       }
+                                       if (k == 5)
+                                       {
+                                           if (rowThingie2[k] != "-")
+                                           {
+                                               totalHaber = totalHaber + Int32.Parse(rowThingie2[k].Replace(".", ""));
+
+
+                                           }
+                                       }
+
+
+                                   }
+
+
+                               }
+
+                           }
+
+                       }
+
+                   }
+                <tr>
+                    <th>Total H: @totalHaber</th>
+                </tr>
+                <tr>
+                    <th>Total D: @totalDebe</th>
+                </tr>
+                int totalCuenta = totalHaber - totalDebe;
+                <tr>
+                    <th>Total Cuenta: @totalCuenta</th>
+                </tr>
+               }
+           
+      
+           
+
+            <tr>
+                <th>Sub Total:</th>
+            </tr>
+           
+          
+
+   
+            </tbody>
+        </table>
+        </div>
+        <!--Fin Tabla de Resultados-->
+    </div>
+

@@ -1,0 +1,80 @@
+﻿@model List<LibroDeHonorariosModel>
+<br />
+<h2>Libro a Importar</h2>
+<h3>Vista Previa</h3>
+
+
+@using (Html.BeginForm("ImportarLibroHonorAVoucher", "Contabilidad", FormMethod.Post, new { id = "FormImportarVoucher" }))
+{
+
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>Cuenta Contable</th>
+                    <th>Num</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Fecha Anulación</th>
+                    <th>Rut</th>
+                    <th>Razon Social</th>
+                    <th>Brutos</th>
+                    <th>Retencion</th>
+                    <th>Pagado</th>
+                </tr>
+            </thead>
+            <tbody>
+                    @{int rowCount = 0;}
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+                        @Html.HiddenFor(modelItem => Model[i].LibroDeHonorariosModelID);
+                        <tr>
+                            <td>
+                                <select id="cuenta@(rowCount++)" name="cuenta" class="form-control" data-live-search="true" style="width:260px">
+                                    @Html.Raw(ViewBag.HtmlStr)
+                                </select>
+                            </td>
+                            <td>
+                               @Html.DisplayFor(modelItem => Model[i].NumIdenficiador)
+                            </td>
+                            <td>
+                                @ParseExtensions.ToAAAA_MM_DD(Model[i].Fecha)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model[i].Estado)
+                            </td>
+                            <td>
+                                @ParseExtensions.ToAAAA_MM_DD(Model[i].FechaAnulacion)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model[i].Rut)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model[i].RazonSocial)
+                            </td>
+                            <td>
+                                @ParseExtensions.NumeroConPuntosDeMiles(Model[i].Brutos)
+                            </td>
+                            <td>
+                                @ParseExtensions.NumeroConPuntosDeMiles(Model[i].Retenido)
+                            </td>
+                            <td>
+                                @ParseExtensions.NumeroConPuntosDeMiles(Model[i].Pagado)
+                            </td>
+                        </tr>
+                    }
+            </tbody>
+    
+        </table>
+        <button type="submit" class="btn btn-success pull-right redondo btnPress">Importar</button>
+}
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script>
+

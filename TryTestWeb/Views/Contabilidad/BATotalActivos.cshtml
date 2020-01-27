@@ -1,0 +1,121 @@
+﻿@model IList<string[]>
+@{
+    ViewBag.Title = "BATotalActivos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="panel-heading">
+        <div class="col-sm-12">
+
+            @using (Html.BeginForm("GetExcelBalanceActivoFijo", "Contabilidad", FormMethod.Post))
+            {
+                <div class="pull-right">
+                    <br />
+                    <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                    </button>
+                    <br />
+                </div>
+                <br />
+            }
+            <h2 class="page-header">Total Activos</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad Reportes</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Informes Contabilidad
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<div class="panel-heading">
+    <div class="row form-group">
+
+        <div class="col-md-3">
+            <label>Año</label>
+            <input type="text" name="Ano" id="Ano" value="@DateTime.Now.Year.ToString()" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label>Mes</label>
+            <select id="Mes" name="Mes" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>Fecha Inicio</label>
+            <input type="text" name="FechaInicio" id="FechaInicio" value="" class="form-control date" autocomplete="off" />
+        </div>
+        <div class="col-md-3">
+            <label>Fecha Fin</label>
+            <input type="text" name="FechaFin" id="FechaFin" value="" class="form-control date" autocomplete="off" />
+        </div>
+    </div>
+</div>
+
+
+<div class="panel-body" id="parshial">
+
+    @Html.Partial("BATotalActivosPartial", Model)
+
+</div>
+
+<style>
+    #parshial {
+        background-color: #fff;
+    }
+
+    .panel-heading {
+        background-color: #fff;
+    }
+</style>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#FechaInicio').change(function (e) { filtrar(); });
+        $('#FechaFin').change(function (e) { filtrar(); });
+        $('#Ano').change(function (e) { filtrar(); });
+        $('#Mes').change(function (e) { filtrar(); });
+    });
+
+    function filtrar()
+    {
+        var Anio = $('#Ano').val();
+        var Mes = $('#Mes').val();
+
+        var FechaInicio = $('#FechaInicio').val();
+        var FechaFin = $('#FechaFin').val();
+        $.ajax
+        ({
+            url: "BAActivoFijoPartial?FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin + "&Anio=" + Anio + "&Mes=" + Mes,
+            success: function (html)
+            {
+                $("#parshial").html(html);
+            }
+        });
+    }
+
+
+</script>

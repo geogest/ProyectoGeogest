@@ -1,0 +1,456 @@
+﻿
+@{
+    ViewBag.Title = "ListarProveedor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model PagedList.IPagedList<QuickReceptorModel>
+@using PagedList.Mvc;
+@using Microsoft.AspNet.Identity;
+
+
+
+
+<!-- Page-Title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn-group pull-right m-t-40">
+            <form role="form">
+                <div class="button-list">
+                    <button @(Model == null || Model.Count == 0 ? "disabled" : string.Empty) class="btn btn-primary waves-effect waves-light pull-right" type="submit" name="Exportar" data-animation="fadein" data-plugin="custommodal"
+                            data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                    </button>
+                    <a href="#" onclick="NuevaPersona()" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal"
+                       data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="ion-android-add"></i></span>
+                        Agregar
+                    </a>
+                </div>
+        </div>
+        <div class="page-header-2">
+            <h2 class="page-header">Personas </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Persona</a>
+                </li>
+                <li class="active">
+                    Personas
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+<!-- Filtros -->
+<div class="row m-t-15">
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="form-group contact-search m-b-30">
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Ingrese su busqueda" })
+                <button type="submit" class="btn btn-white"><i class="ion-android-search"></i></button>
+            </div>
+        </div> <!-- form-group -->
+        </form>
+    </div>
+    <div class="col-md-6">
+    </div>
+</div>
+
+<!-- Tabla -->
+<div class="row">
+    <div id="listaDerecho" class="col-lg-12">
+        @{int cont = 0; }
+        @foreach (var Cliente in Model)
+        {
+            <div style="display:none;" class="alert alert-success" role="alert" id="alerta-exito">
+                Prestador dado de baja con éxito.
+            </div>
+
+            <div class="row" id="Caja_@Cliente.QuickReceptorModelID" name="Caja">
+                <div class="col-lg-12">
+                    <div class="card-box m-b-10">
+                        <div class="table-box opport-box">
+
+                            <div class="col-lg-1">
+                                <div class="table-detail checkbx-detail">
+                                    <div class="checkbox checkbox-success m-r-15">
+                                        <input id="checkbox_@cont" onclick="javascript: seleccionaDetalle(@cont, this);" type="checkbox">
+                                        <label for="checkbox1"></label>
+                                    </div>
+                                </div>
+                            </div>
+                           <!-- <div class="col-lg-1">
+                                <div class="table-detail checkbx-detail">
+                                    <h5 class="m-t-0"><b>@(cont + 1)</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-t-0">Nº</p>
+                                    </div>
+                                </div>
+                            </div>-->
+                            <input id="Receptor" value="@Cliente.QuickReceptorModelID" style="display:none;"/>
+
+                            <div class="col-lg-4">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>RUT @Cliente.RUT</b></h5>
+                                    <div class="member-info">
+                                        @{
+                                            String Contacto = Cliente.Contacto;
+                                            int limite2 = 24;
+                                            if (Cliente.Contacto == null)
+                                            {
+                                                Cliente.Contacto = string.Empty;
+                                            }
+                                            else
+                                            {
+                                                if (Cliente.Contacto.Length > limite2)
+                                                {
+                                                    Contacto = Cliente.Contacto.Substring(0, limite2 - 1) + "...";
+                                                }
+                                            }
+                                        }
+                                        @*<p class="text-dark m-b-0"><span class="text-muted">@Cliente.Contacto</span></p>*@
+                                        <p class="text-dark m-b-0"><span class="text-muted">@Cliente.Contacto</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="table-detail">
+                                    @{
+                                        String razon = Cliente.RazonSocial;
+                                        int limite = 20;
+                                        if (Cliente.RazonSocial.Length > limite)
+                                        {
+                                            razon = Cliente.RazonSocial.Substring(0, limite - 1) + "...";
+                                        } }
+
+                                    <h5 class="m-t-0"><b>@razon </b></h5>
+                                </div>
+                            </div>
+                           
+
+
+                            <div class="col-lg-1">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>Estado</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0"><span class="label label-success">Activo</span></p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <div class="table-detail">
+                                    <a class="btn btn-primary btn-sm redondo btnPress" href="#" onclick="getPersonaEdit(@Cliente.QuickReceptorModelID)">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <div class="table-detail">
+                                    <a href="#" id="ReceptorID" name="ReceptorID" onclick="AdvertenciaDarDeBaja(@Cliente.QuickReceptorModelID)"  class="btn btn-danger btn-sm redondo btnPress">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div style="display:none;">
+                                <div id="Col1_@cont">
+                                    @Cliente.RazonSocial
+                                </div>
+                                <div id="Col2_@cont">
+                                    @Cliente.RUT
+                                </div>
+                                <div id="Col3_@cont">
+                                    @Cliente.Giro
+                                </div>
+                                <div id="Col4_@cont">
+                                    @Cliente.NombreFantasia
+                                </div>
+                                <div id="Col5_@cont">
+                                    @Cliente.Direccion
+                                </div>
+                                <div id="Col6_@cont">
+                                    @Cliente.GetNewComunaName(User.Identity.GetUserId())
+                                </div>
+                                <div id="Col7_@cont">
+                                    @Cliente.GetNewRegionName(User.Identity.GetUserId())
+                                </div>
+
+
+                                <div id="Col9_@cont">
+                                    @Cliente.NombreContacto
+                                </div>
+                                <div id="Col8_@cont">
+                                    @Cliente.Contacto
+                                </div>
+                                <div id="Col10_@cont">
+                                    @Cliente.RUTSolicitante
+                                </div>
+
+                                <div id="Col12_@cont">
+                                    @Cliente.TelefonoContacto
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="DarDeBaja">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4>Dar de baja prestador</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h4>¿Estás seguro que deseas dar de baja a este prestador?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" id="cancelar" class="btn btn-primary" data-dissmiss="modal">Cancelar</a>
+                                <a href="#" class="btn btn-danger" id="btn-aceptar" name="btn-aceptar"  data-dissmiss="modal"  data-backdrop="false" onclick="DarDeBajaPrestador()">Aceptar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @{cont++;
+                }
+            </div>
+
+                    }
+
+    </div>
+
+
+    @using (Html.BeginForm("CrearPersona", "Home", FormMethod.Post))
+    {
+    <!--  Registrar Gastos -->
+        <div id="myModal" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <input type="hidden" id="editFlag" name="editFlag" value="0">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Ingresar nueva Persona</h4>
+                    </div>
+                    <div id="ModyBody" class="modal-body">
+                        <div class="row m-t-10">
+                            <div class="col-lg-6">
+                                <label><b>Nombre:</b></label>
+                                <input required type="text" id="NombrePpersona" name="NombrePpersona" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                                <label><b>Rut:</b></label>
+                                <input required type="text" id="RutPpersona" name="RutPpersona" maxlength="10" class="form-control">
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Ingresar</button>
+                    </div>
+                </div>
+            </div>
+        </div> <!--  Fin Registar Gastos -->
+    }
+
+
+
+    @using (Html.BeginForm("EditarPrestadorPersona", "Home", FormMethod.Post))
+    {
+    <!--  Registrar Gastos -->
+        <div id="myModal2" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <input type="hidden" id="editFlag" name="editFlag" value="0">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Editar Prestador</h4>
+                    </div>
+                    <div id="ModyBody" class="modal-body">
+                        <div class="row m-t-10">
+                            <input type="text" style="display:none;" id="IDPrestadorE" name="IDPrestadorE" class="form-control">
+                            <div class="col-lg-6">
+                                <label><b>Nombre:</b></label>
+                                <input required type="text" id="NombrePpersonaE" name="NombrePpersonaE" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                                <label><b>Rut:</b></label>
+                                <input required type="text" id="RutPpersonaE" name="RutPpersonaE" maxlength="10" class="form-control" >
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div> <!--  Fin Registar Gastos -->
+    }
+
+
+
+
+
+    <div id="listaIzquierdo" class="col-lg-4" style="display:none;">
+        <div class="card-box">
+
+
+
+            <h4 class="page-header">Información Cliente</h4>
+
+            <p class="text-dark m-b-5"><b>Razón Social:</b> <span class="text-muted"><div id="detCol1"></div></span></p>
+            <p class="text-dark m-b-5"><b>Rut:</b> <span class="text-muted"><div id="detCol2"></div> </span></p>
+            <p class="text-dark m-b-5"><b>Giro: </b> <span class="text-muted"><div id="detCol3"></div></span></p>
+            <p class="text-dark m-b-5"><b>Nombre Fantasía: </b> <span class="text-muted"><div id="detCol4"></div></span></p>
+            <p class="text-dark m-b-5"><b>Dirección: </b> <span class="text-muted"><div id="detCol5"></div></span></p>
+            <p class="text-dark m-b-5"><b>Comuna: </b> <span class="text-muted"><div id="detCol6"></div></span></p>
+            <p class="text-dark m-b-5"><b>Región: </b> <span class="text-muted"><div id="detCol7"></div></span></p>
+
+            <h4 class="page-header">Información Contacto Comercial</h4>
+            <p class="text-dark m-b-5"><b>Nombre Contacto: </b> <span class="text-muted"><div id="detCol9"></div></span></p>
+            <p class="text-dark m-b-5"><b>Correo: </b> <span class="text-muted"><div id="detCol8"></div></span></p>
+            <p class="text-dark m-b-5"><b>Telefono Contacto: </b> <span class="text-muted"><div id="detCol12"></div></span></p>
+        </div>
+
+    </div>
+</div>
+
+Pagina @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("ListarPersona",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+
+
+
+<script>
+
+    function seleccionaDetalle(cont, dato)
+    {
+        if ($(dato).prop("checked") == false) {
+
+            if ($("#listaDerecho").attr("class") == "col-lg-12") {
+                $("#listaDerecho").attr("class", "col-lg-8");
+                $("#listaIzquierdo").removeAttr("style");
+            } else {
+                $("#listaDerecho").attr("class", "col-lg-12");
+                $("#listaIzquierdo").attr("style", "display:none;");
+            }
+
+            $("#detCol1").html($("#Col1_" + cont).html());
+            $("#detCol2").html($("#Col2_" + cont).html());
+            $("#detCol3").html($("#Col3_" + cont).html());
+            $("#detCol4").html($("#Col4_" + cont).html());
+            $("#detCol5").html($("#Col5_" + cont).html());
+            $("#detCol6").html($("#Col6_" + cont).html());
+            $("#detCol7").html($("#Col7_" + cont).html());
+            $("#detCol8").html($("#Col8_" + cont).html());
+            $("#detCol9").html($("#Col9_" + cont).html());
+            $("#detCol10").html($("#Col10_" + cont).html());
+
+            $("#detCol12").html($("#Col12_" + cont).html());
+
+        }
+        if ($(dato).prop("checked") == true) {
+
+            for (var i = 0; i < 10 ; i++) {
+                if (cont != i) {
+                    console.log(cont);
+                    $("#checkbox_" + i).removeAttr("checked");
+                }
+
+            }
+
+            if ($("#listaDerecho").attr("class") == "col-lg-12") {
+                $("#listaDerecho").attr("class", "col-lg-8");
+                $("#listaIzquierdo").removeAttr("style");
+            }
+
+            $("#detCol1").html($("#Col1_" + cont).html());
+            $("#detCol2").html($("#Col2_" + cont).html());
+            $("#detCol3").html($("#Col3_" + cont).html());
+            $("#detCol4").html($("#Col4_" + cont).html());
+            $("#detCol5").html($("#Col5_" + cont).html());
+            $("#detCol6").html($("#Col6_" + cont).html());
+            $("#detCol7").html($("#Col7_" + cont).html());
+            $("#detCol8").html($("#Col8_" + cont).html());
+            $("#detCol9").html($("#Col9_" + cont).html());
+            $("#detCol10").html($("#Col10_" + cont).html());
+
+            $("#detCol12").html($("#Col12_" + cont).html());
+
+
+        }
+
+        $('html,body').scrollTop(0);
+
+    }
+
+    function NuevaPersona() {
+        $('#myModal').modal('show');
+    }
+
+    function getPersonaEdit(ID) {
+        var url = '@Url.Action("ObtenerPpersona", "Home")';
+        var PrestadorPersonaID = ID;
+        if (PrestadorPersonaID != 0) {
+            $.getJSON(url, { IDPrestador: PrestadorPersonaID },
+            function (data) {
+
+                if (data.ok == true) {
+                    console.log(data);
+                    $('#IDPrestadorE').val(PrestadorPersonaID);
+                    $('#NombrePpersonaE').val(data.NombrePrestador);
+                    $('#RutPpersonaE').val(data.RutPrestador);
+
+                    $('#myModal2').modal('show');
+                }
+                else {
+                    $('#IDPrestador').val(0);
+                    $('#NombrePHonorE').val('');
+                    $('#myModal2').modal('hide');
+                }
+            });
+        }
+    }
+
+    //Mostrar el popup para dar de baja
+
+
+    function AdvertenciaDarDeBaja(ReceptorID){
+        $('#ReceptorID').val(ReceptorID);
+        $('#DarDeBaja').modal("show");
+
+        $('#cancelar').click(function () {
+            $('#DarDeBaja').modal("hide");
+        });
+    }
+
+    function DarDeBajaPrestador() {
+        var IDreceptor = $('#ReceptorID').val();
+
+        $('#btn-aceptar').attr('disabled',true);
+        $('#DarDeBaja').modal('hide');
+        $('#alerta-exito').css('display','none');
+
+        $.ajax({
+            type:"POST",
+            url: "DarDeBajaPrestador?IDreceptor=" + IDreceptor,
+            success: function (Result) {
+                $('#Caja_'+ IDreceptor).remove();
+                $('.modal-backdrop').remove();
+                $('#alerta-exito').removeAttr("style");
+                $('#btn-aceptar').attr("disabled",false);
+                }
+            })
+    }
+
+</script>

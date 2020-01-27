@@ -1,0 +1,53 @@
+﻿@model IList<SelectListItem>
+@{
+    ViewBag.Title = "Invitar Usuario";
+    var EnumValues = ParseExtensions.ObtenerValoresPosiblesEnum<Privilegios>().ToList();
+    EnumValues.RemoveAt(EnumValues.FindIndex(x => x == Privilegios.Administrador));
+}
+
+<h2>Asignar permisos</h2>
+
+@using (Html.BeginForm("NuevaInvitacion", "Home", FormMethod.Post, new { id = "DatosInvitacion" }))
+{
+    <h4>Asigna permisos a un usuario especifico para operar con la compañia seleccionada.</h4>
+    <br />
+    <div class="col-lg-10">
+        <div class="row form-group">
+            <div class="col-lg-2 text-right">
+                Invitar a Usuario:
+            </div>
+            <div class="col-lg-3">
+                <select id="usuarios" name="usuarios" class="selectpicker show-tick form-control" data-live-search="true">
+                    @foreach (SelectListItem Usuarios in Model)
+                    {
+                        <option value="@Usuarios.Value">@Usuarios.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-2 text-right">
+                con el Privilegio de:
+            </div>
+
+            <div class="col-lg-2">
+                <select id="priv" name="priv" class="form-control">
+                    @foreach (var TipoPrivilegio in EnumValues)
+                    {
+                        <option value="@((int)TipoPrivilegio)">@ParseExtensions.EnumGetDisplayAttrib(TipoPrivilegio)</option>
+                    }
+                </select>
+            </div>
+            <!--
+            a operar la Compañia <strong>@(Session["CompaniaSeleccionadaNombre"] != null ? Session["CompaniaSeleccionadaNombre"].ToString() : "No ha seleccionado Compañia")</strong>
+                -->
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <button class="btn btn-primary redondo btnPress pull-right" onclick="location.href='@Url.Action("AgregarUsuario", "Account")';return false;">Agregar Nuevo Usuario</button>
+        </div>
+        <div class="col-lg-3">
+            <button type="submit" class="btn btn-primary redondo btnPress pull-right">Cambiar Privilegios</button>
+        </div> 
+    </div>
+}

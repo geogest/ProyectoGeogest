@@ -1,0 +1,99 @@
+﻿@model List<UsuarioModel>
+
+<br />
+<h2>Asignar perfil a usuario</h2>
+
+<br />
+<br />
+<div class="col-md-12">
+    <div class="card-box">
+        <div class="row">
+        @using (Html.BeginForm("LimpiarYReestablecerPerfil", "Account", FormMethod.Post))
+        {
+            <div class="form-group col-md-3">
+                <label>Usuario</label>
+                <select class="form-control" id="UsuarioID" name="UsuarioID" required>
+                    <option>Selecciona</option>
+                    @foreach (UsuarioModel Usuario in Model)
+                    {
+                        <option value="@Usuario.UsuarioModelID">@Usuario.Nombre</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label>Empresa</label>
+                <select class="form-control" id="EmpresaID" name="EmpresaID" required></select>
+            </div>
+
+            <div class="col-md-3" >
+                <label>Asigna un Perfil</label>
+                <select class="form-control" id="TipoUsuario" name="TipoUsuario" required>
+                  
+ 
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <button id="GuardarCambios" class="btn-sm btn-success centrar">Guardar Cambios</button>
+            </div>
+        }
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .centrar{
+        margin-top:25px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+
+        $('#UsuarioID').on('change', function () {
+            
+                var UsuarioID = $('#UsuarioID').val(); //Guardamos el ID
+                var Url = "@Url.Action("EmpresasDeUsuarioSeleccionado", "Account")";
+
+                $.getJSON(Url, { UsuarioID: UsuarioID },
+                    function(data){
+                
+                        if(data.Result == true){
+                            console.log(data);
+                            $('#EmpresaID').html(data.lstEmpresas);
+                        }
+                        else
+                        {
+                            console.log(data);
+                            $('#EmpresaID').html('');
+                        }
+            
+                });
+        });
+
+
+        $('#EmpresaID').on('change', function () {
+            var UsuarioID = $('#UsuarioID').val();
+       
+
+            var Url = "@Url.Action("ObtenerPerfilUsuario","Account")";
+            if (UsuarioID != null) {
+                $.getJSON(Url, { UsuarioID: UsuarioID },
+                    function (data) {
+                        if (data.Result == true) {
+                            console.log(data);
+                            $('#TipoUsuario').html(data.lstPerfiles);
+                        }
+                        else {
+                            console.log(data);
+                            $('#TipoUsuario').html('');
+                        }
+                });
+            }
+        });
+        
+
+    });
+</script>
