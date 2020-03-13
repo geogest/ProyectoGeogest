@@ -163,6 +163,9 @@ public class CuentaContableModel
         SubClasificacionCtaContable sc41CostoDeExplotacion = new SubClasificacionCtaContable(clienteID, "41", "COSTO DE EXPLOTACION");
         sc_Base.Add(sc41CostoDeExplotacion);
 
+        SubClasificacionCtaContable sc42GastosPorIntereses = new SubClasificacionCtaContable(clienteID, "42", "GASTOS POR INTERESES");
+        sc_Base.Add(sc42GastosPorIntereses);
+
         SubClasificacionCtaContable sc51VentaNeta = new SubClasificacionCtaContable(clienteID, "51", "VENTA NETA");
         sc_Base.Add(sc51VentaNeta);
 
@@ -217,6 +220,8 @@ public class CuentaContableModel
         SubSubClasificacionCtaContable ssc4111GastosDeEquipamientoYOficina = new SubSubClasificacionCtaContable(clienteID, "4111", "GASTOS DE EQUIPAMIENTO Y OFICINA");
         SubSubClasificacionCtaContable ssc4112DepreciacionYAmortizacion = new SubSubClasificacionCtaContable(clienteID, "4112", "DEPRECIACION Y AMORTIZACION");
         SubSubClasificacionCtaContable ssc4113Impuestos = new SubSubClasificacionCtaContable(clienteID, "4113", "IMPUESTOS");
+
+        SubSubClasificacionCtaContable ssc4201OtrosGastos = new SubSubClasificacionCtaContable(clienteID, "4201", "OTROS GASTOS");
 
         SubSubClasificacionCtaContable ssc5101IngresosPorVenta = new SubSubClasificacionCtaContable(clienteID, "5101", "INGRESOS POR VENTA");
 
@@ -452,6 +457,14 @@ public class CuentaContableModel
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4113Impuestos, "411301", "IMPUESTOS ADICIONAL (F50)", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4113Impuestos, "411302", "IMPUESTO A LA RENTA", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
 
+        //4.RESULTADOS/PERDIDAS /42.GASTOS POR INTERESES / 4201.OTROS GASTOS
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420101", "GASTOS Y COMISIONES BANCARIAS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420102", "INTERESES Y COSTOS DE LA DEUDA", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420103", "IVA NO RECUPERABLE", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420104", "DIFERENCIA TIPO CAMBIO", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420105", "CORRECION MONETARIA", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420106", "GASTOS POR INVERSIONES", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+
         //5.RESULTADOS/GANANCIAS / 51.VENTA NETA / 5101.INGRESOS POR VENTA              null,
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOGANANCIA, sc51VentaNeta, ssc5101IngresosPorVenta, "510101", "INGRESOS POR VENTA ADICIONALES", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Venta, 1, 1, 0, 0, 0));
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOGANANCIA, sc51VentaNeta, ssc5101IngresosPorVenta, "510102", "OTROS INGRESOS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
@@ -476,6 +489,37 @@ public class CuentaContableModel
         db.DBCuentaContable.AddRange(CtaContableBase);
         db.SaveChanges();
         #endregion
+
+        return null;
+    }
+
+    public static List<CuentaContableModel> UpdateCtaContParaAntiguos(int clienteID, FacturaPoliContext db)
+    {
+        //LISTA DE SUBCLASIFICACION
+        List<SubClasificacionCtaContable> sc_Base = new List<SubClasificacionCtaContable>();
+
+        SubClasificacionCtaContable sc42GastosPorIntereses = new SubClasificacionCtaContable(clienteID, "42", "GASTOS POR INTERESES");
+        sc_Base.Add(sc42GastosPorIntereses);
+        db.DBSubClasificacion.AddRange(sc_Base);
+        db.SaveChanges();
+        //LISTA DE SUBSUBCLASIFICACION
+        List<SubSubClasificacionCtaContable> ssc_Base = new List<SubSubClasificacionCtaContable>();
+
+        SubSubClasificacionCtaContable ssc4201OtrosGastos = new SubSubClasificacionCtaContable(clienteID, "4201", "OTROS GASTOS");
+        ssc_Base.Add(ssc4201OtrosGastos);
+        db.DBSubSubClasificacion.AddRange(ssc_Base);
+        db.SaveChanges();
+        //LISTA DE CUENTA CONTABLE
+        List<CuentaContableModel> CtaContableBase = new List<CuentaContableModel>();
+
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420101", "GASTOS Y COMISIONES BANCARIAS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420102", "INTERESES Y COSTOS DE LA DEUDA", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420103", "IVA NO RECUPERABLE", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420104", "DIFERENCIA TIPO CAMBIO", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420105", "CORRECION MONETARIA", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420106", "GASTOS POR INVERSIONES", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        db.DBCuentaContable.AddRange(CtaContableBase);
+        db.SaveChanges();
 
         return null;
     }

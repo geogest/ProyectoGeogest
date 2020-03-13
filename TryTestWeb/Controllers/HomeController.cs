@@ -2084,13 +2084,31 @@ namespace TryTestWeb.Controllers
 
             List<QuickReceptorModel> lstReceptoresHonorarios = new List<QuickReceptorModel>();
 
-            if(objCliente != null) { 
+            ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(objCliente, "410709");
+
+            if (objCliente != null) { 
 
             lstReceptoresHonorarios = db.Receptores.Where(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
                                                                x.QuickEmisorModelID == objEmisor.QuickEmisorModelID &&
                                                                x.tipoReceptor == "H" &&
                                                                x.DadoDeBaja == false).ToList();
-            }else
+
+                List<QuickReceptorModel> ListaReceptorConCC = new List<QuickReceptorModel>();
+
+                foreach (QuickReceptorModel ReceptorConCC in lstReceptoresHonorarios)
+                {
+                    if (ReceptorConCC.CuentaConToReceptor != null)
+                    {
+                        ListaReceptorConCC.Add(ReceptorConCC);
+                    }
+                }
+
+                if (ListaReceptorConCC.Count() > 0)
+                    ViewBag.ListaReceptorConCC = ListaReceptorConCC;
+
+                ViewBag.ClienteContable = objCliente;
+            }
+            else
             {
               return RedirectToAction("SeleccionarClienteContable", "Contabilidad");
             }

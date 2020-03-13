@@ -68,6 +68,7 @@ public class FacturaContext : DbContext
     public DbSet<ItemModel> DBItems { get; set; }
     public DbSet<ClientesProveedoresModel> DBClientesProveedores { get; set; }
     public DbSet<ClientesContablesEmisorModel> DBClientesContablesEmisor { get; set; }
+    public DbSet<PresupuestoModel> DBPresupuestos { get; set; }
     public DbSet<CtasContablesPresupuestoModel> DBCCPresupuesto { get; set; }
     public DbSet<CentroCostoPresupuestoModels> DBCentroCostoPresupuesto { get; set; }
     public DbSet<SubSubCtaPresupuestoModel> DBSubSubCtaPresupuesto { get; set; }
@@ -77,43 +78,7 @@ public class FacturaContext : DbContext
     public DbSet<LibroDeHonorariosModel> DBLibroDeHonorarios { get; set; }
     
     //Base de datos Sistema de Remuneraciones
-    public DbSet<EmpleadoModel> DBempleados { get; set; }
-
-    public DbSet<CargoRemuModels>DBcargoRemu { get; set; }
-
-    public DbSet<TipoContratoRemuModels> DBtipoContratoRemu { get; set; }
-
-    public DbSet<GeneroRemuModels> DBgeneroRemu { get; set; }
-
-    public DbSet<EstadoCivilRemuModels> DBestadoCivilRemu { get; set; }
-
-    public DbSet<AfpRemuModels> DBafpRemu { get; set; }
-
-    public DbSet<IsapreRemuModels> DBisapreRemu { get; set; }
-
-    public DbSet<BancoRemumodels> DBbancoRemu { get; set; }
-
-    public DbSet<GratificacionRemuModels> DBgratificacionRemu { get; set; }
-
-    public DbSet<TramoFaRemumodels> DBtramoRemu { get; set; }
-
-    public DbSet<SucursalRemuModels> DBsucursalRemu { get; set; }
-
-    public DbSet<TsueldoBaRemuModels> DBtsueldoBaseRemu { get; set; }
-
-    public DbSet<InsApvRemuModels> DBinsApvRemu { get; set; }
-
-    public DbSet<EmpBancoRemuModels> DBbancoEmpRemu { get; set; }
-
-    public DbSet<UfRemuModels> DBufRemu { get; set; }
-
-    public DbSet<UtmRemuModels> DButmRemu { get; set; }
-
-    public DbSet<SminimoRemuModels> DBsueldoMinimoRemu { get; set; }
-
-    public DbSet<TcuentaRemuModels> DBtipoCuentaRemu { get; set; }
-
-    public DbSet<DatosVariablesRemuModels> DBdatosVaribalesRemu { get; set; }
+   
 
    
 
@@ -194,6 +159,7 @@ public class FacturaProduccionContext : DbContext
     public DbSet<ClientesProveedoresModel> DBClientesProveedores { get; set; }
 
     public DbSet<ClientesContablesEmisorModel> DBClientesContablesEmisor { get; set; }
+    public DbSet<PresupuestoModel> DBPresupuestos { get; set; }
 
     public DbSet<CtasContablesPresupuestoModel> DBCCPresupuesto { get; set; }
 
@@ -207,43 +173,7 @@ public class FacturaProduccionContext : DbContext
     public DbSet<LibroDeHonorariosModel> DBLibroDeHonorarios { get; set; }
 
     //Base de datos Sistema de remuneraciones
-    public DbSet<EmpleadoModel> DBempleados { get; set; }
-
-    public DbSet<CargoRemuModels> DBcargoRemu { get; set; }
-
-    public DbSet<TipoContratoRemuModels> DBtipoContratoRemu { get; set; }
-
-    public DbSet<GeneroRemuModels> DBgeneroRemu { get; set; }
-
-    public DbSet<EstadoCivilRemuModels> DBestadoCivilRemu { get; set; }
-
-    public DbSet<AfpRemuModels> DBafpRemu { get; set; }
-
-    public DbSet<IsapreRemuModels> DBisapreRemu { get; set; }
-
-    public DbSet<BancoRemumodels> DBbancoRemu { get; set; }
-
-    public DbSet<GratificacionRemuModels> DBgratificacionRemu { get; set; }
-
-    public DbSet<TramoFaRemumodels> DBtramoRemu { get; set; }
-
-    public DbSet<SucursalRemuModels> DBsucursalRemu { get; set; }
-
-    public DbSet<TsueldoBaRemuModels> DBtsueldoBaseRemu { get; set; }
-
-    public DbSet<InsApvRemuModels> DBinsApvRemu { get; set; }
-
-    public DbSet<EmpBancoRemuModels> DBbancoEmpRemu { get; set; }
-
-    public DbSet<UfRemuModels> DBufRemu { get; set; }
-
-    public DbSet<UtmRemuModels> DButmRemu { get; set; }
-
-    public DbSet<SminimoRemuModels> DBsueldoMinimoRemu { get; set; }
-
-    public DbSet<TcuentaRemuModels> DBtipoCuentaRemu { get; set; }
-
-    public DbSet<DatosVariablesRemuModels> DBdatosVaribalesRemu { get; set; }
+   
 
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }
 
@@ -314,6 +244,7 @@ public class FacturaPoliContext : DbContext
     public DbSet<ClientesProveedoresModel> DBClientesProveedores { get; set; }
 
     public DbSet<ClientesContablesEmisorModel> DBClientesContablesEmisor { get; set; }
+    public DbSet<PresupuestoModel> DBPresupuestos { get; set; }
 
     public DbSet<CtasContablesPresupuestoModel> DBCCPresupuesto { get; set; }
 
@@ -324,45 +255,7 @@ public class FacturaPoliContext : DbContext
     public DbSet<PerfilUsuarioModel> DBPerfilUsuario { get; set; }
     public DbSet<LibroDeHonorariosModel> DBLibroDeHonorarios { get; set; }
 
-    public DbSet<EmpleadoModel> DBempleados { get; set; }
-    
-    public DbSet<CargoRemuModels> DBcargoRemu { get; set; }
-
-    public DbSet<TipoContratoRemuModels> DBtipoContratoRemu { get; set; }
-
-    public DbSet<GeneroRemuModels> DBgeneroRemu { get; set; }
-
-    public DbSet<EstadoCivilRemuModels> DBestadoCivilRemu { get; set; }
-
-    public DbSet<AfpRemuModels> DBafpRemu { get; set; }
-
-    public DbSet<IsapreRemuModels> DBisapreRemu { get; set; }
-
-    public DbSet<BancoRemumodels> DBbancoRemu { get; set; }
-
-    public DbSet<GratificacionRemuModels> DBgratificacionRemu { get; set; }
-
-    public DbSet<TramoFaRemumodels> DBtramoRemu { get; set; }
-
-    public DbSet<SucursalRemuModels> DBsucursalRemu { get; set; }
-
-    public DbSet<TsueldoBaRemuModels> DBtsueldoBaseRemu { get; set; }
-
-    public DbSet<InsApvRemuModels> DBinsApvRemu { get; set; }
-
-    public DbSet<EmpBancoRemuModels> DBbancoEmpRemu { get; set; }
-
-    public DbSet<UfRemuModels> DBufRemu { get; set; }
-
-    public DbSet<UtmRemuModels> DButmRemu { get; set; }
-
-    public DbSet<SminimoRemuModels> DBsueldoMinimoRemu { get; set; }
-
-    public DbSet<TcuentaRemuModels> DBtipoCuentaRemu { get; set; }
-
-    public DbSet<DatosVariablesRemuModels> DBdatosVaribalesRemu { get; set; }
-
-
+   
 
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }
 

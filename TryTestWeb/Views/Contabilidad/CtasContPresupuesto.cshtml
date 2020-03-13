@@ -86,69 +86,114 @@
 <div class="row m-t-10">
     <div class="col-sm-12">
         <div class="card-box">
-           @using (Html.BeginForm("CtasContPresupuesto", "Contabilidad", FormMethod.Post))
-           {
-                <div class="row">
-                    <div class="col-md-6"></div>
-                    <div class="col-md-6"><button type="submit" class="btn btn-success pull-right Guardar" >Guardar Cambios</button></div>
+            @using (Html.BeginForm("GuardarPresupuesto", "Contabilidad", FormMethod.Post))
+            {
+
+
+
+
+
+                <div class="row" id="Presupuesto">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label>FechaInicio Presupuesto</label>
+                            <input type="text" id="FechaInicio" name="FechaInicio" class="form-control" autocomplete="off" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Fecha Vencimineto Presupuesto</label>
+                            <input type="text" id="FechaVencimiento" name="FechaVencimiento" class="form-control" autocomplete="off" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Nombre Presupuesto</label>
+                            <input type="text" class="form-control" id="NombrePresupuesto" name="NombrePresupuesto" required />
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-success pull-left Guardar centrar">Guardar Cambios</button>
+                        </div>
+                    </div>
                 </div>
 
-            <div class="table-rep-plugin">
-                <div class="table-responsive" data-pattern="priority-columns">
-                    <table id="CtaContableTable" class="table  table-striped">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Codigo</th>
-                                <th class="text-center">Nombre</th>
-                                <th class="text-center" colspan="3">Clasificación</th>
-                                <th class="text-center">Tiene Presupuesto?</th>
-                                <th class="text-center">Establecer Presupuesto</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                           
-                            @{ int id = 0;}
-                            @foreach (CuentaContableModel Cuenta in Model)
-                            {
-                               
+                <div class="table-rep-plugin">
+                    <div class="table-responsive" data-pattern="priority-columns">
+                        <table id="CtaContableTable" class="table  table-striped">
+                            <thead>
                                 <tr>
-                                    @{id = Cuenta.CuentaContableModelID;}
-                                    <td>@Cuenta.CodInterno</td>
-                                    <td>@Cuenta.nombre</td>
-                                    <td>@Cuenta.Clasificacion.ToString()</td>
-                                    <td>@Cuenta.SubClasificacion.NombreInterno</td>
-                                    <td>@Cuenta.SubSubClasificacion.NombreInterno</td>
-                                    <td><input class="centro" type="checkbox" name="PresuCheck" id="PresuCheck_@id" onclick="CheckFunction(this,@id)" value="" /></td>
-                                    <td><input class="form-control" type="number" name="Presupuesto" id="Presupuesto_@id" value="@Convert.ToInt32(Cuenta.GetPresupuesto(User.Identity.GetUserId(), id))" readonly/></td>
-                                    <td style="display:none;"><input type="number" name="ctacontid" id="ctacontid" value="@Cuenta.CuentaContableModelID"/></td>
-                               </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                                    <th class="text-center">Codigo</th>
+                                    <th class="text-center">Nombre</th>
+                                    <th class="text-center" colspan="3">Clasificación</th>
+                                    <th class="text-center">Tiene Presupuesto?</th>
+                                    <th class="text-center">Establecer Presupuesto</th>
 
-            </div>
-            }
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @{ int id = 0;}
+                                @foreach (CuentaContableModel Cuenta in Model)
+                                {
+
+                                    <tr>
+                                        @{id = Cuenta.CuentaContableModelID;}
+                                        <td>@Cuenta.CodInterno</td>
+                                        <td>@Cuenta.nombre</td>
+                                        <td>@Cuenta.Clasificacion.ToString()</td>
+                                        <td>@Cuenta.SubClasificacion.NombreInterno</td>
+                                        <td>@Cuenta.SubSubClasificacion.NombreInterno</td>
+                                        <td><input class="centro" type="checkbox" name="PresuCheck" id="PresuCheck_@id" onclick="CheckFunction(this,@id)" value="" /></td>
+                                        <td><input class="form-control" type="number" name="Presupuesto" id="Presupuesto_@id" value="0" readonly /></td>
+                                        <td style="display:none;"><input type="number" name="ctacontid" id="ctacontid" value="@Cuenta.CuentaContableModelID" /></td>
+                                    </tr>
+                                            }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                                            }
         </div>
     </div>
 </div>
 
 <style>
-
-    td{
-        text-align:center;
+    td {
+        text-align: center;
     }
-    .Guardar{
-        margin-bottom:20px;
+
+    .centrar {
+        margin-top: 25px;
     }
 </style>
 
 <script>
 
+    $(document).ready(function(){
+
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+        $("#FechaInicio").datepicker();
+        $("#FechaVencimiento").datepicker();
+
+    });
+
     function CheckFunction(CheckSeleccionado, id) {
 
-        var CheckBox = document.getElementById(CheckSeleccionado.id);     
+        var CheckBox = document.getElementById(CheckSeleccionado.id);
         var InputPresupuesto = document.getElementById("Presupuesto_"+id);
 
         if (CheckBox.checked == true) {

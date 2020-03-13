@@ -1,0 +1,154 @@
+﻿@model List<PresupuestoModel>
+@{
+    ViewBag.Title = "MisPresupuestos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{ int Correlativo = 0;}
+<br />
+<br />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Mis Presupuestos</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Presupuestos
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="ListarDerecho" class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
+        <div class="alert alert-success Esconder" id="alerta-exito">
+            <p><strong>Presupuesto dado de baja Correctamente.</strong></p>
+        </div>
+        @foreach (PresupuestoModel ElementoPresupuesto in Model)
+        {
+
+            Correlativo++;
+            <div class="row" name="Caja" id="Caja_@ElementoPresupuesto.PresupuestoModelID">
+                <div class="col-md-12">
+                    <div class="card-box m-b-10">
+                        <div class="table-box opport-box">
+
+                            <div class="col-md-2">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>@ElementoPresupuesto.NombrePresupuesto</b></h5>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>Fecha Inicio</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0"><span class="text-muted">@ParseExtensions.ToDD_MM_AAAA(ElementoPresupuesto.FechaInicio)</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>Fecha Vencimiento</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0"><span class="text-muted">@ParseExtensions.ToDD_MM_AAAA(ElementoPresupuesto.FechaVencimiento)</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-lg-2">
+                                <div class="table-detail">
+                                    <h5 class="m-t-0"><b>Estado</b></h5>
+                                    <div class="member-info">
+                                        <p class="text-dark m-b-0"><span class="label label-success">Activo</span></p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="table-detail">
+                                    <a id="EditButton" class="btn btn-icon waves-effect waves-light btn-primary" href="@Url.Action("ComparacionCtaPresu", "Contabilidad",  new { PresupuestoID = ElementoPresupuesto.PresupuestoModelID })" data-toggle="tooltip" data-placement="bottom" title="Ver detalle presupuesto" data-original-title="Ver detalle presupuesto"><i class="ion-eye"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <div class="table-detail">
+                                    <a href="#" id="PresupuestoID" name="PresupuestoID" onclick="AdvertenciaBajaPresupuesto(@ElementoPresupuesto.PresupuestoModelID)" class="btn btn-danger btn-sm redondo btnPress">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="DarDeBaja">
+                   <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                            <h4>Dar de baja Presupuesto</h4>     
+                        </div>
+                            <div class="modal-body">
+                                <h4>¿Estás seguro que deseas dar de baja a este Presupuesto?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" id="cancelar" class="btn btn-primary" data-dissmiss="modal">Cancelar</a>
+                                <a href="#" class="btn btn-danger" id="btn-aceptar" name="btn-aceptar" data-dissmiss="modal" data-backdrop="false" onclick="DarDeBajaPresupuesto(@ElementoPresupuesto.PresupuestoModelID)">Aceptar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .Esconder{
+        display:none;
+    }
+</style>
+
+
+<script>
+    function AdvertenciaBajaPresupuesto(PresupuestoID) {
+        $('#PresupuestoID').val(PresupuestoID);
+        $("#DarDeBaja").modal("show");
+
+        $("#cancelar").click(function () {
+            $("#DarDeBaja").modal("hide");
+        });
+    }
+
+    function DarDeBajaPresupuesto() {
+        var IDPresupuesto = $('#PresupuestoID').val();
+
+       
+        $("#btn-aceptar").attr("disabled", true);
+        $('#DarDeBaja').modal("hide");
+        $('#alerta-exito').css("display", "none");
+
+
+       $.ajax({
+            type: "POST",
+            url: "DarDeBajaPresupuesto?IDPresupuesto=" + IDPresupuesto,
+           success: function (Result) {
+                $('#Caja_' + IDPresupuesto).remove();
+                $('.modal-backdrop').remove();
+                $('#alerta-exito').css("display","block");
+                $('#btn-aceptar').attr("disabled", false);
+            }
+        })
+    }
+</script>

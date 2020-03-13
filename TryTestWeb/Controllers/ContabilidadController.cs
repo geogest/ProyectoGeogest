@@ -76,9 +76,17 @@ namespace TryTestWeb.Controllers
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
             ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
+            string GastosXIntereses = "42";
+
+            SubClasificacionCtaContable ExisteGastosXIntereses = db.DBSubClasificacion.SingleOrDefault(x => x.CodigoInterno == GastosXIntereses &&
+                                                                                                            x.ClientesContablesModelID == clienteSeleccionado.ClientesContablesModelID);
+
+            if (ExisteGastosXIntereses == null)
+            {
+                CuentaContableModel.UpdateCtaContParaAntiguos(clienteSeleccionado.ClientesContablesModelID, db);
+            }
 
             return View();
-
         }
         [ModuloHandler]
         [Authorize]
@@ -904,7 +912,7 @@ namespace TryTestWeb.Controllers
 
         // Aquí se listarán las cuentas contables y se les podrá asignar un presupuesto.
         [Authorize]
-        public ActionResult CtasContPresupuesto(int[] Presupuesto, int[] ctacontid, string codigo = "", string nombre = "")
+        public ActionResult CtasContPresupuesto(string nombre = "", string codigo = "")
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -913,9 +921,9 @@ namespace TryTestWeb.Controllers
 
             string osCuentasContables = ParseExtensions.EnumAsHTML_Input_Select<ClasificacionCtaContable>(null, true);
             ViewBag.osCuentasContables = osCuentasContables;
-            
+
             List<CuentaContableModel> lstCuentasContables = objCliente.CtaContable.OrderBy(r => r.CodInterno).ToList();
-   
+
             if (codigo != "" && codigo != "")
             {
                 ViewBag.codigo = codigo;
@@ -929,55 +937,127 @@ namespace TryTestWeb.Controllers
                 lstCuentasContables = lstCuentasContables.Where(r => r.nombre.ToUpper().Contains(nombre.ToUpper())).ToList();
 
             }
+            return View(lstCuentasContables);
+        }
 
-            if (Presupuesto != null && objCliente.ClientesContablesModelID != 0 &&  ctacontid != null)  // Encontrar la forma de ir recorriendo la tabla que aparece desde la vista con el fin de guardar todos los datos del formulario
+        [Authorize]
+        public ActionResult GetExcelPresupuesto()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            string tituloDocumento = string.Empty;
+
+            if (Session["Presupuesto"] != null)
+            {
+                List<string[]> cachedPresupuesto = Session["Presupuesto"] as List<string[]>;
+
+                if (cachedPresupuesto != null)
+                {
+                    for (int i = 0; i < cachedPresupuesto.Count(); i++)
+                    {
+                        cachedPresupuesto[i] = cachedPresupuesto[i].Select(r => r.Replace(".", "")).ToArray();
+                    }
+
+
+                    string textAnioLibroMayor = "";
+                    string textMesLibroMayor = "";
+                    string textFechaInicio = (string)Session["FechaInicio"];
+                    string textFechaFin = (string)Session["FechaVencimiento"];
+
+                    //tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(Session["strBalanceGeneralFechaInicio"] as string, Session["strBalanceGeneralFechaFin"] as string, Session["strBalanceGeneralAnio"] as int?, Session["strBalanceGeneralMes"] as int?, "LIBRO MAYOR");
+                    tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(textFechaInicio, textFechaFin, ParseExtensions.ParseInt(textAnioLibroMayor), ParseExtensions.ParseInt(textMesLibroMayor), "REPORTE PRESUPUESTO");
+
+                    var cachedStream = VoucherModel.GetExcelPresupuestos(cachedPresupuesto, objCliente, true, tituloDocumento);
+                    return File(cachedStream, "application/vnd.ms-excel", "Presupuesto" + Guid.NewGuid() + ".xlsx");
+                }
+            }
+            return null;
+        }
+
+
+        [Authorize]
+        public ActionResult GuardarPresupuesto(int[] Presupuesto, int[] ctacontid, string FechaInicio = "", string FechaVencimiento = "", string NombrePresupuesto = "")
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            if (Presupuesto != null && objCliente.ClientesContablesModelID != 0 && ctacontid != null && Presupuesto.Any(x => x != 0))  // Encontrar la forma de ir recorriendo la tabla que aparece desde la vista con el fin de guardar todos los datos del formulario
             {
 
-                List<CtasContablesPresupuestoModel> ResetPresupuesto = db.DBCCPresupuesto.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID).ToList();
 
+                DateTime dtFechaInicio = new DateTime();
+                DateTime dtFechaVencimiento = new DateTime();
 
-                //Primero que nada limpiamos para volver a recibir los datos que el usuario desea insertar.
-                foreach (CtasContablesPresupuestoModel ItemARemover in ResetPresupuesto)
+                if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaVencimiento))
                 {
-                    db.DBCCPresupuesto.Remove(ItemARemover);
-                    db.SaveChanges();
+                    dtFechaInicio = ParseExtensions.ToDD_MM_AAAA_Multi(FechaInicio);
+                    dtFechaVencimiento = ParseExtensions.ToDD_MM_AAAA_Multi(FechaVencimiento);
                 }
-
-
-                DateTime FechaInicio = DateTime.Now;
-                DateTime FechaVencimiento = DateTime.Now;
-
-                FechaVencimiento = FechaVencimiento.AddYears(1); // llevamos la fecha de vencimiento a 1 año.
 
                 // Hacemos que los 2 foreach se recorran en base al foreach padre (Osea el de presupuesto).
                 // Y esto funciona solo por qué ambosarrays contienen la misma cantidad de elementos.
-           
+
                 CtasContablesPresupuestoModel InsertPresupuesto = new CtasContablesPresupuestoModel();
 
-                int ContadorPadre = -1; 
+
+                PresupuestoModel LineaPresupuesto = new PresupuestoModel();
+                LineaPresupuesto.Cliente = objCliente;
+                LineaPresupuesto.FechaInicio = dtFechaInicio;
+                LineaPresupuesto.FechaVencimiento = dtFechaVencimiento;
+                LineaPresupuesto.NombrePresupuesto = NombrePresupuesto;
+                db.DBPresupuestos.Add(LineaPresupuesto);
+                db.SaveChanges();
+
+
+                int ContadorPadre = -1;
                 foreach (int Presu in Presupuesto)
                 {
-                   ContadorPadre++; 
-                   int PresupuestoToControl = Presu;
-                        foreach (int CuentaContable in ctacontid.Skip(ContadorPadre))
+                    ContadorPadre++;
+                    int PresupuestoToControl = Presu;
+                    foreach (int CuentaContable in ctacontid.Skip(ContadorPadre))
+                    {
+                        if (Presu != 0)
                         {
-                            if(Presu != 0) { 
+                            InsertPresupuesto.PresupuestoModelID = LineaPresupuesto.PresupuestoModelID;
+                            InsertPresupuesto.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                            InsertPresupuesto.Presupuesto = Convert.ToDecimal(Presu);
+                            InsertPresupuesto.FechaInicioPresu = dtFechaInicio;
+                            InsertPresupuesto.FechaVencimientoPresu = dtFechaVencimiento;
+                            InsertPresupuesto.CuentasContablesModelID = CuentaContable;
+                            db.DBCCPresupuesto.Add(InsertPresupuesto);
+                            db.SaveChanges();
 
-                                InsertPresupuesto.ClientesContablesModelID = objCliente.ClientesContablesModelID;
-                                InsertPresupuesto.Presupuesto = Convert.ToDecimal(Presu);
-                                InsertPresupuesto.FechaInicioPresu = FechaInicio;
-                                InsertPresupuesto.FechaVencimientoPresu = FechaVencimiento;
-                                InsertPresupuesto.CuentasContablesModelID = CuentaContable;
-                                db.DBCCPresupuesto.Add(InsertPresupuesto);
-                                db.SaveChanges();
+                            PresupuestoToControl = 0;
 
-                                PresupuestoToControl = 0;
-                            }
-                         break;
                         }
+                        break;
+                    }
                 }
             }
-            return View(lstCuentasContables);
+            else
+            {
+                TempData["Error"] = "Debes establecer 1 o más montos en las cuentas contables";
+                return RedirectToAction("CtasContPresupuesto", "Contabilidad");
+            }
+
+            TempData["Correcto"] = "Presupuesto añadido con éxito.";
+            return RedirectToAction("CtasContPresupuesto", "Contabilidad");
+        }
+
+        [Authorize]
+        public ActionResult MisPresupuestos()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            List<PresupuestoModel> Presupuestos = db.DBPresupuestos.Where(x => x.Cliente.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                               x.DadoDeBaja == false).ToList();
+
+            return View(Presupuestos);
         }
 
         [Authorize]
@@ -1193,13 +1273,25 @@ namespace TryTestWeb.Controllers
                 List<CuentaContableModel> CtasDelInviduo = new List<CuentaContableModel>();
                 List<QuickReceptorModel> Receptores = new List<QuickReceptorModel>();
 
+                string TipoReceptorCompra = "CL";
+                string TipoReceptorVenta = "PR";
+                
                 foreach (LibrosContablesModel ItemLibro in LstInfoImportada)
                 {
                     CuentaContableModel CtaAencontrar = new CuentaContableModel();
                     QuickReceptorModel ReceptorAEncontrar = new QuickReceptorModel();
 
-                     ReceptorAEncontrar = db.Receptores.SingleOrDefault(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID  &&
-                                                                             x.RUT == ItemLibro.individuo.RUT);
+                    if (existeCompra == 1)
+                    {
+                        ReceptorAEncontrar = db.Receptores.SingleOrDefault(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                x.RUT == ItemLibro.individuo.RUT &&
+                                                                                x.tipoReceptor == TipoReceptorCompra);
+                    }else
+                    {
+                        ReceptorAEncontrar = db.Receptores.SingleOrDefault(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                x.RUT == ItemLibro.individuo.RUT &&
+                                                                                x.tipoReceptor == TipoReceptorVenta);
+                    }
 
                     if (ReceptorAEncontrar != null && ReceptorAEncontrar.CuentaConToReceptor != null) { 
                         CtaAencontrar = objCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == ReceptorAEncontrar.CuentaConToReceptor.CuentaContableModelID);
@@ -3480,24 +3572,67 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult ComparacionCtaPresu()
+        public ActionResult ComparacionCtaPresu(int PresupuestoID)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            List<VoucherModel> lstVoucherCliente = objCliente.ListVoucher.Where(r => r.FechaEmision.Year == DateTime.Now.Year && r.DadoDeBaja == false).ToList();
-            List<CuentaContableModel> lstCuentasContablesClientes = objCliente.CtaContable.ToList();
+            Session["Presupuesto"] = null;
+            Session["FechaInicio"] = null;
+            Session["FechaVencimiento"] = null;
 
-            List<string[]> TablaPresupuesto = VoucherModel.GetTablaPresupuesto(db, objCliente);
-            List<string[]> TablaCuentasContables = VoucherModel.TablaCuentasContables(lstVoucherCliente, lstCuentasContablesClientes, db, objCliente);
+            List<string[]> TablaPresupuesto = new List<string[]>();
 
-            ViewBag.TablaPresupuesto = TablaPresupuesto;
-            ViewBag.TablaCuentasContables = TablaCuentasContables;
+            PresupuestoModel PresupuestoConsultado = db.DBPresupuestos.SingleOrDefault(x => x.PresupuestoModelID == PresupuestoID);
 
-            return View();
+            if (PresupuestoConsultado != null)
+            {
+
+                ViewBag.NombrePresupuesto = PresupuestoConsultado.NombrePresupuesto;
+                ViewBag.FechaInicio = ParseExtensions.ToDD_MM_AAAA(PresupuestoConsultado.FechaInicio);
+                ViewBag.FechaVencimiento = ParseExtensions.ToDD_MM_AAAA(PresupuestoConsultado.FechaVencimiento);
+
+                Session["FechaInicio"] = ViewBag.FechaInicio;
+                Session["FechaVencimiento"] = ViewBag.FechaVencimiento;
+
+                List<VoucherModel> lstVoucherCliente = objCliente.ListVoucher.Where(r => r.DadoDeBaja == false).ToList();
+                List<CuentaContableModel> lstCuentasContablesClientes = objCliente.CtaContable.ToList();
+
+
+                TablaPresupuesto = VoucherModel.TablaPresupuesto(lstVoucherCliente, lstCuentasContablesClientes, db, objCliente, PresupuestoConsultado);
+                Session["Presupuesto"] = TablaPresupuesto;
+
+            }
+            else
+            {
+                TempData["Error"] = "Ocurrió un error inesperado.";
+                return RedirectToAction("MisPresupuestos", "Contabilidad");
+            }
+            return View(TablaPresupuesto);
         }
 
+        [Authorize]
+        public JsonResult DarDeBajaPresupuesto(int IDPresupuesto)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            bool Result = false;
+
+            PresupuestoModel ReceptorDarDeBaja = db.DBPresupuestos.SingleOrDefault(x => x.PresupuestoModelID == IDPresupuesto &&
+                                                                                        x.Cliente.ClientesContablesModelID == objCliente.ClientesContablesModelID);
+
+            if (ReceptorDarDeBaja != null)
+            {
+                ReceptorDarDeBaja.DadoDeBaja = true;
+                db.SaveChanges();
+                Result = true;
+            }
+
+            return Json(Result, JsonRequestBehavior.AllowGet);
+        }
 
         [Authorize]
         [ModuloHandler]
@@ -3657,25 +3792,6 @@ namespace TryTestWeb.Controllers
                 return RedirectToAction("ListaCentroCosto", "Contabilidad");
             }
         }
-
-
-        [ModuloHandler]
-        [Authorize]
-        public ActionResult GetExcelReporteIvaProporcional(int? anio = null)
-        {
-            string UserID = User.Identity.GetUserId();
-            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
-            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
-
-            int AñoARescatar = 0;
-            if (anio.HasValue)
-                AñoARescatar = anio.Value;
-            else
-                AñoARescatar = DateTime.Now.Year;
-            var cachedStream = ParseExtensions.ProduceFileIvaNoProporcional(objCliente, false, AñoARescatar);
-            return File(cachedStream, "application/vnd.ms-excel", "IVAProporcional" + Guid.NewGuid() + ".xlsx");
-        }
-
 
         [Authorize]
        // [ModuloHandler]
@@ -4541,8 +4657,6 @@ namespace TryTestWeb.Controllers
             return View(Paginador);
         }
 
-
-
         [Authorize]
         [ModuloHandler]
         public ActionResult GetExcelLibroVenta()
@@ -5007,12 +5121,35 @@ namespace TryTestWeb.Controllers
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
 
-            ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(objCliente,"410709");
+            ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(objCliente, "410709");
 
-            List<LibroDeHonorariosModel> lstVistaPrevia = Session["LibroHonorariosAExportar"]  as List<LibroDeHonorariosModel>;
+            List<QuickReceptorModel> ReceptoresConRelacion = new List<QuickReceptorModel>();
+
+            string TipoPrestador = "H";
+
+            List<LibroDeHonorariosModel> lstVistaPrevia = Session["LibroHonorariosAExportar"] as List<LibroDeHonorariosModel>;
+
+            foreach (LibroDeHonorariosModel ItemLibro in lstVistaPrevia)
+            {
+                QuickReceptorModel ReceptorEncontrado = db.Receptores.SingleOrDefault(x => x.RUT == ItemLibro.Prestador.RUT &&
+                                                                                           x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                           x.tipoReceptor == TipoPrestador);
+
+                if (ReceptorEncontrado != null && ReceptorEncontrado.CuentaConToReceptor != null)
+                {
+                    ReceptoresConRelacion.Add(ReceptorEncontrado);
+                }
+            }
+
+            if (ReceptoresConRelacion.Count() > 0)
+            {
+                ViewBag.lstReceptoresConCta = ReceptoresConRelacion;
+                ViewBag.ObjCliente = objCliente;
+            }
 
             return View(lstVistaPrevia);
         }
+
 
         [Authorize]
         public ActionResult ImportarLibroHonorAVoucher(IList<LibroDeHonorariosModel> lstImportado)
@@ -5117,7 +5254,7 @@ namespace TryTestWeb.Controllers
             Totales[8] = ParseExtensions.NumeroConPuntosDeMiles(Neto);
 
             ReturnValues.Add(Totales);
-
+            
             var Paginacion = new PaginadorModel();
             Paginacion.ResultStringArray = ReturnValues;
             Paginacion.PaginaActual = pagina;
@@ -5523,11 +5660,6 @@ namespace TryTestWeb.Controllers
                     }
                    
                 }
-
-
-
-
-
 
                 if (SinRepetidos != null && Repetidos != null && Repetidos.Count() > 0)
                 {

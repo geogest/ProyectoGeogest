@@ -491,6 +491,85 @@ public class VoucherModel
             return ExcelByteArray;
     }
 
+    public static byte[] GetExcelPresupuestos(List<string[]> lstPresupuesto, ClientesContablesModel objCliente, bool InformarMembrete, string titulo, string subtitulo = "")
+    {
+        List<string[]> newStrList = new List<string[]>();
+        foreach (string[] newOrderValues in lstPresupuesto)
+        {
+            string[] newIngreso = { newOrderValues[0], newOrderValues[1], newOrderValues[2], newOrderValues[3], newOrderValues[4], newOrderValues[5] };
+            newStrList.Add(newIngreso);
+        }
+
+        string RutaPlanillaLibroMayor = ParseExtensions.Get_AppData_Path("ExcelPresupuestos.xlsx");
+
+        byte[] ExcelByteArray = null;
+        using (XLWorkbook excelFile = new XLWorkbook(RutaPlanillaLibroMayor))
+        {
+            var workSheet = excelFile.Worksheet(1);
+
+            if (InformarMembrete == true)
+            {
+                workSheet.Cell("A1").Value = objCliente.RazonSocial;
+                workSheet.Cell("A2").Value = "Rut: " + ParseExtensions.FormatoRutMembrete(objCliente.RUTEmpresa);
+                workSheet.Cell("A3").Value = objCliente.Giro;
+                workSheet.Cell("A4").Value = objCliente.Direccion;
+                workSheet.Cell("A5").Value = objCliente.Ciudad;
+                workSheet.Cell("A6").Value = ParseExtensions.FormatoRutMembrete(objCliente.RUTRepresentante) + " " + objCliente.Representante;
+                // workSheet.Cell("A7").Value = objCliente.RUTRepresentante;
+            }
+            else
+            {
+                workSheet.Cell("A1").Value = string.Empty;
+                workSheet.Cell("A2").Value = string.Empty;
+                workSheet.Cell("A3").Value = string.Empty;
+                workSheet.Cell("A4").Value = string.Empty;
+                workSheet.Cell("A5").Value = string.Empty;
+                workSheet.Cell("A6").Value = string.Empty;
+                workSheet.Cell("A7").Value = string.Empty;
+            }
+
+            if (string.IsNullOrWhiteSpace(titulo) == false)
+            {
+                workSheet.Cell("D5").Value = titulo;
+            }
+            else
+            {
+                workSheet.Cell("D8").Value = string.Empty;
+            }
+
+            if (string.IsNullOrWhiteSpace(subtitulo) == false)
+            {
+                workSheet.Cell("C10").Value = subtitulo;
+            }
+            else
+            {
+                workSheet.Cell("C10").Value = string.Empty;
+            }
+
+            workSheet.Columns("C:E").Style.NumberFormat.Format = "#,##0 ;-#,##0";
+            workSheet.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+
+            int NumeroFilaExcel = 13;
+            foreach (string[] tableRow in newStrList)
+            {
+                for (int i = 0; i < tableRow.Length; i++)
+                {
+                    workSheet.Cell(NumeroFilaExcel, i + 1).Value = tableRow[i];
+                }
+                workSheet.Range("A" + NumeroFilaExcel + ":F" + NumeroFilaExcel).Rows
+                ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                workSheet.Range("A" + NumeroFilaExcel + ":F" + NumeroFilaExcel).Rows
+                ().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                NumeroFilaExcel++;
+            }
+            ExcelByteArray = ParseExtensions.GetExcelStream(excelFile);
+        }
+        if (ExcelByteArray == null)
+            return null;
+        else
+            return ExcelByteArray;
+    }
+
     // TODO : OBTENER CLARIDAD REFERENTE A PORQUE TODAS LAS HOJAS DICEN LIBRO MAYOR
     public static List<string[]> GetLibroMayor(List<VoucherModel> lstVoucher, FacturaPoliContext db, CuentaContableModel singleCuentaContable = null, DateTime? fechaInicio = null, DateTime? fechaFin = null, string anno = null, string mes = null, string folio = null)
     {
@@ -3810,74 +3889,110 @@ public class VoucherModel
 
 
 
-    public static List<string[]> GetTablaPresupuesto(FacturaPoliContext db, ClientesContablesModel objCliente)
+    public static List<string[]> TablaPresupuesto(List<VoucherModel> lstVoucher, List<CuentaContableModel> lstCuentaContable, FacturaPoliContext db, ClientesContablesModel objCliente, PresupuestoModel PresupuestoConsultado)
     {
         List<string[]> ReturnValues = new List<string[]>();
 
-        decimal TotalTablaPresupuesto = 0;
-
-        var ListaPresupuesto = from CuentaContable in db.DBCuentaContable
-                               join CuentaPresupuesto in db.DBCCPresupuesto on CuentaContable.CuentaContableModelID equals CuentaPresupuesto.CuentasContablesModelID
-
-                               where objCliente.ClientesContablesModelID == CuentaPresupuesto.ClientesContablesModelID
-
-                               select new
-                               {
-                                   Codigo = CuentaContable.CodInterno,
-                                   Nombre = CuentaContable.nombre,
-                                   Presupuesto = CuentaPresupuesto.Presupuesto
-                               };
-        foreach (var TablaPresupuesto in ListaPresupuesto)
-        {
-            string[] Result = new string[3];
-            Result[0] = TablaPresupuesto.Codigo;
-            Result[1] = TablaPresupuesto.Nombre;
-            Result[2] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TablaPresupuesto.Presupuesto);
-            TotalTablaPresupuesto += TablaPresupuesto.Presupuesto;
-
-            ReturnValues.Add(Result);
-        }
-
-        string[] TotalTablaPresupuestos = new string[2];
-        TotalTablaPresupuestos[0] = "Total Presupuesto: ";
-        TotalTablaPresupuestos[1] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalTablaPresupuesto);
-        ReturnValues.Add(TotalTablaPresupuestos);
-
-        return ReturnValues;
-    }
-
-    public static List<string[]> TablaCuentasContables(List<VoucherModel> lstVoucher, List<CuentaContableModel> lstCuentaContable, FacturaPoliContext db, ClientesContablesModel objCliente)
-    {
-        List<string[]> ReturnValues = new List<string[]>();
-
-        decimal TotalTablaCuenta = 0;
+        decimal FinalPresupuesto = 0;
+        decimal FinalGastoReal = 0;
+        decimal FinalVariacion = 0;
+        decimal Porcentaje = 100;
+        decimal FinalPorcentaje = 0;
+       
 
         foreach (CuentaContableModel TablaCuenta in lstCuentaContable)
         {
-            List<DetalleVoucherModel> lstDetalle = lstVoucher.SelectMany(x => x.ListaDetalleVoucher).Where(r => r.ObjCuentaContable.CuentaContableModelID == TablaCuenta.CuentaContableModelID).ToList();
 
-            decimal TotalHaber = GetTotalHaber(lstDetalle);
-            decimal TotalDebe = GetTotalDebe(lstDetalle);
-            decimal Total = TotalHaber - TotalDebe;
+            List<CtasContablesPresupuestoModel> lstCuentasConPresupuesto = db.DBCCPresupuesto.Where(x => x.CuentasContablesModelID == TablaCuenta.CuentaContableModelID &&
+                                                                                                         x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                                         x.PresupuestoModelID == PresupuestoConsultado.PresupuestoModelID).ToList();
 
-            string[] Result = new string[3];
-            Result[0] = TablaCuenta.CodInterno;
-            Result[1] = TablaCuenta.nombre;
-            Result[2] = ParseExtensions.NumberWithDots_para_BalanceGeneral(Total);
-            TotalTablaCuenta += Total;
+            if (lstCuentasConPresupuesto.Count == 0)
+                continue;
 
-            if(Total != 0)
-            ReturnValues.Add(Result);
+            foreach (CtasContablesPresupuestoModel ConPresupuesto in lstCuentasConPresupuesto)
+            {
+                List<DetalleVoucherModel> lstDetalle = lstVoucher.SelectMany(x => x.ListaDetalleVoucher).Where(r => r.ObjCuentaContable.CuentaContableModelID == ConPresupuesto.CuentasContablesModelID &&
+                                                                                                                    r.FechaDoc >= ConPresupuesto.FechaInicioPresu &&
+                                                                                                                    r.FechaDoc <= ConPresupuesto.FechaVencimientoPresu).ToList();
+
+
+
+                decimal TotalHaber = GetTotalHaber(lstDetalle);
+                decimal TotalDebe = GetTotalDebe(lstDetalle);
+                decimal TotalGastoReal = TotalHaber - TotalDebe;
+                string Porcentaje0 = "";
+                var TotalPorcentaje = TotalGastoReal * Porcentaje / ConPresupuesto.Presupuesto / 100;
+                var TotalPorcentajeRe = Math.Round(TotalPorcentaje);
+
+
+                if (TotalGastoReal==0)
+                {
+                    Porcentaje0 = "0 %";
+                }
+              
+                decimal TotalVariacion = Math.Abs(TotalGastoReal) - Math.Abs(ConPresupuesto.Presupuesto);
+
+                FinalPresupuesto += ConPresupuesto.Presupuesto;
+                FinalGastoReal += TotalGastoReal;
+                FinalVariacion += TotalVariacion;
+                FinalPorcentaje += TotalPorcentajeRe;
+
+                string[] Result = new string[] { "-", "-", "-", "-", "-", "-", "-"};
+                Result[0] = TablaCuenta.CodInterno;
+                Result[1] = TablaCuenta.nombre;
+                Result[2] = ParseExtensions.NumeroConPuntosDeMiles(ConPresupuesto.Presupuesto);
+                Result[3] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalGastoReal));
+                Result[4] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalVariacion));
+
+                if(TotalGastoReal== 0)
+                {
+                    Result[5] = Porcentaje0;
+                }
+                else if (TotalGastoReal != 0)
+                {
+                    
+
+                    Result[5] = Math.Abs(TotalPorcentajeRe).ToString() + " %";
+                }
+                
+
+                if (Math.Abs(ConPresupuesto.Presupuesto) >= Math.Abs(TotalGastoReal))
+                {
+                    Result[6] = "Success";
+                } else
+                {
+                    Result[6] = "Danger";
+                }
+
+                ReturnValues.Add(Result);
+
+            }
+
+
+        }
+        string[] FinalResult = new string[] { "-", "TOTAL", "-", "-", "-", "-", "-"};
+
+ 
+
+        FinalResult[2] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(FinalPresupuesto));
+        FinalResult[3] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(FinalGastoReal));
+        FinalResult[4] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(FinalVariacion));
+        FinalResult[5] = Math.Abs(FinalPorcentaje).ToString() + " %";
+
+        if (Math.Abs(FinalPresupuesto) >= Math.Abs(FinalGastoReal))
+        {
+            FinalResult[6] = "Success";
+        }
+        else
+        {
+            FinalResult[6] = "Danger";
         }
 
-        string[] TotalTablaCuentas = new string[2];
-        TotalTablaCuentas[0] = "Total Cuentas: ";
-        TotalTablaCuentas[1] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalTablaCuenta);
-        ReturnValues.Add(TotalTablaCuentas);
-
+        ReturnValues.Add(FinalResult);
+        
         return ReturnValues;
-    }
-
+    }   
 }
 
 public enum TipoVoucher

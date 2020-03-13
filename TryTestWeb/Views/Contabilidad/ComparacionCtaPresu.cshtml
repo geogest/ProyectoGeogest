@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IList<string[]>
+
+@{
     ViewBag.Title = "ComparacionCtaPresu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -10,18 +12,20 @@
     <div class="panel-heading">
         <div class="col-sm-12">
 
-
-            <div class="pull-right">
-                <br />
-                <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                    <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                </button>
-                <br />
-            </div>
+            @using (Html.BeginForm("GetExcelPresupuesto", "Contabilidad", FormMethod.Post))
+            {
+                <div class="pull-right">
+                    <br />
+                    <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                    </button>
+                    <br />
+                </div>
+            }
             <br />
 
 
-            <h2 class="page-header">Comparación con Presupuesto</h2>
+            <h2 class="page-header">Reporte Presupuesto</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="#">Contabilidad Reportes</a>
@@ -41,66 +45,68 @@
 <h2></h2>
 <div class="container">
     <div class="row">
-        
-            <div class="col-md-6">
-                <div class="card-box">
-                    <h3 class="text-center">Totales Cuentas Contables</h3>
-                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Codigo</th>
-                                <th class="text-center">Nombre</th>
-                                <th class="text-center">Total:</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (dynamic TablaCuentaCont in ViewBag.TablaCuentasContables)
-                            {
-                                @:<tr class="odd gradeX">
-                                    for (int i = 0; i < TablaCuentaCont.Length; i++)
-                                        {
-                                            <td>@TablaCuentaCont[i]</td>
-                                        }
-                                @:</tr>
-                           }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        
-            <div class="col-md-6">
-                <div class="card-box">
-                   <h3 class="text-center">Totales Presupuesto</h3>
-                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Codigo</th>
-                                <th class="text-center">Nombre</th>
-                                <th class="text-center">Total:</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (dynamic TablaPresupuesto in ViewBag.TablaPresupuesto)
-                            {
+        <div class="col-md-12">
+            <div class="card-box">
+                <h3 class="text-center">Nombre: @ViewBag.NombrePresupuesto</h3>
+                <br />
 
-                                @:<tr class="odd gradeX">
-                                    for (int i = 0; i < TablaPresupuesto.Length; i++)
-                                        {
-                                            <td>@TablaPresupuesto[i]</td>
-                                        }
-                                @:</tr>
+                <div class="col-md-6">
+                    <b>Fecha Inicio: </b>@ViewBag.FechaInicio  <b>Fecha Vencimiento: </b>@ViewBag.FechaVencimiento
+                </div>
+                <br />
+                <br />
+                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+
+
+
+                    <thead>
+                        <tr>
+                            <th class="text-center">Codigo</th>
+                            <th class="text-center">Nombre</th>
+                            <th class="text-center">Presupuesto</th>
+                            <th class="text-center">Gasto Real</th>
+                            <th class="text-center">Variacion</th>
+                            <th class="text-center">Porcentaje % </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (string[] TablaCuentaCont in Model)
+                        {
+                            
+                          @:  <tr class="odd gradeX">
+                                for (int i = 0; i < TablaCuentaCont.Length - 1; i++)
+                            {
+                                //2 Presupuesto
+                                //3 Gasto Real
+                                string Estilo = "";
+                                if (i == 4 || i == 5)
+                                {
+                                    if (TablaCuentaCont[6] == "Success")
+                                    {
+                                        Estilo = "text-success";
+                                    }
+                                    else if(TablaCuentaCont[6] == "Danger")
+                                    {
+                                        Estilo = "text-danger";
+                                    }
+                                }
+                                <td class="@Estilo">@TablaCuentaCont[i]</td>
                             }
-                        </tbody>
-                    </table>
+                            
+                       @: </tr>
+                           }
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                </div>
-         </div>
 
     </div>
 </div>
 
 <style>
-    td{
-        text-align:center;
+    td {
+        text-align: center;
     }
 </style>

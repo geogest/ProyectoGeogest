@@ -2693,26 +2693,6 @@ public static class Extensions
         else
             return objRegion.nombre;
     }
-    public static string GetNewComunaName2(this EmpleadoModel objReceptor, string UserID)
-    {
-        FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
-        ComunaModels objComuna = db.DBComunas.SingleOrDefault(r => r.ComunaModelsID == objReceptor.idComuna);
-        if (objComuna == null)
-            return string.Empty;
-        else
-            return objComuna.nombre;
-    }
-
-    public static string GetNewRegionName2(this EmpleadoModel objReceptor, string UserID)
-    {
-        FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
-        RegionModels objRegion = db.DBRegiones.SingleOrDefault(r => r.RegionModelsID == objReceptor.idRegion);
-        if (objRegion == null)
-            return string.Empty;
-        else
-            return objRegion.nombre;
-    }
-
    
     public static bool EstaPagada(this BoletasHonorariosModel objBoletaHonorarios)
     {
