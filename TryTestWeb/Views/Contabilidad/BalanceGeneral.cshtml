@@ -1,5 +1,19 @@
 ﻿@model IList<string[]>
 
+
+<br />
+@using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
+{
+    <div class="pull-right">
+        <br />
+        <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+            <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+        </button>
+        <br />
+    </div>
+    <br />
+}
+
 <!-- Page-Title -->
 <div class="row">
     <div class="col-sm-12">
@@ -56,15 +70,9 @@
                         <label class="control-label">Fecha Fin</label>
                         <input type="text" class="form-control date" name="fechafin" id="fechafin" />
                     </div>
-                    @using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
-                    {
-                        <div class="col-md-2" form-group>
-                            <div style="text-align: center;">
-                                <label class="control-label" style="color:transparent;"> _</label>
-                                <button class="btn btn-1 btnPress form-control" value="Exportar" name="Save" type="submit"><i class="fa fa-file-excel-o"></i> &nbsp; Exportar</button>
-                            </div>
-                        </div>
-                    }
+                    <div class="col-lg-2 form-group">
+                        <button class="btn btn-success centrar" id="Buscar">Buscar</button>
+                    </div>
                 </div>
             </div>
             <div class="panel-body" id="parshial">
@@ -81,12 +89,44 @@
     </div>
 </div>
 
+<style>
+    .centrar {
+        margin-top: 25px;
+    }
+</style>
+
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#fechainicio').change(function (e) { filtrar(); });
-        $('#fechafin').change(function (e) { filtrar(); });
-        $('#AnioBalance').change(function (e) { filtrar(); });
-        $('#MesBalance').change(function (e) { filtrar(); });
+
+        $('#Buscar').on("click", function () {
+
+            $('#parshial').html('<div class="row" id="carga"><center><b>Cargando...</b></center></div>');
+
+            filtrar();
+
+        });
+
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+        $("#fechainicio").datepicker();
+        $("#fechafin").datepicker();
+
     });
 
     function filtrar()
