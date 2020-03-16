@@ -28,10 +28,10 @@ namespace TryTestWeb
             ActividadEconomicaModel.SetupActividadEconomicas(lstDataContext);
         }
 
-        public static Dictionary<String, String[]> RegistroEmpresasPalena = File.ReadLines(@"C:\FE\wkhtmltopdf\bin\EMPRESAS_PALENA.csv").Select(line => line.Split(';')).ToDictionary(
-                    items => items[0],
-                    items => items
-                );
+        //public static Dictionary<String, String[]> RegistroEmpresasPalena = File.ReadLines(@"C:\FE\wkhtmltopdf\bin\EMPRESAS_PALENA.csv").Select(line => line.Split(';')).ToDictionary(
+        //            items => items[0],
+        //            items => items
+        //        );
 
         protected void Application_Error(object sender, EventArgs e)
         {
