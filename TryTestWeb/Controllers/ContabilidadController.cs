@@ -1411,7 +1411,6 @@ namespace TryTestWeb.Controllers
             return RedirectToAction("CargarLibros", "Contabilidad");
         }
 
-
         [Authorize]
         [ModuloHandler]
         //[HttpGet]
@@ -1504,6 +1503,38 @@ namespace TryTestWeb.Controllers
             }
 
            return View(Paginador);
+        }
+
+        public JsonResult BorrarMultiplesVouchers(List<string> VouchersID)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            bool Result = false;
+
+            if(VouchersID.Count() > 0) { 
+                foreach (string IDVoucher in VouchersID)
+                {
+                    int VoucherConvertido = Convert.ToInt32(IDVoucher);
+
+                    VoucherModel VoucherABorrar = objCliente.ListVoucher.SingleOrDefault(x => x.DadoDeBaja == false && x.VoucherModelID == VoucherConvertido);
+
+                    if(VoucherABorrar != null)
+                    {
+                       VoucherABorrar.DadoDeBaja = true;
+                       db.SaveChanges();
+                       Result = true;
+                       TempData["Correcto"] = "Vouchers dados de baja con éxito.";
+                    }else
+                    {
+                        Result = false;
+                        TempData["Error"] = "Error inesperado";
+                   
+                    }
+                }
+            }
+            return Json(Result, JsonRequestBehavior.AllowGet); ;
         }
        
         
@@ -3900,6 +3931,119 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
+        public ActionResult EstadoResultadoComparativo(int Mes = 0, int Anio = 0, int MesesAMostrar = 3)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            Anio = DateTime.Now.Year;
+            Mes = DateTime.Now.Month;
+
+            var EstadoResultadoProcesado = EstadoResultadoComparativoViewModel.GetEstadoResultadoComparativo(objCliente, Mes, Anio, MesesAMostrar);
+
+            bool Filtros = false;
+
+            ViewBag.TotalesGanancias = EstadoResultadoProcesado.Item2;
+            ViewBag.TotalesPerdidas = EstadoResultadoProcesado.Item3;
+            ViewBag.TotalesGlobales = EstadoResultadoProcesado.Item4;
+            ViewBag.lstSubClasificacion = EstadoResultadoProcesado.Item5;
+            ViewBag.lstSubSubClasificacion = EstadoResultadoProcesado.Item6;
+            ViewBag.ListaFechas = EstadoResultadoProcesado.Item7;
+            ViewBag.BusquedaPorAnio = Filtros;
+            ViewBag.Meses = ParseExtensions.EnumToDropDownList<Meses>();
+
+            Session["TipoFiltro"] = Filtros;
+
+            Session["Anio"] = Anio;
+
+            Session["EstadoResultadoComparativo"] = EstadoResultadoProcesado.Item1;
+            Session["FechasEstadoComparativo"] = EstadoResultadoProcesado.Item7;
+            
+    
+            Session["TotalGananciasEstaComp"] = EstadoResultadoProcesado.Item2;
+            Session["TotalPerdidasEstaComp"] = EstadoResultadoProcesado.Item3;
+            Session["TotalesGlobalesEstaComp"] = EstadoResultadoProcesado.Item4;
+
+            return View(EstadoResultadoProcesado.Item1);
+        }
+
+
+        [Authorize]
+        public ActionResult EstadoResultadoComparativoPartial(List<string> Meses, int Anio = 0,int AnioDesde = 0, int AnioHasta = 0)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            var EstadoResultadoProcesado = EstadoResultadoComparativoViewModel.EstadoResultadoComparativoConFiltros(objCliente, Meses, Anio, AnioDesde, AnioHasta);
+
+            bool BusquedaPorAnio = false;
+
+            if (AnioDesde > 0 && AnioHasta > 0)
+                BusquedaPorAnio = true;
+
+            ViewBag.TotalesGanancias = EstadoResultadoProcesado.Item2;
+            ViewBag.TotalesPerdidas = EstadoResultadoProcesado.Item3;
+            ViewBag.TotalesGlobales = EstadoResultadoProcesado.Item4;
+            ViewBag.lstSubClasificacion = EstadoResultadoProcesado.Item5;
+            ViewBag.lstSubSubClasificacion = EstadoResultadoProcesado.Item6;
+            ViewBag.ListaFechas = EstadoResultadoProcesado.Item7;
+            ViewBag.BusquedaPorAnio = BusquedaPorAnio;
+
+            Session["EstadoResultadoComparativo"] = EstadoResultadoProcesado.Item1;
+            Session["FechasEstadoComparativo"] = EstadoResultadoProcesado.Item7;
+
+            Session["TotalGananciasEstaComp"] = EstadoResultadoProcesado.Item2;
+            Session["TotalPerdidasEstaComp"] = EstadoResultadoProcesado.Item3;
+            Session["TotalesGlobalesEstaComp"] = EstadoResultadoProcesado.Item4;
+            Session["Anio"] = Anio;
+            Session["TipoFiltro"] = BusquedaPorAnio;
+            Session["AnioDesde"] = null;
+            Session["AnioHasta"] = null;
+            if(BusquedaPorAnio == true) { 
+                Session["AnioDesde"] = AnioDesde;
+                Session["AnioHasta"] = AnioHasta;
+            }
+
+            return PartialView(EstadoResultadoProcesado.Item1);
+        }
+
+        [Authorize]
+        public ActionResult GetExcelEstadoResultadoComparativo()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            List<string[]> TestExport = new List<string[]>();
+            if(Session["EstadoResultadoComparativo"] != null)
+            {
+                List<EstadoResultadoComparativoViewModel> lstEstadoCompExcel = Session["EstadoResultadoComparativo"] as List<EstadoResultadoComparativoViewModel>;
+                List<DateTime> FechasConsultadas = Session["FechasEstadoComparativo"] as List<DateTime>;
+                List<decimal> ResultadoGanancia = Session["TotalGananciasEstaComp"] as List<decimal>;
+                List<decimal> ResultadoPerdida = Session["TotalPerdidasEstaComp"] as List<decimal>;
+                List<decimal> ResultadoDelEjercicio = Session["TotalesGlobalesEstaComp"] as List<decimal>;
+                bool BusquedaPorAnio = (bool)Session["TipoFiltro"];
+                int Anio = 0;
+                if (BusquedaPorAnio == false)
+                    Anio = (int)Session["Anio"];
+                int AnioDesde = 0;
+                int AnioHasta = 0;
+
+                if(Session["AnioDesde"] != null && Session["AnioHasta"] != null) { 
+                    AnioDesde = (int)Session["AnioDesde"];
+                    AnioHasta = (int)Session["AnioHasta"];
+                }
+
+                var cachedStream = EstadoResultadoComparativoViewModel.GetExcelEstadoComp(lstEstadoCompExcel,FechasConsultadas,ResultadoGanancia,ResultadoPerdida,ResultadoDelEjercicio, objCliente, true,AnioDesde,AnioHasta,BusquedaPorAnio,Anio);
+                return File(cachedStream, "application/vnd.ms-excel", "EstadoResultadoComparativo" + Guid.NewGuid() + ".xlsx");
+            }
+
+            return null;
+        }
+
+        [Authorize]
       //  [ModuloHandler]
         public ActionResult EstadoResultadoCtaBruto()
         {
@@ -3910,7 +4054,6 @@ namespace TryTestWeb.Controllers
             List<VoucherModel> lstVoucherCliente = objCliente.ListVoucher.Where(r => r.FechaEmision.Year == DateTime.Now.Year && r.DadoDeBaja == false).ToList();
             List<CuentaContableModel> lstCuentasContablesClientes = objCliente.CtaContable.ToList();
            
-
             List<string[]> returnValue = VoucherModel.GetIEBruto(lstVoucherCliente, lstCuentasContablesClientes);
 
             Session["IEstadoResultadoBruto"] = returnValue;

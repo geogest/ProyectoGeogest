@@ -1,0 +1,165 @@
+﻿@model List<EstadoResultadoComparativoViewModel>
+
+@foreach (string CodSubClas in ViewBag.lstSubClasificacion)
+{
+    <div class="card-box">
+        <div class="row">
+
+            <h4><b>@CodSubClas</b></h4>
+            <div class="table-rep-plugin">
+                <div class="table table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Cuentas</th>
+                                @if(ViewBag.BusquedaPorAnio == false) { 
+                                    foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                                    {
+                                            <th>@ItemFecha.Month / @ItemFecha.Year</th>
+                                    }
+                                }else if(ViewBag.BusquedaPorAnio == true)
+                                {
+                                    foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                                    {
+                                        <th>@ItemFecha.Year</th>
+                                    }
+                                }
+                                <th>Totales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (EstadoResultadoComparativoViewModel ItemEstadoResultado in Model)
+                            {
+                                if (ItemEstadoResultado.CodigoSubClasiMarca == CodSubClas)
+                                {
+                                    <tr>
+                                        <td>@ItemEstadoResultado.CodigoCta</td>
+                                        <td>@ItemEstadoResultado.NombreCtaContable</td>
+                                        @foreach (decimal ItemSaldo in ItemEstadoResultado.Saldo)
+                                        {
+                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemSaldo)</td>
+                                        }
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="card-box">
+    <div class="row">
+        <h4 class="text-success"><b>TOTAL GANANCIAS</b></h4>
+        <div class="table table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        @if (ViewBag.BusquedaPorAnio == false)
+                        {
+                            foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                            {
+                                <th>@ItemFecha.Month / @ItemFecha.Year</th>
+                            }
+                        }
+                        else if (ViewBag.BusquedaPorAnio == true)
+                        {
+                            foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                            {
+                                <th>@ItemFecha.Year</th>
+                            }
+                        }
+                        <th>Totales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (decimal ItemGanancias in ViewBag.TotalesGanancias)
+                        {
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemGanancias)</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card-box">
+    <div class="row">
+        <h4 class="text-danger"><b>TOTAL PERDIDAS</b></h4>
+        <div class="table table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        @if (ViewBag.BusquedaPorAnio == false)
+                        {
+                            foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                            {
+                                <th>@ItemFecha.Month / @ItemFecha.Year</th>
+                            }
+                        }
+                        else if (ViewBag.BusquedaPorAnio == true)
+                        {
+                            foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                            {
+                                <th>@ItemFecha.Year</th>
+                            }
+                        }
+                        <th>Totales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (decimal ItemPerdidas in ViewBag.TotalesPerdidas)
+                        {
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemPerdidas)</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card-box">
+    <div class="row">
+        <h4 class="text-warning"><b>RESULTADO</b></h4>
+        <div class="table table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        @if (ViewBag.BusquedaPorAnio == false)
+                        {
+                            foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                            {
+                                <th>@ItemFecha.Month / @ItemFecha.Year</th>
+                            }
+                        }
+                        else if (ViewBag.BusquedaPorAnio == true)
+                        {
+                            foreach (DateTime ItemFecha in ViewBag.ListaFechas)
+                            {
+                                <th>@ItemFecha.Year</th>
+                            }
+                        }
+                        <th>Totales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (decimal ItemTotal in ViewBag.TotalesGlobales)
+                        {
+                            <td><strong>@ParseExtensions.NumeroConPuntosDeMiles(ItemTotal)</strong></td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -244,6 +244,7 @@
     <Compile Include="Helpers\GetTokenFromSeed.cs" />
     <Compile Include="Helpers\GetTokenFromSeedProd.cs" />
     <Compile Include="Helpers\ImpuestoAdicionalRetenciones.cs" />
+    <Compile Include="Helpers\ListasHelpers.cs" />
     <Compile Include="Helpers\LocatorInitializationHandler.cs" />
     <Compile Include="Helpers\MailHelper.cs" />
     <Compile Include="Helpers\Monitoreo.cs" />
@@ -299,6 +300,7 @@
     <Compile Include="Models\ModelosSistemaContable\SubSubClasificacionCtaContable.cs" />
     <Compile Include="Models\ModelosSistemaContable\SubSubCtaPresupuestoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\UserClientesContablesModels.cs" />
+    <Compile Include="Models\ModelosSistemaContable\VistaDeObjetos\EstadoResultadoComparativoViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\VoucherModel.cs" />
     <Compile Include="Models\ModelsFactura\ActividadEconomicaModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -859,6 +861,8 @@
     <Content Include="Views\Account\AsignarPerfilUsuario.cshtml" />
     <Content Include="Views\Contabilidad\HolaMundo.cshtml" />
     <Content Include="Views\Contabilidad\MisPresupuestos.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoComparativo.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultadoComparativoPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />

@@ -1,0 +1,258 @@
+﻿@model List<EstadoResultadoComparativoViewModel>
+@{
+    ViewBag.Title = "EstadoResultadoComparativo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
+
+
+
+    @using (Html.BeginForm("GetExcelEstadoResultadoComparativo", "Contabilidad", FormMethod.Post))
+    { 
+        <br />
+        <div class="pull-right">
+            <br />
+            <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+            </button>
+            <br />
+        </div>
+                <br />
+    }
+<div class="col-md-12">
+    <br />
+    <h2>Estado Resultado Comparativo</h2>
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            <button id="FiltrosPorMes" class="btn btn-primary">Analizar por Mes</button>
+        </div>
+        <div class="form-group col-md-2">
+            <button id="FiltrosPorAnio" class="btn btn-primary">Analizar por Año</button>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <input type="hidden" id="editFlag" name="editFlag" value="0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Configura tu busqueda</h4>
+                </div>
+                <div id="ModyBody" class="modal-body">
+                    <div class="row m-t-5">
+                        <p>Rango de años permitido de (2010 a 2030)</p>
+                    </div>
+                        <div class="row m-t-10">
+                            <div class="col-md-5">
+                                <label>Año</label>
+                                <input type="number" name="Anio" id="Anio" value="" class="form-control" required />
+                            </div>
+                            <div class="col-md-5">
+                                <label>Selecciona</label>
+                                @Html.DropDownList("Meses", (List<SelectListItem>)ViewBag.Meses, new { @class = "form-control selectpicker show-tick" })
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                
+                </div>
+                <div class="modal-footer">
+                    <button id="Buscar" name="Buscar" class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-search"></i></span>Buscar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModalYear" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <input type="hidden" id="editFlag" name="editFlag" value="0">
+        <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Configura tu busqueda</h4>
+                    </div>
+                    <div id="ModyBody" class="modal-body">
+
+                        <div class="row m-t-5">
+                            <p>Rango de años permitido de (2010 a 2030)</p>
+                        </div>
+
+                        <div class="row m-t-10">
+                            <div class="col-md-5">
+                                <label>Desde Año:</label>
+                                <input type="number" name="AnioDesde" id="AnioDesde" value="" class="form-control" required />
+                            </div>
+                            <div class="col-md-5">
+                                <label>Hasta Año:</label>
+                                <input type="number" name="AnioHasta" id="AnioHasta" value="" class="form-control" required />
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="BuscarAnios" name="BuscarAnios" class="btn btn-primary waves-effect waves-light"><span class="btn-label"><i class="ion-android-search"></i></span>Buscar</button>
+                    </div>
+                </div>
+          
+        </div>
+    </div>
+    
+
+    <div id="parshial">
+        <div class="alert alert-danger Esconder">
+            No se encontraron registros.
+        </div>
+        @Html.Partial("EstadoResultadoComparativoPartial", Model);
+    </div>
+
+    </div>
+
+<style>
+    .centrar{
+        margin-top:25px;
+    }
+    .Esconder{
+        display:none;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        $('#Meses').attr("multiple", "multiple");
+        $('#Meses').attr("required", "required");
+
+        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
+
+        $('#FiltrosPorMes').click(function () {
+            $('#myModal').modal("show");
+        });
+
+        $('#FiltrosPorAnio').click(function () {
+            $('#myModalYear').modal("show");
+        });
+        
+        $('#Buscar').click(function () {
+            BuscarPorMes();
+        });
+
+        $('#BuscarAnios').click(function () {
+            BusquedaPorAnio();
+        });
+    });
+
+    function ValidarBusquedaAnio() {
+        let ResultadoValidacion = false;
+
+        var AnioDesde = $('#AnioDesde').val();
+        var AnioHasta = $('#AnioHasta').val();
+
+        if (AnioDesde == "") {
+            alert("El campo Año desde no puede estar vacio");
+            ResultadoValidacion = false;
+            return ResultadoValidacion;
+        } else if (AnioDesde >= AnioHasta) {
+            alert("El año de inicio no puede ser mayor al año de fin ni tampoco iguales");
+            ResultadoValidacion = false;
+            return ResultadoValidacion;
+        } else if (AnioDesde < 2010 || AnioDesde > 2030 || AnioHasta < 2010 || AnioHasta > 2030) {
+            alert("Esta fuera del rango de busqueda");
+            ResultadoValidacion = false;
+            return ResultadoValidacion;
+        }
+
+        if (AnioHasta == "") {
+            alert("El Campo Año hasta no puede estar vacio");
+            ResultadoValidacion = false;
+            return ResultadoValidacion;
+        } else {
+            ResultadoValidacion = true;
+            return ResultadoValidacion;
+        }
+            
+        return ResultadoValidacion;
+    }
+
+    function ValidarBusquedaMes() {
+        let ResultadoValidacion = false;
+        var Anio = $('#Anio').val();
+        var Meses = [];
+        $('#Meses option:checked').each(function () {
+            Meses.push(this.value);
+        });
+
+        if (Anio == "") {
+            alert("El campo Año es requerido");
+            ResultadoValidacion = false;
+            return ResultadoValidacion;
+        } else if (Anio < 2010 || Anio > 2030) {
+            alert("Esta fuera del rango de busqueda");
+            ResultadoValidacion = false;
+            return ResultadoValidacion;
+        }
+
+        if (Meses.length <= 0) {
+            alert("Debes seleccionar al menos 1 mes");
+            ResultadoValidacion = false;
+            return ResultadoValidacion;
+        } else {
+            ResultadoValidacion = true;
+            return ResultadoValidacion;
+        }
+
+        return ResultadoValidacion;
+    }
+
+
+    function BuscarPorMes() {
+
+
+        if (ValidarBusquedaMes() == true){
+            $('#myModal').modal("hide");
+            $('#parshial').html('<div class="row" id="carga"><center><b>Cargando...</b></center></div>');
+            var Meses = [];
+            $('#Meses option:checked').each(function () {
+                Meses.push(this.value);
+            });
+            var Anio = $('#Anio').val();
+            $.ajax({
+                type:"POST",
+                url:"@Url.Action("EstadoResultadoComparativoPartial", "Contabilidad")",
+                data: { Meses: Meses, Anio: Anio },
+                success: function (data) {
+                    $('#parshial').html(data);
+            }
+            });
+        } else {
+            event.preventDefault();
+        }
+
+    }
+
+    function BusquedaPorAnio() {
+
+        var AnioDesde = $('#AnioDesde').val();
+        var AnioHasta = $('#AnioHasta').val();
+
+        if (ValidarBusquedaAnio() == true){
+            $('#parshial').html('<div class="row" id="carga"><center><b>Cargando...</b></center></div>');
+            $('#myModalYear').modal("hide");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("EstadoResultadoComparativoPartial", "Contabilidad")",
+                data: { AnioDesde: AnioDesde, AnioHasta: AnioHasta },
+                success: function (data) {
+                    $('#parshial').html(data);
+                }
+            });
+        } else {
+            event.preventDefault();
+        }
+    }
+</script>
+

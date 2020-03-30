@@ -24,26 +24,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geogest</title>
     <meta name="description" content="Sistema de contabilidad" />
-    <meta name="keywords" content="Facturación, Electrónica, Contabilidad, SII, administración" />
+    <meta name="keywords" content="Contabilidad, SII, administración" />
     <meta name="author" content="geogest1.cl" />
     <meta name="copyright" content="Propietario del copyright Geogest" />
     <meta http-equiv=”Content-Language” content=”es” />
  
     <!-- AMA [20-03-2018] : Se generan cambios de layout-->
     @Styles.Render("~/bundles/template2css")
-
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/JQueros")
-  
-    
-
     @Scripts.Render("~/bundles/jqueryval")
-
-
     <!--[if lt IE 9]>
         @Scripts.Render("~/bundles/HTML5Shiv")
     <![endif]-->
-
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119864475-1"></script>
     <script>
@@ -494,12 +487,19 @@
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA")||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT")||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT")||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoBruto")
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoBruto") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoComparativo")
                                     )
                                 {
                                     <li class="has_sub">
                                       <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-bookmarks-outline"></i><span>Estado de Resultados</span><span class="menu-arrow"></span></a>
                                         <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoComparativo"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("EstadoResultadoComparativo","Contabilidad")">Estado Resultado Comparativo</a>
+                                                </li>
+                                            }
                                             @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado"))
                                             {
                                             <li>
@@ -674,7 +674,7 @@
             }
 
             $('input.date').datepicker({ dateFormat: 'dd-mm-yy' });
-
+                
             function ShowMessage(message, messagetype) {
                 var cssclass;
                 var color;
