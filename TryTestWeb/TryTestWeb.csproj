@@ -658,6 +658,7 @@
     <Content Include="App_Data\InformesEstadoResultado.xlsx" />
     <Content Include="App_Data\EXCELHONORARIOS.xlsx" />
     <Content Include="App_Data\ExcelPresupuestos.xlsx" />
+    <Content Include="App_Data\EstadoResultadoComparativo.xlsx" />
     <None Include="Properties\PublishProfiles\EFactu Deployment.pubxml" />
     <None Include="Properties\PublishProfiles\EFactuDeploy.pubxml" />
     <None Include="Properties\PublishProfiles\GaryFacturaLabs.pubxml" />
