@@ -268,6 +268,10 @@
     <Compile Include="Migrations\202003121617169_SeAgregaColumnaPresupuesto.Designer.cs">
       <DependentUpon>202003121617169_SeAgregaColumnaPresupuesto.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004042025176_ConfigBoletasVentas.cs" />
+    <Compile Include="Migrations\202004042025176_ConfigBoletasVentas.Designer.cs">
+      <DependentUpon>202004042025176_ConfigBoletasVentas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
     <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
@@ -860,10 +864,10 @@
     <Content Include="Views\Contabilidad\LibroDeHonorarios.cshtml" />
     <Content Include="Views\Account\MisUsuarios.cshtml" />
     <Content Include="Views\Account\AsignarPerfilUsuario.cshtml" />
-    <Content Include="Views\Contabilidad\HolaMundo.cshtml" />
     <Content Include="Views\Contabilidad\MisPresupuestos.cshtml" />
     <Content Include="Views\Contabilidad\EstadoResultadoComparativo.cshtml" />
     <Content Include="Views\Contabilidad\EstadoResultadoComparativoPartial.cshtml" />
+    <Content Include="Views\Contabilidad\ListaBoletas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />
@@ -887,6 +891,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003121617169_SeAgregaColumnaPresupuesto.resx">
       <DependentUpon>202003121617169_SeAgregaColumnaPresupuesto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004042025176_ConfigBoletasVentas.resx">
+      <DependentUpon>202004042025176_ConfigBoletasVentas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

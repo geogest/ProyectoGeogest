@@ -77,19 +77,7 @@
                         <span class="clearfix"></span>
                     </div>
                     <ul class="nav navbar-nav hidden-xs">
-                        <li><a href="https://desk.zoho.com/portal/efactu/home" target="_blank" class="waves-effect waves-light">Soporte</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ayuda <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#"><i class="ion-help"></i><span> Registar Clientes</span></a></li>
-                                <li><a href="#"><i class="ion-help"></i><span> Crear Facturas</span></a></li>
-                                <li><a href="#"><i class="ion-help"></i><span> Crear Nota de Crédito</span></a></li>
-                                <li><a href="#"><i class="ion-help"></i><span> Crear Nota de Débito</span></a></li>
-                                <li><a href="#"><i class="ion-help"></i><span> Registar Gastos</span></a></li>
-                                <li><a href="#"><i class="ion-help"></i><span> Facturas Recibidas</span></a></li>
-                                <li><a href="#"><i class="ion-help"></i><span> Registrar Pagos</span></a></li>
-                            </ul>
-                        </li>
+                        <li><a href="" target="_blank" class="waves-effect waves-light">Soporte</a></li>
                         @if (!string.IsNullOrWhiteSpace(RazonSocialClienteCont))
                         {
                         <li class="waves-effect waves-light">
@@ -102,9 +90,6 @@
                         {
                             <li><a href="#" class="waves-effect waves-light"><i class="ion-alert-circled"></i><span><b> Certificación SII</b></span></a></li>
                         }
-
-                       
-              
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right pull-right">
@@ -386,6 +371,7 @@
 
                                 if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IngresoVoucher") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVoucher") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaBoletas") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVouchersBaja")
                                     )
                                     {
@@ -403,6 +389,12 @@
                                             {
                                                 <li>
                                                     <a href="@Url.Action("ListaVoucher", "Contabilidad")">Lista Vouchers</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaBoletas"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListaBoletas", "Contabilidad")">Boletas</a>
                                                 </li>
                                             }
                                             @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVouchersBaja"))

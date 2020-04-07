@@ -636,7 +636,7 @@ public class LibrosContablesModel
 
             nuevoVoucher.ClientesContablesModelID = objCliente.ClientesContablesModelID;
             nuevoVoucher.FechaEmision = itemLibroHonor.FechaContabilizacion;
-            nuevoVoucher.Tipo = itemLibroHonor.TipoVoucher; // Honorarios
+            nuevoVoucher.Tipo = itemLibroHonor.TipoVoucher; // Traspaso
 
             string FullDescripcionDocOriginal = lstCuentaContable[contadorAnexo].nombre + " / Folio: " + itemLibroHonor.NumIdenficiador + " / " + itemLibroHonor.Prestador.RazonSocial;
 
@@ -811,7 +811,7 @@ public class LibrosContablesModel
                                                               join AuxiliaresDetalle in db.DBAuxiliaresDetalle on Auxiliares.AuxiliaresModelID equals AuxiliaresDetalle.AuxiliaresModelID
 
                                                               where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                              AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptor
+                                                              AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptor && Voucher.Tipo == TipoVoucher.Traspaso
 
                                                               select AuxiliaresDetalle);
 

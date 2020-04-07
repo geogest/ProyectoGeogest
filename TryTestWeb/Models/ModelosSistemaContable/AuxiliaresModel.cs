@@ -46,6 +46,7 @@ public class AuxiliaresDetalleModel
     public TipoDte TipoDocumento { get; set; }
 
     public int Folio { get; set; }
+    public int FolioHasta { get; set; }
 
     //Utilizado por TipoAuxiliar = 1 / ProveedoresDeudores
     public decimal MontoNetoLinea { get; set; }

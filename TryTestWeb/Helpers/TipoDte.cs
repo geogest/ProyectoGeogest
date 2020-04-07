@@ -86,7 +86,7 @@ public enum TipoDte
     [Display(Name = "SET")]
     SET = -4444,
 
-    //?Boletas
+    //Boletas
     [TipoDocumento(SubTipoDocumento.Boletas)]
     [Display(Name = "Boleta Electrónica")]
     BoletaElectronica = 39,
@@ -94,6 +94,16 @@ public enum TipoDte
     [TipoDocumento(SubTipoDocumento.Boletas)]
     [Display(Name = "Boleta Electrónica Exenta")]
     BoletaExentaElectronica = 41,
+
+    [TipoDocumento(SubTipoDocumento.Boletas)]
+    [Display(Name = "Boleta Venta")]
+    BoletaDeVenta = 42,
+
+    [TipoDocumento(SubTipoDocumento.Boletas)]
+    [Display(Name = "Boleta Banco")]
+    BoletaDeBanco = 43,
+
+
 
     //Tipos Exportacion
     [TipoDocumento(SubTipoDocumento.Exportacion)]

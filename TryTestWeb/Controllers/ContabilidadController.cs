@@ -312,10 +312,6 @@ namespace TryTestWeb.Controllers
 
             }
 
-
-
-
-
             obj.QuickEmisorModelID = objEmisor.QuickEmisorModelID;
             db.DBClientesContables.Add(obj);
             db.SaveChanges();
@@ -1762,6 +1758,9 @@ namespace TryTestWeb.Controllers
                         //brandNewAuxDetail.Individuo = AuxiliaresPrestadoresModel.CrearOActualizarPrestadorPorRut(RUTPrestadorAUXDesdeSession, NombrePrestadorAUXDesdeSession, objCliente, db);
                         brandNewAuxDetail.Individuo2 = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RUTPrestadorAUXDesdeSession, NombrePrestadorAUXDesdeSession, objCliente, db, TipoPrestadorAUXDesdeSession);
                         brandNewAuxDetail.Folio = auxSession.Folio;
+                        if(auxSession.FolioHasta > 0) { 
+                            brandNewAuxDetail.FolioHasta = auxSession.FolioHasta;
+                        }
                         if (brandNewAuxiliarObject.objCtaContable.TipoAuxiliarQueUtiliza == TipoAuxiliar.Honorarios)
                         {
                             brandNewAuxDetail.TipoDocumento = auxSession.TipoDocumento;
@@ -1841,6 +1840,25 @@ namespace TryTestWeb.Controllers
             }
             return PartialView(null);
         }
+
+        [Authorize]
+        public ActionResult ListaBoletas()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            IQueryable<AuxiliaresDetalleModel> ListaBoletas = (from AuxiliaresDetalle in db.DBAuxiliaresDetalle
+                                                               join Auxiliares in db.DBAuxiliares on AuxiliaresDetalle.AuxiliaresModelID equals Auxiliares.AuxiliaresModelID
+                                                               join DetalleVoucher in db.DBDetalleVoucher on Auxiliares.DetalleVoucherModelID equals DetalleVoucher.DetalleVoucherModelID
+                                                               join Voucher in db.DBVoucher on DetalleVoucher.VoucherModelID equals Voucher.VoucherModelID
+                                                               where Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID && Voucher.DadoDeBaja == false &&
+                                                               AuxiliaresDetalle.FolioHasta > 0
+                                
+                                                               select AuxiliaresDetalle);
+
+            return View(ListaBoletas.ToList());
+        }
         
         [Authorize]
         public JsonResult ObtenerPrestador(string TipoPrestador)
@@ -1853,7 +1871,7 @@ namespace TryTestWeb.Controllers
             StringBuilder optionSelect = new StringBuilder();// Con esto dibujaremos el Select donde se recibirán los datos.
 
             List<QuickReceptorModel> lstPrestador = new List<QuickReceptorModel>();
-
+            
             bool ok = false;
             if (!string.IsNullOrWhiteSpace(TipoPrestador))
             {
@@ -2093,7 +2111,8 @@ namespace TryTestWeb.Controllers
 
             //NEXT-TO-DO: Retener indice de carga posible de un auxiliar previo y guardar directa o apropiadamente en sessions de AUXILIARES
             int indiceTemp = -1;
-
+            
+            int EsBoletaDeVenta = Request.Form.GetValues("FolioHasta").Count();
             //linea de detalle a la cual el auxiliar hace referencia
             string auxItemTxtSTR = Request.Form.GetValues("AUXitem")[0];
             //Cuenta contable a la cual el auxiliar hace referencia
@@ -2155,6 +2174,11 @@ namespace TryTestWeb.Controllers
 
                     objAuxiliarDetalle.Fecha = ParseExtensions.ToDD_MM_AAAA(Request.Form.GetValues("AUXFecha")[i]);
                     objAuxiliarDetalle.Folio = ParseExtensions.ParseInt(Request.Form.GetValues("AuxFolio")[i]);
+                    
+                    if(EsBoletaDeVenta > 0)
+                    {
+                        objAuxiliarDetalle.FolioHasta = ParseExtensions.ParseInt(Request.Form.GetValues("FolioHasta")[i]);
+                    }
 
                     string TipoPrestadorAuxiliar = Request.Form.GetValues("tipoIndividuo")[i];
                     string NombrePrestadorAuxiliar = Request.Form.GetValues("AUXrazoncta")[i];
@@ -4723,7 +4747,12 @@ namespace TryTestWeb.Controllers
                 ArrayVenta[1] = itemVenta.Fecha.ToString("dd-MM-yyyy");
                 ArrayVenta[2] = itemVenta.FechaContabilizacion.ToString("dd-MM-yyyy");
                 ArrayVenta[3] = ParseExtensions.EnumGetDisplayAttrib(itemVenta.TipoDocumento);
+                if(itemVenta.FolioHasta > 0)
+                {
+                    ArrayVenta[4] = itemVenta.Folio.ToString() + " - " + itemVenta.FolioHasta.ToString();
+                }else { 
                 ArrayVenta[4] = itemVenta.Folio.ToString();
+                }
                 ArrayVenta[5] = itemVenta.Individuo2.RazonSocial;
                 ArrayVenta[6] = itemVenta.Individuo2.RUT;
                 ArrayVenta[7] = ParseExtensions.NumeroConPuntosDeMiles(itemVenta.MontoExentoLinea);

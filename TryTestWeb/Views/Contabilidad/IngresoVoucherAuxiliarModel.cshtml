@@ -77,6 +77,13 @@
                            <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly/>
                        </div>
 
+                        @if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
+                        <div class="col-md-3 text-center">
+                            <label>¿Es una Boleta?</label>
+                            <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" onclick="EsBoletaDeVenta();" value="" />
+                        </div>
+                        }
+
                     </div>
                 </div>
                 }
@@ -130,12 +137,26 @@
                                     <label class="control-label">Rut</label>
                                     <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="@lineaDetalleAux.Individuo2.RUT" required readonly />
                                 </div>
+                                
+                                @if(lineaDetalleAux.FolioHasta > 0 && ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
+                                <div class="col-md-3 text-center">
+                                    <label >¿Es una Boleta?</label>
+                                    <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" onclick="EsBoletaDeVenta();" checked value="" />
+                                </div>
+                                }
+                                else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                {
+                                    <div class="col-md-3 text-center">
+                                        <label>¿Es una Boleta?</label>
+                                        <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" onclick="EsBoletaDeVenta();" value="" />
+                                    </div>
+                                }
 
                             </div>
                         </div>
-                    break;
-                }
-            }
+                                break;
+                            }
+                        }
                 <div class="row">
                     <div class="col-md-11"></div>
 
@@ -150,7 +171,10 @@
                     <table width="75%" class="table table-responsive">
                         <thead>
                             <tr>
-                                <th>Folio</th>
+                                <th id="Duplicar" class="Esconder">Duplicar</th>
+                                <th id="LabelFolioDesde" class="Esconder">Folio Desde</th>
+                                <th id="LabelFolio">Folio</th>
+                                <th id="LabelFolioHasta" class="Esconder">Folio Hasta</th>
                                 @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
                                 {
                                     <th>Valor Bruto</th>
@@ -166,8 +190,6 @@
                                     <th>Monto Exento</th>
                                     <th>Monto IVA</th>
                                     <th>Monto Total</th>
-                                    <th> </th>
-                                    <th> </th>
                                 }
                                 else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
                                 {
@@ -193,10 +215,24 @@
                                     <td class="form-group" width="15%" style="display:none;">
                                         <input class="form-control" type="text" id="AUXrazoncta" name="AUXrazoncta" value="" />
                                     </td>
-                          
-                                    @if(ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) { 
-                                    <td class="form-group">
-                                        <input type="number" class="form-control" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                    @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                    {
+                                        <td class="form-group Esconder" name="tdDuplicaFolio">
+                                            <a href="#" class="btn btn-default" id="BotonDuplicaFolio" name="DuplicarFolio" onclick="DuplicaFolioDesdeYHasta();"><i class="fa fa-copy"></i></a>
+                                        </td>
+                                    }
+
+                                    @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                    {
+                                        <td class="form-group">
+                                            <input type="number" class="form-control" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                        </td>
+                                    }
+
+                                    @if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) { 
+                                    
+                                    <td class="form-group Esconder" name="tdFolioHasta">
+                                        <input type="number" name="FolioHasta" id="FolioHasta" class="form-control" value="" />
                                     </td>
                                     }
                                     else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
@@ -259,12 +295,13 @@
                                     </td>
                                 </tr>
 
-                            }
-                            else
-                            {
-                                contadorDatePicker = 1;
-                                foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares)
-                                {
+                                        }
+                                        else
+                                        {
+                                            contadorDatePicker = 1;
+                                    int contadorEncuentraFolioHasta = 0;
+                                    foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares)
+                                    {
 
                                     <tr id="@Html.Raw("detalleAux" + pocketCounter)" >
                                         <td class="form-group" width="11%" style="display:none;">
@@ -282,21 +319,43 @@
                                         <td class="form-group" width="15%" style="display:none;">
                                             <input type="text" class="form-control" id="AUXrazoncta@(contadorDatePicker)" name="AUXrazoncta" value="@lineaDetalleAux.Individuo2.RazonSocial" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
                                         </td>
+                                        @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                        {
+                                            if(lineaDetalleAux.FolioHasta > 0) {    
+                                                contadorEncuentraFolioHasta++;
+                                                if(contadorEncuentraFolioHasta == 1) {
+                                                        <td class="form-group" name="tdDuplicaFolio">
+                                                        <a href="#" class="btn btn-default" id="BotonDuplicaFolio" name="DuplicarFolio" onclick="DuplicaFolioDesdeYHastaEdit();"><i class="fa fa-copy"></i></a>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="form-group" name="tdDuplicaFolio"></td>
+                                                }
+                                            }
 
-                                        @if(ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) { 
+                                        }
+                                        @if(ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
                                         <td class="form-group">
                                             <input type="number" class="form-control" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
                                         </td>
+
+                                            if(lineaDetalleAux.FolioHasta > 0) { 
+                                                <td class="form-group" name="tdFolioHasta">
+                                                    <input type="number" class="form-control" id="FolioHasta" name="FolioHasta" value="@lineaDetalleAux.FolioHasta" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty)/>
+                                                </td>
+                                            }
                                         }
-                                        else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
-                                        {
+
+                                        @if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                          {
                                             <td class="form-group">
                                                 <input type="number" class="form-control Remuneracion" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
                                             </td>
                                         }
                                         @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
-                                        {
-                   
+                                          {
+
                                             <td class="form-group">
                                                 <input type="number" class="form-control" id="AuxTotal@(contadorDatePicker)" name="AuxTotal" required value="@lineaDetalleAux.ValorLiquido" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
                                             </td>
@@ -324,8 +383,8 @@
                                             <td class="form-group">
                                                 <select id="AuxTipoDTE@(contadorDatePicker)" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
                                                     @if (ViewBag.NOTOPERABLE == null)
-                                                    {
-                                                        @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsString((int)lineaDetalleAux.TipoDocumento))
+                            {
+                                @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsString((int)lineaDetalleAux.TipoDocumento))
                                                     }
                                                     else
                                                     {
@@ -354,7 +413,7 @@
                                         }
 
                                         @if (ViewBag.NOTOPERABLE == null)
-                                        {
+                            {
                                             <td class="form-group">
                                                 <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux@(contadorDatePicker))" tabstop="false">X</button>
                                             </td>
@@ -391,14 +450,26 @@
         </div>
 </form>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
 <style>
     .Remuneracion{
         width:50%;
     }
+    .Esconder{
+        display:none;
+    }
+
+    #BoletaVenta{
+        width:20px;
+        height: 20px;        
+        margin:0px auto;
+    }
 </style>
 
 <script>
-
+    
 
     $(document).on("click", ".impuesto", function (e) {
         $("#TheModalImpuestos").modal();
@@ -408,6 +479,9 @@
 @if (ViewBag.NOTOPERABLE == null)
 {
     <script>
+        $(document).ready(function(){
+            EsBoletaDeVenta();
+        });
 
         var idRowCountAux = @(contadorDatePicker);
 
@@ -422,6 +496,8 @@
             //this is the last input of this row
             idRowCountAux = idRowCountAux + 1;
 
+           
+
             var newRow = "";
             @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
             {
@@ -429,8 +505,13 @@
                                     }
             else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
             {
-                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group"  width="12%" style="display:none;"><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td><td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><select id="AuxTipoDTE' + idRowCountAux + '" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno">@Html.Raw(ViewBag.TiposDTE)</select></td><td class="form-group"><input type="number" class="form-control" id="AUXNeto'+ idRowCountAux +'" name="AUXNeto" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXExento'+ idRowCountAux +'" name="AUXExento" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXIva'+ idRowCountAux +'" name="AUXIva" required onfocusout="CuadrarIVAExplicito(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal'+ idRowCountAux +'" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
-                                    }
+
+                @:if (EstaCheckeadoBoletaVenta() == true) {
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group"  width="12%" style="display:none;"><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td><td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group" name="tdDuplicaFolio"></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group" name="tdFolioHasta"><input type="number" name="FolioHasta" id="FolioHasta' + idRowCountAux + '" class="form-control" /></td><td class="form-group"><select id="AuxTipoDTE' + idRowCountAux + '" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno">@Html.Raw(ViewBag.TiposDTE)</select></td><td class="form-group"><input type="number" class="form-control" id="AUXNeto'+ idRowCountAux +'" name="AUXNeto" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXExento'+ idRowCountAux +'" name="AUXExento" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXIva'+ idRowCountAux +'" name="AUXIva" required onfocusout="CuadrarIVAExplicito(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal'+ idRowCountAux +'" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+                @:}else{
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group"  width="12%" style="display:none;"><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td><td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group Esconder" name="tdDuplicaFolio"></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group Esconder" name="tdFolioHasta"><input type="number" name="FolioHasta" id="FolioHasta' + idRowCountAux + '" class="form-control" /></td><td class="form-group"><select id="AuxTipoDTE' + idRowCountAux + '" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno">@Html.Raw(ViewBag.TiposDTE)</select></td><td class="form-group"><input type="number" class="form-control" id="AUXNeto'+ idRowCountAux +'" name="AUXNeto" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXExento'+ idRowCountAux +'" name="AUXExento" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AUXIva'+ idRowCountAux +'" name="AUXIva" required onfocusout="CuadrarIVAExplicito(this)" /></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal'+ idRowCountAux +'" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+                @:}
+            }
             else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
             {
                 @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha ' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group" width="12%" style="display:none;"><input type="text" class="form-control" id="AUXrut' + idRowCountAux + '" name="AUXrut" required/></td><td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control Remuneracion" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required /></td><td class="form-group"><input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal' + idRowCountAux + '" onfocusout="CuadrarValores(this)" value=""></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
@@ -438,7 +519,10 @@
 
             }
             $('#ConjuntoDetallesAuxiliares tbody').append(newRow);
-
+            //Se la aplica la configuración de boleta de venta en caso de que lo sea
+            if(EstaCheckeadoBoletaVenta() == true){
+                EsBoletaDeVenta();
+            }
             // console.log(newRow);
             // $('#ConjuntoDetallesAuxiliares tbody').html($('#ConjuntoDetallesAuxiliares tbody').html()+newRow);
 
@@ -906,8 +990,135 @@
                                 @:    jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
                                 @:    ValidarTotales2();
                                 @:}
+                        }
+
+
+        function EstaCheckeadoBoletaVenta(){
+            var CheckBoletaVenta = document.getElementById('BoletaVenta').checked;
+            var Result = false;
+            if(CheckBoletaVenta){
+                Result = true;
+            }
+            return Result;
+        }
+
+        function EsBoletaDeVenta(){
+
+            if(EstaCheckeadoBoletaVenta() == true){
+                document.getElementById('LabelFolioDesde').classList.remove('Esconder');
+                document.getElementById('LabelFolioHasta').classList.remove('Esconder');
+                document.getElementById('Duplicar').classList.remove('Esconder');
+                document.getElementById('LabelFolio').classList.add('Esconder');
+
+                let tdDuplicaFolio = document.getElementsByName('tdDuplicaFolio');
+                for (var i = 0; i < tdDuplicaFolio.length; i++) {
+                    tdDuplicaFolio[i].classList.remove('Esconder');
+                }
+
+                let tdFolioHasta = document.getElementsByName('tdFolioHasta');
+                for (var i = 0; i < tdFolioHasta.length; i++) {
+                    tdFolioHasta[i].classList.remove('Esconder');
+                }
+
+                let TiposDTE = document.getElementsByName('AuxTipoDTE');
+                for (var i = 0; i < TiposDTE.length; i++) {
+                    var ContenidoDelosOptions = TiposDTE[i].options;
+                    for (var j = 0; j < ContenidoDelosOptions.length; j++) {
+                        if(ContenidoDelosOptions[j].textContent == "Boleta Venta"){
+                            ContenidoDelosOptions[j].selected = true;
+                        }
+                    }
+                }
+
+            }else{
+                document.getElementById('LabelFolioDesde').classList.add('Esconder');
+                document.getElementById('LabelFolioHasta').classList.add('Esconder');
+                document.getElementById('Duplicar').classList.add('Esconder');
+                document.getElementById('LabelFolio').classList.remove('Esconder');
+            
+                let tdDuplicaFolio = document.getElementsByName('tdDuplicaFolio');
+                for (var i = 0; i < tdDuplicaFolio.length; i++) {
+                    tdDuplicaFolio[i].classList.add('Esconder');
+                }
+
+                let tdFolioHasta = document.getElementsByName('tdFolioHasta');
+                for (var i = 0; i < tdFolioHasta.length; i++) {
+                    tdFolioHasta[i].classList.add('Esconder');
+                }
+
+                var FolioDesde = document.getElementById('AuxFolio') != null ? document.getElementById('AuxFolio').value : document.getElementById('AuxFolio1').value;
+                var FolioHasta = document.getElementById('FolioHasta').value;
+                var FolioDesdeName = document.getElementsByName('AuxFolio');
+                var FolioHastaName = document.getElementsByName('FolioHasta');
+
+                FolioDesde = "";
+                FolioHasta = "";
+        
+
+                for (var i = 0; i < FolioDesdeName.length; i++) {
+                    FolioDesdeName[i].value = "";
+                }
+
+                for (var i = 0; i < FolioHastaName.length; i++) {
+                    FolioHastaName[i].value = "";
+                }
+
+                let TiposDTE = document.getElementsByName('AuxTipoDTE');
+                for (var i = 0; i < TiposDTE.length; i++) {
+                    var ContenidoDelosOptions = TiposDTE[i].options[0].selected = true;
+                }
+            }
+        }
+
+        function DuplicaFolioDesdeYHasta(){
+
+            if(EstaCheckeadoBoletaVenta() == true){
+         
+                var FolioDesde = document.getElementById('AuxFolio').value;
+                var FolioHasta = document.getElementById('FolioHasta').value;
+              
+
+                if(FolioDesde != "" && FolioHasta != ""){
+                    var FolioDesdeName = document.getElementsByName('AuxFolio');
+                    var FolioHastaName = document.getElementsByName('FolioHasta');
+
+                    for (var i = 0; i < FolioDesdeName.length; i++) {
+                        FolioDesdeName[i].value = FolioDesde;
                     }
 
+                    for (var i = 0; i < FolioHastaName.length; i++) {
+                        FolioHastaName[i].value = FolioHasta;
+                    }
+
+                }else{
+                    alert('Completa tanto el Folio Desde y Folio Hasta para duplicarlos en las otras lineas.');
+                }
+            }
+        }
+
+        function DuplicaFolioDesdeYHastaEdit(){
+            if(EstaCheckeadoBoletaVenta() == true){
+         
+                var FolioDesde = document.getElementById('AuxFolio1').value;
+                var FolioHasta = document.getElementById('FolioHasta').value;
+
+                if(FolioDesde != "" && FolioHasta != ""){
+                    var FolioDesdeName = document.getElementsByName('AuxFolio');
+                    var FolioHastaName = document.getElementsByName('FolioHasta');
+
+                    for (var i = 0; i < FolioDesdeName.length; i++) {
+                        FolioDesdeName[i].value = FolioDesde;
+                    }
+
+                    for (var i = 0; i < FolioHastaName.length; i++) {
+                        FolioHastaName[i].value = FolioHasta;
+                    }
+
+                }else{
+                    alert('Completa tanto el Folio Desde y Folio Hasta para duplicarlos en las otras lineas.');
+                }
+            }
+        }
 
 
         function nmbrize(passedValue)

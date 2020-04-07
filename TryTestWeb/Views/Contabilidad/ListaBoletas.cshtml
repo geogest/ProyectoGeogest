@@ -1,0 +1,40 @@
+﻿@model List<AuxiliaresDetalleModel>
+<br />
+<h2>ListaBoletas</h2>
+
+
+
+<div class="row">
+    <div class="table-rep-plugin">
+        <div class="table table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo Boleta</th>
+                        <th>Folio Desde</th>
+                        <th>Folio Hasta</th>
+                        <th>Monto Iva</th>
+                        <th>Monto Neto</th>
+                        <th>Monto Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (AuxiliaresDetalleModel ItemBoleta in Model)
+                    {
+                        <tr>
+                            <td>@ItemBoleta.Individuo2.RazonSocial</td>
+                            <td>@ParseExtensions.EnumGetDisplayAttrib(ItemBoleta.TipoDocumento)</td>
+                            <td>@ItemBoleta.Folio</td>
+                            <td>@ItemBoleta.FolioHasta</td>
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemBoleta.MontoIVALinea)</td>
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemBoleta.MontoNetoLinea)</td>
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemBoleta.MontoTotalLinea)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
