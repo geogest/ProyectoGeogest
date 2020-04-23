@@ -19,7 +19,7 @@ public class MyConfiguration : System.Data.Entity.Migrations.DbMigrationsConfigu
     public MyConfiguration()
     {
         AutomaticMigrationsEnabled = false;
-        //AutomaticMigrationDataLossAllowed = true;
+        AutomaticMigrationDataLossAllowed = true;
         SetSqlGenerator("MySql.Data.MySqlClient", new MySql.Data.Entity.MySqlMigrationSqlGenerator());
         CodeGenerator = new MySql.Data.Entity.MySqlMigrationCodeGenerator();
     }
@@ -42,7 +42,7 @@ public class MyProduccionConfiguration : System.Data.Entity.Migrations.DbMigrati
     public MyProduccionConfiguration()
     {
         AutomaticMigrationsEnabled = false;
-        //AutomaticMigrationDataLossAllowed = true;
+        AutomaticMigrationDataLossAllowed = true;
         SetSqlGenerator("MySql.Data.MySqlClient", new MySql.Data.Entity.MySqlMigrationSqlGenerator());
         CodeGenerator = new MySql.Data.Entity.MySqlMigrationCodeGenerator();
     }

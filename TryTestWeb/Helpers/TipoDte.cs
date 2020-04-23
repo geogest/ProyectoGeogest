@@ -101,7 +101,7 @@ public enum TipoDte
 
     [TipoDocumento(SubTipoDocumento.Boletas)]
     [Display(Name = "Boleta Banco")]
-    BoletaDeBanco = 43,
+    BoletaDeBanco = 44,
 
 
 

@@ -1,7 +1,6 @@
 ﻿@model PaginadorModel
 
 <!-- Page-Title -->
-
 <div class="row">
     <div class="col-sm-12">
         <br />
@@ -49,7 +48,7 @@
                 </div>
                 <div class="col-lg-2 form-group">
                     <label class="control-label">Año</label>
-                    <input type="text" class="form-control" name="Anio" id="Anio" value="@DateTime.Now.Year.ToString()" />
+                    <input type="text" class="form-control" name="Anio" id="Anio" value="" />
                 </div>
                 <div class="col-md-2 form-group">
                     <label for="" class="control-label">Mes</label>
@@ -78,7 +77,10 @@
                     <label class="control-label">Razon Social</label>
                     <input type="text" class="form-control" id="RazonSocial" name="RazonSocial" value=""/>
                 </div>
-               
+                <div class="col-lg-2 form-group">
+                    <label class="control-label">Folio</label>
+                    <input class="form-control" type="number" name="Folio" id="Folio" value="" />
+                </div>
                 <div class="col-lg-2 form-group">
                     <label class="control-label">Fecha Inicio</label>
                     <input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" value=""/>

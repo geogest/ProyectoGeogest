@@ -1,10 +1,11 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 using System.Data.Entity.Migrations;
+using System.Data.Entity.Validation;
 
 public class QuickReceptorModel
 {
@@ -96,18 +97,37 @@ public class QuickReceptorModel
         if (existe < 1)
         {
             QuickReceptorModel objPrestadores = new QuickReceptorModel();
+            try
+            {
+                objPrestadores.QuickEmisorModelID = objCliente.QuickEmisorModelID;
+                objPrestadores.RUT = RUTPrestador;
+                objPrestadores.RazonSocial = NombrePrestador;
+                objPrestadores.tipoReceptor = tipoReceptor;
+                objPrestadores.Direccion = "1";
+                objPrestadores.Giro = "1";
+                objPrestadores.ClientesContablesModelID = objCliente.ClientesContablesModelID;
 
-            objPrestadores.QuickEmisorModelID = objCliente.QuickEmisorModelID;
-            objPrestadores.RUT = RUTPrestador;
-            objPrestadores.RazonSocial = NombrePrestador;
-            objPrestadores.tipoReceptor = tipoReceptor;
-            objPrestadores.Direccion = "1";
-            objPrestadores.Giro = "1";
-            objPrestadores.ClientesContablesModelID = objCliente.ClientesContablesModelID;
-          
 
-            db.Receptores.Add(objPrestadores);
-            db.SaveChanges();
+                db.Receptores.Add(objPrestadores);
+
+                db.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+
+           
             //agrego filtro para saber que clientes tiene el cliente contable
             //int  clienteEmisor = db.DBClientesContablesEmisor.Where(r => objCliente.QuickEmisorModelID == r.QuickReceptorModelID && r.ClientesContablesModelID == objCliente.ParametrosCliente.ClientesContablesModelID).Count();
             //ClientesContablesEmisorModel clientesContablesEmisor = ((from t1 in db.DBClientesContablesEmisor

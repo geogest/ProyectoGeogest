@@ -1,10 +1,10 @@
-﻿@model List<LibroDeHonorariosModel>
+﻿@model List<LibroHonorariosDeTerceros>
 <br />
 <h2>Libro a Importar</h2>
 <h3>Vista Previa</h3>
 
 
-@using (Html.BeginForm("ImportarLibroHonorAVoucher", "Contabilidad", FormMethod.Post, new { id = "FormImportarVoucher" }))
+@using (Html.BeginForm("LibrosHonorTerceroAVoucher", "Contabilidad", FormMethod.Post, new { id = "FormImportarVoucher" }))
 {
     <div class="table-rep-plugin">
         <div class="table table-responsive">
@@ -13,21 +13,23 @@
                     <tr>
                         <th>Cuenta Contable</th>
                         <th>Num</th>
-                        <th>Fecha</th>
                         <th>Estado</th>
-                        <th>Fecha Anulación</th>
-                        <th>Rut</th>
-                        <th>Razon Social</th>
+                        <th>Fecha</th>
+                        <th>Rut Empresa</th>
+                        <th>Nombre Empresa</th>
+                        <th>Fecha Receptor</th>
+                        <th>Rut Receptor</th>
+                        <th>Nombre Receptor</th>
                         <th>Brutos</th>
-                        <th>Retencion</th>
-                        <th>Pagado</th>
+                        <th>Retenidos</th>
+                        <th>Pagados</th>
                     </tr>
                 </thead>
                 <tbody>
                     @{int rowCount = 0;}
                     @for (int i = 0; i < Model.Count(); i++)
                 {
-                        @Html.HiddenFor(modelItem => Model[i].LibroDeHonorariosModelID);
+                        @Html.HiddenFor(modelItem => Model[i].LibroHonorariosDeTercerosID);
                         <tr>
                             <td>
                                 <select id="cuenta@(rowCount++)" name="cuenta" class="form-control" data-live-search="true" style="width:260px">
@@ -35,28 +37,34 @@
                                 </select>
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => Model[i].NumIdenficiador)
-                            </td>
-                            <td>
-                                @Model[i].Fecha.ToString("dd-MM-yyyy")
+                                @Html.DisplayFor(modelItem => Model[i].NumOFolio)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => Model[i].Estado)
                             </td>
                             <td>
-                                @Model[i].FechaAnulacion.ToString("dd-MM-yyyy")
+                                @Model[i].FechaInicial.ToString("dd-MM-yyyy")
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => Model[i].Rut)
+                                @Html.DisplayFor(modelItem => Model[i].RutEmpresa)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => Model[i].RazonSocial)
+                                @Html.DisplayFor(modelItem => Model[i].NombreEmpresa)
+                            </td>
+                            <td>
+                                @Model[i].FechaFinal.ToString("dd-MM-yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model[i].RutReceptor)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model[i].NombreReceptor)
                             </td>
                             <td>
                                 @ParseExtensions.NumeroConPuntosDeMiles(Model[i].Brutos)
                             </td>
                             <td>
-                                @ParseExtensions.NumeroConPuntosDeMiles(Model[i].Retenido)
+                                @ParseExtensions.NumeroConPuntosDeMiles(Model[i].Retenidos)
                             </td>
                             <td>
                                 @ParseExtensions.NumeroConPuntosDeMiles(Model[i].Pagado)
@@ -68,8 +76,8 @@
             </table>
         </div>
     </div>
-        <button type="submit" class="btn btn-success pull-right redondo btnPress">Importar</button>
-}
+    <button type="submit" class="btn btn-warning pull-right redondo btnPress">Importar</button>
+                        }
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />

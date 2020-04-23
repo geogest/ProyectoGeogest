@@ -89,7 +89,204 @@ public static class ParseExtensions
     }
 
 
+    public static List<ClasificacionCtaContable> ListaClasificacion()
+    {
+        List<ClasificacionCtaContable> ListaClasificaciones = new List<ClasificacionCtaContable>();
+
+        ListaClasificaciones.Add(ClasificacionCtaContable.ACTIVOS);
+        ListaClasificaciones.Add(ClasificacionCtaContable.PASIVOS);
+        ListaClasificaciones.Add(ClasificacionCtaContable.RESULTADOGANANCIA);
+        ListaClasificaciones.Add(ClasificacionCtaContable.RESULTADOPERDIDA);
+
+        return ListaClasificaciones;
+    }
+
+    public static List<Meses> ListaMeses()
+    {
+        List<Meses> lstMeses = new List<Meses>();
+
+        lstMeses.Add(Meses.Enero);
+        lstMeses.Add(Meses.Febrero);
+        lstMeses.Add(Meses.Marzo);
+        lstMeses.Add(Meses.Abril);
+        lstMeses.Add(Meses.Mayo);
+        lstMeses.Add(Meses.Junio);
+        lstMeses.Add(Meses.Julio);
+        lstMeses.Add(Meses.Agosto);
+        lstMeses.Add(Meses.Septiembre);
+        lstMeses.Add(Meses.Octubre);
+        lstMeses.Add(Meses.Noviembre);
+        lstMeses.Add(Meses.Diciembre);
+
+        return lstMeses;
+    }
+
+    public static Tuple<decimal, decimal> TotalesGananciasYPerdidasDelMes(FacturaPoliContext db, ClientesContablesModel objcliente)
+    {
+        decimal TotalIngresos = 0;
+        decimal TotalEgresos = 0;
+
+        int Mes = DateTime.Now.Month;
+        int Anio = DateTime.Now.Year;
+
+        List<VoucherModel> ListaVouchers = objcliente.ListVoucher.Where(x => x.DadoDeBaja == false).ToList();
+
+        List<CuentaContableModel> lstCuentaContables = objcliente.CtaContable.Where(x => x.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA ||
+                                                                                         x.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
+
+        List<DetalleVoucherModel> lstDetalle = new List<DetalleVoucherModel>();
+        foreach (CuentaContableModel Cuenta in lstCuentaContables)
+        {
+                lstDetalle = ListaVouchers.SelectMany(x => x.ListaDetalleVoucher)
+                                          .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                     x.FechaDoc.Month == Mes && x.FechaDoc.Year == Anio)
+                                          .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+
+                decimal Haber = lstDetalle.Sum(x => x.MontoHaber);
+                decimal Debe = lstDetalle.Sum(x => x.MontoDebe);
+
+                if (Haber == 0 && Debe == 0)
+                    continue;
+
+                
+                decimal Saldo = Math.Abs(Haber) - Math.Abs(Debe);
+
+                if (Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA)
+                    TotalIngresos += Saldo;
+                else if (Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA)
+                    TotalEgresos += Saldo;
+            
+        }
+
+        return Tuple.Create(TotalIngresos, TotalEgresos);
+    }
+
+    public static Tuple<decimal,decimal> TotalGananciasYPerdidasAnual(FacturaPoliContext db, ClientesContablesModel ObjCliente)
+    {   
+        decimal TotalGanancias = 0;
+        decimal TotalPerdidas = 0;
+
+      
+        int Anio = DateTime.Now.Year;
    
+        List<VoucherModel> ListaVouchers = ObjCliente.ListVoucher.Where(x => x.DadoDeBaja == false).ToList();
+
+        List<CuentaContableModel> lstCuentaContables = ObjCliente.CtaContable.Where(x => x.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA ||
+                                                                                         x.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
+
+        List<DetalleVoucherModel> lstDetalle = new List<DetalleVoucherModel>();
+        foreach (CuentaContableModel Cuenta in lstCuentaContables)
+        {
+     
+                lstDetalle = ListaVouchers.SelectMany(x => x.ListaDetalleVoucher)
+                                    .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                x.FechaDoc.Year == Anio)
+                                    .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+
+                decimal Haber = lstDetalle.Sum(x => x.MontoHaber);
+                decimal Debe = lstDetalle.Sum(x => x.MontoDebe);
+
+                if (Haber == 0 && Debe == 0)
+                    continue;
+
+
+                decimal Saldo = Math.Abs(Haber) - Math.Abs(Debe);
+
+            if (Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA)
+                TotalGanancias += Saldo;
+            else if (Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA)
+                TotalPerdidas += Saldo;
+        }
+
+        return Tuple.Create(TotalGanancias, TotalPerdidas);
+    }
+
+    public static Tuple<List<decimal>, List<decimal>, List<DateTime>> TotalGananciasYPerdidasAnio(FacturaPoliContext db, ClientesContablesModel ObjCliente)
+    {
+        List<decimal> TotalGanancias = new List<decimal>();
+        List<decimal> TotalPerdidas = new List<decimal>();
+
+        List<VoucherModel> ListaVoucher = ObjCliente.ListVoucher.Where(x => x.DadoDeBaja == false).ToList();
+
+        List<CuentaContableModel> ListaCuentasContables = ObjCliente.CtaContable.Where(x => x.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA ||
+                                                                                            x.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
+        
+        int Dia = 1;
+        int Anio = DateTime.Now.Year;
+
+        List<DetalleVoucherModel> lstDetalle = new List<DetalleVoucherModel>();
+
+
+
+        List<CuentaContableModel> lstCuenta = new List<CuentaContableModel>();
+
+
+        List<List<decimal>> AllSaldoGanancia = new List<List<decimal>>();
+        List<List<decimal>> AllSaldoPerdida = new List<List<decimal>>();
+        List<Meses> lstMeses = ParseExtensions.ListaMeses();
+        foreach (CuentaContableModel Cuenta in ListaCuentasContables)
+        {
+            EstadoResultadoComparativoViewModel ObjARellenar = new EstadoResultadoComparativoViewModel();
+            List<decimal> lstSaldoGanancia = new List<decimal>();
+            List<decimal> lstSaldoPerdida = new List<decimal>();
+
+            decimal SaldoFinalLinea = 0;
+
+            foreach (Meses ItemMes in lstMeses)
+            {
+                int Mes = Convert.ToInt32(ItemMes);
+              
+
+                lstDetalle = ListaVoucher.SelectMany(x => x.ListaDetalleVoucher)
+                                         .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                     x.FechaDoc.Month == Mes & x.FechaDoc.Year == Anio)
+                                         .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+
+                decimal SumasHaber = lstDetalle.Sum(x => x.MontoHaber);
+                decimal SumasDebe = lstDetalle.Sum(x => x.MontoDebe);
+
+
+                decimal Saldo = Math.Abs(SumasHaber) - Math.Abs(SumasDebe);
+
+                if(Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA) { 
+                    lstSaldoGanancia.Add(Saldo);
+                }
+                if(Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA) { 
+                    lstSaldoPerdida.Add(Saldo);
+                }
+            }
+
+            if(Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA)
+                AllSaldoGanancia.Add(lstSaldoGanancia);
+            if(Cuenta.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA)
+                AllSaldoPerdida.Add(lstSaldoPerdida);
+        }
+
+        
+
+        List<DateTime> FechasConsultadas = new List<DateTime>();
+        foreach (Meses itemMes in lstMeses)
+        {
+            int Meses = Convert.ToInt32(itemMes);
+            DateTime FechaCreada = new DateTime(Anio, Meses, Dia);
+            FechasConsultadas.Add(FechaCreada);
+        }
+        int CantidadMeses = lstMeses.Count();
+        for (int i = 0; i < CantidadMeses; i++)
+        {
+            TotalGanancias.Add(AllSaldoGanancia.Sum(x => x[i]));    
+        }
+
+        for (int i = 0; i < CantidadMeses; i++)
+        { 
+           TotalPerdidas.Add(AllSaldoPerdida.Sum(x => x[i]));
+        }
+
+        return Tuple.Create(TotalGanancias, TotalPerdidas, FechasConsultadas);
+    }
+
+
+
 
     internal static dynamic ListAsHTML_Input_Select<T>(List<T> lstAllActectos, string v, List<string> list, IQueryable<object> listadoSelecionado)
     {
@@ -499,6 +696,8 @@ public static class ParseExtensions
         return sb.ToString();
     }
 
+
+
     public static string ObtenerCuentaContableDropdownAsString(ClientesContablesModel ObjCliente, int ID_CtaContable)
     {
         List<CuentaContableModel> ListaCuentas = new List<CuentaContableModel>();
@@ -591,7 +790,33 @@ public static class ParseExtensions
         return sb.ToString();
     }
 
-   
+    public static string ObtenerEnumListaSeleccionadoTipoOrigen(object selectedCast = null)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        int? selected = null;
+        selected = selectedCast as int?;
+
+        var EnumValues = ParseExtensions.ObtenerValoresPosiblesEnum<TipoOrigen>().ToList();
+        foreach (var TiposDeVoucher in EnumValues)
+        {
+       
+            if (selected != null && selected == (int)TiposDeVoucher)
+            {
+                sb.AppendLine("<option value=\"" + (int)TiposDeVoucher + "\" selected=\"selected\">" + TiposDeVoucher.ToString() + "</option>");
+            }
+            else
+            {
+                if (EnumValues.First() == TiposDeVoucher)
+                    sb.AppendLine("<option value=\"" + (int)TiposDeVoucher + "\" selected=\"selected\">" + TiposDeVoucher.ToString() + "</option>");
+                else
+                    sb.AppendLine("<option value=\"" + (int)TiposDeVoucher + "\">" + TiposDeVoucher.ToString() + "</option>");
+            }
+        }
+        return sb.ToString();
+    }
+
+
     public static string TipoVoucherToShortName(TipoVoucher _tipoVoucher)
     {
         if (_tipoVoucher == TipoVoucher.Traspaso)
@@ -621,7 +846,7 @@ public static class ParseExtensions
             NumeroVoucherRetorno = lstVoucherDeEsteCliente.MaxObject(item => item.NumeroVoucher).NumeroVoucher;
             NumeroVoucherRetorno++;
         }
-        catch (Exception ex)
+        catch (Exception )
         {
             return null;
         }

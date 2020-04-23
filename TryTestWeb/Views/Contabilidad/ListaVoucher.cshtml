@@ -24,7 +24,7 @@
 
     Session["Url"] = HttpContext.Current.Request.Url.AbsoluteUri;
 
-  
+
 
 
     <div class="form-group">
@@ -39,6 +39,19 @@
                                             <option value="25">25</option>
                                             <option value="50">50</option>
                                             <option value="100">100</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 form-group">
+                                        <label class="control-label">Tipo Origen</label>
+                                        <select class="form-control" name="TipoOrigenVoucher" id="TipoOrigenVoucher">
+                                            <option>Selecciona</option>
+                                            <option value="0">Otros</option>
+                                            <option value="1">Compra</option>
+                                            <option value="2">Venta</option>
+                                            <option value="3">Honorario</option>
+                                            <option value="4">HonorarioTercero</option>
+                                            <option value="5">Remuneraciones</option>
+
                                         </select>
                                     </div>
                                     <div class="col-md-2 form-group">
@@ -69,7 +82,7 @@
                                         <input type="text" class="form-control" id="Glosa" name="Glosa" />
                                     </div>
                                     <div class="col-lg-2 form-group">
-                                        <label class="control-label">Voucher ID</label>
+                                        <label class="control-label">Num Voucher</label>
                                         <input type="text" class="form-control" id="voucherID" name="voucherID" />
                                     </div>
                                     <div class="col-lg-2 form-group" style="display:none;">
@@ -114,9 +127,9 @@
                         </div>
                     </div>
 
-                    <a href="#" class="btn btn-warning" id="SeleccionarCheck" onclick="SelectAllCheck();">Seleccionar Todos</a>
-                    <a href="#" class="btn btn-primary Esconder"  id="DesSeleccionar" onclick="DesSeleccionar();">Desmarcar Todos</a>
-                    <a href="#" class="btn btn-danger Esconder" id="BorrarMultiples" onclick="ModalBorrarMultiples();">Borrar Seleccionados</a>
+                    <a href="javascript:void(0);" class="btn btn-warning" id="SeleccionarCheck" onclick="SelectAllCheck();">Seleccionar Todos</a>
+                    <a href="javascript:void(0);" class="btn btn-primary Esconder"  id="DesSeleccionar" onclick="DesSeleccionar();">Desmarcar Todos</a>
+                    <a href="javascript:void(0);" class="btn btn-danger Esconder" id="BorrarMultiples" onclick="ModalBorrarMultiples();">Borrar Seleccionados</a>
                     <div class="panel-body" id="parshial" style="font-size:13px;">
 
                         @if(Model.VoucherList.Count() == 0)
@@ -148,10 +161,16 @@
                                     @foreach (var Voucher in Model.VoucherList)
                                     {
                                         <tr>
-                                            <td><input type="checkbox" name="CheckVoucher" class="marca" id="CheckVoucher" value="@Voucher.VoucherModelID" /></td>
+                                            <td><input type="checkbox" name="CheckVoucher"  class="marca" id="CheckVoucher" value="@Voucher.VoucherModelID" /></td>
                                             <td>@Voucher.NumeroVoucher</td>
                                             <td>@Voucher.Tipo</td>
-                                            <td>@Voucher.TipoOrigen</td>
+                                            @if (!string.IsNullOrWhiteSpace(Voucher.TipoOrigen))
+                                            {
+                                                <td>@Voucher.TipoOrigen</td>
+                                            }else
+                                            {
+                                                <td>@Voucher.TipoOrigenVoucher.ToString()</td>
+                                            }
                                             <td>@Voucher.FechaEmision.ToString("dd-MM-yyyy")</td>
                                             <td>@Voucher.Glosa</td>
                                             <td><a href="javascript:GetDetalleVoucher('@Voucher.VoucherModelID');">ver detalle</a></td>
@@ -408,6 +427,7 @@
                 splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
             }
             return this.simbol + splitLeft + splitRight;
+       
         },
         new: function (num, simbol) {
             this.simbol = simbol || '';

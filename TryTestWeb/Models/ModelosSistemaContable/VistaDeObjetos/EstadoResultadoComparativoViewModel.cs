@@ -15,7 +15,7 @@ public class EstadoResultadoComparativoViewModel
     public string CodigoSubClasiMarca { get; set; }
     public string CodigoSubSubClasiMarca { get; set; }
     public List<decimal> Saldo { get; set; }
-    public List<decimal> SaldoTotal { get; set; }
+
 
     public static Tuple<List<EstadoResultadoComparativoViewModel>,List<decimal>,List<decimal>,List<decimal>,List<string>,List<string>,List<DateTime>> GetEstadoResultadoComparativo(ClientesContablesModel objCliente, int Mes, int Anio, int MesesAMostrar = 3)
     {
@@ -95,6 +95,8 @@ public class EstadoResultadoComparativoViewModel
             ObjARellenar.CodigoSubSubClasiMarca = SubSubClasificacionCod + " " + SubSubClasificacionNombre;
             ObjARellenar.CodigoCta = Cuenta.CodInterno;
             ObjARellenar.NombreCtaContable = Cuenta.nombre;
+
+            
 
             SaldoFinalLinea = lstSaldo.Sum(x => x);
             lstSaldo.Add(SaldoFinalLinea);
@@ -423,6 +425,8 @@ public class EstadoResultadoComparativoViewModel
             return ExcelByteArray;
         }
     }
+
+
 
 
 }

@@ -11,21 +11,269 @@
         <div class="col-sm-12">
             <div class="page-header-2">
                 <h2 class="page-header">Panel Cliente Contable</h2>
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="#">Contabildad</a>
-                    </li>
-                    <li>
-                        <a href="#">-</a>
-                    </li>
-                    <li class="active">
-                        Panel Cliente Contable
-                    </li>
-                </ol>
+ 
+                <div id="IndicadoresEconomicos">
+                 
+                        <div class="col-md-5">
+                            <ol class="breadcrumb">
+                                <li>
+                                    <a href="#">Contabildad</a>
+                                </li>
+                                <li>
+                                    <a href="#">-</a>
+                                </li>
+                                <li class="active">
+                                    Panel Cliente Contable
+                                </li>
+                            </ol>
+                        </div>
+                    
+                    <div class="row text-center">
+
+                        <div class="form-group">
+
+
+                            <div class="col-md-2">
+                                <div class="notice notice-info notice-sm">
+                                    <div id="UF"><!--Aquí va el valor de la UF--></div>
+                                    <strong>UF</strong>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="notice notice-info notice-sm">
+                                    <div id="UTM"><!--Aquí va el valor de la UTM--></div>
+                                    <strong>UTM</strong>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="notice notice-info notice-sm">
+                                    <div id="DOLAR"><!--Aquí va el valor de la DOLAR--></div>
+                                    <strong>DOLAR</strong>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
             </div>
+   
+
+   
+
+            <div id="TotalEyI">
+                <div class="row">
+                
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <div class="notice notice-success">
+                                    <h3>@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.GananciasAnual)</h3>
+                                    <p>
+                                        GANANCIAS TOTALES</p>
+                                </div>
+                               
+                            </div>
+                            <div class="col-md-6">
+                                <div class="notice notice-danger">
+                                    <h3>@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.PerdidasAnual)</h3>
+                                    <p>
+                                        PERDIDAS TOTALES</p>
+                                </div>
+                                
+                            </div>
+                            @*<div class="col-md-3">
+                                <div class="card-box bg-success">
+                                    <h3 class="text-white">@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.GananciasMes)</h3>
+                                    <p class="text-white">
+                                        GANANCIAS DEL MES</p>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-box bg-danger">
+                                    <h3 class="text-white">@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.PerdidasMes)</h3> 
+                                    <p class="text-white">
+                                        PERDIDAS DEL MES</p>
+                                </div>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+ 
+
+            <div id="GraficosGananciasYPerdidas">
+                <div class="form-group">
+                    
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card-box">
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-box">
+                                    <canvas id="myChart2"></canvas>
+                                </div>
+                            </div>
+                       </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
-  
+
+<style>
+
+    #IndicadoresEconomicos{
+        margin:auto;
+
+    }
+    .purple-background{
+        background-color:#605ca8;
+    }
+
+    .notice {
+        padding: 15px;
+        background-color: #fafafa;
+        border-left: 6px solid #7f7f84;
+        margin-bottom: 10px;
+        -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+           -moz-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+                box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+    }
+
+    .notice-sm {
+        padding: 1px;
+        font-size: 80%;
+    }
+
+    .notice-info {
+        border-color: #45ABCD;
+    }
+
+    .notice-success {
+        border-color: #80D651;
+    }
+    .notice-danger {
+        border-color: #d73814;
+    }
+
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+
+<script>
+    $.getJSON('https://mindicador.cl/api', function (data) {
+        var dailyIndicators = data;
+        $("<h4/>", {
+            html: dailyIndicators.uf.valor
+        }).appendTo($('#UF'));
+
+        $("<h4/>", {
+            html: dailyIndicators.utm.valor
+        }).appendTo($('#UTM'));
+
+        $("<h4/>", {
+            html: dailyIndicators.dolar.valor
+        }).appendTo($('#DOLAR'));
+
+    }).fail(function () {
+        console.log('Error al consumir la API!');
+    });
+
+ 
+    var TotalesXMesesGanancias = @Html.Raw(Json.Encode(ViewBag.TotalesMesesGanancias));
+    var TotalesXMesesPerdidas = @Html.Raw(Json.Encode(ViewBag.TotalesMesesPerdidas));
+    var MesesConsultados = @Html.Raw(Json.Encode(ViewBag.MesesYAnios));
+    var Anio = @Json.Encode(ViewBag.Anio);
+
+    console.log(TotalesXMesesPerdidas);
+
+
+    var ctxGanancias = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctxGanancias, {
+        type: 'bar',
+        data: {
+            labels: MesesConsultados,
+            datasets: [{
+                label: 'Ganancias' +' '+ Anio,
+                data: TotalesXMesesGanancias,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+
+
+    var ctxPerdidas = document.getElementById('myChart2').getContext('2d');
+
+    var myChart2 = new Chart(ctxPerdidas, {
+        type: 'bar',
+        data: {
+            labels: MesesConsultados,
+            datasets: [{
+                label: 'Perdidas' +' '+ Anio,
+                data: TotalesXMesesPerdidas,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+</script>
 

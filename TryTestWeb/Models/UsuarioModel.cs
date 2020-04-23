@@ -23,6 +23,8 @@ public class UsuarioModel
     public int PerfilUsuarioModelID { get; set; }
     public int HeredaDeUsuario { get; set; }
 
+    public bool EstaDadoDeBaja { get; set; } = false;
+
     public virtual ICollection<EmisoresHabilitados> lstEmisoresAccesibles {get; set;}
     
     public virtual ICollection<PosesionUsuarios> lstUsuariosPoseidos { get; set; }

@@ -994,9 +994,10 @@
 
 
         function EstaCheckeadoBoletaVenta(){
-            var CheckBoletaVenta = document.getElementById('BoletaVenta').checked;
+            debugger;
+            var CheckBoletaVenta = document.getElementById('BoletaVenta');
             var Result = false;
-            if(CheckBoletaVenta){
+            if(CheckBoletaVenta != null && CheckBoletaVenta.checked){
                 Result = true;
             }
             return Result;
@@ -1047,12 +1048,14 @@
                 }
 
                 var FolioDesde = document.getElementById('AuxFolio') != null ? document.getElementById('AuxFolio').value : document.getElementById('AuxFolio1').value;
-                var FolioHasta = document.getElementById('FolioHasta').value;
+                var FolioHasta = document.getElementById('FolioHasta');
                 var FolioDesdeName = document.getElementsByName('AuxFolio');
                 var FolioHastaName = document.getElementsByName('FolioHasta');
 
                 FolioDesde = "";
-                FolioHasta = "";
+                if(FolioHasta != null){
+                   FolioHasta.value = "";
+                }
         
 
                 for (var i = 0; i < FolioDesdeName.length; i++) {

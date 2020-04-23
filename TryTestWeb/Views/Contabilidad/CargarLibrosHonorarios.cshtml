@@ -7,21 +7,30 @@
 <br />
 
 <!-- Page-Title -->
+<br />
 <div class="row">
     <div class="col-sm-12">
         <div class="page-header-2">
-            <h2 class="page-header">Cargar Libros de Honorarios</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="#">Contabilidad</a>
-                </li>
-                <li>
-                    <a href="#">-</a>
-                </li>
-                <li class="active">
-                    Cargar Libros
-                </li>
-            </ol>
+            <div class="col-md-6">
+                <h2 class="page-header">Cargar Libros de Honorarios</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Contabilidad</a>
+                    </li>
+                    <li>
+                        <a href="#">-</a>
+                    </li>
+                    <li class="active">
+                        Cargar Libros
+                    </li>
+                </ol>
+      
+            </div>
+            <div class="col-md-6">
+                <div class="pull-right">
+                    <a href="@Url.Action("CargarLibrosHonorTerceros","Contabilidad")" class="btn btn-warning">Cargar Honorarios de Terceros</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -74,20 +83,7 @@
 
 
 
-    <script>
-
-        @*function AuxPrestadorSeleccionado() {
-
-                 var Url = "@Url.Action("ObtenerPrestador", "Contabilidad")";
-                 var Prestador = $('#TipoPrestador option:selected').val();
-
-                 $.getJSON(Url, { TipoPrestador: Prestador }, function (data) {
-                     if (data.ok == true) {
-
-                         $('#RazonPrestador').html(data.selectInput);
-                     }
-                 });
-             }*@
+ <script>
 
         $(document).ready(function () {
             $.datepicker.regional['es'] = {
@@ -112,14 +108,8 @@
         })
 
 
-     
-
-
         $('#Ficheros').submit(function () {
-
             event.preventDefault();
-
-
             $.ajax({
                 type:"POST",
                 url: "@Url.Action("ImportarLibrosSIIHonorarios","Contabilidad")",
@@ -145,10 +135,6 @@
                         }
 
                         var Nietos = CuerpoTabla.querySelectorAll("#TablaHonorariosSII tr");
-
-                        //var Cahemosquewa = document.querySelector("#TablaHonorariosSII tr").childNodes;
-
-                        //console.log(Cahemosquewa.);
 
                         var ArrayTest = [];
                         Nietos.forEach(function (PadreTR,indice) {
@@ -192,7 +178,6 @@
                 data: JSON.stringify(valores),
                 dataType: 'json',
                 contentType: 'application/json',
-
                 success: function (data) {
                     if(data == true){
                         window.location = "@Url.Action("VistaPreviaLibroHonorario","Contabilidad")";
@@ -202,55 +187,6 @@
                 }
             });
         }
-
-
-
-        //$('#addAUX').click(function (e) {
-
-        //    e.preventDefault();
-        //    if ($('#AUXForm').valid() === true) {
-        //        var dataVal = $('#AUXForm').serialize();
-
-        //        dataVal = dataVal.replace('"', '');
-
-        //        // console.log(dataVal);
-
-        //        $.ajax({
-        //            type: "POST",
-        //            url: "IngresarAuxiliarTemp",
-        //            content: "application/json; charset=utf-8",
-        //            dataType: "json",
-        //            data: dataVal,
-        //            success: function (d) {
-        //                $("#TheModal").modal('hide');
-        //            },
-        //            error: function (xhr, textStatus, errorThrown) {
-        //                // TODO: Show error
-        //            }
-        //        });
-        //    }
-
-
-
-
-        //$(".btnPress").on("click", function () {
-
-        //    var FechaCont = document.querySelector("#fecont").value;
-
-        //    var valid = true;
-        //    if (FechaCont == null || FechaCont == "") {
-        //        alert("Ingresa una fecha de contabilización");
-        //        valid = false;
-        //    } else {
-        //        valid = true;
-        //        $("#files").attr("readonly", "true");
-        //        $("#datos").attr("style", "display:none;");
-        //        $("#carga").removeAttr("style");
-        //    }
-
-        //    //$(".btnPress").attr("disabled", "true");
-
-        //});
 
     </script>
 

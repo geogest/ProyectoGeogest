@@ -183,12 +183,14 @@ public class LibrosContablesModel
             if (entradaLibro.TipoLibro == TipoCentralizacion.Venta)
             {
                 nuevoVoucher.TipoOrigen = "Venta";
+                nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Venta;
 
             }
 
             if (entradaLibro.TipoLibro == TipoCentralizacion.Compra)
             {
                 nuevoVoucher.TipoOrigen = "Compra";
+                nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Compra;
 
             }
 
@@ -633,6 +635,7 @@ public class LibrosContablesModel
             VoucherModel nuevoVoucher = new VoucherModel();
 
             nuevoVoucher.TipoOrigen = "Honorario";
+            nuevoVoucher.TipoOrigenVoucher = itemLibroHonor.TipoOrigenVoucher;
 
             nuevoVoucher.ClientesContablesModelID = objCliente.ClientesContablesModelID;
             nuevoVoucher.FechaEmision = itemLibroHonor.FechaContabilizacion;
@@ -790,7 +793,7 @@ public class LibrosContablesModel
 
     }
 
-    public static IQueryable<AuxiliaresDetalleModel> ObtenerLibrosPrestadores(ClientesContablesModel objCliente, FacturaPoliContext db,  string TipoReceptor = "",int Mes = 0, int Anio = 0, string RazonSocial = "", string Rut = "", string FechaInicio = "", string FechaFin = "")
+    public static IQueryable<AuxiliaresDetalleModel> ObtenerLibrosPrestadores(ClientesContablesModel objCliente, FacturaPoliContext db,  string TipoReceptor = "",int Mes = 0, int Anio = 0, string RazonSocial = "", string Rut = "", string FechaInicio = "", string FechaFin = "",int Folio = 0)
     {
 
         bool ConversionFechaInicioExitosa = false;
@@ -815,14 +818,16 @@ public class LibrosContablesModel
 
                                                               select AuxiliaresDetalle);
 
-        if (Mes != 0)
+        if (Mes > 0)
             TablaPrestador = TablaPrestador.Where(x => x.FechaContabilizacion.Month == Mes);
-        if (Anio != 0)
+        if (Anio > 0)
             TablaPrestador = TablaPrestador.Where(x => x.FechaContabilizacion.Year == Anio);
         if (!string.IsNullOrWhiteSpace(RazonSocial))
             TablaPrestador = TablaPrestador.Where(x => x.Individuo2.RazonSocial.Contains(RazonSocial));
         if (!string.IsNullOrWhiteSpace(Rut))
             TablaPrestador = TablaPrestador.Where(x => x.Individuo2.RUT.Contains(Rut));
+        if (Folio > 0)
+            TablaPrestador = TablaPrestador.Where(x => x.Folio == Folio);
         if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
             TablaPrestador = TablaPrestador.Where(x => x.FechaContabilizacion >= dtFechaInicio && x.FechaContabilizacion <= dtFechaFin);
 

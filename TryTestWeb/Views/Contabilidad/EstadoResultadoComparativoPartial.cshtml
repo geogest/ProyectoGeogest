@@ -1,11 +1,15 @@
 ﻿@model List<EstadoResultadoComparativoViewModel>
 
-@foreach (string CodSubClas in ViewBag.lstSubClasificacion)
+@foreach (ClasificacionCtaContable ClasificacionCuentaCont in ViewBag.Clasificacion)
 {
     <div class="card-box">
         <div class="row">
-
-            <h4><b>@CodSubClas</b></h4>
+            @if(ClasificacionCuentaCont == ClasificacionCtaContable.RESULTADOGANANCIA) { 
+            <h4><b>GANANCIAS</b></h4>
+            }else if(ClasificacionCuentaCont == ClasificacionCtaContable.RESULTADOPERDIDA)
+            {
+                <h4><b>PERDIDAS</b></h4>
+            }
             <div class="table-rep-plugin">
                 <div class="table table-responsive">
                     <table class="table">
@@ -13,7 +17,7 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Cuentas</th>
-                                @if(ViewBag.BusquedaPorAnio == false) { 
+                                @if (ViewBag.BusquedaPorAnio == false) {
                                     foreach (DateTime ItemFecha in ViewBag.ListaFechas)
                                     {
                                             <th>@ItemFecha.Month / @ItemFecha.Year</th>
@@ -31,7 +35,8 @@
                         <tbody>
                             @foreach (EstadoResultadoComparativoViewModel ItemEstadoResultado in Model)
                             {
-                                if (ItemEstadoResultado.CodigoSubClasiMarca == CodSubClas)
+                                int clasificacion = Convert.ToInt32(ClasificacionCuentaCont);
+                                if (ItemEstadoResultado.CodigoSubClasiMarca.StartsWith(clasificacion.ToString()))
                                 {
                                     <tr>
                                         <td>@ItemEstadoResultado.CodigoCta</td>

@@ -70,16 +70,36 @@ namespace TryTestWeb.Controllers
         //  [ModuloHandler]
         public ActionResult PanelClienteContable()
         {
-
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
             ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
+            var TotalesPorMes = ParseExtensions.TotalesGananciasYPerdidasDelMes(db, clienteSeleccionado);
+ 
+            ViewBag.GananciasMes = Math.Abs(TotalesPorMes.Item1);
+            ViewBag.PerdidasMes = Math.Abs(TotalesPorMes.Item2);
+
+            var TotalAnual = ParseExtensions.TotalGananciasYPerdidasAnual(db, clienteSeleccionado);
+
+            ViewBag.GananciasAnual = Math.Abs(TotalAnual.Item1);
+            ViewBag.PerdidasAnual = Math.Abs(TotalAnual.Item2);
+
+            var TotalAnualYTodoslosMeses = ParseExtensions.TotalGananciasYPerdidasAnio(db, clienteSeleccionado);
+            
+            ViewBag.TotalesMesesGanancias = TotalAnualYTodoslosMeses.Item1.Select(x => Math.Abs(x));
+            ViewBag.TotalesMesesPerdidas = TotalAnualYTodoslosMeses.Item2.Select(x => Math.Abs(x));
+            ViewBag.MesesYAnios = TotalAnualYTodoslosMeses.Item3.Select(x => ParseExtensions.obtenerNombreMes(x.Month));
+            ViewBag.Anio = TotalAnualYTodoslosMeses.Item3.Select(x => x.Year).FirstOrDefault();
+            
+
             string GastosXIntereses = "42";
 
-            SubClasificacionCtaContable ExisteGastosXIntereses = db.DBSubClasificacion.SingleOrDefault(x => x.CodigoInterno == GastosXIntereses &&
-                                                                                                            x.ClientesContablesModelID == clienteSeleccionado.ClientesContablesModelID);
+            SubClasificacionCtaContable ExisteGastosXIntereses = new SubClasificacionCtaContable();
+            if(clienteSeleccionado != null) { 
+                ExisteGastosXIntereses = db.DBSubClasificacion.SingleOrDefault(x => x.CodigoInterno == GastosXIntereses &&
+                                                                                    x.ClientesContablesModelID == clienteSeleccionado.ClientesContablesModelID);
+            }
 
             if (ExisteGastosXIntereses == null)
             {
@@ -1129,14 +1149,15 @@ namespace TryTestWeb.Controllers
             List<ClientesProveedoresModel> lstRuts = db.DBClientesProveedores.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.Estado == true).ToList();
 
 
-
+                
             ViewBag.items = lstItems; // ParseExtensions.ListAsHTML_Input_Select<ItemModel>(lstItems, "ItemModelID",  "NombreItem" );
                                       //ViewBag.opComuna = ParseExtensions.ListAsHTML_Input_Select<ComunaModels>(lstComunas, "ComunaModelsID", "nombre");
             ViewBag.ruts = lstRuts;
             ViewBag.oClienteContable = objCliente;
+            
 
             List<CentroCostoModel> lstCentroCosto = objCliente.ListCentroDeCostos.ToList();
-            if (IDVoucher == null)
+            if (IDVoucher == null)  
             {
                 //Creacion (e Importacion de Vouchers)
                 Session["sessionAuxiliares"] = null;
@@ -1146,6 +1167,7 @@ namespace TryTestWeb.Controllers
 
 
                 ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsString(objCliente);
+                ViewBag.TipoOrigenVoucher = ParseExtensions.EnumToDropDownList<TipoOrigen>();
 
                 List<string[]> lstDatosImportacionPrevia = new List<string[]>();
                 if (Session["filasCentralizacion"] != null)
@@ -1215,6 +1237,9 @@ namespace TryTestWeb.Controllers
                 ViewBag.GlosaVoucherEdit = VoucherAEditar.Glosa;
 
                 ViewBag.TipoVoucherEdit = (int)VoucherAEditar.Tipo;
+
+                ViewBag.TipoOrigenVoucher = (int)VoucherAEditar.TipoOrigenVoucher;
+
                 if (VoucherAEditar.CentroDeCosto != null)
                 {
                     ViewBag.CentroDeCostoEdit = (int)VoucherAEditar.CentroDeCosto.CentroCostoModelID;
@@ -1350,11 +1375,6 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            //Request.Form.GetValues("nombrecta")[0];
-
-
-            //CHECK IF ALL ROWS VIENEN CON CUENTAS CONTABLES
-
 
             List<LibrosContablesModel> lstProperLibros = new List<LibrosContablesModel>();
             foreach (LibrosContablesModel LibrosID in model)
@@ -1400,7 +1420,6 @@ namespace TryTestWeb.Controllers
 
             // Se valida que no exista un folio igual en la base de datos en caso de que ya exista, redirecciona a la carga masiva.
 
-            
             LibrosContablesModel.ProcesarLibrosContablesAVoucher(lstProperLibros, objCliente, db, lstCuentaContable);
             //Crear un mensaje de éxito.
             TempData["Correcto"] = "Libros ingresados con éxito.";
@@ -1417,7 +1436,8 @@ namespace TryTestWeb.Controllers
                                                               string FechaInicio = "",
                                                               string FechaFin = "",
                                                               string Glosa = "",
-                                                              int voucherID = 0)
+                                                              int voucherID = 0,
+                                                              int? TipoOrigenVoucher = null)
         {    
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -1450,7 +1470,7 @@ namespace TryTestWeb.Controllers
             if(Mes != 0)
                 Predicado = Predicado.Where(r => r.FechaEmision.Month == Mes);
             
-            if (!String.IsNullOrWhiteSpace(Glosa))
+            if (!string.IsNullOrWhiteSpace(Glosa))
                 Predicado = Predicado.Where(r => r.Glosa.Contains(Glosa));
             
             if(voucherID != 0)
@@ -1458,6 +1478,11 @@ namespace TryTestWeb.Controllers
 
             if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
                 Predicado = Predicado.Where(r => r.FechaEmision >= dtFechaInicio && r.FechaEmision <= dtFechaFin);
+
+            if (TipoOrigenVoucher != null) {
+                TipoOrigen TipoVoucherOrigen = (TipoOrigen)TipoOrigenVoucher;
+                Predicado = Predicado.Where(r => r.TipoOrigenVoucher == (TipoOrigen)TipoOrigenVoucher || r.TipoOrigen == TipoVoucherOrigen.ToString());
+            }
 
             LstVoucher = Predicado
                         .OrderByDescending(x => x.FechaEmision)
@@ -1497,10 +1522,15 @@ namespace TryTestWeb.Controllers
                 Paginador.ValoresQueryString["FechaInicio"] = FechaInicio;
                 Paginador.ValoresQueryString["FechaFin"] = FechaFin;
             }
+            if (TipoOrigenVoucher != null)
+                Paginador.ValoresQueryString["TipoOrigenVoucher"] = TipoOrigenVoucher;
+
+            
 
            return View(Paginador);
         }
 
+        [Authorize]
         public JsonResult BorrarMultiplesVouchers(List<string> VouchersID)
         {
             string UserID = User.Identity.GetUserId();
@@ -1530,10 +1560,45 @@ namespace TryTestWeb.Controllers
                     }
                 }
             }
-            return Json(Result, JsonRequestBehavior.AllowGet); ;
+            return Json(Result, JsonRequestBehavior.AllowGet); 
         }
-       
-        
+
+        [Authorize]
+        public JsonResult RestaurarMultiplesVouchers(List<string> VouchersID)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            bool Result = false;
+
+            if (VouchersID.Count() > 0)
+            {
+                foreach (string IDVoucher in VouchersID)
+                {
+                    int VoucherConvertido = Convert.ToInt32(IDVoucher);
+
+                    VoucherModel VoucherABorrar = objCliente.ListVoucher.SingleOrDefault(x => x.DadoDeBaja == true && x.VoucherModelID == VoucherConvertido);
+
+                    if (VoucherABorrar != null)
+                    {
+                        VoucherABorrar.DadoDeBaja = false;
+                        db.SaveChanges();
+                        Result = true;
+                        TempData["Correcto"] = "Vouchers dados de baja con éxito.";
+                    }
+                    else
+                    {
+                        Result = false;
+                        TempData["Error"] = "Error inesperado";
+
+                    }
+                }
+            }
+            return Json(Result, JsonRequestBehavior.AllowGet); 
+        }
+
+
 
         [Authorize]
         [ModuloHandler]
@@ -1633,6 +1698,8 @@ namespace TryTestWeb.Controllers
             objVoucher.Glosa = glosa;
             string tipo = Request.Form.GetValues("tipo")[0];
             objVoucher.Tipo = (TipoVoucher)Int32.Parse(tipo);
+            string TipoOrigenVoucher = Request.Form.GetValues("TipoOrigen")[0];
+            objVoucher.TipoOrigenVoucher = (TipoOrigen)Int32.Parse(TipoOrigenVoucher);
 
             if (NewNumeroVoucher > 0)
                 objVoucher.NumeroVoucher = NewNumeroVoucher;
@@ -2111,8 +2178,8 @@ namespace TryTestWeb.Controllers
 
             //NEXT-TO-DO: Retener indice de carga posible de un auxiliar previo y guardar directa o apropiadamente en sessions de AUXILIARES
             int indiceTemp = -1;
+
             
-            int EsBoletaDeVenta = Request.Form.GetValues("FolioHasta").Count();
             //linea de detalle a la cual el auxiliar hace referencia
             string auxItemTxtSTR = Request.Form.GetValues("AUXitem")[0];
             //Cuenta contable a la cual el auxiliar hace referencia
@@ -2175,7 +2242,7 @@ namespace TryTestWeb.Controllers
                     objAuxiliarDetalle.Fecha = ParseExtensions.ToDD_MM_AAAA(Request.Form.GetValues("AUXFecha")[i]);
                     objAuxiliarDetalle.Folio = ParseExtensions.ParseInt(Request.Form.GetValues("AuxFolio")[i]);
                     
-                    if(EsBoletaDeVenta > 0)
+                    if(Request.Form.GetValues("FolioHasta") != null)
                     {
                         objAuxiliarDetalle.FolioHasta = ParseExtensions.ParseInt(Request.Form.GetValues("FolioHasta")[i]);
                     }
@@ -3258,7 +3325,7 @@ namespace TryTestWeb.Controllers
             PaginadorModel ReturnValues = new PaginadorModel();
             
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
-
+            
             if (string.IsNullOrWhiteSpace(Anio)) // Para poder convertir "Anio" a double es necesario asignarle un valor númerico. En caso contrario daría error la conversión a double ya que no encuentra ningún valor númerico a convertir.
             {
                 Anio = "0";
@@ -3977,6 +4044,11 @@ namespace TryTestWeb.Controllers
             ViewBag.BusquedaPorAnio = Filtros;
             ViewBag.Meses = ParseExtensions.EnumToDropDownList<Meses>();
 
+            List<ClasificacionCtaContable> Clasificaciones = ParseExtensions.ListaClasificacion();
+            Clasificaciones = Clasificaciones.Where(x => x == ClasificacionCtaContable.RESULTADOGANANCIA || x == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
+
+            ViewBag.Clasificacion = Clasificaciones;
+
             Session["TipoFiltro"] = Filtros;
 
             Session["Anio"] = Anio;
@@ -4001,6 +4073,11 @@ namespace TryTestWeb.Controllers
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
             var EstadoResultadoProcesado = EstadoResultadoComparativoViewModel.EstadoResultadoComparativoConFiltros(objCliente, Meses, Anio, AnioDesde, AnioHasta);
+
+            List<ClasificacionCtaContable> Clasificaciones = ParseExtensions.ListaClasificacion();
+            Clasificaciones = Clasificaciones.Where(x => x == ClasificacionCtaContable.RESULTADOGANANCIA || x == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
+
+            ViewBag.Clasificacion = Clasificaciones;
 
             bool BusquedaPorAnio = false;
 
@@ -4705,7 +4782,7 @@ namespace TryTestWeb.Controllers
         //PENDING
         [Authorize]
         [ModuloHandler]
-        public ActionResult LibroVenta(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string RazonSocial = "", string RutInicio = "", string RutFinal = "")
+        public ActionResult LibroVenta(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string RazonSocial = "", string RutInicio = "", string RutFinal = "", int Folio = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -4714,7 +4791,7 @@ namespace TryTestWeb.Controllers
             List<string[]> ReturnValues = new List<string[]>();
 
             string TipoReceptor = "CL";
-            IQueryable<AuxiliaresDetalleModel> returnValue = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db,TipoReceptor,Mes,Anio,RazonSocial,Rut,FechaInicio,FechaFin);
+            IQueryable<AuxiliaresDetalleModel> returnValue = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db,TipoReceptor,Mes,Anio,RazonSocial,Rut,FechaInicio,FechaFin,Folio);
 
             int totalDeRegistros = returnValue.Count();
 
@@ -4864,7 +4941,7 @@ namespace TryTestWeb.Controllers
         //PENDING
         [Authorize]
         [ModuloHandler]
-        public ActionResult LibroCompra(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string RazonSocial = "")
+        public ActionResult LibroCompra(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string RazonSocial = "",int Folio = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -4872,7 +4949,7 @@ namespace TryTestWeb.Controllers
 
             string TipoReceptor = "PR";
 
-            IQueryable<AuxiliaresDetalleModel> returnValue = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente,db, TipoReceptor,Mes,Anio,RazonSocial,Rut,FechaInicio,FechaFin);
+            IQueryable<AuxiliaresDetalleModel> returnValue = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente,db, TipoReceptor,Mes,Anio,RazonSocial,Rut,FechaInicio,FechaFin,Folio);
 
             int totalDeRegistros = returnValue.Count();
 
@@ -5332,13 +5409,14 @@ namespace TryTestWeb.Controllers
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
 
             List<LibroDeHonorariosModel> LibroAConvertir = new List<LibroDeHonorariosModel>();
-
+            
             foreach (LibroDeHonorariosModel Verifica in lstImportado)
             {
-                LibroDeHonorariosModel Verificado = db.DBLibroDeHonorarios.SingleOrDefault(x => x.LibroDeHonorariosModelID == Verifica.LibroDeHonorariosModelID && x.HaSidoConvertidoAVoucher == false);
-
+                LibroDeHonorariosModel Verificado = db.DBLibroDeHonorarios.SingleOrDefault(x => x.LibroDeHonorariosModelID == Verifica.LibroDeHonorariosModelID && x.HaSidoConvertidoAVoucher == false &&
+                                                                                                x.ClientesContablesID == objCliente.ClientesContablesModelID);
+                
                 LibroAConvertir.Add(Verificado);
-            }
+             }
 
             string[] valuesCuentaContable = Request.Form.GetValues("Cuenta");
 
@@ -5363,7 +5441,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult LibroDeHonorarios(int pagina = 1, int cantidadRegistrosPorPagina = 25, int Mes = 0, int Anio = 0, string RazonSocial = "", string Rut = "", string FechaInicio = "",string FechaFin = "")
+        public ActionResult LibroDeHonorarios(int pagina = 1, int cantidadRegistrosPorPagina = 25, int Mes = 0, int Anio = 0, string RazonSocial = "", string Rut = "", string FechaInicio = "",string FechaFin = "",int Folio = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -5375,7 +5453,7 @@ namespace TryTestWeb.Controllers
 
             string TipoReceptor = "H";
 
-            IQueryable<AuxiliaresDetalleModel> LibroHonorario = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db, TipoReceptor, Mes, Anio, RazonSocial, Rut, FechaInicio, FechaFin);
+            IQueryable<AuxiliaresDetalleModel> LibroHonorario = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db, TipoReceptor, Mes, Anio, RazonSocial, Rut, FechaInicio, FechaFin,Folio);
 
             int TotalRegistros = LibroHonorario.Count();
 
@@ -5497,7 +5575,121 @@ namespace TryTestWeb.Controllers
             return null;
         }
 
+        [Authorize]
+        public ActionResult CargarLibrosHonorTerceros()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult ImportarLibrosSIIHonorTerceros(IEnumerable<HttpPostedFileBase> files, string fecont)
+        {
+            Session["InfoImportadaHonorarios"] = null;
+            List<string[]> csv = new List<string[]>();
        
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+            QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+
+            if (files != null)
+            {
+                List<LibroHonorariosDeTerceros> LibroProcesado = new List<LibroHonorariosDeTerceros>();
+                if (files != null && files.Count() > 0)
+                {
+                    HttpPostedFileBase file = files.ElementAt(0);
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        string fileExtension = Path.GetExtension(file.FileName);
+
+                        if (fileExtension == ".csv")
+                        {
+                            csv = ParseExtensions.ReadCSV(file);
+                            if(csv.Count() > 0)
+                            {
+                              LibroProcesado = LibroHonorariosDeTerceros.ProcesarLibroHonorariosTerceros(db,objCliente,objEmisor,csv,fecont);
+                                if (LibroProcesado.Count() > 0) { 
+                                    Session["InfoImportadaHonorariosTerceros"] = LibroProcesado;
+                                    return RedirectToAction("LibrosHonorTercerosProcesAImportar", "Contabilidad");
+                                }
+                                else { 
+                                    TempData["Error"] = "No hay elementos para importar O ya existe la información que intentas ingresar.";
+                                    return RedirectToAction("CargarLibrosHonorTerceros", "Contabilidad");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TempData["Error"] = "El archivo debe tener la extensión .csv";
+                            return RedirectToAction("CargarLibrosHonorTerceros", "Contabilidad");
+                        }
+                    }
+
+                }
+            }
+            return null;
+        }
+
+        [Authorize]
+        public ActionResult LibrosHonorTercerosProcesAImportar()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+            QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+
+            ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(objCliente, "410709");
+
+            List<LibroHonorariosDeTerceros> ListaAimportar = (List<LibroHonorariosDeTerceros>)Session["InfoImportadaHonorariosTerceros"];
+
+            return View(ListaAimportar);
+        }
+
+        [Authorize]
+        public ActionResult LibrosHonorTerceroAVoucher(IList<LibroHonorariosDeTerceros> lstImportado)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            List<LibroHonorariosDeTerceros> lstExistenteAConvertir = new List<LibroHonorariosDeTerceros>();
+
+            foreach (LibroHonorariosDeTerceros ItemABuscar in lstImportado)
+            {
+                LibroHonorariosDeTerceros Verificado = db.DBLibroHonorariosTerceros.SingleOrDefault(x => x.LibroHonorariosDeTercerosID == ItemABuscar.LibroHonorariosDeTercerosID &&
+                                                                                                         x.HaSidoConvertidoAVoucher == false &&
+                                                                                                         x.ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID);
+
+                if (Verificado != null)
+                    lstExistenteAConvertir.Add(Verificado);
+            }
+
+            string[] valuesCuentaContable = Request.Form.GetValues("Cuenta");
+
+            if (valuesCuentaContable == null || valuesCuentaContable.Length == 0 || valuesCuentaContable.Length != lstExistenteAConvertir.Count() || valuesCuentaContable.Any(r => string.IsNullOrWhiteSpace(r)))
+            {
+                TempData["Error"] = "Falta por favor asignar una cuenta contable para todos los elementos";
+                return RedirectToAction("CargarLibrosHonorTerceros", "Contabilidad");
+            }
+
+            List<CuentaContableModel> lstCuentaContable = new List<CuentaContableModel>();
+            foreach (string strCuentaContable in valuesCuentaContable)
+            {
+                int keyCuentaContable = ParseExtensions.ParseInt(strCuentaContable);
+                CuentaContableModel objCuentaContable = db.DBCuentaContable.Find(keyCuentaContable);
+                lstCuentaContable.Add(objCuentaContable);
+            }
+
+            LibroHonorariosDeTerceros.ProcesarLibroHonorTerceroAVoucher(lstExistenteAConvertir, objCliente, db, lstCuentaContable);
+
+            TempData["Correcto"] = "Libros de honorarios de terceros importados con éxito.";
+            return RedirectToAction("CargarLibrosHonorTerceros", "Contabilidad");
+        }
 
         [Authorize]
         [ModuloHandler]

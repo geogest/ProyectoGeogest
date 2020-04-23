@@ -19,3 +19,13 @@ using System.Web;
         Noviembre,
         Diciembre
     }
+
+    public enum TipoOrigen
+    {
+        Otros,
+        Compra,
+        Venta,
+        Honorario,
+        HonorarioTercero,
+        Remuneraciones
+    }

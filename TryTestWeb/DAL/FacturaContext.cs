@@ -76,11 +76,12 @@ public class FacturaContext : DbContext
     public DbSet<ImpuestosAdRelacionModel> DBImpuestosAdRelacionSII { get; set; }
     public DbSet<PerfilUsuarioModel> DBPerfilUsuario { get; set; }
     public DbSet<LibroDeHonorariosModel> DBLibroDeHonorarios { get; set; }
-    
-    //Base de datos Sistema de Remuneraciones
-   
+    public DbSet<LibroHonorariosDeTerceros> DBLibroHonorariosTerceros { get; set; }
 
-   
+    //Base de datos Sistema de Remuneraciones
+
+
+
 
 
 
@@ -171,9 +172,9 @@ public class FacturaProduccionContext : DbContext
     public DbSet<ImpuestosAdRelacionModel> DBImpuestosAdRelacionSII { get; set; }
     public DbSet<PerfilUsuarioModel> DBPerfilUsuario { get; set; }
     public DbSet<LibroDeHonorariosModel> DBLibroDeHonorarios { get; set; }
-
+    public DbSet<LibroHonorariosDeTerceros> DBLibroHonorariosTerceros { get; set; }
     //Base de datos Sistema de remuneraciones
-   
+
 
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }
 
@@ -254,8 +255,8 @@ public class FacturaPoliContext : DbContext
     public DbSet<ImpuestosAdRelacionModel> DBImpuestosAdRelacionSII { get; set; }
     public DbSet<PerfilUsuarioModel> DBPerfilUsuario { get; set; }
     public DbSet<LibroDeHonorariosModel> DBLibroDeHonorarios { get; set; }
+    public DbSet<LibroHonorariosDeTerceros> DBLibroHonorariosTerceros { get; set; }
 
-   
 
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }
 

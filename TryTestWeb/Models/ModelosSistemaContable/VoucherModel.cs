@@ -34,11 +34,11 @@ public class VoucherModel
 
     public String TipoOrigen { get; set; }
 
+    public TipoOrigen TipoOrigenVoucher { get; set; }
+
     public int NumeroVoucher { get; set; }
 
     public bool DadoDeBaja { get; set; } = false;
-
-
 
     public int ClientesProveedoresModelID { get; set; }
 
@@ -1156,7 +1156,7 @@ public class VoucherModel
         OtherRow = new string[] { "", "", "", "", "", "", "", "", "", "" };
         if (TotalSumasResultadoGanancias > TotalSumasResultadoPerdidas)
         {
-            OtherRow[1] = "RESULTADO GANACIA";
+            OtherRow[1] = "RESULTADO GANANCIA";
         }else if (TotalSumasResultadoGanancias < TotalSumasResultadoPerdidas)
         {
             OtherRow[1] = "RESULTADO PERDIDA";

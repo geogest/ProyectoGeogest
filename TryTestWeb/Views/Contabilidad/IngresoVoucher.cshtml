@@ -90,7 +90,20 @@ else
                 @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
             </select>
         </div>
-        <div class="col-lg-4 form-group">
+        <div class="col-md-2 form-group">
+            <label>Tipo Origen</label>
+            @if (ViewBag.vbVoucherModel != null)
+            {
+                <select class="form-control" name="TipoOrigen" id="TipoOrigen">
+                    @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
+                </select>
+            }
+            else
+            {
+                @Html.DropDownList("TipoOrigen", (List<SelectListItem>)ViewBag.TipoOrigenVoucher, new { @class = "form-control" })
+            }
+        </div>
+        <div class="col-lg-3 form-group">
             <label class="control-label">Glosa</label>
             <input type="text" class="form-control" name="glosa" id="glosa" value="@(ViewBag.GlosaVoucherEdit)" required />
         </div>
@@ -567,6 +580,7 @@ if (ViewBag.vbVoucherModel != null)
             rules: {
                 fecha: "required",
                 glosa: "required",
+                TipoOrigen: "required",
                 numVoucher: { required: true, number: true },
                 fechadoc: "required",
                 ctacont: { required: true },

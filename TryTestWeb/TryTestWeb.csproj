@@ -272,6 +272,22 @@
     <Compile Include="Migrations\202004042025176_ConfigBoletasVentas.Designer.cs">
       <DependentUpon>202004042025176_ConfigBoletasVentas.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004111808101_SeAgregaDarDeBajaUser.cs" />
+    <Compile Include="Migrations\202004111808101_SeAgregaDarDeBajaUser.Designer.cs">
+      <DependentUpon>202004111808101_SeAgregaDarDeBajaUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004172035172_VouchersPorOrigen.cs" />
+    <Compile Include="Migrations\202004172035172_VouchersPorOrigen.Designer.cs">
+      <DependentUpon>202004172035172_VouchersPorOrigen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004220824337_SeCreaLibroHonorTerceros.cs" />
+    <Compile Include="Migrations\202004220824337_SeCreaLibroHonorTerceros.Designer.cs">
+      <DependentUpon>202004220824337_SeCreaLibroHonorTerceros.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004220937397_SeBorraColumna.cs" />
+    <Compile Include="Migrations\202004220937397_SeBorraColumna.Designer.cs">
+      <DependentUpon>202004220937397_SeBorraColumna.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
     <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
@@ -294,6 +310,7 @@
     <Compile Include="Models\ModelosSistemaContable\ImpuestosAdicionalesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ImpuestosAdRelacionModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ItemModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\LibroHonorariosDeTerceros.cs" />
     <Compile Include="Models\ModelosSistemaContable\LibroMayor.cs" />
     <Compile Include="Models\ModelosSistemaContable\LibrosContablesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\MonitoreoModel.cs" />
@@ -868,6 +885,8 @@
     <Content Include="Views\Contabilidad\EstadoResultadoComparativo.cshtml" />
     <Content Include="Views\Contabilidad\EstadoResultadoComparativoPartial.cshtml" />
     <Content Include="Views\Contabilidad\ListaBoletas.cshtml" />
+    <Content Include="Views\Contabilidad\CargarLibrosHonorTerceros.cshtml" />
+    <Content Include="Views\Contabilidad\LibrosHonorTercerosProcesAImportar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />
@@ -894,6 +913,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004042025176_ConfigBoletasVentas.resx">
       <DependentUpon>202004042025176_ConfigBoletasVentas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004111808101_SeAgregaDarDeBajaUser.resx">
+      <DependentUpon>202004111808101_SeAgregaDarDeBajaUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004172035172_VouchersPorOrigen.resx">
+      <DependentUpon>202004172035172_VouchersPorOrigen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004220824337_SeCreaLibroHonorTerceros.resx">
+      <DependentUpon>202004220824337_SeCreaLibroHonorTerceros.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004220937397_SeBorraColumna.resx">
+      <DependentUpon>202004220937397_SeBorraColumna.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
