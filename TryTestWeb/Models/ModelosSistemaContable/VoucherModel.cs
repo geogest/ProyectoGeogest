@@ -866,13 +866,19 @@ public class VoucherModel
         {
             string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-" };
 
+            string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2.ToString() + "   " + itemLibroMayor.ComprobanteP3;
+            int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
+
+            if (EvitarRedundanciaPrestadores > 0)
+                continue;
+            else
+                ArrayLibroMayor[4] = itemLibroMayor.RazonSocial;
+                ArrayLibroMayor[5] = itemLibroMayor.Rut;
+
             ArrayLibroMayor[0] = NumLinea.ToString();
             ArrayLibroMayor[1] = ParseExtensions.ToDD_MM_AAAA(itemLibroMayor.FechaContabilizacion);
-            ArrayLibroMayor[2] = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2.ToString() + "   " + itemLibroMayor.ComprobanteP3;
+            ArrayLibroMayor[2] = Comprobante;
             ArrayLibroMayor[3] = itemLibroMayor.Glosa;
-            ArrayLibroMayor[4] = itemLibroMayor.RazonSocial;
-            ArrayLibroMayor[5] = itemLibroMayor.Rut;
-
 
             decimal TotalLineaMontoDebe = itemLibroMayor.Debe; // Listo
             decimal TotalLineaMontoHaber = itemLibroMayor.Haber;// Listo
@@ -895,7 +901,7 @@ public class VoucherModel
                  TotalSaldoEstaLinea = TotalLineaMontoHaber - TotalLineaMontoDebe;
             }
 
-            var ResetSaldo = ReturnValues.Select(r => !r.Contains("[" + itemLibroMayor.CodigoInterno + "] " + itemLibroMayor.CtaContNombre));
+            IEnumerable<bool> ResetSaldo = ReturnValues.Select(r => !r.Contains("[" + itemLibroMayor.CodigoInterno + "] " + itemLibroMayor.CtaContNombre));
 
             if (ResetSaldo.All(x => x)) // ".All(x => x)" Si la condición es verdadera 
             {
