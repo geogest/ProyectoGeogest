@@ -3314,7 +3314,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult LibroMayorTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", string Anio = "", string Mes = "", string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "")
+        public ActionResult LibroMayorTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", string Anio = "", string Mes = "", string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -3340,12 +3340,12 @@ namespace TryTestWeb.Controllers
 
             if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Convert.ToInt32(AnioConvert), Convert.ToInt32(MesConvert), Rut, Glosa, CuentaContableID, RazonPrestador);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Convert.ToInt32(AnioConvert), Convert.ToInt32(MesConvert), Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
             else
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Convert.ToInt32(AnioConvert), Convert.ToInt32(MesConvert), Rut, Glosa, CuentaContableID, RazonPrestador);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Convert.ToInt32(AnioConvert), Convert.ToInt32(MesConvert), Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
 
@@ -5266,7 +5266,7 @@ namespace TryTestWeb.Controllers
 
             string FechaContabilizacion = valores[CantidadDeItems][0]; //Almacenamos la fecha de contabilizacion
 
-            List<LibroDeHonorariosModel> SinRepetidos = new List<LibroDeHonorariosModel>();
+          
             foreach (string[] Fila in valores.Take(CantidadDeItems))
             {
                 DateTime FechaHonor = new DateTime();
@@ -5289,11 +5289,11 @@ namespace TryTestWeb.Controllers
                 decimal Retencion = ParseExtensions.ParseDecimal(Fila[8]);
                 decimal Pagado = ParseExtensions.ParseDecimal(Fila[9]);
 
-                SinRepetidos = db.DBLibroDeHonorarios.Where(x => x.ClientesContablesID == objCliente.ClientesContablesModelID &&
-                                                                 x.NumIdenficiador == Num &&
-                                                                 x.Prestador.RUT == RutPrestador &&
-                                                                 x.HaSidoConvertidoAVoucher == true &&
-                                                                 x.TipoLibro == TipoCentralizacion.Honorarios).ToList();
+                List<LibroDeHonorariosModel> SinRepetidos = db.DBLibroDeHonorarios.Where(x => x.ClientesContablesID == objCliente.ClientesContablesModelID &&
+                                                                                              x.NumIdenficiador == Num &&
+                                                                                              x.Prestador.RUT == RutPrestador &&
+                                                                                              x.HaSidoConvertidoAVoucher == true &&
+                                                                                              x.TipoLibro == TipoCentralizacion.Honorarios).ToList();
 
                 List<VoucherModel> EstaVigenteEncontrado = new List<VoucherModel>();
                 VoucherModel VoucherEncontrado = new VoucherModel();
@@ -5304,7 +5304,7 @@ namespace TryTestWeb.Controllers
                     {
                          VoucherEncontrado = db.DBVoucher.SingleOrDefault(x => x.VoucherModelID == ItemRepetido.VoucherModelID);
 
-                        if(VoucherEncontrado.DadoDeBaja == false)
+                        if(VoucherEncontrado.DadoDeBaja == false && VoucherEncontrado.Tipo == TipoVoucher.Traspaso)
                         {
                             EstaVigenteEncontrado.Add(VoucherEncontrado);
                         }
@@ -5692,6 +5692,19 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
+        public ActionResult CatorceTer()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            List<CatorceTerViewModel> lstCatorceTer = new List<CatorceTerViewModel>();
+            lstCatorceTer = CatorceTerViewModel.GetCatorceTer(db,objCliente);
+
+            return View(lstCatorceTer);
+        }
+
+        [Authorize]
         [ModuloHandler]
         public ActionResult ImportaCartola()
         {
@@ -6018,7 +6031,7 @@ namespace TryTestWeb.Controllers
                     foreach (var ItemRepetido in SinRepetidos)
                     {
                         VoucherEncontrado = db.DBVoucher.SingleOrDefault(x => x.VoucherModelID == ItemRepetido.VoucherModelID);
-                        if(VoucherEncontrado.DadoDeBaja == false) { 
+                        if(VoucherEncontrado.DadoDeBaja == false && VoucherEncontrado.Tipo == TipoVoucher.Traspaso) { 
                           Repetidos.Add(VoucherEncontrado);
                         }
                     }

@@ -6,6 +6,7 @@ using System.Web;
 
     public class LibroMayor
     {
+       public int NumVoucher { get; set; }
        public DateTime FechaContabilizacion { get; set; }
        public TipoVoucher Comprobante { get; set; }
        public string ComprobanteP2 { get; set; }

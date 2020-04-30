@@ -635,7 +635,7 @@ public class LibrosContablesModel
             VoucherModel nuevoVoucher = new VoucherModel();
 
             nuevoVoucher.TipoOrigen = "Honorario";
-            nuevoVoucher.TipoOrigenVoucher = itemLibroHonor.TipoOrigenVoucher;
+            nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Honorario;
 
             nuevoVoucher.ClientesContablesModelID = objCliente.ClientesContablesModelID;
             nuevoVoucher.FechaEmision = itemLibroHonor.FechaContabilizacion;
@@ -814,7 +814,7 @@ public class LibrosContablesModel
                                                               join AuxiliaresDetalle in db.DBAuxiliaresDetalle on Auxiliares.AuxiliaresModelID equals AuxiliaresDetalle.AuxiliaresModelID
 
                                                               where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                              AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptor && Voucher.Tipo == TipoVoucher.Traspaso
+                                                              Voucher.Tipo == TipoVoucher.Traspaso && AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptor 
 
                                                               select AuxiliaresDetalle);
 

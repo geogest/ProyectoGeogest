@@ -13,7 +13,6 @@ public class LibroDeHonorariosModel
     public int NumIdenficiador { get; set; }
     public int QuickEmisorModelID { get; set; }
     public TipoCentralizacion TipoLibro { get; set; } = TipoCentralizacion.Honorarios;
-    public TipoOrigen TipoOrigenVoucher { get; set; } = TipoOrigen.Honorario;
     public string SocProf { get; set; }
     public DateTime Fecha { get; set; }
     public DateTime FechaContabilizacion { get; set; }

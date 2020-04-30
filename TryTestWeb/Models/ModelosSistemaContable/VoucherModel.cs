@@ -726,7 +726,7 @@ public class VoucherModel
 
     }
 
-    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina, ClientesContablesModel objCliente, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "",int Anio = 0,int Mes = 0, string Rut = "", string Glosa ="", string CuentaContableID = "", string RazonPrestador = "") 
+    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina, ClientesContablesModel objCliente, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "",int Anio = 0,int Mes = 0, string Rut = "", string Glosa ="", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0) 
     {
         List<string[]> ReturnValues = new List<string[]>();
 
@@ -775,7 +775,9 @@ public class VoucherModel
                                                   CtaContableClasi = CtaContable.Clasificacion,
                                                   Comprobante = Voucher.Tipo,
                                                   ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
-                                                  ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString()
+                                                  ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
+                                                  NumVoucher = Voucher.NumeroVoucher
+                                                  
                                               });
 
         //LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.Fecha);
@@ -814,6 +816,10 @@ public class VoucherModel
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(x => x.RazonSocial.Contains(RazonPrestador));
         }
+        if (NumVoucher != 0 && NumVoucher > 0)
+        {
+            LibroMayorCompleto = LibroMayorCompleto.Where(x => x.NumVoucher == NumVoucher);
+        }
 
 
         var TotalRegistros = LibroMayorCompleto.Count();
@@ -828,6 +834,9 @@ public class VoucherModel
         {
             LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.CodigoInterno);
         }
+
+
+   
 
       
         // Filtros
@@ -864,16 +873,23 @@ public class VoucherModel
         
         foreach (LibroMayor itemLibroMayor in LibroMayorCompleto)
         {
-            string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-" };
+            string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-","-" };
 
+            
+
+           
             string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2.ToString() + "   " + itemLibroMayor.ComprobanteP3;
-            int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
+            //int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
+            if (itemLibroMayor.Rut != "-")
+            {
+                int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
+                if (EvitarRedundanciaPrestadores > 0)
+                   continue;
+            }
 
-            if (EvitarRedundanciaPrestadores > 0)
-                continue;
-            else
-                ArrayLibroMayor[4] = itemLibroMayor.RazonSocial;
-                ArrayLibroMayor[5] = itemLibroMayor.Rut;
+         
+            ArrayLibroMayor[4] = itemLibroMayor.RazonSocial;
+            ArrayLibroMayor[5] = itemLibroMayor.Rut;
 
             ArrayLibroMayor[0] = NumLinea.ToString();
             ArrayLibroMayor[1] = ParseExtensions.ToDD_MM_AAAA(itemLibroMayor.FechaContabilizacion);
@@ -918,6 +934,7 @@ public class VoucherModel
             ArrayLibroMayor[7] = ParseExtensions.NumeroConPuntosDeMiles(TotalLineaMontoHaber);
             ArrayLibroMayor[8] = ParseExtensions.NumeroConPuntosDeMiles(TotalSaldo);
             ArrayLibroMayor[9] = "[" + itemLibroMayor.CodigoInterno + "] " + itemLibroMayor.CtaContNombre;
+            ArrayLibroMayor[10] = itemLibroMayor.NumVoucher.ToString();
 
             ReturnValues.Add(ArrayLibroMayor);
 
@@ -970,6 +987,9 @@ public class VoucherModel
 
         if (!string.IsNullOrWhiteSpace(RazonPrestador))
             Paginacion.ValoresQueryString["RazonPrestador"] = RazonPrestador;
+
+        if (NumVoucher != 0 && NumVoucher > 0)
+            Paginacion.ValoresQueryString["NumVoucher"] = NumVoucher;
 
         return Paginacion;  
     }
