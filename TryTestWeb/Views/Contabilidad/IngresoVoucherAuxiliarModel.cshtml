@@ -80,17 +80,46 @@
                         @if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
                         <div class="col-md-3 text-center">
                             <label>¿Es una Boleta?</label>
+                            <br />
                             <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" onclick="EsBoletaDeVenta();" value="" />
                         </div>
                         }
 
                     </div>
+                  
                 </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        @if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
+                            <div class="col-md-4 Esconder text-center" id="CajaContaCompra">
+                                <label>¿Se Contabiliza en el libro de compras?</label>
+                                <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
+                            </div>
+
+                            <div class="col-md-4 Esconder text-center" id="CajaContaVenta">
+                                <label>¿Se Contabiliza en el libro de ventas?</label>
+                                <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" value="Venta" />
+                            </div>  
+                        }  
+                    </div>
+                </div>
+
+
                 }
                 else
                 {
+                    bool EsVenta = false;
+                    bool EsCompra = false;
                     foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares.Take(1))
                     {
+                        if (lineaDetalleAux.SeVaParaVenta == true)
+                        {
+                            EsVenta = true;
+                        }else if(lineaDetalleAux.SeVaParaCompra == true)
+                        {
+                            EsCompra = true;
+                        }
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="col-md-2">
@@ -131,13 +160,15 @@
                                     <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()"  required>
                                         <option value="@lineaDetalleAux.Individuo2.QuickReceptorModelID">@lineaDetalleAux.Individuo2.RazonSocial</option>
                                     </select>
-                                    
+
+
                                 </div>
                                 <div class="col-md-2">
                                     <label class="control-label">Rut</label>
                                     <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="@lineaDetalleAux.Individuo2.RUT" required readonly />
                                 </div>
-                                
+
+
                                 @if(lineaDetalleAux.FolioHasta > 0 && ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
                                 <div class="col-md-3 text-center">
                                     <label >¿Es una Boleta?</label>
@@ -154,9 +185,45 @@
 
                             </div>
                         </div>
-                                break;
-                            }
-                        }
+                                            break;
+                                        }
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                                {
+                                                    if(EsCompra == true && EsVenta == false) {
+                                                    <div class="col-md-4 text-center" id="CajaContaCompra">
+                                                        <label>¿Se Contabiliza en el libro de compras?</label>
+                                                        <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" checked value="Compra" />
+                                                    </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-md-4 Esconder text-center" id="CajaContaCompra">
+                                                            <label>¿Se Contabiliza en el libro de compras?</label>
+                                                            <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
+                                                        </div>
+                                                    }
+
+                                                    if (EsVenta == true && EsCompra == false)
+                                                    {
+                                                    <div class="col-md-4 text-center" id="CajaContaVenta">
+                                                        <label>¿Se Contabiliza en el libro de ventas?</label>
+                                                        <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" checked value="Venta" />
+                                                    </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-md-4 Esconder text-center" id="CajaContaVenta">
+                                                            <label>¿Se Contabiliza en el libro de ventas?</label>
+                                                            <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass"  value="Venta" />
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        }
                 <div class="row">
                     <div class="col-md-11"></div>
 
@@ -466,6 +533,16 @@
         height: 20px;        
         margin:0px auto;
     }
+    #ContaLibroVenta{
+        width:20px;
+        height: 20px;       
+        margin:0px auto;
+    }
+    #ContaLibroCompra{
+        width:20px;
+        height:20px;
+        margin:0px auto;
+    }
 </style>
 
 <script>
@@ -481,6 +558,7 @@
     <script>
         $(document).ready(function(){
             EsBoletaDeVenta();
+            RevisarSeleccionDePrestador();
         });
 
         var idRowCountAux = @(contadorDatePicker);
@@ -990,7 +1068,10 @@
                                 @:    jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
                                 @:    ValidarTotales2();
                                 @:}
-                        }
+                            }
+
+
+
 
 
         function EstaCheckeadoBoletaVenta(){
@@ -1052,7 +1133,7 @@
                 var FolioDesdeName = document.getElementsByName('AuxFolio');
                 var FolioHastaName = document.getElementsByName('FolioHasta');
                 if(FolioHasta != null){
-                   FolioHasta.value = "";
+                   FolioHasta.value = "0";
                 }
         
 
@@ -1061,7 +1142,7 @@
                 //}
 
                 for (var i = 0; i < FolioHastaName.length; i++) {
-                    FolioHastaName[i].value = "";
+                    FolioHastaName[i].value = "0";
                 }
 
                 let TiposDTE = document.getElementsByName('AuxTipoDTE');
@@ -1119,6 +1200,50 @@
                     alert('Completa tanto el Folio Desde y Folio Hasta para duplicarlos en las otras lineas.');
                 }
             }
+        }
+
+        function RevisarSeleccionDePrestador(){
+            var Compra = "PR";
+            var Venta = "CL";
+
+            var SelectTipoPrestador = document.getElementById("TipoPrestador");
+
+            var CajaCheckCompra = document.getElementById("CajaContaCompra");
+            var CajaCheckVenta = document.getElementById("CajaContaVenta");
+            
+            var CheckBoxCompra = document.getElementById("ContaLibroComra");
+            var CheckBoxVenta = document.getElementById("ContaLibroVenta");
+           
+            SelectTipoPrestador.addEventListener('change', function(){
+                var SelectedOption = this.options[SelectTipoPrestador.selectedIndex];
+                if(SelectedOption.value == Compra){
+                    if(CheckBoxVenta != null && CheckBoxVenta.checked){
+                        CheckBoxVenta.checked = 0;
+                    }
+                    
+                    CajaCheckVenta.classList.add("Esconder");
+                    CajaCheckCompra.classList.remove("Esconder");
+                }else if(SelectedOption.value == Venta){
+                    if(CheckBoxCompra != null && CheckBoxCompra.checked){
+                        CheckBoxCompra.checked = 0;
+                    }
+                    CajaCheckCompra.classList.add("Esconder");
+                    CajaCheckVenta.classList.remove("Esconder");
+                }else{  
+                    if(CheckBoxVenta != null && CheckBoxVenta.checked){
+                        CheckBoxVenta.checked = 0;
+                    }
+                    if(CheckBoxCompra != null && CheckBoxCompra.checked){
+                        CheckBoxCompra.checked = 0;
+                    }
+                    CajaCheckCompra.classList.add("Esconder");
+                    CajaCheckVenta.classList.add("Esconder");
+                }
+            });
+        }
+
+        function SeContabilizoVentaOCompra(){
+
         }
 
 

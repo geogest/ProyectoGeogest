@@ -1148,14 +1148,11 @@ namespace TryTestWeb.Controllers
             List<ItemModel> lstItems = db.DBItems.Where(r => r.ClienteContableID == objCliente.ClientesContablesModelID && r.Estado == true).ToList();
             List<ClientesProveedoresModel> lstRuts = db.DBClientesProveedores.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.Estado == true).ToList();
 
-
-                
             ViewBag.items = lstItems; // ParseExtensions.ListAsHTML_Input_Select<ItemModel>(lstItems, "ItemModelID",  "NombreItem" );
                                       //ViewBag.opComuna = ParseExtensions.ListAsHTML_Input_Select<ComunaModels>(lstComunas, "ComunaModelsID", "nombre");
             ViewBag.ruts = lstRuts;
             ViewBag.oClienteContable = objCliente;
             
-
             List<CentroCostoModel> lstCentroCosto = objCliente.ListCentroDeCostos.ToList();
             if (IDVoucher == null)  
             {
@@ -1786,8 +1783,11 @@ namespace TryTestWeb.Controllers
             }
             db.SaveChanges();
 
+
+
             if (Session["sessionAuxiliares"] != null)
             {
+
                 List<AuxiliaresModel> lstAuxs = (List<AuxiliaresModel>)Session["sessionAuxiliares"];
                 foreach (AuxiliaresModel objAux in lstAuxs)
                 {
@@ -1805,17 +1805,34 @@ namespace TryTestWeb.Controllers
                     db.DBVoucher.AddOrUpdate(objVoucher);
                     db.SaveChanges();
 
+
+                    if (objVoucher.VoucherModelID > 0)
+                    {
+                        VoucherModel VerificaExistencia = db.DBVoucher.SingleOrDefault(x => x.VoucherModelID == objVoucher.VoucherModelID && x.ClientesContablesModelID == objCliente.ClientesContablesModelID);
+                        if(VerificaExistencia != null) {
+                            if(VerificaExistencia.DadoDeBaja == false) {  
+                                List<LibrosContablesModel> SiexisteDestruyelo = db.DBLibrosContables.Where(x => x.VoucherModelID == objVoucher.VoucherModelID).ToList();
+                                if (SiexisteDestruyelo.Count() > 0)
+                                {
+                                    db.DBLibrosContables.RemoveRange(SiexisteDestruyelo);
+                                    db.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+
+         
                     foreach (AuxiliaresDetalleModel auxSession in objAux.ListaDetalleAuxiliares)
                     {
+                        LibrosContablesModel ObjLibroCompraOVenta = new LibrosContablesModel();
                         AuxiliaresDetalleModel brandNewAuxDetail = new AuxiliaresDetalleModel();
                         brandNewAuxDetail.AuxiliaresModelID = brandNewAuxiliarObject.AuxiliaresModelID;
                         string FechaContParaAux = Request.Form.GetValues("fecha")[0];
                         brandNewAuxDetail.Fecha = auxSession.Fecha;
                         brandNewAuxDetail.FechaContabilizacion = ParseExtensions.ToDD_MM_AAAA_Multi(FechaContParaAux); //Revisar si se está haciendo bien la conversion
-
-                        //ACA DEBE IR A BUSCAR EL PRESTADOR DE AUXILIAR CON ESTA INFORMACION Y CREAR O EDITARLO SEGUN SEA NECESARIO
-                        // string RUTPrestadorAUXDesdeSession = auxSession.Individuo.PrestadorRut;
-                        // string NombrePrestadorAUXDesdeSession = auxSession.Individuo.PrestadorNombre;
+                            //ACA DEBE IR A BUSCAR EL PRESTADOR DE AUXILIAR CON ESTA INFORMACION Y CREAR O EDITARLO SEGUN SEA NECESARIO
+                            // string RUTPrestadorAUXDesdeSession = auxSession.Individuo.PrestadorRut;
+                            // string NombrePrestadorAUXDesdeSession = auxSession.Individuo.PrestadorNombre;
                         string TipoPrestadorAUXDesdeSession = auxSession.Individuo2.tipoReceptor;
                         string RUTPrestadorAUXDesdeSession = auxSession.Individuo2.RUT;
                         string NombrePrestadorAUXDesdeSession = auxSession.Individuo2.RazonSocial;
@@ -1840,16 +1857,68 @@ namespace TryTestWeb.Controllers
                             brandNewAuxDetail.MontoNetoLinea = auxSession.MontoNetoLinea;
                             brandNewAuxDetail.MontoExentoLinea = auxSession.MontoExentoLinea;
                             brandNewAuxDetail.MontoIVALinea = auxSession.MontoIVALinea;
-                        }
+                
+                                if(auxSession.SeVaParaVenta == true && auxSession.SeVaParaCompra == false)
+                                {   
+                                    brandNewAuxDetail.SeVaParaVenta = auxSession.SeVaParaVenta;
+                                    ObjLibroCompraOVenta.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                                    ObjLibroCompraOVenta.EsUnRegistroManual = true;
+                                    ObjLibroCompraOVenta.TipoLibro = TipoCentralizacion.Venta;
+                                    ObjLibroCompraOVenta.Folio = auxSession.Folio;
+                                    ObjLibroCompraOVenta.individuo = brandNewAuxDetail.Individuo2;
+                                    if (auxSession.FolioHasta > 0)
+                                    {
+                                        ObjLibroCompraOVenta.FolioHasta = auxSession.FolioHasta;
+                                    }
+                                    ObjLibroCompraOVenta.FechaContabilizacion = ParseExtensions.ToDD_MM_AAAA_Multi(FechaContParaAux);
+                                    ObjLibroCompraOVenta.FechaDoc = auxSession.Fecha;
+                                    ObjLibroCompraOVenta.MontoNeto = auxSession.MontoNetoLinea;
+                                    ObjLibroCompraOVenta.MontoExento = auxSession.MontoExentoLinea;
+                                    ObjLibroCompraOVenta.MontoIva = auxSession.MontoIVALinea;
+                                    ObjLibroCompraOVenta.TipoDocumento = auxSession.TipoDocumento;
 
-                         
+                                    ObjLibroCompraOVenta.VoucherModelID = objVoucher.VoucherModelID;
+                                    ObjLibroCompraOVenta.HaSidoConvertidoAVoucher = true;
+
+                                    db.DBLibrosContables.Add(ObjLibroCompraOVenta);
+                                    db.SaveChanges();
+                                }
+                                if(auxSession.SeVaParaCompra == true && auxSession.SeVaParaVenta == false)
+                                {
+                                    brandNewAuxDetail.SeVaParaCompra = auxSession.SeVaParaCompra;
+                                    ObjLibroCompraOVenta.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                                    ObjLibroCompraOVenta.EsUnRegistroManual = true;
+                                    ObjLibroCompraOVenta.TipoLibro = TipoCentralizacion.Compra;
+                                    ObjLibroCompraOVenta.Folio = auxSession.Folio;
+                                    ObjLibroCompraOVenta.individuo = brandNewAuxDetail.Individuo2;
+                                    if (auxSession.FolioHasta > 0)
+                                    {
+                                        ObjLibroCompraOVenta.FolioHasta = auxSession.FolioHasta;
+                                    }
+                                    ObjLibroCompraOVenta.FechaContabilizacion = ParseExtensions.ToDD_MM_AAAA_Multi(FechaContParaAux);
+                                    ObjLibroCompraOVenta.FechaDoc = auxSession.Fecha;
+                                    ObjLibroCompraOVenta.MontoNeto = auxSession.MontoNetoLinea;
+                                    ObjLibroCompraOVenta.MontoExento = auxSession.MontoExentoLinea;
+                                    ObjLibroCompraOVenta.MontoIva = auxSession.MontoIVALinea;
+                                    ObjLibroCompraOVenta.TipoDocumento = auxSession.TipoDocumento;
+
+                                    ObjLibroCompraOVenta.VoucherModelID = objVoucher.VoucherModelID;
+                                    ObjLibroCompraOVenta.HaSidoConvertidoAVoucher = true;
+
+                                    db.DBLibrosContables.Add(ObjLibroCompraOVenta);
+                                    db.SaveChanges();
+                            }   
+                        }
                         brandNewAuxDetail.MontoTotalLinea = auxSession.MontoTotalLinea; //Auxiliar de remuneraciones solo necesita este dato & el folio.
+                        if(auxSession.SeVaParaVenta == true || auxSession.SeVaParaCompra == true) { 
+                        ObjLibroCompraOVenta.MontoTotal = auxSession.MontoTotalLinea;
+                        }
                         brandNewAuxiliarObject.ListaDetalleAuxiliares.Add(brandNewAuxDetail);
                     }
+
                     db.DBVoucher.AddOrUpdate(objVoucher);
                     db.SaveChanges();
                 }
-                
             }
             if (Request.Form.GetValues("editFlag") == null) { 
                 TempData["Correcto"] = "Se ha ingresado el voucher satisfactoriamente.";
@@ -2187,6 +2256,16 @@ namespace TryTestWeb.Controllers
             //Monto total de la linea auxiliar de este detalle
             string totalAuxiliarSTR = Request.Form.GetValues("AUXvaloritem")[0];
 
+            string SeVaACompra = "";
+            if(Request.Form.GetValues("ContaLibroCompra") != null) { 
+                SeVaACompra = Request.Form.Get("ContaLibroCompra");
+            }
+            string SeVaAVenta = "";
+            if(Request.Form.GetValues("ContaLibroVenta") != null) { 
+                SeVaAVenta = Request.Form.Get("ContaLibroVenta");
+            }
+
+
             int cod_cuenta_contable = ParseExtensions.ParseInt(codCuentaSTR);
             int aux_lineaNumeroDetalle = ParseExtensions.ParseInt(auxItemTxtSTR);
             decimal totalAuxiliar = ParseExtensions.ParseDecimal(totalAuxiliarSTR);
@@ -2244,7 +2323,19 @@ namespace TryTestWeb.Controllers
                     
                     if(Request.Form.GetValues("FolioHasta") != null)
                     {
-                        objAuxiliarDetalle.FolioHasta = ParseExtensions.ParseInt(Request.Form.GetValues("FolioHasta")[i]);
+                        if (!string.IsNullOrWhiteSpace(Request.Form.GetValues("FolioHasta")[i])) { 
+                            objAuxiliarDetalle.FolioHasta = ParseExtensions.ParseInt(Request.Form.GetValues("FolioHasta")[i]);
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(SeVaACompra) && SeVaACompra == "Compra")
+                    {
+                        objAuxiliarDetalle.SeVaParaCompra = true;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(SeVaAVenta) && SeVaAVenta == "Venta")
+                    {
+                        objAuxiliarDetalle.SeVaParaVenta = true;
                     }
 
                     string TipoPrestadorAuxiliar = Request.Form.GetValues("tipoIndividuo")[i];
@@ -4788,121 +4879,21 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            List<string[]> ReturnValues = new List<string[]>();
-
-            string TipoReceptor = "CL";
-            IQueryable<AuxiliaresDetalleModel> returnValue = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db,TipoReceptor,Mes,Anio,RazonSocial,Rut,FechaInicio,FechaFin,Folio);
-
-            int totalDeRegistros = returnValue.Count();
-
-            if (cantidadRegistrosPorPagina != 0)
-            {
-                returnValue = returnValue.OrderBy(x => x.FechaContabilizacion)
-                                         .Skip((pagina - 1) * cantidadRegistrosPorPagina)
-                                         .Take(cantidadRegistrosPorPagina);
-            }
-            else if (cantidadRegistrosPorPagina == 0)
-            {
-                returnValue = returnValue.OrderBy(x => x.FechaContabilizacion);
-            }
-
-
-            int Correlativo = 1;
-
-            decimal MontoExento = 0;
-            decimal MontoNeto = 0;
-            decimal MontoIva = 0;
-            decimal IvaNoRecuperable = 0;
-            decimal IvaUsoComun = 0;
-            decimal MontoTotal = 0;
-
-            foreach (AuxiliaresDetalleModel itemVenta in returnValue.ToList())
-            {
-                string[] ArrayVenta = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
-
-                ArrayVenta[0] = Correlativo.ToString();
-                ArrayVenta[1] = itemVenta.Fecha.ToString("dd-MM-yyyy");
-                ArrayVenta[2] = itemVenta.FechaContabilizacion.ToString("dd-MM-yyyy");
-                ArrayVenta[3] = ParseExtensions.EnumGetDisplayAttrib(itemVenta.TipoDocumento);
-                if(itemVenta.FolioHasta > 0)
-                {
-                    ArrayVenta[4] = itemVenta.Folio.ToString() + " - " + itemVenta.FolioHasta.ToString();
-                }else { 
-                ArrayVenta[4] = itemVenta.Folio.ToString();
-                }
-                ArrayVenta[5] = itemVenta.Individuo2.RazonSocial;
-                ArrayVenta[6] = itemVenta.Individuo2.RUT;
-                ArrayVenta[7] = ParseExtensions.NumeroConPuntosDeMiles(itemVenta.MontoExentoLinea);
-                ArrayVenta[8] = ParseExtensions.NumeroConPuntosDeMiles(itemVenta.MontoNetoLinea);
-                ArrayVenta[9] = ParseExtensions.NumeroConPuntosDeMiles(itemVenta.MontoIVALinea);
-                ArrayVenta[10] = ParseExtensions.NumeroConPuntosDeMiles(itemVenta.MontoIVANoRecuperable);
-                ArrayVenta[11] = ParseExtensions.NumeroConPuntosDeMiles(itemVenta.MontoIVAUsoComun);
-                ArrayVenta[12] = ParseExtensions.NumeroConPuntosDeMiles(itemVenta.MontoTotalLinea);
-                ArrayVenta[13] = "True";
-                if (itemVenta.TipoDocumento.EsUnaNotaCredito() == false)
-                {
-                    ArrayVenta[13] = "False";
-                }
-
-                MontoExento += itemVenta.MontoExentoLinea;
-                MontoNeto += itemVenta.MontoNetoLinea;
-                MontoIva += itemVenta.MontoIVALinea;
-                IvaNoRecuperable += itemVenta.MontoIVANoRecuperable;
-                IvaUsoComun += itemVenta.MontoIVAUsoComun;
-                MontoTotal += itemVenta.MontoTotalLinea;
-
-                ReturnValues.Add(ArrayVenta);
-                Correlativo++;
-            }
-
-            string[] ArrayTotales = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
-            ArrayTotales[6] = "TOTAL: ";
-            ArrayTotales[7] = ParseExtensions.NumeroConPuntosDeMiles(MontoExento);
-            ArrayTotales[8] = ParseExtensions.NumeroConPuntosDeMiles(MontoNeto);
-            ArrayTotales[9] = ParseExtensions.NumeroConPuntosDeMiles(MontoIva);
-            ArrayTotales[10] = ParseExtensions.NumeroConPuntosDeMiles(IvaNoRecuperable);
-            ArrayTotales[11] = ParseExtensions.NumeroConPuntosDeMiles(IvaUsoComun);
-            ArrayTotales[12] = ParseExtensions.NumeroConPuntosDeMiles(MontoTotal);
-
-           // ReturnValues.Add(ArrayTotales);
-
             var Paginador = new PaginadorModel();
-            Paginador.ResultStringArray = ReturnValues;
-            Paginador.PaginaActual = pagina;
-            Paginador.TotalDeRegistros = totalDeRegistros;
-            Paginador.RegistrosPorPagina = cantidadRegistrosPorPagina;
-            Paginador.ValoresQueryString = new RouteValueDictionary();
 
-            if (cantidadRegistrosPorPagina != 25)
-                Paginador.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
-            if (Anio != 0)
-                Paginador.ValoresQueryString["Anio"] = Anio;
-            if (Mes != 0)
-                Paginador.ValoresQueryString["Mes"] = Mes;
-            if (!string.IsNullOrWhiteSpace(Rut))
-                Paginador.ValoresQueryString["Rut"] = Rut;
-            if (!string.IsNullOrWhiteSpace(RazonSocial))
-                Paginador.ValoresQueryString["RazonSocial"] = RazonSocial;
-            if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
-            {
-                Paginador.ValoresQueryString["FechaInicio"] = FechaInicio;
-                Paginador.ValoresQueryString["FechaFin"] = FechaFin;
-            }
+            Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Venta, db, FechaInicio, FechaFin, Anio, Mes, pagina, cantidadRegistrosPorPagina, Rut, RazonSocial,Folio);
+
+            SessionParaExcel BolsaParaExcel = new SessionParaExcel();
+
+            BolsaParaExcel.Anio = Anio.ToString();
+            BolsaParaExcel.Mes = Mes.ToString();
+            BolsaParaExcel.FechaInicio = FechaInicio;
+            BolsaParaExcel.FechaFin = FechaFin;
 
 
+            Session["FechasExcel"] = BolsaParaExcel;
+            Session["LibroVenta"] = Paginador.ResultStringArray;
 
-            Session["LibroVenta"] = ReturnValues;
-            if (Anio != 0)
-                Session["LibroVentaAnio"] = Anio;
-            else
-                Session["LibroVentaAnio"] = DateTime.Now.Year;
-
-            if (Mes != 0)
-                Session["LibroVentaMes"] = Mes;
-            else
-                Session["LibroVentaMes"] = DateTime.Now.Month;
-
-         
             return View(Paginador);
         }
 
@@ -4914,8 +4905,10 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            int intAnio = (int)Session["LibroVentaAnio"];
-            int intMes = (int)Session["LibroVentaMes"];
+            SessionParaExcel BolsaDeFechas = (SessionParaExcel)Session["FechasExcel"];
+
+            int intAnio = Convert.ToInt32(BolsaDeFechas.Anio);
+            int intMes = Convert.ToInt32(BolsaDeFechas.Mes);
 
             //TO-DO: Verificar si vuelve el filtro entre fechas
             string strFechaInicio = string.Empty;//Request.Form.GetValues("fechainicio")[0];
@@ -4947,113 +4940,21 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            string TipoReceptor = "PR";
-
-            IQueryable<AuxiliaresDetalleModel> returnValue = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente,db, TipoReceptor,Mes,Anio,RazonSocial,Rut,FechaInicio,FechaFin,Folio);
-
-            int totalDeRegistros = returnValue.Count();
-
-            if (cantidadRegistrosPorPagina != 0)
-            {
-                returnValue = returnValue.OrderBy(x => x.FechaContabilizacion)
-                                         .Skip((pagina - 1) * cantidadRegistrosPorPagina)
-                                         .Take(cantidadRegistrosPorPagina);
-            }
-            else if (cantidadRegistrosPorPagina == 0)
-            {
-                returnValue = returnValue.OrderBy(x => x.FechaContabilizacion);
-            }
-
-            List<string[]> ReturnValues = new List<string[]>();
-
-            int Correlativo = 1;
-
-            decimal MontoExento = 0;
-            decimal MontoNeto = 0;
-            decimal MontoIva = 0;
-            decimal IvaNoRecuperable = 0;
-            decimal IvaUsoComun = 0;
-            decimal MontoTotal = 0;
-
-            foreach (AuxiliaresDetalleModel itemCompra in returnValue.ToList())
-            {
-                string[] ArrayCompra = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-" };
-            
-                ArrayCompra[0] = Correlativo.ToString();
-                ArrayCompra[1] = itemCompra.Fecha.ToString("dd-MM-yyyy");
-                ArrayCompra[2] = itemCompra.FechaContabilizacion.ToString("dd-MM-yyyy");
-                ArrayCompra[3] = ParseExtensions.EnumGetDisplayAttrib(itemCompra.TipoDocumento);
-                ArrayCompra[4] = itemCompra.Folio.ToString();
-                ArrayCompra[5] = itemCompra.Individuo2.RazonSocial;
-                ArrayCompra[6] = itemCompra.Individuo2.RUT;
-                ArrayCompra[7] = ParseExtensions.NumeroConPuntosDeMiles(itemCompra.MontoExentoLinea);
-                ArrayCompra[8] = ParseExtensions.NumeroConPuntosDeMiles(itemCompra.MontoNetoLinea);
-                ArrayCompra[9] = ParseExtensions.NumeroConPuntosDeMiles(itemCompra.MontoIVALinea);
-                ArrayCompra[10] = ParseExtensions.NumeroConPuntosDeMiles(itemCompra.MontoIVANoRecuperable);
-                ArrayCompra[11] = ParseExtensions.NumeroConPuntosDeMiles(itemCompra.MontoIVAUsoComun);
-                ArrayCompra[12] = ParseExtensions.NumeroConPuntosDeMiles(itemCompra.MontoTotalLinea);
-                ArrayCompra[13] = "True";
-                if (itemCompra.TipoDocumento.EsUnaNotaCredito() == false)
-                {
-                    ArrayCompra[13] = "False";
-                }
-
-                MontoExento += itemCompra.MontoExentoLinea;
-                MontoNeto += itemCompra.MontoNetoLinea;
-                MontoIva += itemCompra.MontoIVALinea;
-                IvaNoRecuperable += itemCompra.MontoIVANoRecuperable;
-                IvaUsoComun += itemCompra.MontoIVAUsoComun;
-                MontoTotal += itemCompra.MontoTotalLinea;
-
-                ReturnValues.Add(ArrayCompra);
-                Correlativo++;
-            }
-
-            string[] ArrayTotales = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
-            ArrayTotales[6] = "TOTAL: ";
-            ArrayTotales[7] = ParseExtensions.NumeroConPuntosDeMiles(MontoExento);
-            ArrayTotales[8] = ParseExtensions.NumeroConPuntosDeMiles(MontoNeto);
-            ArrayTotales[9] = ParseExtensions.NumeroConPuntosDeMiles(MontoIva);
-            ArrayTotales[10] = ParseExtensions.NumeroConPuntosDeMiles(IvaNoRecuperable);
-            ArrayTotales[11] = ParseExtensions.NumeroConPuntosDeMiles(IvaUsoComun);
-            ArrayTotales[12] = ParseExtensions.NumeroConPuntosDeMiles(MontoTotal);
-
-           // ReturnValues.Add(ArrayTotales);
-
             var Paginador = new PaginadorModel();
-            Paginador.ResultStringArray = ReturnValues;
-            Paginador.PaginaActual = pagina;
-            Paginador.TotalDeRegistros = totalDeRegistros;
-            Paginador.RegistrosPorPagina = cantidadRegistrosPorPagina;
-            Paginador.ValoresQueryString = new RouteValueDictionary();
 
-            if (cantidadRegistrosPorPagina != 25)
-                Paginador.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
-            if (Anio != 0)
-                Paginador.ValoresQueryString["Anio"] = Anio;
-            if (Mes != 0)
-                Paginador.ValoresQueryString["Mes"] = Mes;
-            if (!string.IsNullOrWhiteSpace(Rut))
-                Paginador.ValoresQueryString["Rut"] = Rut;
-            if (!string.IsNullOrWhiteSpace(RazonSocial))
-                Paginador.ValoresQueryString["RazonSocial"] = RazonSocial;
-            if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
-            {
-                Paginador.ValoresQueryString["FechaInicio"] = FechaInicio;
-                Paginador.ValoresQueryString["FechaFin"] = FechaFin;
-            }
+            Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Compra, db,FechaInicio,FechaFin,Anio,Mes,pagina,cantidadRegistrosPorPagina,Rut,RazonSocial,Folio);
 
-            Session["LibroCompra"] = ReturnValues;
-            if (Anio != 0)
-                Session["LibroCompraAnio"] = Anio;
-            else
-                Session["LibroCompraAnio"] = DateTime.Now.Year;
 
-            if (Mes != 0)
-                Session["LibroCompraMes"] = Mes;
-            else
-                Session["LibroCompraMes"] = DateTime.Now.Month;
+            SessionParaExcel BolsaSesion = new SessionParaExcel();
 
+            BolsaSesion.Anio = Anio.ToString();
+            BolsaSesion.Mes = Mes.ToString();
+            BolsaSesion.FechaInicio = FechaInicio;
+            BolsaSesion.FechaFin = FechaFin;
+
+            Session["FechasExcel"] = BolsaSesion;
+            Session["LibroCompra"] = Paginador.ResultStringArray;
+     
             return View(Paginador);
         }
 
@@ -5066,8 +4967,10 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            int intAnio = (int)Session["LibroCompraAnio"];
-            int intMes = (int)Session["LibroCompraMes"];
+            SessionParaExcel BolsaFechas = (SessionParaExcel)Session["FechasExcel"];
+
+            int intAnio = Convert.ToInt32(BolsaFechas.Anio);
+            int intMes = Convert.ToInt32(BolsaFechas.Mes);
 
             //TO-DO: Verificar si vuelve el filtro entre fechas
             string strFechaInicio = string.Empty;//Request.Form.GetValues("fechainicio")[0];

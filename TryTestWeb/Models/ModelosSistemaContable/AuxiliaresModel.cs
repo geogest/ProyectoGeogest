@@ -33,26 +33,18 @@ public class AuxiliaresDetalleModel
 
     public int AuxiliaresDetalleModelID { get; set; }
     public int AuxiliaresModelID { get; set; }
-
     public int NumeroCorrelativo { get; set; }
-
     public DateTime Fecha { get; set; }
-
     public DateTime FechaContabilizacion { get; set; }
-
     //El prestador contiene RUT y Razon Social
     public virtual AuxiliaresPrestadoresModel Individuo { get; set; }
-
     public TipoDte TipoDocumento { get; set; }
-
     public int Folio { get; set; }
     public int FolioHasta { get; set; }
-
     //Utilizado por TipoAuxiliar = 1 / ProveedoresDeudores
     public decimal MontoNetoLinea { get; set; }
     public decimal MontoExentoLinea { get; set; }
     public decimal MontoIVALinea { get; set; }
-
     public decimal MontoIVANoRecuperable { get; set; }
     public decimal MontoIVAUsoComun { get; set; }
     public decimal MontoIVAActivoFijo { get; set; }
@@ -60,16 +52,16 @@ public class AuxiliaresDetalleModel
     //Utilizado por TipoAuxiliar = 2 / BoletaHonorarios
     public decimal ValorLiquido { get; set; }
     public decimal ValorRetencion { get; set; }
-
     //En tipo 1 corresponde a la suma de los montos del DOCUMENTO TRIBUTARIO
-    //En tipo 2 corresponde al monto BRUTO
+    //En tipo 2 corresponde al monto BRUTO  
     public decimal MontoTotalLinea { get; set; }
-
     //Fecha de vencimiento de pago asociada al DTE dentro de un auxiliar
     //o fecha de vencimiento de pago asociada a un auxiliar de honorarios
     public DateTime FechaVencimiento { get; set; }
 
-    public virtual QuickReceptorModel Individuo2 { get; set; } 
+    public virtual QuickReceptorModel Individuo2 { get; set; }
+    public bool SeVaParaVenta { get; set; } = false;
+    public bool SeVaParaCompra { get; set; } = false;
 
     public static List<string[]> GetAuxiliaresVistaLibrosCentralizacion(List<AuxiliaresDetalleModel> LstAux/*,int Anio,int Mes*/)
     {

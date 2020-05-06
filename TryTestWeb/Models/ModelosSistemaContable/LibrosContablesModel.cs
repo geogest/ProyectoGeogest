@@ -38,6 +38,7 @@ public class LibrosContablesModel
     /// NOTE: [5] en el archivo del SII
     /// </summary>
     public int Folio { get; set; }
+    public int FolioHasta { get; set; }
     /// <summary>
     /// NOTE: [6] en el archivo del SII
     /// </summary>
@@ -113,6 +114,7 @@ public class LibrosContablesModel
     public bool estado { get; set; }
 
     public virtual QuickReceptorModel individuo { get; set; }
+    public bool EsUnRegistroManual { get; set; } = false;
 
     public static void ProcesarLibrosContablesAVoucher(List<LibrosContablesModel> lstEntradasLibro, ClientesContablesModel objCliente, FacturaPoliContext db, List<CuentaContableModel> lstCuentaContable)
     {
@@ -536,6 +538,7 @@ public class LibrosContablesModel
                     if (posicion == posicion2)
                     {
                         entradaLibro.VoucherModelID = NuevoVoucher.VoucherModelID;
+                        entradaLibro.estado = true;
                         db.DBLibrosContables.AddOrUpdate(entradaLibro);
                         db.SaveChanges();
                     }
@@ -835,7 +838,7 @@ public class LibrosContablesModel
         return TablaPrestador;
     }
 
-    public static PaginadorModel RescatarLibroCentralizacion(ClientesContablesModel objCliente, TipoCentralizacion tipoLibroCentralizacion, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0,int pagina = 0, int cantidadRegistrosPorPagina = 0, string Rut = "", string RazonSocial = "")
+    public static PaginadorModel RescatarLibroCentralizacion(ClientesContablesModel objCliente, TipoCentralizacion tipoLibroCentralizacion, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0,int pagina = 0, int cantidadRegistrosPorPagina = 0, string Rut = "", string RazonSocial = "",int Folio = 0)
     {
         bool ConversionFechaInicioExitosa = false;
         DateTime dtFechaInicio = new DateTime();
@@ -849,104 +852,97 @@ public class LibrosContablesModel
         }
 
         // Solo si es convertido a voucher se listará en el libro de compras.
-        List<LibrosContablesModel> lstlibro = db.DBLibrosContables.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.TipoLibro == tipoLibroCentralizacion && r.estado == true && r.HaSidoConvertidoAVoucher == true).ToList();
+
+        IQueryable<LibrosContablesModel> lstlibro = (from LibrosContables in db.DBLibrosContables
+                                                    join Vouchers in db.DBVoucher on LibrosContables.VoucherModelID equals Vouchers.VoucherModelID
+                                                    where Vouchers.DadoDeBaja == false && LibrosContables.HaSidoConvertidoAVoucher == true &&
+                                                    Vouchers.ClientesContablesModelID == objCliente.ClientesContablesModelID && Vouchers.Tipo == TipoVoucher.Traspaso &&
+                                                    LibrosContables.TipoLibro == tipoLibroCentralizacion
+
+                                                    select LibrosContables);
+
+
+        //IQueryable<LibrosContablesModel> lstlibro = db.DBLibrosContables.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.TipoLibro == tipoLibroCentralizacion &&  r.HaSidoConvertidoAVoucher == true);
 
         //(r => r.Fecha >= dtFechaInicio && r.Fecha <= dtFechaFin);
 
-        if (Anio != 0)
-            lstlibro = lstlibro.Where(r => r.FechaContabilizacion.Year == Anio).ToList();
-        if (Mes != 0)
-            lstlibro = lstlibro.Where(r => r.FechaContabilizacion.Month == Mes).ToList();
+        if (Anio != 0 && Anio > 0)
+            lstlibro = lstlibro.Where(r => r.FechaContabilizacion.Year == Anio);
+        if (Mes != 0 && Mes > 0)
+            lstlibro = lstlibro.Where(r => r.FechaContabilizacion.Month == Mes);
         if (ConversionFechaInicioExitosa && ConversionFechaInicioExitosa)
-            lstlibro = lstlibro.Where(r => r.FechaContabilizacion >= dtFechaInicio && r.FechaContabilizacion <= dtFechaFin).ToList();
-        if (!String.IsNullOrWhiteSpace(Rut))
-            lstlibro = lstlibro.Where(r => r.individuo.RUT.Contains(Rut)).ToList();
-        if (!String.IsNullOrWhiteSpace(RazonSocial))
-            lstlibro = lstlibro.Where(r => r.individuo.RazonSocial.Contains(RazonSocial)).ToList();
-
-        List<LibrosContablesModel> lstlibroPaginate = new List<LibrosContablesModel>();
-
-        if(cantidadRegistrosPorPagina != 0) { 
-            lstlibroPaginate = lstlibro.Skip((pagina - 1) * cantidadRegistrosPorPagina)
-                                            .Take(cantidadRegistrosPorPagina).ToList();
-        }else if(cantidadRegistrosPorPagina == 0)
-        {
-            lstlibroPaginate = lstlibro;
-        }
+            lstlibro = lstlibro.Where(r => r.FechaContabilizacion >= dtFechaInicio && r.FechaContabilizacion <= dtFechaFin);
+        if (!string.IsNullOrWhiteSpace(Rut))
+            lstlibro = lstlibro.Where(r => r.individuo.RUT.Contains(Rut));
+        if (!string.IsNullOrWhiteSpace(RazonSocial))
+            lstlibro = lstlibro.Where(r => r.individuo.RazonSocial.Contains(RazonSocial));
+        if (Folio != 0 && Folio > 0)
+            lstlibro = lstlibro.Where(r => r.Folio == Folio);
 
 
         int totalDeRegistros = lstlibro.Count();
+        if (cantidadRegistrosPorPagina != 0) { 
+            lstlibro = lstlibro.OrderBy(r => r.FechaContabilizacion)
+                               .Skip((pagina - 1) * cantidadRegistrosPorPagina)
+                               .Take(cantidadRegistrosPorPagina);
 
-        //int totalDeRegistros = lstlibro.Count();
-
-        //var Paginador = new PaginadorModel();
-
-
-        List<string[]> ReturnValues = new List<string[]>();
-
-        int NumeroRow = 1;
-        foreach (LibrosContablesModel Item in lstlibroPaginate)
+        }else if(cantidadRegistrosPorPagina == 0)
         {
-            string[] BalanceRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "0", "0", "0", "0", "0", "0", "False" };
-            //Numero Correlativo
-            BalanceRow[0] = NumeroRow.ToString();
-            //Fecha
-            BalanceRow[1] = ParseExtensions.ToDD_MM_AAAA(Item.FechaDoc);
-            //SEPARO DATOS DOCUMENTO
-            BalanceRow[2] = ParseExtensions.ToDD_MM_AAAA(Item.FechaContabilizacion);
-
-
-            BalanceRow[3] = ParseExtensions.EnumGetDisplayAttrib(Item.TipoDocumento);
-            BalanceRow[4] = ParseExtensions.DecimalToStringForRazor(Item.Folio);
-            //Documento
-            // BalanceRow[2] = ParseExtensions.EnumGetDisplayAttrib(Item.TipoDocumento) + " " + ParseExtensions.DecimalToStringForRazor(Item.Folio);
-            if (Item.individuo != null)
-            {
-                //Nombre prestador
-                BalanceRow[5] = Item.individuo.RazonSocial;
-                //Rut prestador
-                BalanceRow[6] = Item.individuo.RUT;
-            }
-            else
-            {
-                //Nombre prestador
-                BalanceRow[5] = "";
-                //Rut prestador
-                BalanceRow[6] = "";
-            }
-
-            //MONTO EXENTO
-            BalanceRow[7] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoExento);
-            //MONTO AFECTO
-            BalanceRow[8] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoNeto);
-            //MONTO IVA RECUPERABLE
-            BalanceRow[9] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIva);
-            //MONTO IVA NO RECUPERABLE
-
-
-            // Monto Total
-
-
-
-            BalanceRow[10] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaNoRecuperable);
-
-            //MONTO IVA USO COMUN
-            BalanceRow[11] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaUsocomun);
-            //MONTO TOTAL
-            BalanceRow[12] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoTotal);
-            BalanceRow[13] = "True";
-
-            if (Item.TipoDocumento.EsUnaNotaCredito() == false)
-            {
-                BalanceRow[13] = "False";
-            }
-
-            ReturnValues.Add(BalanceRow);
-
-            NumeroRow++;
+            lstlibro = lstlibro.OrderBy(r => r.FechaContabilizacion);
         }
-        
+  
+        List<string[]> ReturnValues = new List<string[]>();
+      
+        int NumeroRow = 1;
+        foreach (LibrosContablesModel Item in lstlibro.ToList())
+        {
 
+                string[] BalanceRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "0", "0", "0", "0", "0", "0", "False" };
+                BalanceRow[0] = NumeroRow.ToString();
+                BalanceRow[1] = ParseExtensions.ToDD_MM_AAAA(Item.FechaDoc);
+                BalanceRow[2] = ParseExtensions.ToDD_MM_AAAA(Item.FechaContabilizacion);
+                BalanceRow[3] = ParseExtensions.EnumGetDisplayAttrib(Item.TipoDocumento);
+                if(Item.FolioHasta > 0 && Item.Folio > 0)
+                {
+                BalanceRow[4] = Item.Folio.ToString() + " - " + Item.FolioHasta.ToString();
+                }else { 
+                    BalanceRow[4] = Item.Folio.ToString();
+                }
+                if (Item.individuo != null)
+                {
+                    //Nombre prestador
+                    BalanceRow[5] = Item.individuo.RazonSocial;
+                    //Rut prestador
+                    BalanceRow[6] = Item.individuo.RUT;
+                }
+                else
+                {
+                    //Nombre prestador
+                    BalanceRow[5] = "";
+                    //Rut prestador
+                    BalanceRow[6] = "";
+                }
+
+                BalanceRow[7] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoExento);
+                BalanceRow[8] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoNeto);
+                BalanceRow[9] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIva);
+                BalanceRow[10] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaNoRecuperable);
+                BalanceRow[11] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaUsocomun);
+                BalanceRow[12] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoTotal);
+                BalanceRow[13] = "True";
+
+                if (Item.TipoDocumento.EsUnaNotaCredito() == false)
+                {
+                    BalanceRow[13] = "False";
+                }
+
+                ReturnValues.Add(BalanceRow);
+
+                NumeroRow++;
+            
+        }
+
+        
         var Paginador = new PaginadorModel();
         Paginador.ResultStringArray = ReturnValues;
         Paginador.PaginaActual = pagina;
@@ -973,13 +969,6 @@ public class LibrosContablesModel
         return Paginador;
     }
 
-    
-
-    //public static List<string[]> GetVistaLibrosCentralizacion(List<LibrosContablesModel> LstLibro)
-    //{
-    //    //var nfi = (NumberFormatInfo)CultureInfo.CreateSpecificCulture("es").NumberFormat;
-        
-    //}
 }
 
 

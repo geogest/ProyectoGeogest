@@ -826,48 +826,14 @@ public class VoucherModel
 
         if (cantidadRegistrosPorPagina != 0)
         {
-            LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.CodigoInterno)
+            LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.FechaContabilizacion)
                                      .Skip((pagina - 1) * cantidadRegistrosPorPagina)
                                      .Take(cantidadRegistrosPorPagina);
 
         }else if(cantidadRegistrosPorPagina == 0)
         {
-            LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.CodigoInterno);
+            LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.FechaContabilizacion);
         }
-
-
-   
-
-      
-        // Filtros
-
-
-        //INTENTO POR CREAR FILTRO POR RANGO DE RUT.
-        //LibroMayorCompleto.Select(r => Convert.ToDouble(r.ReceptoresInt));
-        //LibroMayorCompleto.Select(r => Convert.ToDouble(r.ReceptoresIntB));
-
-
-        //if (RutDesde != 0 && RutHasta != 0)
-        //{
-        //    if (RutDesde.ToString().Length == 7)
-        //    {
-        //        LibroMayorCompleto = LibroMayorCompleto.Where(r => Convert.ToInt32(r.ReceptoresInt) >= RutDesde && Convert.ToInt32(r.ReceptoresInt) <= RutHasta);
-        //        var LibroMayorCompletoB = LibroMayorCompleto.Select(r => r.ReceptoresInt.ToString());
-        //       // LibroMayorCompleto = LibroMayorCompleto.Where(r => r.Receptores.Contains(LibroMayorCompletoB.FirstOrDefault());
-        //    }
-        //    if (RutDesde.ToString().Length == 6)
-        //    {
-        //        LibroMayorCompleto = LibroMayorCompleto.Where(r => Convert.ToInt32(r.ReceptoresIntB) >= RutDesde && Convert.ToInt32(r.ReceptoresIntB) <= RutHasta);
-        //        LibroMayorCompleto.Select(r => Convert.ToString(r.ReceptoresIntB));
-        //    }
-        //    if (RutDesde.ToString().Length == 6 && RutHasta.ToString().Length == 7)
-        //    {
-        //        LibroMayorCompleto = LibroMayorCompleto.Where(r => Convert.ToInt32(r.ReceptoresIntB) >= RutDesde && Convert.ToInt32(r.ReceptoresInt) <= RutHasta);
-        //        LibroMayorCompleto.Select(r => Convert.ToString(r.ReceptoresInt));
-        //        LibroMayorCompleto.Select(r => Convert.ToString(r.ReceptoresIntB));
-
-        //    }
-        //}
 
         int NumLinea = 1;
         
@@ -875,9 +841,6 @@ public class VoucherModel
         {
             string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-","-" };
 
-            
-
-           
             string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2.ToString() + "   " + itemLibroMayor.ComprobanteP3;
             //int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
             if (itemLibroMayor.Rut != "-")
@@ -887,7 +850,6 @@ public class VoucherModel
                    continue;
             }
 
-         
             ArrayLibroMayor[4] = itemLibroMayor.RazonSocial;
             ArrayLibroMayor[5] = itemLibroMayor.Rut;
 
@@ -953,7 +915,6 @@ public class VoucherModel
         TotalRow[8] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalFinalSaldo));
         ReturnValues.Add(TotalRow);
 
-        
         //Nota Para el futuro, los valores query strings se tienen que llamar igual que la variable que se desea conservar en el tiempo.
         var Paginacion = new PaginadorModel();
         Paginacion.ResultStringArray =  ReturnValues;
@@ -4025,7 +3986,8 @@ public enum TipoVoucher
 {
     Traspaso = 1,
     Ingreso = 2,
-    Egreso = 3
+    Egreso = 3,
+    Apertura = 4
 }
 
 

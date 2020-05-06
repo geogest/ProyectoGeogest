@@ -292,6 +292,18 @@
     <Compile Include="Migrations\202004300721261_CorreccionMigration.Designer.cs">
       <DependentUpon>202004300721261_CorreccionMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004302240056_OpcionElegirContabilizarLibros.cs" />
+    <Compile Include="Migrations\202004302240056_OpcionElegirContabilizarLibros.Designer.cs">
+      <DependentUpon>202004302240056_OpcionElegirContabilizarLibros.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.cs" />
+    <Compile Include="Migrations\202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.Designer.cs">
+      <DependentUpon>202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs" />
+    <Compile Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.Designer.cs">
+      <DependentUpon>202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
     <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
@@ -318,6 +330,7 @@
     <Compile Include="Models\ModelosSistemaContable\LibroMayor.cs" />
     <Compile Include="Models\ModelosSistemaContable\LibrosContablesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\MonitoreoModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ObjetosUtiles\SessionParaExcel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ParametrosClienteModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\PerfilUsuarioModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\PresupuestoModel.cs" />
@@ -934,6 +947,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004300721261_CorreccionMigration.resx">
       <DependentUpon>202004300721261_CorreccionMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004302240056_OpcionElegirContabilizarLibros.resx">
+      <DependentUpon>202004302240056_OpcionElegirContabilizarLibros.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.resx">
+      <DependentUpon>202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.resx">
+      <DependentUpon>202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
