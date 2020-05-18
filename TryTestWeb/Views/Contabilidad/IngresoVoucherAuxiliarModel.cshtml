@@ -574,7 +574,7 @@
             //this is the last input of this row
             idRowCountAux = idRowCountAux + 1;
 
-           
+
 
             var newRow = "";
             @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
@@ -1039,36 +1039,39 @@
     else
     {
         @:function CuadrarValores(inputThing)
-                                @:{
-                                @:    var TheTD = $(inputThing).parent().parent().attr('id');
-                                @:    var jAUXNeto = $("#" + TheTD + " input[name='AUXNeto']");
-                                @:    var jAUXExento = $("#" + TheTD + " input[name='AUXExento']");
-                                @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
-                                @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
-                                @:  //  alert(nmbrize(jAUXTotal));
-                                @:
-                                @:    if (nmbrize(jAUXNeto) == 0 && (nmbrize(jAUXTotal)) != 0 && (nmbrize(jAUXIva)) == 0) {
-                                        @:          jAUXIva.val(Math.round( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  * 0.19 / 1.19));
-                                        @:          jAUXNeto.val( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  - nmbrize(jAUXIva));
-                                        @:    }else{
-                                        @:          jAUXIva.val(Math.round(nmbrize(jAUXNeto) * 0.19));
-                                        @:          jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
-                                        @:    }
-                                @:
-                                @:    ValidarTotales2();
-                                @:}
-                        @:function CuadrarIVAExplicito(inputThing)
-                                @:{
-                                @:    var TheTD = $(inputThing).parent().parent().attr('id');
-                                @:    var jAUXNeto = $("#" + TheTD + " input[name='AUXNeto']");
-                                @:    var jAUXExento = $("#" + TheTD + " input[name='AUXExento']");
-                                @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
-                                @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
-                                @:
-                                @:    jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
-                                @:    ValidarTotales2();
-                                @:}
-                            }
+        @:{
+        @:    var TheTD = $(inputThing).parent().parent().attr('id');
+        @:    var jAUXNeto = $("#" + TheTD + " input[name='AUXNeto']");
+        @:    var jAUXExento = $("#" + TheTD + " input[name='AUXExento']");
+        @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
+        @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
+        @:
+        @:    debugger;
+        @:   
+        @:       if (nmbrize(jAUXNeto) == 0 && (nmbrize(jAUXTotal)) != 0 && (nmbrize(jAUXIva)) == 0) {
+        @:             jAUXIva.val(Math.round( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  * 0.19 / 1.19));
+        @:             jAUXNeto.val( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  - nmbrize(jAUXIva));
+        @:       }else {
+        @:             jAUXIva.val(Math.round(nmbrize(jAUXNeto) * 0.19));
+        @:             jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
+        @:       }
+        @:
+        @:    
+        @:   
+        @:    ValidarTotales2();
+        @:}
+        @:function CuadrarIVAExplicito(inputThing)
+        @:{
+        @:    var TheTD = $(inputThing).parent().parent().attr('id');
+        @:    var jAUXNeto = $("#" + TheTD + " input[name='AUXNeto']");
+        @:    var jAUXExento = $("#" + TheTD + " input[name='AUXExento']");
+        @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
+        @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
+        @:
+        @:    jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
+        @:    ValidarTotales2();
+        @:}
+        }
 
 
 
@@ -1117,7 +1120,7 @@
                 document.getElementById('LabelFolioHasta').classList.add('Esconder');
                 document.getElementById('Duplicar').classList.add('Esconder');
                 document.getElementById('LabelFolio').classList.remove('Esconder');
-            
+
                 let tdDuplicaFolio = document.getElementsByName('tdDuplicaFolio');
                 for (var i = 0; i < tdDuplicaFolio.length; i++) {
                     tdDuplicaFolio[i].classList.add('Esconder');
@@ -1135,7 +1138,7 @@
                 if(FolioHasta != null){
                    FolioHasta.value = "0";
                 }
-        
+
 
                 //for (var i = 0; i < FolioDesdeName.length; i++) {
                 //    FolioDesdeName[i].value = "";
@@ -1145,20 +1148,20 @@
                     FolioHastaName[i].value = "0";
                 }
 
-                let TiposDTE = document.getElementsByName('AuxTipoDTE');
-                for (var i = 0; i < TiposDTE.length; i++) {
-                    var ContenidoDelosOptions = TiposDTE[i].options[0].selected = true;
-                }
+                //let TiposDTE = document.getElementsByName('AuxTipoDTE');
+                //for (var i = 0; i < TiposDTE.length; i++) {
+                //    var ContenidoDelosOptions = TiposDTE[i].options[0].selected = true;
+                //}
             }
         }
 
         function DuplicaFolioDesdeYHasta(){
 
             if(EstaCheckeadoBoletaVenta() == true){
-         
+
                 var FolioDesde = document.getElementById('AuxFolio').value;
                 var FolioHasta = document.getElementById('FolioHasta').value;
-              
+
 
                 if(FolioDesde != "" && FolioHasta != ""){
                     var FolioDesdeName = document.getElementsByName('AuxFolio');
@@ -1180,7 +1183,7 @@
 
         function DuplicaFolioDesdeYHastaEdit(){
             if(EstaCheckeadoBoletaVenta() == true){
-         
+
                 var FolioDesde = document.getElementById('AuxFolio1').value;
                 var FolioHasta = document.getElementById('FolioHasta').value;
 
@@ -1210,17 +1213,27 @@
 
             var CajaCheckCompra = document.getElementById("CajaContaCompra");
             var CajaCheckVenta = document.getElementById("CajaContaVenta");
-            
+
             var CheckBoxCompra = document.getElementById("ContaLibroComra");
             var CheckBoxVenta = document.getElementById("ContaLibroVenta");
-           
+
+            if(SelectTipoPrestador != null){
+                if(SelectTipoPrestador.value == Compra){
+                    CajaCheckVenta.classList.add("Esconder");
+                    CajaCheckCompra.classList.remove("Esconder");
+                }else if(SelectTipoPrestador.value == Venta){
+                    CajaCheckCompra.classList.add("Esconder");
+                    CajaCheckVenta.classList.remove("Esconder");
+                }
+            }
+
             SelectTipoPrestador.addEventListener('change', function(){
                 var SelectedOption = this.options[SelectTipoPrestador.selectedIndex];
                 if(SelectedOption.value == Compra){
                     if(CheckBoxVenta != null && CheckBoxVenta.checked){
                         CheckBoxVenta.checked = 0;
                     }
-                    
+
                     CajaCheckVenta.classList.add("Esconder");
                     CajaCheckCompra.classList.remove("Esconder");
                 }else if(SelectedOption.value == Venta){
@@ -1229,7 +1242,7 @@
                     }
                     CajaCheckCompra.classList.add("Esconder");
                     CajaCheckVenta.classList.remove("Esconder");
-                }else{  
+                }else{
                     if(CheckBoxVenta != null && CheckBoxVenta.checked){
                         CheckBoxVenta.checked = 0;
                     }

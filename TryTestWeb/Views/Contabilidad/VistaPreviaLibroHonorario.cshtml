@@ -31,7 +31,27 @@
                         <tr>
                             <td>
                                 <select id="cuenta@(rowCount++)" name="cuenta" class="form-control" data-live-search="true" style="width:260px">
-                                    @Html.Raw(ViewBag.HtmlStr)
+                                    @if (ViewBag.lstReceptoresConCta != null)
+                                    {
+                                        foreach (var itemReceptor in ViewBag.lstReceptoresConCta)
+                                        {
+                                            if (Model[i].Prestador.RUT == itemReceptor.RUT)
+                                            {
+                                                QuickReceptorModel Receptor = itemReceptor;
+                                                @Html.Raw(ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelected(ViewBag.ObjCliente, Receptor.CuentaConToReceptor.CuentaContableModelID))
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw(ViewBag.HtmlStr)
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(ViewBag.HtmlStr)
+                                    }
+
                                 </select>
                             </td>
                             <td>

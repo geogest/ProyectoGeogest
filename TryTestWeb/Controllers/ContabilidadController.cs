@@ -1288,15 +1288,14 @@ namespace TryTestWeb.Controllers
                     ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(objCliente, "410101");
                 }
 
-                List<CuentaContableModel> CtasDelInviduo = new List<CuentaContableModel>();
-                List<QuickReceptorModel> Receptores = new List<QuickReceptorModel>();
+           
+                List<QuickReceptorModel> ReceptoresConRelacion = new List<QuickReceptorModel>();
 
-                string TipoReceptorCompra = "CL";
-                string TipoReceptorVenta = "PR";
+                string TipoReceptorCompra = "PR";
+                string TipoReceptorVenta = "CL";
                 
                 foreach (LibrosContablesModel ItemLibro in LstInfoImportada)
                 {
-                    CuentaContableModel CtaAencontrar = new CuentaContableModel();
                     QuickReceptorModel ReceptorAEncontrar = new QuickReceptorModel();
 
                     if (existeCompra == 1)
@@ -1310,29 +1309,21 @@ namespace TryTestWeb.Controllers
                                                                                 x.RUT == ItemLibro.individuo.RUT &&
                                                                                 x.tipoReceptor == TipoReceptorVenta);
                     }
-
-                    if (ReceptorAEncontrar != null && ReceptorAEncontrar.CuentaConToReceptor != null) { 
-                        CtaAencontrar = objCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == ReceptorAEncontrar.CuentaConToReceptor.CuentaContableModelID);
-                        Receptores.Add(ReceptorAEncontrar);
-                    }
-                    if (CtaAencontrar.CuentaContableModelID > 0 && CtaAencontrar != null)
-                        {
-                            CtasDelInviduo.Add(CtaAencontrar);
-                        }
                   
+                    if(ReceptorAEncontrar != null && ReceptorAEncontrar.CuentaConToReceptor != null)
+                    {
+                        ReceptoresConRelacion.Add(ReceptorAEncontrar);
+                    }
                     
                 }
 
-                if(CtasDelInviduo.Count > 0)
+                if(ReceptoresConRelacion.Count() > 0)
                 {
-                    ViewBag.CtaContReceptor = CtasDelInviduo;
-                }
-                if(Receptores.Count > 0)
-                {
-                    ViewBag.Receptores = Receptores.ToList();
-                }
+                    ViewBag.lstReceptoresConCta = ReceptoresConRelacion;
+                    ViewBag.ObjClienteToView = objCliente;
+                } 
 
-                ViewBag.ObjClienteToView = objCliente;
+                
 
 
                 // List<String> CuentaContableIVA = new List<String> { "520103", "520104", "520105" };
@@ -5847,9 +5838,9 @@ namespace TryTestWeb.Controllers
 
             //Recorrer la data
             foreach (string[] strFilaCSV in csvInput)
-            {  
- 
-                       
+            {
+
+
                 string tipoOrigen = null;
 
                 if (csvInput.First() == strFilaCSV)
@@ -5874,7 +5865,7 @@ namespace TryTestWeb.Controllers
                     continue;
                 }
 
-            
+
 
                 //Crear nuevo doc centralizacion
                 LibrosContablesModel NewLibroContableModel = new LibrosContablesModel();
@@ -5885,17 +5876,17 @@ namespace TryTestWeb.Controllers
                 //Asignar a este cliente
                 NewLibroContableModel.ClientesContablesModelID = objCliente.ClientesContablesModelID;
 
-          
-                 NewLibroContableModel.TipoDocumento = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[1]);
+
+                NewLibroContableModel.TipoDocumento = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[1]);
 
 
                 //Razon social (CLIENTE / PROVEEDOR) y RUT se transforman en un objeto de tipo Prestador
                 string RutPrestador = strFilaCSV[3];
                 string RazonSocialPrestador = strFilaCSV[4];
 
-                if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) { 
-                RutDupleDuple = strFilaCSV[3];
-                RazonSocialDuple = strFilaCSV[4];
+                if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) {
+                    RutDupleDuple = strFilaCSV[3];
+                    RazonSocialDuple = strFilaCSV[4];
                 }
                 //Aquí construimos la fila que copiaremos.
                 if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
@@ -5904,15 +5895,15 @@ namespace TryTestWeb.Controllers
 
                     NewLibroContableModel.individuo = objPrestador;
                 }
-              
 
 
-                if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) {            
-                //AuxiliaresPrestadoresModel objPrestador = AuxiliaresPrestadoresModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db);
-                QuickReceptorModel objPrestador = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db, tipoReceptor);
 
-                // NewLibroContableModel.Prestador = objPrestador;
-                NewLibroContableModel.individuo = objPrestador;
+                if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) {
+                    //AuxiliaresPrestadoresModel objPrestador = AuxiliaresPrestadoresModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db);
+                    QuickReceptorModel objPrestador = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db, tipoReceptor);
+
+                    // NewLibroContableModel.Prestador = objPrestador;
+                    NewLibroContableModel.individuo = objPrestador;
 
                 }
 
@@ -5921,29 +5912,31 @@ namespace TryTestWeb.Controllers
                 // Volver a activar después de hacer las pruebas.
                 //Errores en caso de que ya exista el libro y haya sido dado de alta.
 
-                  List<LibrosContablesModel> SinRepetidos = db.DBLibrosContables.Where(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                                                                  x.Folio == NewLibroContableModel.Folio &&
-                                                                                                  x.TipoDocumento == NewLibroContableModel.TipoDocumento &&
-                                                                                                  x.individuo.RUT ==  NewLibroContableModel.individuo.RUT &&
-                                                                                                  x.HaSidoConvertidoAVoucher == true &&
-                                                                                                  x.TipoLibro == tipoCentralizacion).ToList();
+                List<LibrosContablesModel> SinRepetidos = db.DBLibrosContables.Where(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                                x.Folio == NewLibroContableModel.Folio &&
+                                                                                                x.TipoDocumento == NewLibroContableModel.TipoDocumento &&
+                                                                                                x.individuo.RUT == NewLibroContableModel.individuo.RUT &&
+                                                                                                x.HaSidoConvertidoAVoucher == true &&
+                                                                                                x.TipoLibro == tipoCentralizacion).ToList();
 
                 List<VoucherModel> Repetidos = new List<VoucherModel>();
                 VoucherModel VoucherEncontrado = new VoucherModel();
-                if (SinRepetidos != null) {
+                if (SinRepetidos != null)
+                {
                     foreach (var ItemRepetido in SinRepetidos)
                     {
                         VoucherEncontrado = db.DBVoucher.SingleOrDefault(x => x.VoucherModelID == ItemRepetido.VoucherModelID);
-                        if(VoucherEncontrado.DadoDeBaja == false && VoucherEncontrado.Tipo == TipoVoucher.Traspaso) { 
-                          Repetidos.Add(VoucherEncontrado);
+                        if (VoucherEncontrado.DadoDeBaja == false && VoucherEncontrado.Tipo == TipoVoucher.Traspaso)
+                        {
+                            Repetidos.Add(VoucherEncontrado);
                         }
                     }
-                   
+
                 }
 
                 if (SinRepetidos != null && Repetidos != null && Repetidos.Count() > 0)
                 {
-                  throw new Exception();  
+                    throw new Exception();
                 }
 
 
