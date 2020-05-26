@@ -24,21 +24,33 @@ using System.Web;
 
             string TipoReceptorCompra = "PR";
             string TipoReceptorVenta = "CL";
-        //string TipoReceptorHonorarios = "H";
+            string TipoReceptorHonorario = "H";
+            string TipoReceptorRemu = "P";
 
+            //Aquí se consultarán los tipos de voucher y se irán según la logica contable entregada
+            //No se discrimina por tipo de voucher aquí están, tanto, ingresos, egresos, traspasos
+            
             var TablaPrestador = (from Voucher in db.DBVoucher
                                   join DetalleVoucher in db.DBDetalleVoucher on Voucher.VoucherModelID equals DetalleVoucher.VoucherModelID
                                   join Auxiliares in db.DBAuxiliares on DetalleVoucher.DetalleVoucherModelID equals Auxiliares.DetalleVoucherModelID
                                   join AuxiliaresDetalle in db.DBAuxiliaresDetalle on Auxiliares.AuxiliaresModelID equals AuxiliaresDetalle.AuxiliaresModelID
 
-                                  where Voucher.DadoDeBaja == false &&
+                                  where
+                                  Voucher.DadoDeBaja == false && //Ingreso
                                   Voucher.ClientesContablesModelID == ObjCliente.ClientesContablesModelID &&
-                                  Voucher.Tipo == TipoVoucher.Ingreso &&
                                   AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptorVenta ||
-                                  Voucher.DadoDeBaja == false &&
+
+                                  Voucher.DadoDeBaja == false && //Egreso
                                   Voucher.ClientesContablesModelID == ObjCliente.ClientesContablesModelID &&
-                                  Voucher.Tipo == TipoVoucher.Egreso &&
-                                  AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptorCompra
+                                  AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptorCompra ||
+
+                                  Voucher.DadoDeBaja == false && //Egreso
+                                  Voucher.ClientesContablesModelID == ObjCliente.ClientesContablesModelID &&
+                                  AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptorHonorario ||
+
+                                  Voucher.DadoDeBaja == false && //Egreso
+                                  Voucher.ClientesContablesModelID == ObjCliente.ClientesContablesModelID &&
+                                  AuxiliaresDetalle.Individuo2.tipoReceptor == TipoReceptorRemu
             
 
                                   select new {
@@ -75,6 +87,14 @@ using System.Web;
                 {
                     objTer.Ingreso = TotalDebeHaber;
                     objTer.TipoLibro = "Venta";
+                }else if(itemCatorceTer.TipoPrestador == TipoReceptorHonorario)
+                {
+                    objTer.Egreso = TotalDebeHaber;
+                    objTer.TipoLibro = "Honorario";
+                }else if(itemCatorceTer.TipoPrestador == TipoReceptorRemu)
+                {
+                    objTer.Egreso = TotalDebeHaber;
+                    objTer.TipoLibro = "Remuneracion";
                 }
 
                 objTer.Glosa = itemCatorceTer.Glosa;

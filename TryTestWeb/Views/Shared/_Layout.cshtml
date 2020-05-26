@@ -576,10 +576,26 @@
                                     </li>
                                 }
 
-                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CargarLibros") ||   
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CatorceTer"))
+                                {
+                                    <li class="has-sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-information"></i> <span> 14 Ter </span> <span class="menu-arrow"></span></a>
+
+                                        <ul class="list-unstyled">
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current,"CatorceTer"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("CatorceTer","Contabilidad")">Informe 14 Ter</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CargarLibros") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "CargarLibrosHonorarios")
                                     )
-                                    {
+                                {
                                     <li class="has_sub">
                                         <a href="javascript:void(0);" class="waves-effect"><i class="ion-merge"></i> <span> Importar </span> <span class="menu-arrow"></span></a>
                                         <ul class="list-unstyled">

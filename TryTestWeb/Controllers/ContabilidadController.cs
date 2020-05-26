@@ -5118,7 +5118,7 @@ namespace TryTestWeb.Controllers
                     {
                         string fileExtension = Path.GetExtension(file.FileName);
 
-                        if (fileExtension == ".csv" || fileExtension == ".xls")
+                        if (fileExtension == ".xls")
                         {
                              csv = ParseExtensions.ReadCSV(file);
 
@@ -5131,7 +5131,7 @@ namespace TryTestWeb.Controllers
                             }
                         }else
                         {
-                            TempData["Error"] = "El archivo debe tener la extensión .csv o .xls";
+                            TempData["Error"] = "El archivo debe tener la extensión .xls";
                         }
                     }
 
@@ -5253,6 +5253,11 @@ namespace TryTestWeb.Controllers
                     Json(Result);
                     Session["LibroHonorariosAExportar"] = lstHonorarios;
                 }
+                else
+                {
+                    TempData["Error"] = "Ocurrió un error al procesar el libro, Revise la extensión y si existen registros.";
+                }
+
                 return Json(Result);
         }
 
