@@ -5591,16 +5591,57 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult CatorceTer()
+        public ActionResult CatorceTer(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string RazonSocial = "", int Folio = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            List<CatorceTerViewModel> lstCatorceTer = new List<CatorceTerViewModel>();
-            lstCatorceTer = CatorceTerViewModel.GetCatorceTer(db,objCliente);
+            var lstCatorceTer = new PaginadorModel();
+            lstCatorceTer = CatorceTerViewModel.GetCatorceTer(db,objCliente, FechaInicio, FechaFin, Anio, Mes, pagina, cantidadRegistrosPorPagina, Rut, RazonSocial, Folio);
+
+          
+            SessionParaExcel Fechas = new SessionParaExcel();
+
+            Session["FechasCatorceTer"] = null;
+            if(Anio > 0 || Mes > 0) { 
+
+                if(Anio > 0) { 
+                    Fechas.Anio = Anio.ToString();
+                }
+                if (Mes > 0) { 
+                    Fechas.Mes = Mes.ToString();
+                }
+
+                Session["FechasCatorceTer"] = Fechas;
+            }
+
+            Session["CatorceTer"] = lstCatorceTer.LstCatorceTer;
 
             return View(lstCatorceTer);
+        }
+
+        [Authorize]
+        public ActionResult GetExcelCatorceTer()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+
+            if(Session["CatorceTer"] != null) { 
+            List<CatorceTerViewModel> lstAExportar = (List<CatorceTerViewModel>)Session["CatorceTer"];
+                SessionParaExcel Fechas14Ter = new SessionParaExcel();
+                if(Session["FechasCatorceTer"] != null) { 
+                      Fechas14Ter = (SessionParaExcel)Session["FechasCatorceTer"];
+                }
+
+
+                var cachedStream = CatorceTerViewModel.GetExcelCatorceTer(lstAExportar, objCliente, true, Fechas14Ter);
+                return File(cachedStream, "application/vnd.ms-excel", "14Ter" + Guid.NewGuid() + ".xlsx");
+            }
+
+            return null;
         }
 
         [Authorize]

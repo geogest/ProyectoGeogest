@@ -1,4 +1,4 @@
-﻿@model List<CatorceTerViewModel>
+﻿@model PaginadorModel
 
 <br />
 
@@ -38,7 +38,7 @@
 <div class="form-group">
     <div class="row">
         <div class="card-box">
-            @using (Html.BeginForm("LibroCompra", "Contabilidad", FormMethod.Post))
+            @using (Html.BeginForm("CatorceTer", "Contabilidad", FormMethod.Post))
             {
                 <div class="row form-group">
                     <div class="col-md-2">
@@ -111,12 +111,12 @@
                 <div class="table table-responsive">
                     <div class="panel-body" id="parshial" style="font-size:13px;">
 
-                        @if (Model.Count() > 0)
+                        @if (Model.LstCatorceTer.Count() > 0)
                         {
                             <table class="table table-responsive table-striped table-bordered table-hover compact" id="dataTables">
                                 <thead>
                                     <tr>
-                       
+                                        <th class="FontSize">#</th>
                                         <th class="FontSize">Fecha</th>
                                         <th class="FontSize">Tipo</th>
                                         <th class="FontSize">Tipo Documento</th>
@@ -125,22 +125,29 @@
                                         <th class="FontSize">Rut</th>
                                         <th class="FontSize">Ingreso</th>
                                         <th class="FontSize">Egreso</th>
-                                        <th class="FontSize">Glosa</th>
-                                        
-     
+                                        <th class="FontSize">Cuenta Contable</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if (Model != null)
                                     {
-
-                                        foreach (var ItemCatorceTer in Model)
+                                        int Correlativo = 1;
+                                        foreach (var ItemCatorceTer in Model.LstCatorceTer)
                                         {
 
                                             <tr class="odd gradeX">
+                                                @if(ItemCatorceTer.TotalIngreso > 0 || ItemCatorceTer.TotalEgreso > 0)
+                                                {
+                                                    <td colspan="6"></td>
+                                                    <td><strong>Total:</strong></td>
+                                                    <td><strong>@ParseExtensions.NumeroConPuntosDeMiles(ItemCatorceTer.TotalIngreso)</strong></td>
+                                                    <td><strong>@ParseExtensions.NumeroConPuntosDeMiles(ItemCatorceTer.TotalEgreso)</strong></td>
+                                                    <td></td>
+                                                }else { 
+                                                <td>@Correlativo</td>
                                                 <td>@ItemCatorceTer.Fecha.ToString("dd-MM-yyyy")</td>
                                                 <td>@ItemCatorceTer.TipoLibro</td>
-                                                @if(ItemCatorceTer.TipoDocumento != 0) { 
+                                                if(ItemCatorceTer.TipoDocumento != 0) { 
                                                     <td>@ParseExtensions.EnumGetDisplayAttrib(ItemCatorceTer.TipoDocumento)</td>
                                                 }else
                                                 {
@@ -151,14 +158,19 @@
                                                 <td>@ItemCatorceTer.RutReceptor</td>
                                                 <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemCatorceTer.Ingreso)</td>
                                                 <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemCatorceTer.Egreso)</td>
-                                                <td>@ItemCatorceTer.Glosa</td>
+                                                <td>@ItemCatorceTer.CuentaContable</td>
+                                                Correlativo++;
+                                                }
                                             </tr>
                                         }
+                
+                        
                                     }
 
                                 </tbody>
                             </table>
                         }
+                        @{Html.RenderPartial("_paginador", Model); }
                     </div>
 
                 </div>

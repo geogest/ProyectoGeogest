@@ -369,8 +369,8 @@ public class CuentaContableModel
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.PASIVOS, sc24PatrimonioNeto, ssc2401Capital, "240107", "DIVIDENDOS"));
 
         //4.RESULTADOS/PERDIDAS / 41.COSTO DE EXPLOTACION / 4101.COSTOS DE MERCADERIA VENDIDA
-        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4101CostosDeLaMercaderiaVendida, "410101", "COSTO DE MATERIA PRIMA (F%V)", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
-        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4101CostosDeLaMercaderiaVendida, "410102", "COSTOS DE OTRAS MATERIAS PRIMAS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4101CostosDeLaMercaderiaVendida, "410101", "COSTO DE VENTA", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4101CostosDeLaMercaderiaVendida, "410102", "OTROS COSTOS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4101CostosDeLaMercaderiaVendida, "410103", "COSTOS DE MATERIAS PRIMAS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
         //4.RESULTADOS/PERDIDAS / 41.COSTO DE EXPLOTACION / 4102.GASTOS DE PRODUCCION
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc41CostoDeExplotacion, ssc4102GastosDeProduccion, "410201", "MANO DE OBRA", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
@@ -466,7 +466,7 @@ public class CuentaContableModel
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOPERDIDA, sc42GastosPorIntereses, ssc4201OtrosGastos, "420106", "GASTOS POR INVERSIONES", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
 
         //5.RESULTADOS/GANANCIAS / 51.VENTA NETA / 5101.INGRESOS POR VENTA              null,
-        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOGANANCIA, sc51VentaNeta, ssc5101IngresosPorVenta, "510101", "INGRESOS POR VENTA ADICIONALES", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Venta, 1, 1, 0, 0, 0));
+        CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOGANANCIA, sc51VentaNeta, ssc5101IngresosPorVenta, "510101", "VENTAS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Venta, 1, 1, 0, 0, 0));
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOGANANCIA, sc51VentaNeta, ssc5101IngresosPorVenta, "510102", "OTROS INGRESOS", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
         CtaContableBase.Add(new CuentaContableModel(clienteID, ClasificacionCtaContable.RESULTADOGANANCIA, sc51VentaNeta, ssc5101IngresosPorVenta, "510103", "DESCUENTOS Y PROMOCIONES", false, TipoAuxiliar.ProveedorDeudor, false, TipoCentralizacion.Ninguno, 1, 1, 0, 0, 0));
         

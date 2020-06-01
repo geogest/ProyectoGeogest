@@ -323,7 +323,7 @@ public class VoucherModel
         List<string[]> newStrList = new List<string[]>();
         foreach (string[] newOrderValues in lstLibroMayor)
         {
-            string[] newIngreso = { newOrderValues[1], newOrderValues[2], newOrderValues[3], newOrderValues[4], newOrderValues[5], newOrderValues[6], newOrderValues[7], newOrderValues[8] };
+            string[] newIngreso = { newOrderValues[1], newOrderValues[2], newOrderValues[3], newOrderValues[4], newOrderValues[5], newOrderValues[6], newOrderValues[7], newOrderValues[8], newOrderValues[9] };
             newStrList.Add(newIngreso);
         }
 
@@ -390,9 +390,9 @@ public class VoucherModel
                     }
                     workSheet.Cell(NumeroFilaExcel, i + 1).Value = tableRow[i];   
                 }
-                workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                workSheet.Range("A" + NumeroFilaExcel + ":I" + NumeroFilaExcel).Rows
                 ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                workSheet.Range("A" + NumeroFilaExcel + ":I" + NumeroFilaExcel).Rows
                 ().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
                 NumeroFilaExcel++;
             }
@@ -753,32 +753,30 @@ public class VoucherModel
         //Si me robo un auto Tesla, se transforma en un auto Edison?
         IQueryable<LibroMayor> LibroMayorCompleto = (from detalleVoucher in db.DBDetalleVoucher
                                                      join Voucher in db.DBVoucher on detalleVoucher.VoucherModelID equals Voucher.VoucherModelID into vouchGroup from Voucher in vouchGroup.DefaultIfEmpty()
-                                                     join ClienteContable in db.DBClientesContables on Voucher.ClientesContablesModelID equals ClienteContable.ClientesContablesModelID into clientecontGroup from ClienteContable in clientecontGroup.DefaultIfEmpty()
                                                      join Auxiliar in db.DBAuxiliares on detalleVoucher.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID into auxGroup from Auxiliar in auxGroup.DefaultIfEmpty()
                                                      join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID into auxdetallGroup from AuxiliarDetalle in auxdetallGroup.DefaultIfEmpty()
                                                      join CtaContable in db.DBCuentaContable on detalleVoucher.ObjCuentaContable.CuentaContableModelID equals CtaContable.CuentaContableModelID into ctaGroup from CtaContable in ctaGroup.DefaultIfEmpty()
-                                                     join Receptor in db.Receptores on AuxiliarDetalle.Individuo2.QuickReceptorModelID equals Receptor.QuickReceptorModelID into recepGroup from Receptor in recepGroup.DefaultIfEmpty()
+                                           
+                                                     where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID
 
-                                                     where Voucher.DadoDeBaja == false && ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID
-
-                                              select new LibroMayor
-                                              {
-                                                  Haber = detalleVoucher.MontoHaber,
-                                                  Debe = detalleVoucher.MontoDebe,
-                                                  Glosa = detalleVoucher.GlosaDetalle,
-                                                  FechaContabilizacion = detalleVoucher.FechaDoc,
-                                                  Rut = Receptor.RUT == null ? "-" : Receptor.RUT,
-                                                  RazonSocial = Receptor.RazonSocial == null ? "-" : Receptor.RazonSocial,
-                                                  CodigoInterno = CtaContable.CodInterno,
-                                                  CtaContNombre = CtaContable.nombre,
-                                                  CtaContablesID = CtaContable.CuentaContableModelID,
-                                                  CtaContableClasi = CtaContable.Clasificacion,
-                                                  Comprobante = Voucher.Tipo,
-                                                  ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
-                                                  ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
-                                                  NumVoucher = Voucher.NumeroVoucher
+                                                     select new LibroMayor
+                                                     {
+                                                         Haber = detalleVoucher.MontoHaber,
+                                                         Debe = detalleVoucher.MontoDebe,
+                                                         Glosa = detalleVoucher.GlosaDetalle,
+                                                         FechaContabilizacion = detalleVoucher.FechaDoc,
+                                                         Rut = AuxiliarDetalle.Individuo2.RUT == null ? "-" : AuxiliarDetalle.Individuo2.RUT,
+                                                         RazonSocial = AuxiliarDetalle.Individuo2.RazonSocial == null ? "-" : AuxiliarDetalle.Individuo2.RazonSocial,
+                                                         CodigoInterno = CtaContable.CodInterno,
+                                                         CtaContNombre = CtaContable.nombre,
+                                                         CtaContablesID = CtaContable.CuentaContableModelID,
+                                                         CtaContableClasi = CtaContable.Clasificacion,
+                                                         Comprobante = Voucher.Tipo,
+                                                         ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
+                                                         ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
+                                                         NumVoucher = Voucher.NumeroVoucher
                                                   
-                                              });
+                                                     });
 
         //LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.Fecha);
 
