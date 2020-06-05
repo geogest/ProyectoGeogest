@@ -323,9 +323,11 @@ public class VoucherModel
         List<string[]> newStrList = new List<string[]>();
         foreach (string[] newOrderValues in lstLibroMayor)
         {
-            string[] newIngreso = { newOrderValues[1], newOrderValues[2], newOrderValues[3], newOrderValues[4], newOrderValues[5], newOrderValues[6], newOrderValues[7], newOrderValues[8], newOrderValues[9] };
+            string[] newIngreso = { newOrderValues[1], newOrderValues[2], newOrderValues[3], newOrderValues[4], newOrderValues[5], newOrderValues[6], newOrderValues[7], newOrderValues[8], newOrderValues[9]};
             newStrList.Add(newIngreso);
         }
+
+        var UnicosEnLaLista = ParseExtensions.obtieneUnicosEnLista(lstLibroMayor);
 
         string RutaPlanillaLibroMayor = ParseExtensions.Get_AppData_Path("EXCELMAYOR.xlsx");
 
@@ -378,24 +380,101 @@ public class VoucherModel
 
             DateTime ObjFechaUtil = new DateTime();
             int NumeroFilaExcel = 13;
-            foreach (string[] tableRow in newStrList)
+
+
+            for (int i = 0; i < UnicosEnLaLista.Count(); i++)
             {
-                for (int i = 0; i < tableRow.Length; i++)
-                {
-                    if(tableRow[i] == tableRow[0] && tableRow[i] != "-")
-                    {
-                       
-                        ObjFechaUtil = ParseExtensions.ToDD_MM_AAAA_Multi(tableRow[i]);
-                        tableRow[i] = ObjFechaUtil.ToString();
-                    }
-                    workSheet.Cell(NumeroFilaExcel, i + 1).Value = tableRow[i];   
-                }
-                workSheet.Range("A" + NumeroFilaExcel + ":I" + NumeroFilaExcel).Rows
-                ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                workSheet.Range("A" + NumeroFilaExcel + ":I" + NumeroFilaExcel).Rows
-                ().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                decimal Debe = 0;
+                decimal Haber = 0;
+                decimal Saldo = 0;
+
+                workSheet.Cell(NumeroFilaExcel, "A").Value = UnicosEnLaLista[i];
+                workSheet.Cell(NumeroFilaExcel, "A").Style.Font.Bold = true;
                 NumeroFilaExcel++;
+
+                workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                     ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                ().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                workSheet.Cell(NumeroFilaExcel, "A").Value = "FECHA";
+                workSheet.Cell(NumeroFilaExcel, "B").Value = "COMPROBANTE";
+                workSheet.Cell(NumeroFilaExcel, "C").Value = "GLOSA";
+                workSheet.Cell(NumeroFilaExcel, "D").Value = "RAZON SOCIAL";
+                workSheet.Cell(NumeroFilaExcel, "E").Value = "RUT";
+                workSheet.Cell(NumeroFilaExcel, "F").Value = "DEBE";
+                workSheet.Cell(NumeroFilaExcel, "G").Value = "HABER";
+                workSheet.Cell(NumeroFilaExcel, "H").Value = "SALDO";
+             
+
+                NumeroFilaExcel++;
+     
+             
+                foreach (var ItemMayor in newStrList)
+                {
+                    
+                    if (ItemMayor[8] == UnicosEnLaLista[i]) {
+                        
+                        for (int j = 0; j < ItemMayor.Count() - 1; j++)
+                        {
+                            if(ItemMayor[j] == ItemMayor[0] && ItemMayor[j] != "-")
+                            {
+                                ObjFechaUtil = ParseExtensions.ToDD_MM_AAAA_Multi(ItemMayor[j]);
+                            }
+
+
+                            if(j == 5 && ItemMayor[j] != "0")
+                            {
+                                Debe += Convert.ToDecimal(ItemMayor[j]);
+                            }
+                            if (j == 6 && ItemMayor[j] != "0")
+                            {
+                                Haber += Convert.ToDecimal(ItemMayor[j]);
+                            }
+                            if (j == 7 && ItemMayor[j] != "0")
+                            {
+                                Saldo += Convert.ToDecimal(ItemMayor[j]); 
+                            }
+                            workSheet.Cell(NumeroFilaExcel, j + 1).Value = ItemMayor[j];
+                            
+                        }
+                        workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                        ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                        ().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                        NumeroFilaExcel++;
+                    }
+                }
+                workSheet.Cell(NumeroFilaExcel, "E").Value = "TOTAL";
+                workSheet.Cell(NumeroFilaExcel, "E").Style.Font.Bold = true;
+                workSheet.Cell(NumeroFilaExcel, "F").Value = Debe;
+                workSheet.Cell(NumeroFilaExcel, "F").Style.Font.Bold = true;
+                workSheet.Cell(NumeroFilaExcel, "G").Value = Haber;
+                workSheet.Cell(NumeroFilaExcel, "G").Style.Font.Bold = true;
+                workSheet.Cell(NumeroFilaExcel, "H").Value = Saldo;
+                workSheet.Cell(NumeroFilaExcel, "H").Style.Font.Bold = true;
+
+                workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
+                ().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                NumeroFilaExcel+=2;
             }
+
+            int TotalFinal = newStrList.Count() - 1;
+            string[] totales = newStrList[TotalFinal];
+
+      
+            workSheet.Cell(NumeroFilaExcel, "E").Value = "TOTAL FINAL:";
+            workSheet.Cell(NumeroFilaExcel, "E").Style.Font.Bold = true;
+            workSheet.Cell(NumeroFilaExcel, "F").Value = totales[5];
+            workSheet.Cell(NumeroFilaExcel, "F").Style.Font.Bold = true;
+            workSheet.Cell(NumeroFilaExcel, "G").Value = totales[6];
+            workSheet.Cell(NumeroFilaExcel, "G").Style.Font.Bold = true;
+            workSheet.Cell(NumeroFilaExcel, "H").Value = totales[7];
+            workSheet.Cell(NumeroFilaExcel, "H").Style.Font.Bold = true;
+
             ExcelByteArray = ParseExtensions.GetExcelStream(excelFile);
         }
         if (ExcelByteArray == null)
