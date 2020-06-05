@@ -431,10 +431,6 @@ public class VoucherModel
                             {
                                 Haber += Convert.ToDecimal(ItemMayor[j]);
                             }
-                            if (j == 7 && ItemMayor[j] != "0")
-                            {
-                                Saldo += Convert.ToDecimal(ItemMayor[j]); 
-                            }
                             workSheet.Cell(NumeroFilaExcel, j + 1).Value = ItemMayor[j];
                             
                         }
@@ -452,7 +448,10 @@ public class VoucherModel
                 workSheet.Cell(NumeroFilaExcel, "F").Style.Font.Bold = true;
                 workSheet.Cell(NumeroFilaExcel, "G").Value = Haber;
                 workSheet.Cell(NumeroFilaExcel, "G").Style.Font.Bold = true;
-                workSheet.Cell(NumeroFilaExcel, "H").Value = Saldo;
+
+                Saldo = Haber - Debe;
+
+                workSheet.Cell(NumeroFilaExcel, "H").Value = Math.Abs(Saldo);
                 workSheet.Cell(NumeroFilaExcel, "H").Style.Font.Bold = true;
 
                 workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
@@ -668,8 +667,6 @@ public class VoucherModel
         int NumeroRow = 1;
 
         foreach (VoucherModel Voucher in lstVoucher)
-
-
         {
 
             IEnumerable<DetalleVoucherModel> lstDetallesVoucher = Voucher.ListaDetalleVoucher.OrderBy(x => x.FechaDoc);
