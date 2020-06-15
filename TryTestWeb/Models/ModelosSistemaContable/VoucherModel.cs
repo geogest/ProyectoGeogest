@@ -825,17 +825,18 @@ public class VoucherModel
             ConversionFechaFinExitosa = DateTime.TryParseExact(FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
         }
 
-
         //Si me robo un auto Tesla, se transforma en un auto Edison?
-        IQueryable<LibroMayor> LibroMayorCompleto = (from detalleVoucher in db.DBDetalleVoucher
-                                                     join Voucher in db.DBVoucher on detalleVoucher.VoucherModelID equals Voucher.VoucherModelID into vouchGroup from Voucher in vouchGroup.DefaultIfEmpty()
-                                                     join Auxiliar in db.DBAuxiliares on detalleVoucher.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID into auxGroup from Auxiliar in auxGroup.DefaultIfEmpty()
-                                                     join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID into auxdetallGroup from AuxiliarDetalle in auxdetallGroup.DefaultIfEmpty()
-                                                     join CtaContable in db.DBCuentaContable on detalleVoucher.ObjCuentaContable.CuentaContableModelID equals CtaContable.CuentaContableModelID into ctaGroup from CtaContable in ctaGroup.DefaultIfEmpty()
-                                           
+                            var LibroMayorCompleto = (from detalleVoucher in db.DBDetalleVoucher.AsNoTracking()
+                                                     join Voucher in db.DBVoucher.AsNoTracking() on detalleVoucher.VoucherModelID  equals Voucher.VoucherModelID into vouchGroup
+                                                     from Voucher in vouchGroup.DefaultIfEmpty()
+                                                     join Auxiliar in db.DBAuxiliares.AsNoTracking() on detalleVoucher.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID into auxGroup
+                                                     from Auxiliar in auxGroup.DefaultIfEmpty()
+                                                     join AuxiliarDetalle in db.DBAuxiliaresDetalle.AsNoTracking() on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID into auxdetallGroup
+                                                     from AuxiliarDetalle in auxdetallGroup.DefaultIfEmpty()
+
                                                      where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID
 
-                                                     select new LibroMayor
+                                                     select new 
                                                      {
                                                          Haber = detalleVoucher.MontoHaber,
                                                          Debe = detalleVoucher.MontoDebe,
@@ -843,16 +844,43 @@ public class VoucherModel
                                                          FechaContabilizacion = detalleVoucher.FechaDoc,
                                                          Rut = AuxiliarDetalle.Individuo2.RUT == null ? "-" : AuxiliarDetalle.Individuo2.RUT,
                                                          RazonSocial = AuxiliarDetalle.Individuo2.RazonSocial == null ? "-" : AuxiliarDetalle.Individuo2.RazonSocial,
-                                                         CodigoInterno = CtaContable.CodInterno,
-                                                         CtaContNombre = CtaContable.nombre,
-                                                         CtaContablesID = CtaContable.CuentaContableModelID,
-                                                         CtaContableClasi = CtaContable.Clasificacion,
+                                                         CodigoInterno = detalleVoucher.ObjCuentaContable.CodInterno,
+                                                         CtaContNombre = detalleVoucher.ObjCuentaContable.nombre,
+                                                         CtaContablesID = detalleVoucher.ObjCuentaContable.CuentaContableModelID,
+                                                         CtaContableClasi = detalleVoucher.ObjCuentaContable.Clasificacion,
                                                          Comprobante = Voucher.Tipo,
                                                          ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
                                                          ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
                                                          NumVoucher = Voucher.NumeroVoucher
-                                                  
+
                                                      });
+
+
+        //var test = objCliente.ListVoucher.SelectMany(x => x.ListaDetalleVoucher).Select(x => x.Auxiliar).ToList();
+
+
+        //var vouchers = objCliente.ListVoucher.ToList();
+
+        //List<AuxiliaresDetalleModel> lst = new List<AuxiliaresDetalleModel>();
+        //foreach (var item in vouchers)
+        //{
+        //    var query = vouchers.SelectMany(x => x.ListaDetalleVoucher).ToList();
+
+        //    foreach (var itemDetalle in query)
+        //    {
+            
+        //        if(itemDetalle.Auxiliar != null) {
+        //            var query2 = itemDetalle.Auxiliar.ListaDetalleAuxiliares;
+        //            foreach (AuxiliaresDetalleModel itemauxdetalle in query2)
+        //            {
+        //                lst.Add(itemauxdetalle);
+        //            }
+        //        }
+        //    }
+        //}
+
+        
+
 
         //LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.Fecha);
 
@@ -896,7 +924,7 @@ public class VoucherModel
         }
 
 
-        var TotalRegistros = LibroMayorCompleto.Count();
+        int TotalRegistros = LibroMayorCompleto.Count();
 
         if (cantidadRegistrosPorPagina != 0)
         {
@@ -911,7 +939,7 @@ public class VoucherModel
 
         int NumLinea = 1;
         
-        foreach (LibroMayor itemLibroMayor in LibroMayorCompleto)
+        foreach (var itemLibroMayor in LibroMayorCompleto)
         {
             string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-","-" };
 
