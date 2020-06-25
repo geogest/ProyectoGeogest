@@ -802,7 +802,7 @@ public class VoucherModel
 
     }
 
-    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina, ClientesContablesModel objCliente, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "",int Anio = 0,int Mes = 0, string Rut = "", string Glosa ="", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0) 
+    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina, ClientesContablesModel objCliente, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "",int Anio = 0,int Mes = 0, string Rut = "", string Glosa ="", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool Filtro = false) 
     {
         List<string[]> ReturnValues = new List<string[]>();
 
@@ -824,19 +824,21 @@ public class VoucherModel
             ConversionFechaInicioExitosa = DateTime.TryParseExact(FechaInicio, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaInicio);
             ConversionFechaFinExitosa = DateTime.TryParseExact(FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
         }
+       
+
 
         //Si me robo un auto Tesla, se transforma en un auto Edison?
-                            var LibroMayorCompleto = (from detalleVoucher in db.DBDetalleVoucher.AsNoTracking()
-                                                     join Voucher in db.DBVoucher.AsNoTracking() on detalleVoucher.VoucherModelID  equals Voucher.VoucherModelID into vouchGroup
-                                                     from Voucher in vouchGroup.DefaultIfEmpty()
-                                                     join Auxiliar in db.DBAuxiliares.AsNoTracking() on detalleVoucher.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID into auxGroup
-                                                     from Auxiliar in auxGroup.DefaultIfEmpty()
-                                                     join AuxiliarDetalle in db.DBAuxiliaresDetalle.AsNoTracking() on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID into auxdetallGroup
-                                                     from AuxiliarDetalle in auxdetallGroup.DefaultIfEmpty()
+        var LibroMayorCompleto = (from detalleVoucher in db.DBDetalleVoucher
+                                  join Voucher in db.DBVoucher on detalleVoucher.VoucherModelID equals Voucher.VoucherModelID into vouchGroup
+                                  from Voucher in vouchGroup.DefaultIfEmpty()
+                                  join Auxiliar in db.DBAuxiliares on detalleVoucher.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID into auxGroup
+                                  from Auxiliar in auxGroup.DefaultIfEmpty()
+                                  join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID into auxdetallGroup
+                                  from AuxiliarDetalle in auxdetallGroup.DefaultIfEmpty()
 
-                                                     where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID
+                                  where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID
 
-                                                     select new 
+                                                     select new LibroMayor
                                                      {
                                                          Haber = detalleVoucher.MontoHaber,
                                                          Debe = detalleVoucher.MontoDebe,
@@ -855,40 +857,17 @@ public class VoucherModel
 
                                                      });
 
-
-        //var test = objCliente.ListVoucher.SelectMany(x => x.ListaDetalleVoucher).Select(x => x.Auxiliar).ToList();
-
-
-        //var vouchers = objCliente.ListVoucher.ToList();
-
-        //List<AuxiliaresDetalleModel> lst = new List<AuxiliaresDetalleModel>();
-        //foreach (var item in vouchers)
-        //{
-        //    var query = vouchers.SelectMany(x => x.ListaDetalleVoucher).ToList();
-
-        //    foreach (var itemDetalle in query)
-        //    {
-            
-        //        if(itemDetalle.Auxiliar != null) {
-        //            var query2 = itemDetalle.Auxiliar.ListaDetalleAuxiliares;
-        //            foreach (AuxiliaresDetalleModel itemauxdetalle in query2)
-        //            {
-        //                lst.Add(itemauxdetalle);
-        //            }
-        //        }
-        //    }
-        //}
-
-        
-
-
-        //LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.Fecha);
-
+       
         if (Anio != 0)
-        {
+        { 
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == Anio); // Funcionando
         }
 
+        if(Filtro == false)
+        {
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == DateTime.Now.Year);
+        }
+        
         if (Mes != 0)
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Month == Mes); // Funcionando
@@ -896,11 +875,13 @@ public class VoucherModel
 
         if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
         {
+       
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion >= dtFechaInicio && r.FechaContabilizacion <= dtFechaFin); // Funcionando
         }
 
         if (!string.IsNullOrWhiteSpace(Rut))
         {
+        
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.Rut.Contains(Rut)); // Funcionando
         }
 

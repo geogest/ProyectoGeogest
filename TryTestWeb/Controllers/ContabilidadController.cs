@@ -3396,7 +3396,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult LibroMayorTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", string Anio = "", string Mes = "", string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0)
+        public ActionResult LibroMayorTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -3405,29 +3405,28 @@ namespace TryTestWeb.Controllers
             ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsString(objCliente);
 
             PaginadorModel ReturnValues = new PaginadorModel();
+
+            bool Filtro = false;
+
+            if (Anio > 0 || !string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            {
+                Filtro = true;
+            }
+            else if(Filtro == false)
+            {
+                ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
+            }
             
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
-            
-            if (string.IsNullOrWhiteSpace(Anio)) // Para poder convertir "Anio" a double es necesario asignarle un valor númerico. En caso contrario daría error la conversión a double ya que no encuentra ningún valor númerico a convertir.
-            {
-                Anio = "0";
-            }
-            if (string.IsNullOrWhiteSpace(Mes))
-            {
-                Mes = "0";
-            }
-
-            double AnioConvert = Convert.ToDouble(Anio);
-            double MesConvert = Convert.ToDouble(Mes);
-
+           
             if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Convert.ToInt32(AnioConvert), Convert.ToInt32(MesConvert), Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
             else
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Convert.ToInt32(AnioConvert), Convert.ToInt32(MesConvert), Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
 
