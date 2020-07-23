@@ -4,7 +4,6 @@ using System.Linq;
 using ClosedXML.Excel;
 using System.Web;
 using System.Globalization;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Web.Routing;
 
 public class VoucherModel
@@ -19,7 +18,6 @@ public class VoucherModel
 
     public virtual CentroCostoModel CentroDeCosto { get; set; }
 
-
     public virtual ICollection<DetalleVoucherModel> ListaDetalleVoucher { get; set; }
     private ICollection<DetalleVoucherModel> _ListaDetalleVoucher
 
@@ -30,7 +28,6 @@ public class VoucherModel
     }
 
     public TipoVoucher Tipo { get; set; }
-
 
     public String TipoOrigen { get; set; }
 

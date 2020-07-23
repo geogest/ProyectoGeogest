@@ -254,7 +254,8 @@
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarProveedor") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarPersona") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarHonorarios") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ReestablecerPrestador")
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ReestablecerPrestador") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoCtasCorrientes")
                                     )
                                 {
                                     <li class="has_sub">
@@ -290,6 +291,12 @@
                                             {
                                                 <li>
                                                     <a href="@Url.Action("ReestablecerPrestador", "Home")"><i class="ion-person-stalker"></i>Reestablecer Prestadores</a>
+                                                </li>
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoCtasCorrientes"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("EstadoCtasCorrientes", "ContabilidadAuxiliares")"><i class="ion-person-stalker"></i>Estado Cuentas Corrientes</a>
                                                 </li>
                                             }
                                         </ul>

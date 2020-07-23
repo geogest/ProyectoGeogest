@@ -425,10 +425,6 @@ public class EstadoResultadoComparativoViewModel
             return ExcelByteArray;
         }
     }
-
-
-
-
 }
 
     

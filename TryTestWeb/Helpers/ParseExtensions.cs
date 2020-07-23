@@ -2639,6 +2639,16 @@ public static class ParseExtensions
         return unicos;
     }
 
+    public static List<string> ObtieneLstAuxNombre(List<EstadoCuentasCorrientesViewModel> Lista)
+    {
+        List<string> ReturnValues = new List<string>();
+        if(Lista != null)
+            ReturnValues = Lista.Select(cta => cta.CuentaContable.nombre).Distinct().ToList();
+
+        return ReturnValues;
+    }
+
+
     public static dynamic obtieneUnicosEnLista(dynamic lista)
     {
         string[] unicos = { "" };

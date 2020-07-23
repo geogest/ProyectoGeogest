@@ -9,4 +9,5 @@ using System.Web;
         public List<VoucherModel> VoucherList { get; set; }
         public List<string[]> ResultStringArray { get; set; }
         public List<CatorceTerViewModel> LstCatorceTer {get;set;}
+        public List<EstadoCuentasCorrientesViewModel> LstCtasCorrientes { get; set; }
     }

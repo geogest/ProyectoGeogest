@@ -13,8 +13,7 @@ using System.IO;
 using System.Xml;
 using ClosedXML.Excel;
 using System.Web.Routing;
-
-
+using System.Data.Entity;
 
 namespace TryTestWeb.Controllers
 {
@@ -2137,27 +2136,29 @@ namespace TryTestWeb.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
 
-            VoucherModel objVoucher = db.DBVoucher.Single(r => r.VoucherModelID == idVoucher);
+            //VoucherModel objVoucher = db.DBVoucher.Single(r => r.VoucherModelID == idVoucher);
 
-            objCliente = db.DBClientesContables.SingleOrDefault(r => r.QuickEmisorModelID == objEmisor.QuickEmisorModelID && r.ClientesContablesModelID == objVoucher.ClientesContablesModelID);
+            //objCliente = db.DBClientesContables.SingleOrDefault(r => r.QuickEmisorModelID == objEmisor.QuickEmisorModelID && r.ClientesContablesModelID == objVoucher.ClientesContablesModelID);
 
             if (objCliente != null)
             {
-                IList<DetalleVoucherModel> lstDetalle = db.DBDetalleVoucher.Include("ObjCuentaContable").Where(b => b.VoucherModelID == idVoucher).ToList();
-                
-               
+                //IList<DetalleVoucherModel> lstDetalle = db.DBDetalleVoucher.Including(cta => cta.ObjCuentaContable).Where(b => b.VoucherModel.VoucherModelID == idVoucher).ToList();
+                VoucherModel Voucher = objCliente.ListVoucher.SingleOrDefault(v => v.VoucherModelID == idVoucher);
+              
+              
+
                 return Json(new
                 {
                     ok = true,
                     rutEmpresa = objCliente.RUTEmpresa,
                     razonsocial = objCliente.RazonSocial,
-                    fecha = ParseExtensions.ToDD_MM_AAAA(objVoucher.FechaEmision),
-                    glosa = objVoucher.Glosa,
-                    centroCosto = (objVoucher.CentroDeCosto == null ? "" : objVoucher.CentroDeCosto.Nombre),
-                    detalleVoucher = lstDetalle,
-                    totaldeb = lstDetalle.Sum(d => d.MontoDebe),
-                    totalhab = lstDetalle.Sum(h => h.MontoHaber),
-                    numeroVoucher = objVoucher.NumeroVoucher
+                    fecha = ParseExtensions.ToDD_MM_AAAA(Voucher.FechaEmision),
+                    glosa = Voucher.Glosa,
+                    centroCosto = (Voucher.CentroDeCosto == null ? "" : Voucher.CentroDeCosto.Nombre),
+                    detalleVoucher = Voucher.ListaDetalleVoucher,
+                    totaldeb = Voucher.ListaDetalleVoucher.Sum(d => d.MontoDebe),
+                    totalhab = Voucher.ListaDetalleVoucher.Sum(h => h.MontoHaber),
+                    numeroVoucher = Voucher.NumeroVoucher
                 }, JsonRequestBehavior.AllowGet);
 
 
@@ -4026,7 +4027,7 @@ namespace TryTestWeb.Controllers
                 ConversionFechaInicioExitosa = DateTime.TryParseExact(FechaInicio, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaInicio);
                 ConversionFechaFinExitosa = DateTime.TryParseExact(FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
             }
-
+    
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
