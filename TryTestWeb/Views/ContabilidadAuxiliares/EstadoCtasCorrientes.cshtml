@@ -2,18 +2,35 @@
 <br />
 <div class="row">
     <div class="panel-heading">
-        <div class="col-sm-12">
-            @using (Html.BeginForm("GetExcelEstadoCtaCorriente", "ContabilidadAuxiliares", FormMethod.Post))
-            {
-                <div class="pull-right">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="row">
+
+                @using (Html.BeginForm("GetExcelEstadoCtaCorriente", "ContabilidadAuxiliares", FormMethod.Post))
+                    {
+                            <div class="col-md-2 pull-right">
+                            
+                                    <br />
+                                    <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                                    </button>
+                                    <br />
+                            
+                                <br />
+                            </div>
+                        }
+                <div class="col-md-1 pull-right">
+
                     <br />
-                    <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                    <button class="btn btn-default" onclick="ExportarPDF()">
+                        <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
                     </button>
                     <br />
+
+                    <br />
                 </div>
-                <br />
-            }
+        </div>
+
             <h2 class="page-header">Estado de Cuentas Corrientes</h2>
             <ol class="breadcrumb">
                 <li>
@@ -103,90 +120,154 @@
                     </div>
                 </div>
             }
-              
-            <div class="table-rep-plugin">
+            <div id="PagCtaCte" class="table-rep-plugin">
                 <div class="table table-responsive">
                     <div class="panel-body" id="parshial" style="font-size:13px;">
 
                        
                         @{ List<string> lstNombresCtasAux = ParseExtensions.ObtieneLstAuxNombre(Model.LstCtasCorrientes);
+                            List<string> lstRutCtasAux = ParseExtensions.ObtieneLstAuxRut(Model.LstCtasCorrientes);
 
                             decimal TotalDebe = 0;
                             decimal TotalHaber = 0;
                             decimal TotalSaldo = 0;
-                            if(lstNombresCtasAux != null)
+
+                            if (lstNombresCtasAux != null)
                             {
+                                int correlativo = 1;
                                 for (int i = 0; i < lstNombresCtasAux.Count(); i++)
                                 {
+                                    <table name="TablasCtas">
 
-                                    <h3>@lstNombresCtasAux[i]</h3>
-                                    <table class="table table-responsive table-striped table-bordered table-hover compact" id="dataTables">
-                                        <thead>
-                                            <tr>
-                                                <th class="FontSize">#</th>
-                                                <th class="FontSize">Rut</th>
-                                                <th class="FontSize">Nombre</th>
-                                                <th class="FontSize">Fecha</th>
-                                                <th class="FontSize">Comprobante</th>
-                                                <th class="FontSize">Documento</th>
-                                                <th class="FontSize">Vencim</th>
-                                                <th class="FontSize">Debe</th>
-                                                <th class="FontSize">Haber</th>
-                                                <th class="FontSize">Saldo</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @{int correlativo = 0;}
-                                            @{decimal Haber = 0;}
-                                            @{decimal Debe = 0;}
-                                            
-                                           @foreach (var ItemCtaCorriente in Model.LstCtasCorrientes)
-                                           {
-                                               if (ItemCtaCorriente.CuentaContable.nombre == lstNombresCtasAux[i]) {
-                                                   correlativo++;
-                                                   <tr>
-                                                       <td>@correlativo</td>
-                                                       <td>@ItemCtaCorriente.RutPrestador</td>
-                                                       <td>@ItemCtaCorriente.NombrePrestador</td>
-                                                       <td>@ParseExtensions.ToDD_MM_AAAA(ItemCtaCorriente.Fecha)</td>
-                                                       <td>@ItemCtaCorriente.Comprobante</td>
-                                                       <td>@ItemCtaCorriente.Documento</td>
-                                                       <td></td>
-                                                       <td>
-                                                            @{Debe += ItemCtaCorriente.Debe;}
-                                                            @ParseExtensions.NumeroConPuntosDeMiles(ItemCtaCorriente.Debe)
-                                                       </td>
-                                                       <td>
-                                                            @{Haber += ItemCtaCorriente.Haber;} 
-                                                            @ParseExtensions.NumeroConPuntosDeMiles(ItemCtaCorriente.Haber)
-                                                       </td>
-                                                       <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemCtaCorriente.Saldo)</td>
-                                                   </tr>
-                                                }
-                                            }
-                                        </tbody>
-                                        <tr>
-                                            <th class="FontSize text-center" colspan="6"></th>
-                                            <th class="FontSize text-right"><b>TOTAL</b></th>
-                                            <th class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(Debe)</b></th>
-                                            <th class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(Haber)</b></th>
-                                            @{decimal total = Haber - Debe;}
-                                            <th class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(total))</b></th>
-                                            @{ 
-                                                TotalHaber += Haber;
-                                                TotalDebe += Debe;
-                                                TotalSaldo += total;
-                                            }
-                                        </tr>
                                     </table>
-                                                    }
-                                                }
+                                    decimal TctaContDebe = 0;
+                                    decimal TctaContHaber = 0;
+                                    decimal TctaContSaldo = 0;
+                                    for (int j = 0; j < lstRutCtasAux.Count(); j++)
+                                    {
 
-                                        <table class="table table-responsive table-bordered table-hover" id="dataTables-example">
+                                        <div name="tablaCta">
+                                            <table class="table table-responsive table-striped table-bordered table-hover compact" id="dataTables" name="TheContent">
+
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="11" class="FontSize">@lstNombresCtasAux[i]</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="11" class="FontSize">@lstRutCtasAux[j]</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="FontSize">#</th>
+                                                        <th class="FontSize">Rut</th>
+                                                        <th class="FontSize">Nombre</th>
+                                                        <th class="FontSize">Fecha</th>
+                                                        <th class="FontSize">Num Doc</th>
+                                                        <th class="FontSize">Comprobante</th>
+                                                        <th class="FontSize">Documento</th>
+                                                        <th class="FontSize">Vencim</th>
+                                                        <th class="FontSize">Debe</th>
+                                                        <th class="FontSize">Haber</th>
+                                                        <th class="FontSize">Saldo</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @{
+                                                       
+                                                        decimal Haber = 0;
+                                                        decimal Debe = 0;
+                                                    }
+
+                                                    @foreach (var ItemCtaCorriente in Model.LstCtasCorrientes)
+                                                    {
+                                                        string FormatoCtaContable = "[" + ItemCtaCorriente.CuentaContable.CodInterno + "]" + " " + ItemCtaCorriente.CuentaContable.nombre;
+                                                        if (FormatoCtaContable == lstNombresCtasAux[i] && ItemCtaCorriente.RutPrestador == lstRutCtasAux[j])
+                                                        {
+
+                                                            <tr>
+                                                                <td>@correlativo</td>
+                                                                <td>@ItemCtaCorriente.RutPrestador</td>
+                                                                <td>@ItemCtaCorriente.NombrePrestador</td>
+                                                                <td>@ParseExtensions.ToDD_MM_AAAA(ItemCtaCorriente.Fecha)</td>
+                                                                <td>@ItemCtaCorriente.Folio</td>
+                                                                <td>@ItemCtaCorriente.Comprobante</td>
+                                                                <td>@ItemCtaCorriente.Documento</td>
+                                                                <td></td>
+                                                                <td name="debe">
+                                                                    @{Debe += ItemCtaCorriente.Debe;}
+                                                                    @{TctaContDebe += ItemCtaCorriente.Debe;}
+                                                                    @ParseExtensions.NumeroConPuntosDeMiles(ItemCtaCorriente.Debe)
+                                                                </td>
+
+                                                                <td name="haber">
+                                                                    @{Haber += ItemCtaCorriente.Haber;}
+                                                                    @{TctaContHaber += ItemCtaCorriente.Haber;}
+                                                                    @ParseExtensions.NumeroConPuntosDeMiles(ItemCtaCorriente.Haber)
+                                                                </td>
+
+                                                                <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemCtaCorriente.Saldo)</td>
+
+                                                            </tr>       
+                                                         correlativo++;
+                                                        }
+
+                                                    }
+                                                    <tr class="FooterTable">
+                                                        <td class="FontSize text-center" colspan="7"></td>
+                                                        <td class="FontSize text-right"><b>TOTAL</b></td>
+                                                        <td class="FontSize text-right debe"><b>@ParseExtensions.NumeroConPuntosDeMiles(Debe)</b></td>
+                                                        <td class="FontSize text-right haber"><b>@ParseExtensions.NumeroConPuntosDeMiles(Haber)</b></td>
+                                                        @{decimal total = Haber - Debe;}
+                                                        <td class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(total))</b></td>
+                                                        @{
+                                                            TotalHaber += Haber;
+                                                            TotalDebe += Debe;
+                                                            TotalSaldo += total;
+                                                        }
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                       
+                                                }
+                                                if (TctaContDebe > 0 || TctaContHaber > 0)
+                                                {
+
+                                                    <table name="TotalCtasContables" class="table table-responsive table-bordered table-hover" id="dataTables-example">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="FontSize text-center">-</th>
+                                                                <th class="FontSize text-center">TOTAL CTA CONTABLE</th>
+                                                                <th class="FontSize text-center">DEBE</th>
+                                                                <th class="FontSize text-center">HABER</th>
+                                                                <th class="FontSize text-center">SALDO</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td colspan="2" class="FontSize text-center"><b>@lstNombresCtasAux[i]</b> </td>
+                                                                <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TctaContDebe)</b></td>
+                                                                <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TctaContHaber)</b></td>
+                                                                @{TctaContSaldo = TctaContHaber - TctaContDebe;}
+                                                                <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TctaContSaldo)</b></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <br />
+                                                    <br />
+                                                    <br />
+                                                    <br />
+
+                                                   }
+                                                }
+                                            }
+
+                                        <table id="TotalFinalCtasCtes" class="table table-responsive table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th class="FontSize text-center">-</th>
-                                                    <th class="FontSize text-center">TOTAL</th>
+                                                    <th class="FontSize text-center">TOTAL FINAL</th>
                                                     <th class="FontSize text-center">DEBE</th>
                                                     <th class="FontSize text-center">HABER</th>
                                                     <th class="FontSize text-center">SALDO</th>
@@ -194,7 +275,7 @@
                                             </thead>
                                             <tbody>
                                                     <tr>
-                                                        <td colspan="2"></td>
+                                                        <td colspan="2" class="FontSize text-center"><b>TOTAL FINAL</b></td>
                                                         <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalDebe)</b></td>
                                                         <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalHaber)</b></td>
                                                         <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalSaldo)</b></td>
@@ -216,4 +297,72 @@
     .centrar{
         margin-top:25px;
     }
+    .Esconder{
+        display: none;
+    }
 </style>
+
+<script src="~/Content/js/jspdf.debug.js"></script>
+<script src="~/Content/js/html2pdf.js"></script>
+<script src="~/Content/js/html2canvas.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
+
+<script>
+
+    VerificarSiSePinta();
+
+    function VerificarSiSePinta() {
+
+      
+        let divTable = document.getElementsByName('tablaCta');
+        let trFooter = [];
+        let tdsDebeHaber = [];
+
+        for (var i = 0; i < divTable.length; i++) {
+            trFooter.push(divTable[i].querySelectorAll('tr.FooterTable'));
+        }
+        for (var i = 0; i < trFooter.length; i++) {
+            tdsDebeHaber.push(trFooter[i][0].querySelectorAll('td.debe, td.haber'));
+        }
+        for (var i = 0; i < tdsDebeHaber.length; i++) {
+            if (tdsDebeHaber[i][0].textContent == "0" && tdsDebeHaber[i][1].textContent == "0") {
+                divTable[i].classList.add('Esconder');
+            }
+        }
+
+    }
+
+
+    function ExportarPDF() {
+
+        var doc = new jsPDF();
+            
+        let Tablas = document.getElementsByName('TheContent');
+
+        for (var i = 0; i < Tablas.length; i++) {
+            if (Tablas[i].parentElement.classList != "Esconder") {
+                doc.autoTable({
+                    html: Tablas[i],
+                    styles: { fontSize: 8 }
+                });
+            }
+        }
+        
+        let TotalCtasContables = document.getElementsByName('TotalCtasContables');
+
+        for (var i = 0; i < TotalCtasContables.length; i++) {
+            doc.autoTable({ html: TotalCtasContables[i], theme:'grid' });
+        }
+
+        let TotalFinal = document.getElementById('TotalFinalCtasCtes');
+        
+        doc.autoTable({
+            html: TotalFinal, styles:{fillColor:[23, 32, 42]}
+        });
+       
+        doc.save('Estado de cuentas corrientes.pdf');
+
+    }
+
+
+</script>

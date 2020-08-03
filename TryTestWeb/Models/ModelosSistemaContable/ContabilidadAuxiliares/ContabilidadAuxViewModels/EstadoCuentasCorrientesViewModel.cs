@@ -38,7 +38,7 @@ public class EstadoCuentasCorrientesViewModel
                                                                               NombrePrestador = Auxiliar.ListaDetalleAuxiliares.FirstOrDefault().Individuo2.RazonSocial,
                                                                               Fecha = Detalle.FechaDoc,
                                                                               Folio = Auxiliar.ListaDetalleAuxiliares.FirstOrDefault().Folio,
-                                                                              Comprobante = Voucher.Tipo.ToString() + " " + Voucher.NumeroVoucher.ToString() + " " + Detalle.Auxiliar.LineaNumeroDetalle.ToString(),
+                                                                              Comprobante = Voucher.Tipo.ToString() + "   " + Voucher.NumeroVoucher.ToString() + "   " + Detalle.Auxiliar.LineaNumeroDetalle.ToString(),
                                                                               Documento = Auxiliar.ListaDetalleAuxiliares.FirstOrDefault().TipoDocumento,
                                                                               Debe = Detalle.MontoDebe,
                                                                               Haber = Detalle.MontoHaber,
@@ -92,8 +92,10 @@ public class EstadoCuentasCorrientesViewModel
         if (Filtros.cantidadRegistrosPorPagina > 0)
         {
             LstCtaCorriente = LstCtaCorriente.OrderBy(cta => cta.CuentaContable.Clasificacion)
+                                             .ThenBy(cta => cta.RutPrestador)
                                              .Skip((Filtros.pagina - 1) * Filtros.cantidadRegistrosPorPagina)
                                              .Take(Filtros.cantidadRegistrosPorPagina);
+
         }else if(Filtros.cantidadRegistrosPorPagina == 0)
         {
             LstCtaCorriente = LstCtaCorriente.OrderBy(cta => cta.CuentaContable.Clasificacion);

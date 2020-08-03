@@ -2643,7 +2643,16 @@ public static class ParseExtensions
     {
         List<string> ReturnValues = new List<string>();
         if(Lista != null)
-            ReturnValues = Lista.Select(cta => cta.CuentaContable.nombre).Distinct().ToList();
+            ReturnValues = Lista.Select(cta => "[" +  cta.CuentaContable.CodInterno + "]" + " " + cta.CuentaContable.nombre).Distinct().ToList();
+
+        return ReturnValues;
+    }
+
+    public static List<string> ObtieneLstAuxRut(List<EstadoCuentasCorrientesViewModel> Lista)
+    {
+        List<string> ReturnValues = new List<string>();
+        if (Lista != null)
+             ReturnValues = Lista.Select(cta => cta.RutPrestador).Distinct().ToList();
 
         return ReturnValues;
     }
