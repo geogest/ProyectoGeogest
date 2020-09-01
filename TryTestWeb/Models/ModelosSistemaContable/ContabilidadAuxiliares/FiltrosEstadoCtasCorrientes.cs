@@ -8,7 +8,8 @@ using System.Web;
     {
         public int pagina { get; set; } = 1;
         public int cantidadRegistrosPorPagina { get; set; } = 25;
-        public int Anio { get; set; }
+        public string TodosLosAnios { get; set; }
+        public int Anio { get; set; } = DateTime.Now.Year;
         public int CuentaAuxiliar { get; set; }
         public int Mes { get; set; }
         public string FechaInicio { get; set; }

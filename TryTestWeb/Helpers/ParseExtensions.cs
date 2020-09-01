@@ -2657,6 +2657,39 @@ public static class ParseExtensions
         return ReturnValues;
     }
 
+    public static List<string> ObtieneLstCodInternosActivos(List<EstCtasCtesConciliadasViewModel> Lista)
+    {
+        List<string> ReturnValues = new List<string>();
+        if (Lista != null)
+            ReturnValues = Lista.Select(cta => cta.CuentaContable.CodInterno).Distinct().ToList();
+
+        return ReturnValues;
+    }
+
+    public static List<string> ObtieneLstAuxNombre(List<EstCtasCtesConciliadasViewModel> Lista)
+    {
+        List<string> ReturnValues = new List<string>();
+        if (Lista != null)
+            ReturnValues = Lista.Select(cta => "[" + cta.CuentaContable.CodInterno + "]" + " " + cta.CuentaContable.nombre).Distinct().ToList();
+
+        return ReturnValues;
+    }
+
+    public static List<string> ObtieneLstAuxRut(List<EstCtasCtesConciliadasViewModel> Lista)
+    {
+        List<string> ReturnValues = new List<string>();
+        if (Lista != null)
+            ReturnValues = Lista.Select(cta => cta.RutPrestador).Distinct().ToList();
+
+        return ReturnValues;
+    }
+
+    public static string ObtenerCodigoYNombreCtaContable(string CodInterno, ClientesContablesModel objCliente)
+    {
+        var BuscaCtaContable = objCliente.CtaContable.SingleOrDefault(x => x.CodInterno == CodInterno);
+        string CodigoInternoConNombre = BuscaCtaContable.CodInterno + " " + BuscaCtaContable.nombre;
+        return CodigoInternoConNombre;
+    }
 
     public static dynamic obtieneUnicosEnLista(dynamic lista)
     {

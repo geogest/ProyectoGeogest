@@ -54,6 +54,14 @@
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFrameworkPaginate, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\EntityFrameworkPaginate.1.2.0\lib\EntityFrameworkPaginate.dll</HintPath>
       <Private>True</Private>
@@ -147,6 +155,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="ThenInclude.EF6, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ThenInclude.EF6.1.0.0.8\lib\net452\ThenInclude.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -168,12 +180,6 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -224,6 +230,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ContabilidadAuxiliaresController.cs" />
     <Compile Include="Controllers\ContabilidadController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FMSendController.cs" />
@@ -320,6 +327,10 @@
     <Compile Include="Models\ModelosSistemaContable\CentroCostoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesContablesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesProveedoresModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstadoCuentasCorrientesViewModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\FiltrosEstadoCtasCorrientes.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\UsoComunAux.cs" />
     <Compile Include="Models\ModelosSistemaContable\CtasContablesPresupuestoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\CuentaContableModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\DetalleVoucherModel.cs" />
@@ -699,6 +710,7 @@
     <Content Include="App_Data\ExcelPresupuestos.xlsx" />
     <Content Include="App_Data\EstadoResultadoComparativo.xlsx" />
     <Content Include="App_Data\14Ter.xlsx" />
+    <Content Include="App_Data\ESTADOCTASCORRIENTES.xlsx" />
     <None Include="Properties\PublishProfiles\EFactu Deployment.pubxml" />
     <None Include="Properties\PublishProfiles\EFactuDeploy.pubxml" />
     <None Include="Properties\PublishProfiles\GaryFacturaLabs.pubxml" />
@@ -758,7 +770,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -907,6 +921,10 @@
     <Content Include="Views\Contabilidad\CargarLibrosHonorTerceros.cshtml" />
     <Content Include="Views\Contabilidad\LibrosHonorTercerosProcesAImportar.cshtml" />
     <Content Include="Views\Contabilidad\CatorceTer.cshtml" />
+    <Content Include="Views\ContabilidadAuxiliares\EstadoCtasCorrientes.cshtml" />
+    <Content Include="Views\ContabilidadAuxiliares\EstCtasCtesConciliado.cshtml" />
+    <Content Include="Views\ContabilidadAuxiliares\TestCtasCtesConciliadas.cshtml" />
+    <Content Include="Views\ContabilidadAuxiliares\TestGroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />

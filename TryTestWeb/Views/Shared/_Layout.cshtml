@@ -254,8 +254,7 @@
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarProveedor") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarPersona") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListarHonorarios") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ReestablecerPrestador") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoCtasCorrientes")
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "ReestablecerPrestador")
                                     )
                                 {
                                     <li class="has_sub">
@@ -291,12 +290,6 @@
                                             {
                                                 <li>
                                                     <a href="@Url.Action("ReestablecerPrestador", "Home")"><i class="ion-person-stalker"></i>Reestablecer Prestadores</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoCtasCorrientes"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("EstadoCtasCorrientes", "ContabilidadAuxiliares")"><i class="ion-person-stalker"></i>Estado Cuentas Corrientes</a>
                                                 </li>
                                             }
                                         </ul>
@@ -352,6 +345,148 @@
                                             }
                                         </ul>
                                     </li>
+                                }
+
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroVenta") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroCompra") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "CatorceTer") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "CtasContPresupuesto") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "MisPresupuestos") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstCtasCtesConciliado")
+                                  )
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-stats-bars"></i><span>Reportes</span><span class="menu-arrow"></span></a>
+                                        <ul>
+                                            <li class="has_sub">
+                                                <a href="javascript:void(0);" class="waves-effect"><span>Tributarios</span><span class="menu-arrow"></span></a>
+                                                <ul>
+                                                    <li class="has_sub">
+                                                        <a href="javascript:void(0);" class="waves-effect"><span>Estado de Resultados</span><span class="menu-arrow"></span></a>
+                                                        <ul class="list-unstyled">
+                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoComparativo"))
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.Action("EstadoResultadoComparativo","Contabilidad")">Estado Resultado Comparativo</a>
+                                                                </li>
+                                                            }
+                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado"))
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.Action("IEstadoResultado","Contabilidad")">Resultado del Ejercicio</a>
+                                                                </li>
+                                                            }
+                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA"))
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.Action("EstadoResultadoEBITDA","Contabilidad")">EBITDA</a>
+                                                                </li>
+                                                            }
+                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT"))
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.Action("EstadoResultadoEBIT","Contabilidad")">EBIT</a>
+                                                                </li>
+                                                            }
+                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT"))
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.Action("EstadoResultadoEBT","Contabilidad")">EBT</a>
+                                                                </li>
+                                                            }
+                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoCtaBruto"))
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.Action("EstadoResultadoCtaBruto","Contabilidad")">Margen Bruto</a>
+                                                                </li>
+                                                            }
+
+
+                                                        </ul>
+                                                    </li>
+
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("BalanceGeneral","Contabilidad")">Balance General</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("LibroDiario","Contabilidad")">Libro Diario</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroVenta"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("LibroVenta","Contabilidad")">Libro Venta</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroCompra"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("LibroCompra","Contabilidad")">Libro Compra</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("LibroMayorTwo","Contabilidad")">Libro Mayor</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("LibroDeHonorarios","Contabilidad")">Libro Honorarios</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CatorceTer"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("CatorceTer","Contabilidad")">14 Ter</a>
+                                                        </li>
+                                                    }
+
+
+                                                </ul>
+                                            </li>
+                                            <li class="has_sub">
+                                                <a href="javascript:void(0);" class="waves-effect"><span>Financieros</span><span class="menu-arrow"></span></a>
+                                                <ul>
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "MisPresupuestos"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("MisPresupuestos","Contabilidad")">Mis Presupuestos</a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                            <li class="has_sub">
+                                                <a href="javascript:void(0);" class="waves-effect"><span>Otros</span><span class="menu-arrow"></span></a>
+                                                <ul>
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstCtasCtesConciliado"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstCtasCtesConciliado","ContabilidadAuxiliares")">Estado Cuentas Corrientes Conciliado</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoCtasCorrientes"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstadoCtasCorrientes","ContabilidadAuxiliares")">Estado Cuentas Corrientes</a>
+                                                        </li>
+                                                    }
+
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                 }
 
                                 if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CtasContPresupuesto") ||
@@ -414,73 +549,6 @@
                                     </li>
                                 }
 
-                                if (
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoFijo") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoCirculante") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoCirculante") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoNoCorriente") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoAndPatrimonioNeto") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalActivos") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalPasivos")
-
-                                    )
-                                {
-                                    <li class="has_sub">
-                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-stats-bars"></i> <span> Balance </span> <span class="menu-arrow"></span></a>
-                                        <ul class="list-unstyled">
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BalanceGeneral", "Contabilidad")">Balance General</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalActivos"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BATotalActivos", "Contabilidad")">Total Activos</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoFijo"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BAActivoFijo", "Contabilidad")">Total Activo Fijo</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAActivoCirculante"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BAActivoCirculante", "Contabilidad")">Total Activo Circulante</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoCirculante"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BAPasivoFijoCirculante", "Contabilidad")">Total Pasivo circulante</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoFijoNoCorriente"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BAPasivoFijoNoCorriente", "Contabilidad")">Total Pasivo No Corriente</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BAPasivoAndPatrimonioNeto"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BAPasivoAndPatrimonioNeto", "Contabilidad")">Total Patrimonio Neto</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BATotalPasivos"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("BATotalPasivos", "Contabilidad")">Total Pasivos</a>
-                                                </li>
-                                            }
-                                        </ul>
-                                    </li>
-                                }
-
                                 if(
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA")||
@@ -531,70 +599,6 @@
                                             }
                                             
                                   
-                                        </ul>
-                                    </li>
-                                }
-
-                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroVenta") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroCompra") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios")
-                                    )
-                                    {
-                                    <li class="has_sub">
-                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-android-book"></i> <span> Libro </span> <span class="menu-arrow"></span></a>
-                                        <ul class="list-unstyled">
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("LibroDiario", "Contabilidad")">Libro Diario</a>
-                                                </li>
-                                            }
-
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("LibroMayorTwo", "Contabilidad")">Libro Mayor</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("LibroDeHonorarios", "Contabilidad")">Libro Honorarios</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroVenta"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("LibroVenta", "Contabilidad")">Libro Venta</a>
-                                                </li>
-                                            }
-
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroCompra"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("LibroCompra", "Contabilidad")">Libro Compra</a>
-                                                </li>
-                                            }
-
-
-                                        </ul>
-                                    </li>
-                                }
-
-                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "CatorceTer"))
-                                {
-                                    <li class="has-sub">
-                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-information"></i> <span> 14 Ter </span> <span class="menu-arrow"></span></a>
-
-                                        <ul class="list-unstyled">
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current,"CatorceTer"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("CatorceTer","Contabilidad")">Informe 14 Ter</a>
-                                                </li>
-                                            }
                                         </ul>
                                     </li>
                                 }

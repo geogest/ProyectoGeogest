@@ -1,0 +1,338 @@
+﻿@model List<ObjetoCtasCtesPorConciliar>
+@{
+    ViewBag.Title = "TestGroup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+<div class="row">
+    <div class="panel-heading">
+        <div class="col-sm-12 col-md-12">
+            <div class="row">
+                <div class="col-md-2 pull-right">
+
+                    <br />
+                    <button class="btn btn-default" onclick="ExportarPDF()">
+                        <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                    </button>
+                    <br />
+
+                    <br />
+                </div>
+            </div>
+
+            <h2 class="page-header">Estado de Cuentas Corrientes</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad Reportes</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Estado de Cuentas Corrientes
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="form-group">
+    <div class="row">
+        <div class="card-box">
+            @using (Html.BeginForm("TestGroup", "ContabilidadAuxiliares", FormMethod.Post))
+            {
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        <label>Cantidad de Registros</label>
+                        <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="0">Todos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Cuenta Contable</label>
+                        <select class="form-control" id="CuentaAuxiliar" name="CuentaAuxiliar">
+                            <option>Selecciona</option>
+                            @foreach (CuentaContableModel CtaAux in ViewBag.lstCtasCtes)
+                            {
+                                <option value="@CtaAux.CuentaContableModelID">@CtaAux.nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Año</label>
+                        <input type="number" class="form-control" name="Anio" id="Anio" value="" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label>Todos los años?</label>
+                        <input type="checkbox" class="form-control CheckB-style" name="TodosLosAnios" id="TodosLosAnios" />
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label for="" class="control-label">Mes</label>
+                        <select name="Mes" id="Mes" class="form-control">
+                            <option value="0">Todos</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Rut</label>
+                        <input type="text" class="form-control" id="Rut" name="Rut" maxlength="10" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Razon Social</label>
+                        <input type="text" class="form-control" id="RazonSocial" name="RazonSocial" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Folio</label>
+                        <input class="form-control" type="number" name="Folio" id="Folio" value="" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Fecha Inicio</label>
+                        <input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label class="control-label">Fecha Fin</label>
+                        <input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
+                    </div>
+                </div>
+            }
+            @{
+                int Correlativo = 0;
+                decimal TotalGeneralHaber = 0;
+                decimal TotalGeneralDebe = 0;
+            }
+            <div id="PagCtaCte" class="table-rep-plugin">
+                <div class="table table-responsive">
+                    <div class="panel-body" id="parshial" style="font-size:13px;">             
+
+                        <div id="InfoParaPdf">
+                            <h4 id="AcumuladoAniosAnteriores">Saldo Acumulado años anteriores: @ParseExtensions.NumeroConPuntosDeMiles(ViewBag.TotalSaldoAcumulado)</h4>
+                        </div>
+          
+                        @foreach (var ObjetoCuenta in Model)
+                        {
+                            foreach (var Contenido in ObjetoCuenta.Contenido)
+                            {
+                                <table class="table table-responsive table-striped table-bordered table-hover compact" name="theContent">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="11"> @ParseExtensions.ObtenerCodigoYNombreCtaContable(Contenido.CodInterno, ViewBag.ObjCliente)</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="11">@Contenido.Rut</th>
+
+                                        </tr>
+                                        <tr>
+                                            <th colspan="11">Saldo Acumulado Rut:&nbsp;@ParseExtensions.NumeroConPuntosDeMiles(Contenido.SaldoAcumuladoRut)</th>
+                                        </tr>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Rut</th>
+                                            <th>Nombre</th>
+                                            <th>Fecha</th>
+                                            <th>Num Doc</th>
+                                            <th>Comprobante</th>
+                                            <th>Documento</th>
+                                            <th>Vencim</th>
+                                            <th>Debe</th>
+                                            <th>Haber</th>
+                                            <th>Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var InfoCtasCtes in Contenido.Contenido)
+                                        {
+                                            Correlativo++;
+                                            <tr>
+                                                <td>@Correlativo</td>
+                                                <td>@InfoCtasCtes.RutPrestador</td>
+                                                <td>@InfoCtasCtes.NombrePrestador</td>
+                                                <td>@ParseExtensions.ToDD_MM_AAAA(InfoCtasCtes.Fecha)</td>
+                                                <td>@InfoCtasCtes.Folio</td>
+                                                <td>@InfoCtasCtes.Comprobante</td>
+                                                @if (InfoCtasCtes.Documento == 0)
+                                                {
+                                                    <td>Honorarios</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@ParseExtensions.EnumGetDisplayAttrib(InfoCtasCtes.Documento)</td>
+                                                }
+                                                <td></td>
+                                                <td>@ParseExtensions.NumeroConPuntosDeMiles(InfoCtasCtes.Debe)</td>
+                                                <td>@ParseExtensions.NumeroConPuntosDeMiles(InfoCtasCtes.Haber)</td>
+                                                <td></td>
+                                            </tr>
+                                        }
+
+                                        <tr class="FooterTable">
+                                            <td class="FontSize text-center" colspan="7"></td>
+                                            <td class="FontSize text-right"><b>TOTAL</b></td>
+                                            <td class="FontSize text-right debe"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalDebe)</b></td>
+                                            <td class="FontSize text-right haber"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalHaber)</b></td>
+                                            <td class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.SaldoRut)</b></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            }
+
+                            <table name="TotalCtasContables" class="table table-responsive table-bordered table-hover" id="dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <th class="FontSize text-center">-</th>
+                                        <th class="FontSize text-center">TOTAL CTA CONTABLE</th>
+                                        <th class="FontSize text-center">DEBE</th>
+                                        <th class="FontSize text-center">HABER</th>
+                                        <th class="FontSize text-center">SALDO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2" class="FontSize text-center"><b>@ParseExtensions.ObtenerCodigoYNombreCtaContable(ObjetoCuenta.CodigoInterno, ViewBag.ObjCliente)</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalDebe)</b></td>
+                                        @{ TotalGeneralDebe += ObjetoCuenta.TotalDebe;}
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalHaber)</b></td>
+                                        @{ TotalGeneralHaber += ObjetoCuenta.TotalHaber;}
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalSaldo)</b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                            }
+                        <table id="TotalFinalCtasCtes" class="table table-responsive table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="FontSize text-center">-</th>
+                                    <th class="FontSize text-center">TOTAL FINAL</th>
+                                    <th class="FontSize text-center">DEBE</th>
+                                    <th class="FontSize text-center">HABER</th>
+                                    <th class="FontSize text-center">SALDO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" class="FontSize text-center"><b>TOTAL FINAL</b></td>
+                                    <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralDebe)</b></td>
+                                    <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralHaber)</b></td>
+                                    @{ decimal TotalGeneralSaldo = Math.Abs(TotalGeneralHaber) - Math.Abs(TotalGeneralDebe); }
+                                    <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralSaldo)</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .centrar {
+        margin-top: 25px;
+    }
+
+    .Esconder {
+        display: none;
+    }
+
+    .CheckB-style {
+        width: 20px;
+        height: 20px;
+        margin: 0px auto;
+    }
+</style>
+
+<script src="~/Content/js/jspdf.debug.js"></script>
+<script src="~/Content/js/html2pdf.js"></script>
+<script src="~/Content/js/html2canvas.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
+
+<script>
+    function ExportarPDF() {
+
+        var doc = new jsPDF();
+
+        let Tablas = document.getElementsByName('theContent');
+        let TotalAcumulados = document.getElementById('AcumuladoAniosAnteriores');
+        let InfoParaPdf = document.getElementById('InfoParaPdf');
+
+        let RazonSocial = @Html.Raw(Json.Encode(ViewBag.ObjCliente.RazonSocial));
+        let Rut = @Html.Raw(Json.Encode(ViewBag.ObjCliente.RUTEmpresa));
+        let Giro = @Html.Raw(Json.Encode(ViewBag.ObjCliente.Giro));
+        let Direccion = @Html.Raw(Json.Encode(ViewBag.ObjCliente.Direccion));
+        let Ciudad = @Html.Raw(Json.Encode(ViewBag.ObjCliente.Ciudad));
+        let RutRepresentante = @Html.Raw(Json.Encode(ViewBag.ObjCliente.RUTRepresentante));
+        let NombreRepresentante = @Html.Raw(Json.Encode(ViewBag.ObjCliente.Representante));
+
+        //Llenamos la información del cliente contable
+        let InfoClienteContable = {
+            RazonSocial: RazonSocial,
+            Rut: Rut,
+            Giro: Giro,
+            Direccion: Direccion,
+            Ciudad: Ciudad,
+            InfoRepresentante: 'Representante: ' + RutRepresentante + ' ' + NombreRepresentante, 
+        };
+
+        doc.text('ESTADO DE CUENTAS CORRIENTES',50,15);
+        doc.text('Razon Social: ' + InfoClienteContable.RazonSocial,10,40);
+        doc.text('Rut: ' + InfoClienteContable.Rut,10,47);
+        doc.text('Giro: ' + InfoClienteContable.Giro,10,54);
+        doc.text('Dirección: ' + InfoClienteContable.Direccion,10,61);
+        doc.text(InfoClienteContable.InfoRepresentante,10,67);
+        doc.text(TotalAcumulados.textContent);
+        
+        doc.addPage();
+
+        debugger;
+
+        //Queda pendiente poner el saldo acumulado global y poner la información del cliente contable en el pdf
+        doc.text(margins.bottom,margins.left,TotalAcumulados.textContent);
+
+        for (var i = 0; i < Tablas.length; i++) {
+                doc.autoTable({
+                    html: Tablas[i],
+                    styles: { fontSize: 8 }
+                });
+        }
+
+        let TotalCtasContables = document.getElementsByName('TotalCtasContables');
+
+        for (var i = 0; i < TotalCtasContables.length; i++) {
+            doc.autoTable({ html: TotalCtasContables[i], theme: 'grid' });
+        }
+
+        let TotalFinal = document.getElementById('TotalFinalCtasCtes');
+
+        doc.autoTable({
+            html: TotalFinal, styles: { fillColor: [23, 32, 42] }
+        });
+
+        doc.save('Estado de cuentas corrientes.pdf');
+
+    }
+</script>
