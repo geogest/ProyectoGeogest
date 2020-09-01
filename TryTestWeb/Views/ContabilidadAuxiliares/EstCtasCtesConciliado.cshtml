@@ -41,7 +41,7 @@
 <div class="form-group">
     <div class="row">
         <div class="card-box">
-            @using (Html.BeginForm("TestGroup", "ContabilidadAuxiliares", FormMethod.Post))
+            @using (Html.BeginForm("EstCtasCtesConciliado", "ContabilidadAuxiliares", FormMethod.Post))
             {
                 <div class="row form-group">
                     <div class="col-md-2">
@@ -307,11 +307,6 @@
         doc.text(TotalAcumulados.textContent);
         
         doc.addPage();
-
-        debugger;
-
-        //Queda pendiente poner el saldo acumulado global y poner la información del cliente contable en el pdf
-        doc.text(margins.bottom,margins.left,TotalAcumulados.textContent);
 
         for (var i = 0; i < Tablas.length; i++) {
                 doc.autoTable({
