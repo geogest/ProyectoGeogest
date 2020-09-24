@@ -170,12 +170,13 @@
                             string classAlign = "text-right";
 
                                     <tr class="odd gradeX">
-                                        @for (int k = 0; k < ListaLibMayor.Length - 2; k++)
+                                        @for (int k = 0; k < ListaLibMayor.Length - 3; k++)
                                         {
                                             if (k == 1)
                                             {
                                                 classAlign = "text-left nowrappls";
                                             }
+
                                             if (k == 6 || k == 7 || k == 8)
                                             {
                                                 classAlign = "text-left nowrappls monto"; //con el fin de hacer el separador de miles con javascript
@@ -185,7 +186,7 @@
                                             {
                                                 if (ListaLibMayor[k] != "-")
                                                 {
-                                                   totalDebe = totalDebe + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".",""));//Int32.Parse(ListaLibMayor[k].Replace(".", ""));
+                                                    totalDebe = totalDebe + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".", ""));//Int32.Parse(ListaLibMayor[k].Replace(".", ""));
                                                 }
                                             }
 
@@ -193,11 +194,17 @@
                                             {
                                                 if (ListaLibMayor[k] != "-")
                                                 {
-                                                    totalHaber = totalHaber + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".",""));//.Replace(".", ""));
+                                                    totalHaber = totalHaber + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".", ""));//.Replace(".", ""));
                                                 }
                                             }
-
-                                            <td class="@classAlign">@ListaLibMayor[k]</td>
+                                            if (k == 2)
+                                            {
+                                                <td><a href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = ListaLibMayor[11] })" class="label label-table label-primary" target="_blank">@ListaLibMayor[k]</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td class="@classAlign">@ListaLibMayor[k]</td>
+                                            }
                                         }
                                     </tr>
                                 }

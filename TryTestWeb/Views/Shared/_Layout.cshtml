@@ -363,52 +363,8 @@
                                         <a href="javascript:void(0);" class="waves-effect"><i class="ion-stats-bars"></i><span>Reportes</span><span class="menu-arrow"></span></a>
                                         <ul>
                                             <li class="has_sub">
-                                                <a href="javascript:void(0);" class="waves-effect"><span>Tributarios</span><span class="menu-arrow"></span></a>
+                                                <a href="javascript:void(0);" class="waves-effect"><span>Contables</span><span class="menu-arrow"></span></a>
                                                 <ul>
-                                                    <li class="has_sub">
-                                                        <a href="javascript:void(0);" class="waves-effect"><span>Estado de Resultados</span><span class="menu-arrow"></span></a>
-                                                        <ul class="list-unstyled">
-                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoComparativo"))
-                                                            {
-                                                                <li>
-                                                                    <a href="@Url.Action("EstadoResultadoComparativo","Contabilidad")">Estado Resultado Comparativo</a>
-                                                                </li>
-                                                            }
-                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado"))
-                                                            {
-                                                                <li>
-                                                                    <a href="@Url.Action("IEstadoResultado","Contabilidad")">Resultado del Ejercicio</a>
-                                                                </li>
-                                                            }
-                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA"))
-                                                            {
-                                                                <li>
-                                                                    <a href="@Url.Action("EstadoResultadoEBITDA","Contabilidad")">EBITDA</a>
-                                                                </li>
-                                                            }
-                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT"))
-                                                            {
-                                                                <li>
-                                                                    <a href="@Url.Action("EstadoResultadoEBIT","Contabilidad")">EBIT</a>
-                                                                </li>
-                                                            }
-                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT"))
-                                                            {
-                                                                <li>
-                                                                    <a href="@Url.Action("EstadoResultadoEBT","Contabilidad")">EBT</a>
-                                                                </li>
-                                                            }
-                                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoCtaBruto"))
-                                                            {
-                                                                <li>
-                                                                    <a href="@Url.Action("EstadoResultadoCtaBruto","Contabilidad")">Margen Bruto</a>
-                                                                </li>
-                                                            }
-
-
-                                                        </ul>
-                                                    </li>
-
                                                     @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral"))
                                                     {
                                                         <li>
@@ -451,13 +407,47 @@
                                                             <a href="@Url.Action("CatorceTer","Contabilidad")">14 Ter</a>
                                                         </li>
                                                     }
-
-
                                                 </ul>
                                             </li>
                                             <li class="has_sub">
                                                 <a href="javascript:void(0);" class="waves-effect"><span>Financieros</span><span class="menu-arrow"></span></a>
                                                 <ul>
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoComparativo"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstadoResultadoComparativo","Contabilidad")">Estado Resultado Comparativo</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("IEstadoResultado","Contabilidad")">Resultado del Ejercicio</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstadoResultadoEBITDA","Contabilidad")">EBITDA</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstadoResultadoEBIT","Contabilidad")">EBIT</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstadoResultadoEBT","Contabilidad")">EBT</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoCtaBruto"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstadoResultadoCtaBruto","Contabilidad")">Margen Bruto</a>
+                                                        </li>
+                                                    }
                                                     @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "MisPresupuestos"))
                                                     {
                                                         <li>
@@ -472,16 +462,9 @@
                                                     @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstCtasCtesConciliado"))
                                                     {
                                                         <li>
-                                                            <a href="@Url.Action("EstCtasCtesConciliado","ContabilidadAuxiliares")">Estado Cuentas Corrientes Conciliado</a>
+                                                            <a href="@Url.Action("EstCtasCtesConciliado","ContabilidadAuxiliares")">Estado Cuentas Corrientes</a>
                                                         </li>
                                                     }
-                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoCtasCorrientes"))
-                                                    {
-                                                        <li>
-                                                            <a href="@Url.Action("EstadoCtasCorrientes","ContabilidadAuxiliares")">Estado Cuentas Corrientes</a>
-                                                        </li>
-                                                    }
-
                                                 </ul>
                                             </li>
                                         </ul>
@@ -545,60 +528,6 @@
                                                     <a href="@Url.Action("ListaVouchersBaja", "Contabilidad")">Vouchers Borrados</a>
                                                 </li>
                                             }
-                                        </ul>
-                                    </li>
-                                }
-
-                                if(
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA")||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT")||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT")||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoBruto") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoComparativo")
-                                    )
-                                {
-                                    <li class="has_sub">
-                                      <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-bookmarks-outline"></i><span>Estado de Resultados</span><span class="menu-arrow"></span></a>
-                                        <ul class="list-unstyled">
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoComparativo"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("EstadoResultadoComparativo","Contabilidad")">Estado Resultado Comparativo</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "IEstadoResultado"))
-                                            {
-                                            <li>
-                                                <a href="@Url.Action("IEstadoResultado","Contabilidad")">Resultado del Ejercicio</a>
-                                            </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBITDA"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("EstadoResultadoEBITDA","Contabilidad")">EBITDA</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBIT"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("EstadoResultadoEBIT","Contabilidad")">EBIT</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoEBT"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("EstadoResultadoEBT","Contabilidad")">EBT</a>
-                                                </li>
-                                            }
-                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultadoCtaBruto"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("EstadoResultadoCtaBruto","Contabilidad")">Margen Bruto</a>
-                                                </li>
-                                            }
-                                            
-                                  
                                         </ul>
                                     </li>
                                 }

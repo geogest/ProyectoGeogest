@@ -850,7 +850,8 @@ public class VoucherModel
                                                          Comprobante = Voucher.Tipo,
                                                          ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
                                                          ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
-                                                         NumVoucher = Voucher.NumeroVoucher
+                                                         NumVoucher = Voucher.NumeroVoucher,
+                                                         VoucherId = Voucher.VoucherModelID
 
                                                      });
 
@@ -919,7 +920,7 @@ public class VoucherModel
         
         foreach (var itemLibroMayor in LibroMayorCompleto)
         {
-            string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-","-" };
+            string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-","-","-" };
 
             string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2.ToString() + "   " + itemLibroMayor.ComprobanteP3;
             //int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
@@ -977,6 +978,7 @@ public class VoucherModel
             ArrayLibroMayor[8] = ParseExtensions.NumeroConPuntosDeMiles(TotalSaldo);
             ArrayLibroMayor[9] = "[" + itemLibroMayor.CodigoInterno + "] " + itemLibroMayor.CtaContNombre;
             ArrayLibroMayor[10] = itemLibroMayor.NumVoucher.ToString();
+            ArrayLibroMayor[11] = itemLibroMayor.VoucherId.ToString();
 
             ReturnValues.Add(ArrayLibroMayor);
 

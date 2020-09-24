@@ -8,18 +8,32 @@
 <div class="row">
     <div class="panel-heading">
         <div class="col-sm-12 col-md-12">
-            <div class="row">
+            @using (Html.BeginForm("getExcelEstadoCuentasCorrientes", "ContabilidadAuxiliares", FormMethod.Post))
+            {
                 <div class="col-md-2 pull-right">
 
                     <br />
-                    <button class="btn btn-default" onclick="ExportarPDF()">
-                        <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                    <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
                     </button>
                     <br />
 
                     <br />
                 </div>
+            }
+            <div class="col-md-2 pull-right">
+
+                <br />
+                <button class="btn btn-default" onclick="ExportarPDF()">
+                    <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                </button>
+                <br />
+
+                <br />
             </div>
+        </div>
+
+
 
             <h2 class="page-header">Estado de Cuentas Corrientes</h2>
             <ol class="breadcrumb">
@@ -54,12 +68,22 @@
                         </select>
                     </div>
                     <div class="col-md-2">
+                        <label>Selecciona Lista</label>
+                        <select class="form-control" id="TipoListaAmostrar" name="TipoListaAmostrar">
+                            <option>Selecciona</option>
+                            <option value="0">Lista Completa</option>
+                            <option value="1">Lista Conciliada</option>
+                            <option value="2">Lista No Conciliada</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <label>Cuenta Contable</label>
                         <select class="form-control" id="CuentaAuxiliar" name="CuentaAuxiliar">
                             <option>Selecciona</option>
                             @foreach (CuentaContableModel CtaAux in ViewBag.lstCtasCtes)
                             {
-                                <option value="@CtaAux.CuentaContableModelID">@CtaAux.nombre</option>
+                                string FormaCuentaContable = CtaAux.CodInterno + "  " + CtaAux.nombre;
+                                <option value="@CtaAux.CuentaContableModelID">@FormaCuentaContable</option>
                             }
                         </select>
                     </div>
@@ -124,14 +148,14 @@
                     <div class="panel-body" id="parshial" style="font-size:13px;">             
 
                         <div id="InfoParaPdf">
-                            <h4 id="AcumuladoAniosAnteriores">Saldo Acumulado años anteriores: @ParseExtensions.NumeroConPuntosDeMiles(ViewBag.TotalSaldoAcumulado)</h4>
+                            <h4 id="AcumuladoAniosAnteriores">Saldo Apertura: @ParseExtensions.NumeroConPuntosDeMiles(ViewBag.TotalSaldoAcumulado)</h4>
                         </div>
           
                         @foreach (var ObjetoCuenta in Model)
                         {
                             foreach (var Contenido in ObjetoCuenta.Contenido)
                             {
-                                <table class="table table-responsive table-striped table-bordered table-hover compact" name="theContent">
+                                <table class="table table-responsive table-bordered compact" name="theContent">
                                     <thead>
                                         <tr>
                                             <th colspan="11"> @ParseExtensions.ObtenerCodigoYNombreCtaContable(Contenido.CodInterno, ViewBag.ObjCliente)</th>
@@ -139,9 +163,6 @@
                                         <tr>
                                             <th colspan="11">@Contenido.Rut</th>
 
-                                        </tr>
-                                        <tr>
-                                            <th colspan="11">Saldo Acumulado Rut:&nbsp;@ParseExtensions.NumeroConPuntosDeMiles(Contenido.SaldoAcumuladoRut)</th>
                                         </tr>
                                         <tr>
                                             <th>#</th>
@@ -157,18 +178,28 @@
                                             <th>Saldo</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-
+                                    <tbody id="cuerpoDeLatabla">
+                                        <tr>
+ 
+                                            <td colspan="11"><b>Saldo Apertura:&nbsp;@ParseExtensions.NumeroConPuntosDeMiles(Contenido.SaldoAcumuladoRut)</b></td>
+                                        </tr>
                                         @foreach (var InfoCtasCtes in Contenido.Contenido)
                                         {
                                             Correlativo++;
-                                            <tr>
+                                            string idFila = "idFila" + Correlativo.ToString();
+                                            string ParaParametro = idFila;
+                                            string ColorConciliados = "";
+                                            if (InfoCtasCtes.EstaConciliado == true)
+                                            {
+                                                ColorConciliados = "bg-success text-white";
+                                            }
+                                            <tr class="@ColorConciliados">
                                                 <td>@Correlativo</td>
                                                 <td>@InfoCtasCtes.RutPrestador</td>
                                                 <td>@InfoCtasCtes.NombrePrestador</td>
                                                 <td>@ParseExtensions.ToDD_MM_AAAA(InfoCtasCtes.Fecha)</td>
-                                                <td>@InfoCtasCtes.Folio</td>
-                                                <td>@InfoCtasCtes.Comprobante</td>
+                                                <td name="Folio" id="@idFila"><a class="label label-table label-primary" href="javascript:void(0);" onclick="EncuentraElOtroIgual(@InfoCtasCtes.Folio,@ParaParametro);">@InfoCtasCtes.Folio</a></td>
+                                                <td><a class="label label-table label-warning" href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = InfoCtasCtes.VoucherID })" target="_blank">@InfoCtasCtes.Comprobante</a></td>
                                                 @if (InfoCtasCtes.Documento == 0)
                                                 {
                                                     <td>Honorarios</td>
@@ -207,6 +238,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td><b>Saldo Apertura: @ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalSaldoAcumulado)</b></td>
+                                    </tr>
                                     <tr>
                                         <td colspan="2" class="FontSize text-center"><b>@ParseExtensions.ObtenerCodigoYNombreCtaContable(ObjetoCuenta.CodigoInterno, ViewBag.ObjCliente)</b></td>
                                         <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalDebe)</b></td>
@@ -263,6 +297,12 @@
         width: 20px;
         height: 20px;
         margin: 0px auto;
+    }
+    .bg-green{
+        background-color:green;
+    }
+    a{
+        position: relative;
     }
 </style>
 
@@ -328,6 +368,49 @@
         });
 
         doc.save('Estado de cuentas corrientes.pdf');
+
+    }
+
+    function EncuentraElOtroIgual(NumFolio,idFila){
+        //buscar donde está el folio cliqueado
+        const FolioCollection = document.getElementsByName('Folio');
+
+        const IdentidadFolioConsultado = {
+            folio:NumFolio,
+            idFolio:idFila.id
+        } 
+
+        console.log(IdentidadFolioConsultado);
+
+        const FoliosAComparar = [
+              {
+                idFolio:"",
+                folio:""        
+              }
+        ];
+
+        for (var i = 0; i < FolioCollection.length; i++) {
+            FoliosAComparar.push({ idFolio: FolioCollection[i].id, folio: FolioCollection[i].textContent});
+        }
+
+        console.log(FoliosAComparar);
+
+        const BuscaFolioAFocusear = FoliosAComparar.filter(x => x.folio == IdentidadFolioConsultado.folio && x.idFolio != IdentidadFolioConsultado.idFolio);
+        console.log(BuscaFolioAFocusear);
+
+        let ElementoEncontrado = document.getElementById(BuscaFolioAFocusear[0].idFolio);
+
+
+        let ElementoClickeado = document.getElementById(IdentidadFolioConsultado.idFolio).firstChild;
+        ElementoClickeado.setAttribute('href','#'+BuscaFolioAFocusear[0].idFolio)
+
+        console.log(ElementoClickeado);
+        
+        
+
+        console.log(ElementoEncontrado);
+        
+
 
     }
 </script>

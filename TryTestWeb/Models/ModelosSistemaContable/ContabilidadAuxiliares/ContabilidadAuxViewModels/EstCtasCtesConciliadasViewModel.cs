@@ -11,6 +11,7 @@ public class EstCtasCtesConciliadasViewModel
     public CuentaContableModel CuentaContable { get; set; }
     public DateTime Fecha { get; set; }
     public int Folio { get; set; }
+    public int VoucherID { get; set; }
     public string Comprobante { get; set; }
     public TipoDte Documento { get; set; }
     public DateTime Vencim { get; set; }
@@ -23,6 +24,7 @@ public class EstCtasCtesConciliadasViewModel
     public string TipoAux { get; set; }
     public decimal TotalAux { get; set; }
     public decimal TotalCtaContable { get; set; }
+    public bool EstaConciliado { get; set; } = false;
 
 
     public static IQueryable<EstCtasCtesConciliadasViewModel> GetlstCtasCtesConciliadas(FacturaPoliContext db, ClientesContablesModel objCliente)
@@ -48,6 +50,7 @@ public class EstCtasCtesConciliadasViewModel
                                                                            HaberAnalisis = Detalle.MontoHaber,
                                                                            CuentaContable = Detalle.ObjCuentaContable,
                                                                            MontoTotal = AuxiliaresDetalle.MontoTotalLinea,
+                                                                           VoucherID = Voucher.VoucherModelID
                                                                        });
 
 
@@ -102,7 +105,7 @@ public class EstCtasCtesConciliadasViewModel
                                                     Contenido = grp.ToList(),
                                                     TotalDebe = grp.Sum(y => Math.Abs(y.TotalDebe)),
                                                     TotalHaber = grp.Sum(y => Math.Abs(y.TotalHaber)),
-                                                    TotalSaldo = grp.Sum(y => Math.Abs(y.TotalHaber)) - grp.Sum(y => Math.Abs(y.TotalDebe))
+                                                    TotalSaldo = grp.Sum(y => Math.Abs(y.TotalHaber)) - grp.Sum(y => Math.Abs(y.TotalDebe)),
                                                 }).ToList();
         return ListaOrdenada;
     }
@@ -127,7 +130,7 @@ public class EstCtasCtesConciliadasViewModel
                                                     Contenido = grp.ToList(),
                                                     TotalDebe = grp.Sum(y => Math.Abs(y.TotalDebe)),
                                                     TotalHaber = grp.Sum(y => Math.Abs(y.TotalHaber)),
-                                                    TotalSaldo = grp.Sum(y => Math.Abs(y.TotalHaber)) - grp.Sum(y => Math.Abs(y.TotalDebe))
+                                                    TotalSaldo = grp.Sum(y => Math.Abs(y.TotalHaber)) - grp.Sum(y => Math.Abs(y.TotalDebe)),
                                                 }).ToList();
         return ListaOrdenada;
     }
@@ -135,7 +138,7 @@ public class EstCtasCtesConciliadasViewModel
 
     public static List<ObjetoCtasCtesPorConciliar> CalcularAcumulados(List<ObjetoCtasCtesPorConciliar> ListaOrdenada,IQueryable<EstCtasCtesConciliadasViewModel> ListaCtaCteCompleta,FacturaPoliContext db, ClientesContablesModel objCliente,FiltrosEstadoCtasCorrientes Filtros)
     {
-        var FiltrarConciliados = CalcularYConciliarLista(db, objCliente,ListaCtaCteCompleta).ToList();
+        var FiltrarConciliados = CalcularYConciliarLista(db, objCliente,ListaCtaCteCompleta,Filtros).ToList();
         var ListaCompletaOrdenada = OrdenarListaCtasCtes(FiltrarConciliados).ToList();
 
         var SaldosYRutLstTodosLosAnios = ListaCompletaOrdenada.SelectMany(x => x.Contenido).Select(y => new { Rut = y.Rut, SaldoRut = y.SaldoRut, CtaCont = y.CodInterno, Contenido = y.Contenido }).ToList();
@@ -144,6 +147,7 @@ public class EstCtasCtesConciliadasViewModel
         //Mejorar en el futuro: hacerlo con linq
         foreach (var CtaContable in ListaOrdenada)
         {
+            decimal TotalSaldoCtaContable = 0;
             foreach (var CtaCte in CtaContable.Contenido)
             {
                 foreach (var ItemTodosLosAnios in SaldosYRutLstTodosLosAnios)
@@ -151,9 +155,11 @@ public class EstCtasCtesConciliadasViewModel
                     if(CtaCte.Rut == ItemTodosLosAnios.Rut && CtaCte.CodInterno == ItemTodosLosAnios.CtaCont)
                     {
                         CtaCte.SaldoAcumuladoRut = Math.Abs(CtaCte.SaldoRut) - Math.Abs(ItemTodosLosAnios.SaldoRut);
+                        TotalSaldoCtaContable += CtaCte.SaldoAcumuladoRut;
                     }
                 }
             }
+            CtaContable.TotalSaldoAcumulado = TotalSaldoCtaContable;
         }
 
         return ListaOrdenada;
@@ -167,15 +173,33 @@ public class EstCtasCtesConciliadasViewModel
         decimal TotalGeneralAnioConsultado = 0;
         decimal TotalAcumulado = 0;
 
-        if(Filtros.TodosLosAnios == null) { 
-            TotalDebe = ListaCtaCteCompleta.Where(x => x.Fecha.Year < Filtros.Anio).Sum(y => y.DebeAnalisis);
-            TotalHaber = ListaCtaCteCompleta.Where(x => x.Fecha.Year < Filtros.Anio).Sum(x => x.HaberAnalisis);
+        if(Filtros.TodosLosAnios == null) {
 
+            var QueryASumar = ListaCtaCteCompleta.Where(x => x.Fecha.Year < Filtros.Anio).ToList();
+
+            if(QueryASumar != null) {
+                TotalDebe = QueryASumar.Sum(y => y.DebeAnalisis);
+                TotalHaber = QueryASumar.Sum(x => x.HaberAnalisis);
+            }
+         
             TotalGeneralTodosLosAnios = Math.Abs(TotalHaber) - Math.Abs(TotalDebe);
             TotalGeneralAnioConsultado = ListaOrdenada.Sum(x => x.TotalSaldo);
 
             TotalAcumulado = TotalGeneralTodosLosAnios - TotalGeneralAnioConsultado;
         }
+        else if (!string.IsNullOrWhiteSpace(Filtros.FechaInicio) && !string.IsNullOrWhiteSpace(Filtros.FechaFin))
+        {
+            //Query de esta busqueda
+            DateTime dtFechaInicio = ParseExtensions.ToDD_MM_AAAA_Multi(Filtros.FechaInicio);
+            var QueryASumar = ListaCtaCteCompleta.Where(x => x.Fecha < dtFechaInicio).ToList();
+
+            if (QueryASumar != null)
+            {
+                TotalDebe = QueryASumar.Sum(y => y.DebeAnalisis);
+                TotalHaber = QueryASumar.Sum(x => x.HaberAnalisis);
+            }
+        }
+
         else if(Filtros.TodosLosAnios == "on")
         {
             TotalAcumulado = 0;
@@ -225,9 +249,10 @@ public class EstCtasCtesConciliadasViewModel
         return LstCtaCorriente;
     }
 
-    public static List<EstCtasCtesConciliadasViewModel> CalcularYConciliarLista(FacturaPoliContext db, ClientesContablesModel ObjCliente, IQueryable<EstCtasCtesConciliadasViewModel> LstCtaCorriente)
+    public static List<EstCtasCtesConciliadasViewModel> CalcularYConciliarLista(FacturaPoliContext db, ClientesContablesModel ObjCliente, IQueryable<EstCtasCtesConciliadasViewModel> LstCtaCorriente, FiltrosEstadoCtasCorrientes Filtros)
         {
                 List<EstCtasCtesConciliadasViewModel> lstCtasCorrientes = new List<EstCtasCtesConciliadasViewModel>(LstCtaCorriente);
+                List<EstCtasCtesConciliadasViewModel> ListaConciliada = new List<EstCtasCtesConciliadasViewModel>();
 
                 if (LstCtaCorriente.Count() > 0)
                 {
@@ -274,6 +299,8 @@ public class EstCtasCtesConciliadasViewModel
                         }
                     }
 
+              
+
                     var AyudaParaAnalizar = lstCtasCorrientes.Select(x => new { x.Folio, x.RutPrestador, x.Documento }).Distinct().ToList();
 
                     foreach (var PosibleConciliado in AyudaParaAnalizar)
@@ -305,15 +332,19 @@ public class EstCtasCtesConciliadasViewModel
                             {
                                 foreach (var ItemConciliado in PosiblesAConciliar)
                                 {
-                                    lstCtasCorrientes.Remove(ItemConciliado);
+                                    if (Filtros.TipoListaAmostrar == 2)
+                                        lstCtasCorrientes.Remove(ItemConciliado);
+                                    else if (Filtros.TipoListaAmostrar == 1)
+                                        ListaConciliada.Add(ItemConciliado);
+                                    else if (Filtros.TipoListaAmostrar == 0)
+                                        ItemConciliado.EstaConciliado = true;
                                 }
                             }
-                    }
+                    
                 }
             }
-
-
-            return lstCtasCorrientes;
+        }
+        return ListaConciliada.Count() > 0 && Filtros.TipoListaAmostrar == 1 ? ListaConciliada : lstCtasCorrientes; 
         }
 
         
@@ -326,6 +357,7 @@ public class EstCtasCtesConciliadasViewModel
         public decimal TotalDebe { get; set; }
         public decimal TotalHaber { get; set; }
         public decimal TotalSaldo { get; set; }
+        public decimal TotalSaldoAcumulado { get; set; }
         public List<CuentasCorrientesPorConciliar> Contenido { get; set; }
     }
 
