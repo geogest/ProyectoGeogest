@@ -1061,7 +1061,7 @@ public class VoucherModel
             if (lstDetalle.Count == 0)
                 continue;
 
-            string[] BalanceRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
+            string[] BalanceRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-" };
 
             decimal SumasDebitosEstaCuenta = 0;
             decimal SumasCreditosEstaCuenta = 0;
@@ -1204,12 +1204,12 @@ public class VoucherModel
 
             }
 
-
+            BalanceRow[10] = Cuenta.CuentaContableModelID.ToString();
             ReturnValues.Add(BalanceRow);
         }
         ReturnValues = ReturnValues.OrderBy(r => r[0]).ToList();
         //SUMAS de los totales
-        string[] OtherRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
+        string[] OtherRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-"};
         OtherRow[0] = "";
         OtherRow[1] = "SUMAS";
         OtherRow[2] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalSumasDebitos);
@@ -1220,9 +1220,10 @@ public class VoucherModel
         OtherRow[7] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalSumasInventarioPasivo);
         OtherRow[8] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalSumasResultadoPerdidas);
         OtherRow[9] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalSumasResultadoGanancias);
+        OtherRow[10] = "";
         ReturnValues.Add(OtherRow);
         //UTILIDADES del ejercicio
-        OtherRow = new string[] { "", "", "", "", "", "", "", "", "", "" };
+        OtherRow = new string[] { "", "", "", "", "", "", "", "", "", "", "" };
         if (TotalSumasResultadoGanancias > TotalSumasResultadoPerdidas)
         {
             OtherRow[1] = "RESULTADO GANANCIA";
@@ -1253,7 +1254,7 @@ public class VoucherModel
         }
         ReturnValues.Add(OtherRow);
         //TOTALES
-        OtherRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
+        OtherRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"};
         OtherRow[1] = "TOTALES";
         OtherRow[2] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalSumasDebitos);
         OtherRow[3] = ParseExtensions.NumberWithDots_para_BalanceGeneral(TotalSumasCreditos);
@@ -1289,6 +1290,7 @@ public class VoucherModel
             OtherRow[9] = ParseExtensions.NumberWithDots_para_BalanceGeneral(Math.Abs(TotalSumasResultadoGanancias) + Math.Abs(DiferenciaResultadoTotal));
             OtherRow[8] = ParseExtensions.NumberWithDots_para_BalanceGeneral(Math.Abs(TotalSumasResultadoPerdidas) + Math.Abs(DiferenciaResultadoTotal));
         }
+        OtherRow[10] = "";
         ReturnValues.Add(OtherRow);
         return ReturnValues;
     }

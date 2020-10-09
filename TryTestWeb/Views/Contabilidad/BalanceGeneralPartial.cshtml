@@ -25,14 +25,17 @@
         @foreach (string[] rowThingie in Model)
         {
             @:<tr class="odd gradeX">
-            for (int i = 0; i < rowThingie.Length; i++)
+            for (int i = 0; i < rowThingie.Length - 1; i++)
             {
                 string classAlign = "text-right";
                 if (i == 0)
                 {
                     classAlign = "text-left";
-                }
+                    <td><a href="javascript:void(0);" onclick="GenerarBusquedaLibroMayor(@rowThingie[10]);" class="label label-table label-primary">@rowThingie[i]</a></td>
+
+                }else { 
                 <td class="@classAlign">@rowThingie[i]</td>
+                }
             }
             @:</tr>
         }

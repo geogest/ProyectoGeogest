@@ -75,6 +75,42 @@
                     </div>
                 </div>
             </div>
+
+            <div id="detalleCta" class="modal fade" tabindex="-1" role="dialog" >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Movimientos de esta cuenta</h4>
+                        </div>
+                        <div class="table table-responsive modal-body compact letra-pequenia" id="tabla-detalle">
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr id="tituloCtaCont"></tr>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Fecha Contabilización</th>
+                                            <th>Comprobante</th>
+                                            <th>Glosa</th>
+                                            <th>Razon Social</th>
+                                            <th>Rut</th>
+                                            <th>Debe</th>
+                                            <th>Haber</th>
+                                            <th>Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="contenido-tabla">
+                                       
+                                    </tbody>
+                                </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
             <div class="panel-body" id="parshial">
                 @if(Model.Count() == 3)
                 {
@@ -93,18 +129,24 @@
     .centrar {
         margin-top: 25px;
     }
+    .letra-pequenia{
+        font-size:1.2rem;
+    }
 </style>
 
 <script type="text/javascript">
     $(document).ready(function () {
+
+        GuardarUltimaBusqueda();
 
         $('#Buscar').on("click", function () {
 
             $('#parshial').html('<div class="row" id="carga"><center><b>Cargando...</b></center></div>');
 
             filtrar();
-
+            GuardarUltimaBusqueda();
         });
+
 
         $.datepicker.regional['es'] = {
             closeText: 'Cerrar',
@@ -142,7 +184,100 @@
             success: function (html)
             {
                 $("#parshial").html(html);
+                console.log(html);
             }
         });
+    }
+
+    const GuardarUltimaBusqueda = () => {
+
+        const anio = document.getElementById('AnioBalance').value;
+        const mes = document.getElementById('MesBalance').value;
+        const fechaInicio = document.getElementById('fechainicio').value;
+        const fechaFin = document.getElementById('fechafin').value;
+
+        //Meter todo en un LocalStorage
+        let BusquedaActiva = {
+            Anio: anio,
+            Mes: mes,
+            FechaInicio: fechaInicio,
+            FechaFin: fechaFin
+        }
+
+        localStorage.setItem("Busqueda", JSON.stringify(BusquedaActiva))
+    }
+
+    const ObtenerUltimaBusqueda = () => {
+        if (localStorage.getItem("Busqueda")) {
+            const BusquedaActiva = JSON.parse(localStorage.getItem("Busqueda"));
+            return BusquedaActiva;
+        }
+    }
+
+    const GenerarBusquedaLibroMayor = (idCuentaCont) => {
+
+        const UltimaBusquedaOdefault = ObtenerUltimaBusqueda();
+        
+        const ctaContId = idCuentaCont;
+        const anio = UltimaBusquedaOdefault.Anio;
+        const mes = UltimaBusquedaOdefault.Mes;
+        const fechaInicio = UltimaBusquedaOdefault.FechaInicio;
+        const fechaFin = UltimaBusquedaOdefault.FechaFin;
+
+        $.ajax({
+            type:"POST",
+            url:"@Url.Action("LibroMayorDesdeBalance", "Contabilidad")",
+            data: { Anio: anio, Mes: mes, fechaInicio: fechaInicio, fechaFin: fechaFin, CuentaContableID: ctaContId },
+            success: function (result) {
+                $('#detalleCta').modal("show");
+
+                lstDetalleCta = {
+                    filaCtaDetalle:[]
+                }
+
+                debugger;
+                for (var i = 0; i < result.length; i++) {
+
+                    detalleCtaObject = {
+                            correlativo: result[i][0],
+                            fechaContabilizacion: result[i][1],
+                            comprobante: result[i][2],
+                            glosa: result[i][3],
+                            razonSocial: result[i][4],
+                            rut: result[i][5],
+                            debe: result[i][6],
+                            haber: result[i][7],
+                            saldo: result[i][8],
+                            cuentaContable: result[i][9],
+                            numVoucher: result[i][10],
+                            idVoucher: result[i][11]
+                    }
+
+                    lstDetalleCta.filaCtaDetalle.push(detalleCtaObject);
+                }
+
+                const cuentaContable ='<th colspan="4">' + result[0][9] + '</th>';
+                $('#tituloCtaCont').html(cuentaContable);
+
+                const ContenidoTablas = [];
+                for (var i = 0; i < lstDetalleCta.filaCtaDetalle.length; i++) {
+
+                    const tablaHtml = `<tr>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].correlativo}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].fechaContabilizacion}</td>
+                                        <td><a href="/Contabilidad/IngresoVoucher?IDVoucher=${lstDetalleCta.filaCtaDetalle[i].idVoucher}" target="_blank" class="label label-table label-primary">${lstDetalleCta.filaCtaDetalle[i].comprobante}</a></td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].glosa}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].razonSocial}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].rut}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].debe}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].haber}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].saldo}</td>
+                                     </tr>`
+
+                    ContenidoTablas.push(tablaHtml);
+                }
+                $('#contenido-tabla').html(ContenidoTablas);
+            }
+         });
     }
 </script>

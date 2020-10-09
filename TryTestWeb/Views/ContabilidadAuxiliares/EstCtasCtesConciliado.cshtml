@@ -59,15 +59,6 @@
             {
                 <div class="row form-group">
                     <div class="col-md-2">
-                        <label>Cantidad de Registros</label>
-                        <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="0">Todos</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
                         <label>Selecciona Lista</label>
                         <select class="form-control" id="TipoListaAmostrar" name="TipoListaAmostrar">
                             <option>Selecciona</option>
@@ -95,24 +86,6 @@
                         <label>Todos los años?</label>
                         <input type="checkbox" class="form-control CheckB-style" name="TodosLosAnios" id="TodosLosAnios" />
                     </div>
-                    <div class="col-md-2 form-group">
-                        <label for="" class="control-label">Mes</label>
-                        <select name="Mes" id="Mes" class="form-control">
-                            <option value="0">Todos</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
-                        </select>
-                    </div>
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Rut</label>
                         <input type="text" class="form-control" id="Rut" name="Rut" maxlength="10" />
@@ -124,14 +97,6 @@
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Folio</label>
                         <input class="form-control" type="number" name="Folio" id="Folio" value="" />
-                    </div>
-                    <div class="col-lg-2 form-group">
-                        <label class="control-label">Fecha Inicio</label>
-                        <input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" />
-                    </div>
-                    <div class="col-lg-2 form-group">
-                        <label class="control-label">Fecha Fin</label>
-                        <input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" />
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
@@ -198,7 +163,7 @@
                                                 <td>@InfoCtasCtes.RutPrestador</td>
                                                 <td>@InfoCtasCtes.NombrePrestador</td>
                                                 <td>@ParseExtensions.ToDD_MM_AAAA(InfoCtasCtes.Fecha)</td>
-                                                <td name="Folio" id="@idFila"><a class="label label-table label-primary" href="javascript:void(0);" onclick="EncuentraElOtroIgual(@InfoCtasCtes.Folio,@ParaParametro);">@InfoCtasCtes.Folio</a></td>
+                                                <td name="Folio" id="@idFila">@InfoCtasCtes.Folio</td>
                                                 <td><a class="label label-table label-warning" href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = InfoCtasCtes.VoucherID })" target="_blank">@InfoCtasCtes.Comprobante</a></td>
                                                 @if (InfoCtasCtes.Documento == 0)
                                                 {
@@ -218,9 +183,27 @@
                                         <tr class="FooterTable">
                                             <td class="FontSize text-center" colspan="7"></td>
                                             <td class="FontSize text-right"><b>TOTAL</b></td>
-                                            <td class="FontSize text-right debe"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalDebe)</b></td>
-                                            <td class="FontSize text-right haber"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalHaber)</b></td>
-                                            <td class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.SaldoRut)</b></td>
+                                            @if(Contenido.SaldoAcumuladoRut == 0) { 
+                                                <td class="FontSize text-right debe"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalDebe)</b></td>
+                                                <td class="FontSize text-right haber"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalHaber)</b></td>
+                                                <td class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.SaldoRut)</b></td>
+                                            }
+                                            else if (Contenido.SaldoAcumuladoRut >= 1)
+                                            {
+                                                decimal EsPositivoHaber = Contenido.SaldoAcumuladoRut + Contenido.TotalHaber;
+                                                decimal TotalSaldoRut = Math.Abs(EsPositivoHaber) - Math.Abs(Contenido.TotalDebe);
+                                                <td class="FontSize text-right debe"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalDebe)</b></td>
+                                                <td class="FontSize text-right haber"><b>@ParseExtensions.NumeroConPuntosDeMiles(EsPositivoHaber)</b></td>
+                                                <td class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalSaldoRut)</b></td>
+                                            }
+                                            else if (Contenido.SaldoAcumuladoRut <= -1)
+                                            {
+                                                decimal EsNegativoDebe = Math.Abs(Contenido.SaldoAcumuladoRut) + Math.Abs(Contenido.TotalDebe);
+                                                decimal TotalSaldoRut = Math.Abs(Contenido.TotalHaber) - Math.Abs(EsNegativoDebe);
+                                                <td class="FontSize text-right debe"><b>@ParseExtensions.NumeroConPuntosDeMiles(EsNegativoDebe)</b></td>
+                                                <td class="FontSize text-right haber"><b>@ParseExtensions.NumeroConPuntosDeMiles(Contenido.TotalHaber)</b></td>
+                                                <td class="FontSize text-right"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalSaldoRut)</b></td>
+                                            }
                                         </tr>
 
                                     </tbody>
@@ -242,12 +225,37 @@
                                         <td><b>Saldo Apertura: @ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalSaldoAcumulado)</b></td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" class="FontSize text-center"><b>@ParseExtensions.ObtenerCodigoYNombreCtaContable(ObjetoCuenta.CodigoInterno, ViewBag.ObjCliente)</b></td>
-                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalDebe)</b></td>
-                                        @{ TotalGeneralDebe += ObjetoCuenta.TotalDebe;}
-                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalHaber)</b></td>
-                                        @{ TotalGeneralHaber += ObjetoCuenta.TotalHaber;}
-                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalSaldo)</b></td>
+                                        @if(ObjetoCuenta.TotalSaldoAcumulado == 0) { 
+                                          
+                                            <td colspan="2" class="FontSize text-center"><b>@ParseExtensions.ObtenerCodigoYNombreCtaContable(ObjetoCuenta.CodigoInterno, ViewBag.ObjCliente)</b></td>
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalDebe)</b></td>
+                                                TotalGeneralDebe += ObjetoCuenta.TotalDebe;
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalHaber)</b></td>
+                                                TotalGeneralHaber += ObjetoCuenta.TotalHaber;
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalSaldo)</b></td>
+                                        }
+                                        else if (ObjetoCuenta.TotalSaldoAcumulado >= 1)
+                                        {
+                                            decimal EsPositivoHaber = Math.Abs(ObjetoCuenta.TotalSaldoAcumulado) + Math.Abs(ObjetoCuenta.TotalHaber);
+                                            decimal TotalSaldoCuentaContable = Math.Abs(EsPositivoHaber) - Math.Abs(ObjetoCuenta.TotalDebe);
+                                            <td colspan="2" class="FontSize text-center"><b>@ParseExtensions.ObtenerCodigoYNombreCtaContable(ObjetoCuenta.CodigoInterno, ViewBag.ObjCliente)</b></td>
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalDebe)</b></td>
+                                                TotalGeneralDebe += ObjetoCuenta.TotalDebe;
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(EsPositivoHaber)</b></td>
+                                                TotalGeneralHaber += ObjetoCuenta.TotalHaber;
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalSaldoCuentaContable)</b></td>
+                                        }
+                                        else if (ObjetoCuenta.TotalSaldoAcumulado <= -1)
+                                        {
+                                            decimal EsNegativoDebe = Math.Abs(ObjetoCuenta.TotalSaldoAcumulado) + Math.Abs(ObjetoCuenta.TotalDebe);
+                                            decimal TotalSaldoCuentaContable = Math.Abs(ObjetoCuenta.TotalHaber) - Math.Abs(EsNegativoDebe);
+                                            <td colspan="2" class="FontSize text-center"><b>@ParseExtensions.ObtenerCodigoYNombreCtaContable(ObjetoCuenta.CodigoInterno, ViewBag.ObjCliente)</b></td>
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(EsNegativoDebe)</b></td>
+                                                TotalGeneralDebe += ObjetoCuenta.TotalDebe;
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalHaber)</b></td>
+                                                TotalGeneralHaber += ObjetoCuenta.TotalHaber;
+                                            <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(ObjetoCuenta.TotalSaldo)</b></td>
+                                        }
                                     </tr>
                                 </tbody>
                             </table>
@@ -268,11 +276,30 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="2" class="FontSize text-center"><b>TOTAL FINAL</b></td>
-                                    <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralDebe)</b></td>
-                                    <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralHaber)</b></td>
-                                    @{ decimal TotalGeneralSaldo = Math.Abs(TotalGeneralHaber) - Math.Abs(TotalGeneralDebe); }
-                                    <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralSaldo)</b></td>
+                                    @if(ViewBag.TotalSaldoAcumulado == 0) { 
+                                        <td colspan="2" class="FontSize text-center"><b>TOTAL FINAL</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralDebe)</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralHaber)</b></td>
+                                            decimal TotalGeneralSaldo = Math.Abs(TotalGeneralHaber) - Math.Abs(TotalGeneralDebe);
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralSaldo)</b></td>
+                                    }else if(ViewBag.TotalSaldoAcumulado >= 1)
+                                    {
+                                        decimal EsPositivoHaber = Math.Abs(ViewBag.TotalSaldoAcumulado) + Math.Abs(TotalGeneralHaber);
+                                        decimal TotalSaldoFinal = Math.Abs(EsPositivoHaber) - Math.Abs(TotalGeneralDebe);
+                                        <td colspan="2" class="FontSize text-center"><b>TOTAL FINAL</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralDebe)</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(EsPositivoHaber)</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalSaldoFinal)</b></td>
+                                    }
+                                    else if (ViewBag.TotalSaldoAcumulado <= -1)
+                                    {
+                                        decimal EsNegativoDebe = Math.Abs(ViewBag.TotalSaldoAcumulado) + Math.Abs(TotalGeneralDebe);
+                                        decimal TotalSaldoFinal = Math.Abs(TotalGeneralHaber) - Math.Abs(EsNegativoDebe);
+                                        <td colspan="2" class="FontSize text-center"><b>TOTAL FINAL</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(EsNegativoDebe)</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalGeneralHaber)</b></td>
+                                        <td class="FontSize text-center"><b>@ParseExtensions.NumeroConPuntosDeMiles(TotalSaldoFinal)</b></td>
+                                    }
                                 </tr>
                             </tbody>
                         </table>
@@ -368,49 +395,6 @@
         });
 
         doc.save('Estado de cuentas corrientes.pdf');
-
-    }
-
-    function EncuentraElOtroIgual(NumFolio,idFila){
-        //buscar donde está el folio cliqueado
-        const FolioCollection = document.getElementsByName('Folio');
-
-        const IdentidadFolioConsultado = {
-            folio:NumFolio,
-            idFolio:idFila.id
-        } 
-
-        console.log(IdentidadFolioConsultado);
-
-        const FoliosAComparar = [
-              {
-                idFolio:"",
-                folio:""        
-              }
-        ];
-
-        for (var i = 0; i < FolioCollection.length; i++) {
-            FoliosAComparar.push({ idFolio: FolioCollection[i].id, folio: FolioCollection[i].textContent});
-        }
-
-        console.log(FoliosAComparar);
-
-        const BuscaFolioAFocusear = FoliosAComparar.filter(x => x.folio == IdentidadFolioConsultado.folio && x.idFolio != IdentidadFolioConsultado.idFolio);
-        console.log(BuscaFolioAFocusear);
-
-        let ElementoEncontrado = document.getElementById(BuscaFolioAFocusear[0].idFolio);
-
-
-        let ElementoClickeado = document.getElementById(IdentidadFolioConsultado.idFolio).firstChild;
-        ElementoClickeado.setAttribute('href','#'+BuscaFolioAFocusear[0].idFolio)
-
-        console.log(ElementoClickeado);
-        
-        
-
-        console.log(ElementoEncontrado);
-        
-
 
     }
 </script>

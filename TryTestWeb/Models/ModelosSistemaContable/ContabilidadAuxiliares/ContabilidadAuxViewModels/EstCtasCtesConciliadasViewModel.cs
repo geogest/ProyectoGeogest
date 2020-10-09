@@ -301,13 +301,14 @@ public class EstCtasCtesConciliadasViewModel
 
               
 
-                    var AyudaParaAnalizar = lstCtasCorrientes.Select(x => new { x.Folio, x.RutPrestador, x.Documento }).Distinct().ToList();
+                    var AyudaParaAnalizar = lstCtasCorrientes.Select(x => new { x.Folio, x.RutPrestador, x.Documento, x.CuentaContable.CuentaContableModelID }).Distinct().ToList();
 
                     foreach (var PosibleConciliado in AyudaParaAnalizar)
                     {
                        var PosiblesAConciliar = lstCtasCorrientes.Where(busca => busca.Folio == PosibleConciliado.Folio &&
                                                                         busca.RutPrestador == PosibleConciliado.RutPrestador &&
-                                                                        busca.Documento == PosibleConciliado.Documento).ToList();
+                                                                        busca.Documento == PosibleConciliado.Documento &&
+                                                                        busca.CuentaContable.CuentaContableModelID == PosibleConciliado.CuentaContableModelID).ToList();
 
                         if(PosiblesAConciliar.Count() > 1) {
                             decimal Haber = 0;
