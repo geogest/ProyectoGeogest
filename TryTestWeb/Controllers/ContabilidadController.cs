@@ -33,8 +33,6 @@ namespace TryTestWeb.Controllers
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             
-
-
             List<RegionModels> regiones = db.DBRegiones.ToList();
             List<ComunaModels> comunas = db.DBComunas.ToList();
             List<ActividadEconomicaModel> actividades = db.DBActeco.ToList();
@@ -815,7 +813,7 @@ namespace TryTestWeb.Controllers
 
 
         [Authorize]
-        public ActionResult EditCtaContable(string nombrectaedit, int editFlag, int centroCostoE, int itemE, int analisisE, int concilacionE, int auxiliarE)
+        public ActionResult EditCtaContable(string nombrectaedit, int editFlag, int centroCostoE, int itemE, int analisisE, int concilacionE, int auxiliarE, int centroCostoEID)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -829,7 +827,15 @@ namespace TryTestWeb.Controllers
                 if (editCtaContable == null)
                     return RedirectToAction("ListaCuentasContables"); //manejar error en el futuro
                 editCtaContable.nombre = nombrectaedit;
-                editCtaContable.TieneCentroDeCosto = centroCostoE;
+                if(centroCostoE == 2)
+                {
+                    editCtaContable.TieneCentroDeCosto = 0;
+                    editCtaContable.CentroCostosModelID = 0;
+                }
+                else { 
+                    editCtaContable.TieneCentroDeCosto = centroCostoE;
+                    editCtaContable.CentroCostosModelID = centroCostoEID;
+                }
                 editCtaContable.ItemsModelID = itemE;
                 editCtaContable.AnalisisContablesModelID = analisisE;
                 editCtaContable.Concilaciones = concilacionE;
@@ -2399,6 +2405,10 @@ namespace TryTestWeb.Controllers
 
             List<VoucherModel> lstVoucherCliente = objCliente.ListVoucher.Where(r => r.FechaEmision.Year == DateTime.Now.Year && r.DadoDeBaja == false).ToList();
             List<CuentaContableModel> lstCuentasContablesClientes = objCliente.CtaContable.ToList();
+            var lstCentrosDeCostos = objCliente.ListCentroDeCostos.ToList();
+
+
+            ViewBag.lstCentrosDeCostos = lstCentrosDeCostos;
 
 
             List<string[]> returnValue = VoucherModel.GetBalanceGeneral(lstVoucherCliente, lstCuentasContablesClientes);
@@ -2408,7 +2418,7 @@ namespace TryTestWeb.Controllers
 
         [ModuloHandler]
         [Authorize]
-        public ActionResult BalanceGeneralPartial(string FechaInicio = "", string FechaFin = "", string Anio = "", string Mes = "")
+        public ActionResult BalanceGeneralPartial(string FechaInicio = "", string FechaFin = "", string Anio = "", string Mes = "", int CentroDeCostosID = 0)
         {
             bool ConversionFechaInicioExitosa = false;
             DateTime dtFechaInicio = new DateTime();
@@ -2432,6 +2442,11 @@ namespace TryTestWeb.Controllers
             IEnumerable<VoucherModel> CollectionVoucherCliente = objCliente.ListVoucher.Where(r => r.DadoDeBaja == false);
             List<CuentaContableModel> lstCuentasContablesClientes = objCliente.CtaContable.ToList();
             List<VoucherModel> lstVoucherModel;
+
+            if(CentroDeCostosID > 0)
+            {
+                lstCuentasContablesClientes = lstCuentasContablesClientes.Where(x => x.CentroCostosModelID == CentroDeCostosID && x.TieneCentroDeCosto == 1).ToList();
+            }
 
             if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
             {
@@ -6477,6 +6492,55 @@ namespace TryTestWeb.Controllers
 
                 }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [Authorize]
+        public JsonResult ObtenerCentrosDeCostos(int IdCuentaContable = 0)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            bool Result = false;
+
+            var TieneCentroDeCosto = objCliente.ListCentroDeCostos.Count();
+
+            if (TieneCentroDeCosto <= 0)
+                return Json(new { ok = false }, JsonRequestBehavior.AllowGet);
+
+
+            var lstCentroDeCostos = objCliente.ListCentroDeCostos.Select(x => new { x.CentroCostoModelID, x.Nombre }).ToList();
+
+            if (lstCentroDeCostos.Count > 0)
+                Result = true;
+            else
+                return Json(new { ok = false }, JsonRequestBehavior.AllowGet);
+
+            int idSeleccionado = 0;
+
+            idSeleccionado = objCliente.CtaContable.Where(x => x.CuentaContableModelID == IdCuentaContable).Count();
+            if(idSeleccionado > 0)
+                idSeleccionado =  objCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == IdCuentaContable).CentroCostosModelID;
+
+            StringBuilder optionSelect = new StringBuilder();
+            optionSelect.Append("<option>Selecciona</option>");
+
+            bool tieneCentroDeCosto = false;
+
+            foreach (var centroDeCosto in lstCentroDeCostos)
+            {
+                if (centroDeCosto.CentroCostoModelID == idSeleccionado)
+                {
+                    optionSelect.Append("<option selected  value=\"" + centroDeCosto.CentroCostoModelID + "\">" + centroDeCosto.Nombre + "</option>");
+                    tieneCentroDeCosto = true;
+                }
+                else { 
+                    optionSelect.Append("<option  value=\"" + centroDeCosto.CentroCostoModelID + "\">" + centroDeCosto.Nombre + "</option>");
+                }
+            }
+
+            return Json(new { ok = Result, lstCentroCostos = optionSelect.ToString(), tieneCC = tieneCentroDeCosto }, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]

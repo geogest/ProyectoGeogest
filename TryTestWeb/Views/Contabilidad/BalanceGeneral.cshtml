@@ -71,6 +71,18 @@
                         <input type="text" class="form-control date" name="fechafin" id="fechafin" />
                     </div>
                     <div class="col-lg-2 form-group">
+                        <label class="control-label">Centros de costos</label>
+                        <select class="form-control" name="CentroDeCostosID" id="CentroDeCostosID">
+                            @if(ViewBag.lstCentrosDeCostos != null || ViewBag.lstCentrosDeCostos.Count() > 0) { 
+                                <option>Seleccina</option>
+                                foreach (var itemCC in ViewBag.lstCentrosDeCostos)
+                                { 
+                                    <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-2 form-group">
                         <button class="btn btn-success centrar" id="Buscar">Buscar</button>
                     </div>
                 </div>
@@ -112,7 +124,7 @@
             </div><!-- /.modal -->
 
             <div class="panel-body" id="parshial">
-                @if(Model.Count() == 3)
+                @if (Model.Count() == 3)
                 {
                     <div class="alert alert-danger" role="alert">
                         No se encontraron registros.
@@ -173,14 +185,15 @@
 
     function filtrar()
     {
-        var Anio = $('#AnioBalance').val();
-        var Mes = $('#MesBalance').val();
+        const Anio = $('#AnioBalance').val();
+        const Mes = $('#MesBalance').val();
 
-        var fechaInicio = $('#fechainicio').val();
-        var fechaFin = $('#fechafin').val();
+        const fechaInicio = $('#fechainicio').val();
+        const fechaFin = $('#fechafin').val();
+        const centroCosto = $('#CentroDeCostosID').val();
         $.ajax
         ({
-            url: "BalanceGeneralPartial?FechaInicio=" + fechaInicio + "&FechaFin=" + fechaFin +"&Anio="+ Anio +"&Mes="+Mes,
+            url: "BalanceGeneralPartial?FechaInicio=" + fechaInicio + "&FechaFin=" + fechaFin + "&Anio=" + Anio + "&Mes=" + Mes + "&CentroDeCostosID=" + centroCosto,
             success: function (html)
             {
                 $("#parshial").html(html);

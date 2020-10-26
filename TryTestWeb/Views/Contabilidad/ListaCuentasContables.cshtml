@@ -252,14 +252,7 @@
                                 <label><input type="checkbox" id="analisisedit" name="analisisedit"> Analisis </label>
                             </div>
                         </div>*@
-                        <div class="col-lg-4 form-group">
-                            <label class="control-label">Centro Costo:</label>
-                            <select id="centroCostoE" name="centroCostoE" class="required form-control">
-                                <option value="0">Seleccionar</option>
-                                <option value="1">SI</option>
-                                <opton  value="2">NO</opton>
-                            </select>
-                        </div>
+
                     </div>
                     <div class="row form-group">
 
@@ -298,6 +291,30 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="row form-group">
+                       
+                        <div class="col-lg-4 form-group">
+                            <label class="control-label">Centro Costo:</label>
+                            <select id="centroCostoE" name="centroCostoE" onchange="getCentroDeCostos();" class="form-control">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">SI</option>
+                                <option value="2">NO</option>
+                            </select>
+                        </div>
+                        <div id="container-lstcc" class="col-md-5 col-lg-5 form-group">
+                            <label class="control-label">Asigna un centro de costos</label>
+                            <select id="centroCostoEID" name="centroCostoEID" class="form-control">
+                                <option>Selecciona</option>
+                            </select>
+                        </div>
+                        <div id="nocc" class="no-cc Esconder">
+                            <label>No tienes centro de costos?, crea uno</label>
+                            <br />
+                            <a href="@Url.Action("ListaCentroCosto","Contabilidad")" class="btn-sm btn-success"  target="_blank">Agregar centros de costos</a>
+                        </div>
+                    </div>
+
                     <div class="row form-group">
                         <div class="col-lg-4 form-group">
                             <label class="control-label">Clasificaciones:</label>
@@ -321,6 +338,12 @@
     </div> <!--  Fin  -->
 }
 
+<style>
+    .Esconder{
+        display:none;
+    }
+</style>
+
 <script>
     function NuevaCtaContable()
     {
@@ -333,9 +356,13 @@
         
     }
 
+
+
     function getCtaContableEdit(value) {
         var url = '@Url.Action("ObtenerCCEdit")';
         var cID = value;
+        getCentroDeCostos(value);
+        
         if (cID != 0)
         {
             $.getJSON(url, { IDCtaContable: cID },
@@ -372,6 +399,8 @@
             });
         }        
     }
+
+  
 </script>
 
 
@@ -394,6 +423,8 @@
             }
         });
     });
+
+
 
     function pre_form_validate() {
         var result = true;
@@ -426,6 +457,7 @@
     function GetSubClasfificacion(value) {
         var url = '@Url.Action("ObtenerSubclasificacion")';
         var cID = $("#clasificacion").val();
+        
         if (cID == 0)
         {
             var optionSelect = $('#subclasificacion');
@@ -497,5 +529,51 @@
             }
             )
     }
+
+    function getCentroDeCostos(id){
+
+        const CtaContableID = id;
+        const centroCostoSelect = document.getElementById("centroCostoE");
+        const lstCentroDeCostos = document.getElementById("centroCostoEID");
+        const containerLstCc = document.getElementById("container-lstcc");
+        const noCC = document.getElementById("nocc");
+        const ccSelected = centroCostoSelect.options[centroCostoSelect.selectedIndex].text;
+
+
+        const url = "@Url.Action("ObtenerCentrosDeCostos", "Contabilidad")";
+
+        var tieneCC = false;
+        var noTieneCC = false;
+
+            $.getJSON(url, { IdCuentaContable: CtaContableID }, function (data) {
+                if (data.ok == true) {
+                    lstCentroDeCostos.innerHTML = data.lstCentroCostos;
+                    if (data.tieneCC == true) {
+                        containerLstCc.style.display = "block";
+                        tieneCC = true;
+                    } else if (data.tieneCC == false && ccSelected != "SI") {
+                        containerLstCc.style.display = "none";
+                    }
+                } else if (data.ok == false) {
+                    containerLstCc.style.display = "none";
+                    noCC.classList.remove('Esconder');
+                }
+            });
+            
+
+            if (ccSelected == "SI") {
+                containerLstCc.style.display = "block";
+            } else if(ccSelected == "Seleccionar" || ccSelected == "NO"){
+                containerLstCc.style.display = "none";
+            }
+
+            //if (tieneCCs == false && ccSelected == "SI") {
+            //    noCC.classList.remove('Esconder');
+            //} else {
+            //    noCC.classList.add('Esconder');
+            //}
+    }
+
+
 
 </script>
