@@ -4,6 +4,11 @@
 {
     <div class="card-box">
         <div class="row">
+            @if (!string.IsNullOrWhiteSpace(ViewBag.CentroDeCostoNombre))
+            {
+                <h4><b>[@ViewBag.CentroDeCostoNombre]</b></h4>
+                <br />
+            }
             @if(ClasificacionCuentaCont == ClasificacionCtaContable.RESULTADOGANANCIA) { 
             <h4><b>GANANCIAS</b></h4>
             }else if(ClasificacionCuentaCont == ClasificacionCtaContable.RESULTADOPERDIDA)

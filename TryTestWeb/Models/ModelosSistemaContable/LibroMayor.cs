@@ -23,7 +23,7 @@ using System.Web;
        public int CtaContablesID { get; set; }
        public string Nombre { get; set; }
        public string CodigoInterno { get; set; }
-
+       public int CentroDeCostosID { get; set; }
 
 
 

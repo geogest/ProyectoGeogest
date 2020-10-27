@@ -118,6 +118,18 @@
                     <input type="Number" class="form-control" name="NumVoucher" id="NumVoucher" value="" />
                 </div>
                 <div class="col-md-2">
+                    <label>Centro de costos</label>
+                    <select class="form-control" id="CentroDeCostosID" name="CentroDeCostosID" >
+                        <option>Selecciona</option>
+                        @if(ViewBag.lstCentroDeCostos != null || ViewBag.lstCentroDeCostos.Count() > 0) { 
+                            foreach (var itemCC in ViewBag.lstCentroDeCostos)
+                            {
+                                <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
                     <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
                 </div>
             </div>

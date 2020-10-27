@@ -46,13 +46,23 @@
                         <p>Rango de años permitido de (2010 a 2030)</p>
                     </div>
                         <div class="row m-t-10">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label>Año</label>
                                 <input type="number" name="Anio" id="Anio" value="" class="form-control" required />
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label>Selecciona</label>
                                 @Html.DropDownList("Meses", (List<SelectListItem>)ViewBag.Meses, new { @class = "form-control selectpicker show-tick" })
+                            </div>
+                            <div class="col-md-4">
+                                <label>Centro de costos</label>
+                                <select class="form-control" name="CentroDeCostosID" id="CentroDeCostosID">
+                                    <option>Selecciona</option>
+                                    @foreach (var itemCC in ViewBag.lstCentroDeCostos)
+                                    {
+                                        <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                         <br />
@@ -81,13 +91,23 @@
                         </div>
 
                         <div class="row m-t-10">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label>Desde Año:</label>
                                 <input type="number" name="AnioDesde" id="AnioDesde" value="" class="form-control" required />
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label>Hasta Año:</label>
                                 <input type="number" name="AnioHasta" id="AnioHasta" value="" class="form-control" required />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Centro de costos</label>
+                                <select class="form-control" name="CentroCostoIDAnio" id="CentroCostoIDAnio">
+                                    <option>Selecciona</option>
+                                    @foreach (var itemCC in ViewBag.lstCentroDeCostos)
+                                    {
+                                        <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                         <br />
@@ -219,11 +239,14 @@
             $('#Meses option:checked').each(function () {
                 Meses.push(this.value);
             });
-            var Anio = $('#Anio').val();
+            const Anio = $('#Anio').val();
+            
+            const CentroDeCostosID = $('#CentroDeCostosID').val();
+            console.log(CentroDeCostosID);
             $.ajax({
                 type:"POST",
                 url:"@Url.Action("EstadoResultadoComparativoPartial", "Contabilidad")",
-                data: { Meses: Meses, Anio: Anio },
+                data: { Meses: Meses, Anio: Anio, CentroCostoID: CentroDeCostosID },
                 success: function (data) {
                     $('#parshial').html(data);
             }
@@ -236,16 +259,18 @@
 
     function BusquedaPorAnio() {
 
-        var AnioDesde = $('#AnioDesde').val();
-        var AnioHasta = $('#AnioHasta').val();
-
+        const AnioDesde = $('#AnioDesde').val();
+        const AnioHasta = $('#AnioHasta').val();
+        const CentroDeCostosID = $('#CentroCostoIDAnio').val();
+        console.log(CentroDeCostosID);
+        
         if (ValidarBusquedaAnio() == true){
             $('#parshial').html('<div class="row" id="carga"><center><b>Cargando...</b></center></div>');
             $('#myModalYear').modal("hide");
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("EstadoResultadoComparativoPartial", "Contabilidad")",
-                data: { AnioDesde: AnioDesde, AnioHasta: AnioHasta },
+                data: { AnioDesde: AnioDesde, AnioHasta: AnioHasta, CentroCostoID: CentroDeCostosID },
                 success: function (data) {
                     $('#parshial').html(data);
                 }

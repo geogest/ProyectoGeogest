@@ -37,6 +37,18 @@ public class CentroCostoModel
         return Presupuesto;
     }
 
+    public static string GetNombreCentroDeCosto(int CentroDeCostoID, ClientesContablesModel objCliente)
+    {
+        var ExisteCentroDeCosto = objCliente.ListCentroDeCostos.Where(x => x.CentroCostoModelID == CentroDeCostoID).Count();
+        string CentroDeCostoNombre = "";
+        if (ExisteCentroDeCosto > 0)
+        {
+             CentroDeCostoNombre = objCliente.ListCentroDeCostos.SingleOrDefault(x => x.CentroCostoModelID == CentroDeCostoID).Nombre;
+        }
+
+        return CentroDeCostoNombre;
+    }
+
 }
 
 

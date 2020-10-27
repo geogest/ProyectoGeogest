@@ -2446,6 +2446,10 @@ namespace TryTestWeb.Controllers
             if(CentroDeCostosID > 0)
             {
                 lstCuentasContablesClientes = lstCuentasContablesClientes.Where(x => x.CentroCostosModelID == CentroDeCostosID && x.TieneCentroDeCosto == 1).ToList();
+
+                string CentroDeCostoNombre = CentroCostoModel.GetNombreCentroDeCosto(CentroDeCostosID, objCliente);
+                ViewBag.CentroDeCostoNombre = CentroDeCostoNombre;
+                
             }
 
             if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
@@ -3431,13 +3435,17 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult LibroMayorTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool BusquedaDesdeBalance = false)
+        public ActionResult LibroMayorTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool BusquedaDesdeBalance = false, int CentroDeCostosID = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
             ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsString(objCliente);
+
+            var lstCentroDeCostos = objCliente.ListCentroDeCostos.ToList();
+
+            ViewBag.lstCentroDeCostos = lstCentroDeCostos;
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
@@ -3456,12 +3464,12 @@ namespace TryTestWeb.Controllers
            
             if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro,CentroDeCostosID);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
             else
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro, CentroDeCostosID);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
 
@@ -4202,6 +4210,10 @@ namespace TryTestWeb.Controllers
             List<ClasificacionCtaContable> Clasificaciones = ParseExtensions.ListaClasificacion();
             Clasificaciones = Clasificaciones.Where(x => x == ClasificacionCtaContable.RESULTADOGANANCIA || x == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
 
+            List<CentroCostoModel> lstCentroDeCostos = objCliente.ListCentroDeCostos.ToList();
+
+            ViewBag.lstCentroDeCostos = lstCentroDeCostos;
+
             ViewBag.Clasificacion = Clasificaciones;
 
             Session["TipoFiltro"] = Filtros;
@@ -4221,18 +4233,24 @@ namespace TryTestWeb.Controllers
 
 
         [Authorize]
-        public ActionResult EstadoResultadoComparativoPartial(List<string> Meses, int Anio = 0,int AnioDesde = 0, int AnioHasta = 0)
+        public ActionResult EstadoResultadoComparativoPartial(List<string> Meses, int Anio = 0,int AnioDesde = 0, int AnioHasta = 0, int CentroCostoID = 0)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            var EstadoResultadoProcesado = EstadoResultadoComparativoViewModel.EstadoResultadoComparativoConFiltros(objCliente, Meses, Anio, AnioDesde, AnioHasta);
+            var EstadoResultadoProcesado = EstadoResultadoComparativoViewModel.EstadoResultadoComparativoConFiltros(objCliente, Meses, Anio, AnioDesde, AnioHasta, CentroCostoID);
 
             List<ClasificacionCtaContable> Clasificaciones = ParseExtensions.ListaClasificacion();
             Clasificaciones = Clasificaciones.Where(x => x == ClasificacionCtaContable.RESULTADOGANANCIA || x == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
 
             ViewBag.Clasificacion = Clasificaciones;
+
+            if(CentroCostoID > 0)
+            {
+                string CentroDeCostoNombre = CentroCostoModel.GetNombreCentroDeCosto(CentroCostoID, objCliente);
+                ViewBag.CentroDeCostoNombre = CentroDeCostoNombre;
+            }
 
             bool BusquedaPorAnio = false;
 

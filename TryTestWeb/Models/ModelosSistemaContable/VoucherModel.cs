@@ -799,7 +799,7 @@ public class VoucherModel
 
     }
 
-    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina, ClientesContablesModel objCliente, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "",int Anio = 0,int Mes = 0, string Rut = "", string Glosa ="", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool Filtro = false) 
+    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina, ClientesContablesModel objCliente, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "",int Anio = 0,int Mes = 0, string Rut = "", string Glosa ="", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool Filtro = false, int CentroDeCostosID = 0) 
     {
         List<string[]> ReturnValues = new List<string[]>();
 
@@ -847,11 +847,13 @@ public class VoucherModel
                                                          CtaContNombre = detalleVoucher.ObjCuentaContable.nombre,
                                                          CtaContablesID = detalleVoucher.ObjCuentaContable.CuentaContableModelID,
                                                          CtaContableClasi = detalleVoucher.ObjCuentaContable.Clasificacion,
+                                                         CentroDeCostosID = detalleVoucher.ObjCuentaContable.CentroCostosModelID,
                                                          Comprobante = Voucher.Tipo,
                                                          ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
                                                          ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
                                                          NumVoucher = Voucher.NumeroVoucher,
                                                          VoucherId = Voucher.VoucherModelID
+
 
                                                      });
 
@@ -891,6 +893,10 @@ public class VoucherModel
         if (!string.IsNullOrWhiteSpace(CuentaContableID))
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.CtaContablesID.ToString() == CuentaContableID); // Funcionando
+        }
+        if(CentroDeCostosID > 0)
+        {
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.CentroDeCostosID == CentroDeCostosID);
         }
 
         if(!string.IsNullOrWhiteSpace(RazonPrestador))
