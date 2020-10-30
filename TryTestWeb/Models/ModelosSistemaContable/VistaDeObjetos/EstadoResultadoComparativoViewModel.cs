@@ -147,26 +147,16 @@ public class EstadoResultadoComparativoViewModel
         return Tuple.Create(EstadoResultadoComp,TotalesGanancias,TotalesPerdidas,TotalesGlobales, lstSubClasificaciones, lstSubSubClasificaciones,FechasConsultadas);
     }
 
-    public static Tuple<List<EstadoResultadoComparativoViewModel>, List<decimal>, List<decimal>, List<decimal>, List<string>, List<string>, List<DateTime>> EstadoResultadoComparativoConFiltros(ClientesContablesModel objCliente, List<string> Meses, int Anio, int AnioDesde, int AnioHasta, int CentroDeCostosID)
+    public static Tuple<List<EstadoResultadoComparativoViewModel>, List<decimal>, List<decimal>, List<decimal>, List<string>, List<string>, List<DateTime>> EstadoResultadoComparativoConFiltros(ClientesContablesModel objCliente, List<string> Meses, int Anio, int AnioDesde, int AnioHasta, int CentroCostoID)
     {
         List<string> ListaSinErroresMeses = new List<string>();
         ListaSinErroresMeses = Meses;
         List<EstadoResultadoComparativoViewModel> EstadoResultadoComp = new List<EstadoResultadoComparativoViewModel>();
         List<VoucherModel> ListaVoucher = objCliente.ListVoucher.Where(x => x.DadoDeBaja == false).ToList();
 
-        List<CuentaContableModel> ListaCuentasContables = new List<CuentaContableModel>();
-
-        if (CentroDeCostosID > 0) { 
-            ListaCuentasContables = objCliente.CtaContable.Where(x => x.CentroCostosModelID == CentroDeCostosID && 
-                                                                      x.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA ||
-                                                                      x.CentroCostosModelID == CentroDeCostosID &&
-                                                                      x.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA
-                                                                      ).ToList();
-        }else
-        {
-            ListaCuentasContables = objCliente.CtaContable.Where(x => x.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA ||
-                                                            x.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
-        }
+        List<CuentaContableModel> ListaCuentasContables = objCliente.CtaContable.Where(x => x.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA ||
+                                                                                            x.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA).ToList();
+        
 
         List<int> AniosConsultados = new List<int>();
 
@@ -206,10 +196,23 @@ public class EstadoResultadoComparativoViewModel
                 {
                     int ConvertMes = Convert.ToInt32(Mes);
 
-                    lstDetalle = ListaVoucher.SelectMany(x => x.ListaDetalleVoucher)
-                                                .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
-                                                            x.FechaDoc.Month == ConvertMes && x.FechaDoc.Year == Anio)
-                                                .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+                   if(CentroCostoID > 0)
+                    {
+
+                        lstDetalle = ListaVoucher.SelectMany(x => x.ListaDetalleVoucher)
+                                                    .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                                x.CentroCostoID == CentroCostoID &&
+                                                                x.FechaDoc.Month == ConvertMes && x.FechaDoc.Year == Anio)
+                                                    .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+                    }
+                    else
+                    {
+                        lstDetalle = ListaVoucher.SelectMany(x => x.ListaDetalleVoucher)
+                                                    .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                                x.FechaDoc.Month == ConvertMes && x.FechaDoc.Year == Anio)
+                                                    .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+                    }
+
                     
 
                     decimal SumasHaber = lstDetalle.Sum(x => x.MontoHaber);
@@ -223,10 +226,22 @@ public class EstadoResultadoComparativoViewModel
             {
                 foreach (int itemAnio in AniosConsultados)
                 {
-                    lstDetalle = ListaVoucher.SelectMany(x => x.ListaDetalleVoucher)
-                          .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
-                                      x.FechaDoc.Year == itemAnio)
-                          .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+                    if(CentroCostoID > 0)
+                    {
+                        lstDetalle = ListaVoucher.SelectMany(x => x.ListaDetalleVoucher)
+                                                 .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                             x.CentroCostoID == CentroCostoID &&
+                                                             x.FechaDoc.Year == itemAnio)
+                                                 .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();
+                    }
+                    else
+                    {
+                        lstDetalle = ListaVoucher.SelectMany(x => x.ListaDetalleVoucher)
+                                                                  .Where(x => x.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                                              x.FechaDoc.Year == itemAnio)
+                                                                  .OrderBy(x => x.ObjCuentaContable.Clasificacion).ToList();        
+                    }
+
 
                     decimal SumasHaber = lstDetalle.Sum(x => x.MontoHaber);
                     decimal SumasDebe = lstDetalle.Sum(x => x.MontoDebe);

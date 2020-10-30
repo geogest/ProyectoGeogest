@@ -4,10 +4,9 @@
 {
     <div class="card-box">
         <div class="row">
-            @if (!string.IsNullOrWhiteSpace(ViewBag.CentroDeCostoNombre))
+            @if (!string.IsNullOrWhiteSpace(ViewBag.NombreCC))
             {
-                <h4><b>[@ViewBag.CentroDeCostoNombre]</b></h4>
-                <br />
+               <h3>[@ViewBag.NombreCC]</h3>
             }
             @if(ClasificacionCuentaCont == ClasificacionCtaContable.RESULTADOGANANCIA) { 
             <h4><b>GANANCIAS</b></h4>

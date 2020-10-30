@@ -302,17 +302,7 @@
                                 <option value="2">NO</option>
                             </select>
                         </div>
-                        <div id="container-lstcc" class="col-md-5 col-lg-5 form-group">
-                            <label class="control-label">Asigna un centro de costos</label>
-                            <select id="centroCostoEID" name="centroCostoEID" class="form-control">
-                                <option>Selecciona</option>
-                            </select>
-                        </div>
-                        <div id="nocc" class="no-cc Esconder">
-                            <label>No tienes centro de costos?, crea uno</label>
-                            <br />
-                            <a href="@Url.Action("ListaCentroCosto","Contabilidad")" class="btn-sm btn-success"  target="_blank">Agregar centros de costos</a>
-                        </div>
+            
                     </div>
 
                     <div class="row form-group">
@@ -352,6 +342,7 @@
 
     function EditCtaContable(valueID)
     {
+        debugger;
         getCtaContableEdit(valueID);
         
     }
@@ -359,9 +350,9 @@
 
 
     function getCtaContableEdit(value) {
+        debugger;
         var url = '@Url.Action("ObtenerCCEdit")';
         var cID = value;
-        getCentroDeCostos(value);
         
         if (cID != 0)
         {
@@ -529,51 +520,4 @@
             }
             )
     }
-
-    function getCentroDeCostos(id){
-
-        const CtaContableID = id;
-        const centroCostoSelect = document.getElementById("centroCostoE");
-        const lstCentroDeCostos = document.getElementById("centroCostoEID");
-        const containerLstCc = document.getElementById("container-lstcc");
-        const noCC = document.getElementById("nocc");
-        const ccSelected = centroCostoSelect.options[centroCostoSelect.selectedIndex].text;
-
-
-        const url = "@Url.Action("ObtenerCentrosDeCostos", "Contabilidad")";
-
-        var tieneCC = false;
-        var noTieneCC = false;
-
-            $.getJSON(url, { IdCuentaContable: CtaContableID }, function (data) {
-                if (data.ok == true) {
-                    lstCentroDeCostos.innerHTML = data.lstCentroCostos;
-                    if (data.tieneCC == true) {
-                        containerLstCc.style.display = "block";
-                        tieneCC = true;
-                    } else if (data.tieneCC == false && ccSelected != "SI") {
-                        containerLstCc.style.display = "none";
-                    }
-                } else if (data.ok == false) {
-                    containerLstCc.style.display = "none";
-                    noCC.classList.remove('Esconder');
-                }
-            });
-            
-
-            if (ccSelected == "SI") {
-                containerLstCc.style.display = "block";
-            } else if(ccSelected == "Seleccionar" || ccSelected == "NO"){
-                containerLstCc.style.display = "none";
-            }
-
-            //if (tieneCCs == false && ccSelected == "SI") {
-            //    noCC.classList.remove('Esconder');
-            //} else {
-            //    noCC.classList.add('Esconder');
-            //}
-    }
-
-
-
 </script>

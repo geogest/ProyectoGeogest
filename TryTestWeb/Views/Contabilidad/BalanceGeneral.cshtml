@@ -71,14 +71,12 @@
                         <input type="text" class="form-control date" name="fechafin" id="fechafin" />
                     </div>
                     <div class="col-lg-2 form-group">
-                        <label class="control-label">Centros de costos</label>
-                        <select class="form-control" name="CentroDeCostosID" id="CentroDeCostosID">
-                            @if(ViewBag.lstCentrosDeCostos != null || ViewBag.lstCentrosDeCostos.Count() > 0) { 
-                                <option>Seleccina</option>
-                                foreach (var itemCC in ViewBag.lstCentrosDeCostos)
-                                { 
-                                    <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
-                                }
+                        <label>Centro de Costos</label>
+                        <select class="form-control" id="CentroDeCostoID" name="CentroDeCostoID">
+                            <option>Selecciona</option>
+                            @foreach (var itemCC in ViewBag.lstCentroDeCostos)
+                            {
+                                <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
                             }
                         </select>
                     </div>
@@ -190,10 +188,10 @@
 
         const fechaInicio = $('#fechainicio').val();
         const fechaFin = $('#fechafin').val();
-        const centroCosto = $('#CentroDeCostosID').val();
+        const centroCosto = $('#CentroDeCostoID').val();
         $.ajax
         ({
-            url: "BalanceGeneralPartial?FechaInicio=" + fechaInicio + "&FechaFin=" + fechaFin + "&Anio=" + Anio + "&Mes=" + Mes + "&CentroDeCostosID=" + centroCosto,
+            url: "BalanceGeneralPartial?FechaInicio=" + fechaInicio + "&FechaFin=" + fechaFin + "&Anio=" + Anio + "&Mes=" + Mes + "&CentroDeCostoID=" + centroCosto,
             success: function (html)
             {
                 $("#parshial").html(html);

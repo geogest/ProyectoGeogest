@@ -201,15 +201,14 @@ else
                                         <option value="-1">Seleccionar</option>
                                         @foreach (CentroCostoModel CentroCosto in Model.Item1)
                                         {
-
-                                                        if(ParseExtensions.ParseInt(detalleImportacion[5]) == CentroCosto.CentroCostoModelID)
-                                                        {
-                                                            <option  selected value="@CentroCosto.CentroCostoModelID"> @CentroCosto.Nombre  </option>
-                                                        }
-                                                        else
-                                                        {
-                                                            <option  value="@CentroCosto.CentroCostoModelID"> @CentroCosto.Nombre  </option>
-                                                        }
+                                            if(ParseExtensions.ParseInt(detalleImportacion[5]) == CentroCosto.CentroCostoModelID)
+                                            {
+                                                <option  selected value="@CentroCosto.CentroCostoModelID"> @CentroCosto.Nombre  </option>           
+                                            } 
+                                            else
+                                            {
+                                                <option  value="@CentroCosto.CentroCostoModelID"> @CentroCosto.Nombre  </option>
+                                            }
                                         }
                                     </select>
                                   
@@ -439,7 +438,7 @@ else
 if (ViewBag.vbVoucherModel != null)
 {
     <div class="row">
-        <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress">Editar Voucher</button>
+        <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress">Guardar Cambios</button>
     </div>
 
     
@@ -483,15 +482,11 @@ if (ViewBag.vbVoucherModel != null)
                 //console.log($(this).html());
                 cambiaCCI(document.getElementById("ctacont_"+i));
             //console.log(i)
-                i++;
-
-           
+                i++;     
+                
         });
 
-        $("select").select2();
-
         
-       
 
         //$("#ctacont").val()
         cambiaCC(document.getElementById("ctacont"));
@@ -607,8 +602,8 @@ if (ViewBag.vbVoucherModel != null)
        // $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
         //$.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
     });
-
-
+    //Se pone aquí para que se ejecute antes que todo y así no sobreescriba los elementos seleccionados de los Select
+    $("select").select2();
     @*$(document).ready(function() {
         $('#DatosVoucher').validator();
         @if (ViewBag.CentroDeCostoEdit != null)
@@ -794,7 +789,7 @@ if (ViewBag.vbVoucherModel != null)
             //alert("pasa");
 
             // cambiaCC($('#tablaWord tr:last').closest('tr'));
-            $("#ctacont_"+idRowCount).select2();
+            //$("#ctacont_"+idRowCount).select2();
             //$("#form-group"+idRowCount).hide();
             
 

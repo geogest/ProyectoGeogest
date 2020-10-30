@@ -55,8 +55,8 @@
                                 @Html.DropDownList("Meses", (List<SelectListItem>)ViewBag.Meses, new { @class = "form-control selectpicker show-tick" })
                             </div>
                             <div class="col-md-4">
-                                <label>Centro de costos</label>
-                                <select class="form-control" name="CentroDeCostosID" id="CentroDeCostosID">
+                                <label>Centro de Costo<span>(Opcional)</span></label>
+                                <select class="form-control" id="CCID" name="CCID">
                                     <option>Selecciona</option>
                                     @foreach (var itemCC in ViewBag.lstCentroDeCostos)
                                     {
@@ -100,8 +100,8 @@
                                 <input type="number" name="AnioHasta" id="AnioHasta" value="" class="form-control" required />
                             </div>
                             <div class="col-md-4">
-                                <label>Centro de costos</label>
-                                <select class="form-control" name="CentroCostoIDAnio" id="CentroCostoIDAnio">
+                                <label>Centro de Costo<span>(Opcional)</span></label>
+                                <select class="form-control" id="CentroDeCostoID" name="CentroDeCostoID">
                                     <option>Selecciona</option>
                                     @foreach (var itemCC in ViewBag.lstCentroDeCostos)
                                     {
@@ -240,13 +240,12 @@
                 Meses.push(this.value);
             });
             const Anio = $('#Anio').val();
+            const CentroDeCostoID = $('#CCID').val();
             
-            const CentroDeCostosID = $('#CentroDeCostosID').val();
-            console.log(CentroDeCostosID);
             $.ajax({
                 type:"POST",
                 url:"@Url.Action("EstadoResultadoComparativoPartial", "Contabilidad")",
-                data: { Meses: Meses, Anio: Anio, CentroCostoID: CentroDeCostosID },
+                data: { Meses: Meses, Anio: Anio, CentroDeCostoID: CentroDeCostoID },
                 success: function (data) {
                     $('#parshial').html(data);
             }
@@ -261,8 +260,7 @@
 
         const AnioDesde = $('#AnioDesde').val();
         const AnioHasta = $('#AnioHasta').val();
-        const CentroDeCostosID = $('#CentroCostoIDAnio').val();
-        console.log(CentroDeCostosID);
+        const CentroDeCostoID = $('#CentroDeCostoID').val();
         
         if (ValidarBusquedaAnio() == true){
             $('#parshial').html('<div class="row" id="carga"><center><b>Cargando...</b></center></div>');
@@ -270,7 +268,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("EstadoResultadoComparativoPartial", "Contabilidad")",
-                data: { AnioDesde: AnioDesde, AnioHasta: AnioHasta, CentroCostoID: CentroDeCostosID },
+                data: { AnioDesde: AnioDesde, AnioHasta: AnioHasta, CentroDeCostoID:CentroDeCostoID },
                 success: function (data) {
                     $('#parshial').html(data);
                 }

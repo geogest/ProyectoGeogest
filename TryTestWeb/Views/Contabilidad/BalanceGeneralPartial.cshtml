@@ -1,9 +1,10 @@
 ﻿@model IList<string[]>
-    @if (!string.IsNullOrWhiteSpace(ViewBag.CentroDeCostoNombre))
-    {
-        <h4><b>[@ViewBag.CentroDeCostoNombre]</b></h4>
-    }
-    
+
+@if (!string.IsNullOrWhiteSpace(ViewBag.NombreCC))
+{
+    <h3><b>[@ViewBag.NombreCC]</b></h3>
+}
+
 <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
     <thead>
         <tr>

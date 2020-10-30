@@ -847,14 +847,11 @@ public class VoucherModel
                                                          CtaContNombre = detalleVoucher.ObjCuentaContable.nombre,
                                                          CtaContablesID = detalleVoucher.ObjCuentaContable.CuentaContableModelID,
                                                          CtaContableClasi = detalleVoucher.ObjCuentaContable.Clasificacion,
-                                                         CentroDeCostosID = detalleVoucher.ObjCuentaContable.CentroCostosModelID,
                                                          Comprobante = Voucher.Tipo,
                                                          ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
                                                          ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
                                                          NumVoucher = Voucher.NumeroVoucher,
                                                          VoucherId = Voucher.VoucherModelID
-
-
                                                      });
 
        
@@ -893,10 +890,6 @@ public class VoucherModel
         if (!string.IsNullOrWhiteSpace(CuentaContableID))
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.CtaContablesID.ToString() == CuentaContableID); // Funcionando
-        }
-        if(CentroDeCostosID > 0)
-        {
-            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.CentroDeCostosID == CentroDeCostosID);
         }
 
         if(!string.IsNullOrWhiteSpace(RazonPrestador))
@@ -1046,7 +1039,7 @@ public class VoucherModel
    
 
     //Balance
-    public static List<string[]> GetBalanceGeneral(List<VoucherModel> lstVoucher, List<CuentaContableModel> lstCuentaContable)
+    public static List<string[]> GetBalanceGeneral(List<VoucherModel> lstVoucher, List<CuentaContableModel> lstCuentaContable, int CentroCostoID)
     {
         List<string[]> ReturnValues = new List<string[]>();
 
@@ -1063,7 +1056,16 @@ public class VoucherModel
 
         foreach (CuentaContableModel Cuenta in lstCuentaContable)
         {
-            List<DetalleVoucherModel> lstDetalle = lstVoucher.SelectMany(x => x.ListaDetalleVoucher).Where(r => r.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID).ToList();
+            List<DetalleVoucherModel> lstDetalle = new List<DetalleVoucherModel>();
+            if(CentroCostoID > 0)
+            {
+                lstDetalle = lstVoucher.SelectMany(x => x.ListaDetalleVoucher).Where(r => r.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID &&
+                                                                                          r.CentroCostoID == CentroCostoID).ToList();
+            }
+            else
+            {
+                lstDetalle = lstVoucher.SelectMany(x => x.ListaDetalleVoucher).Where(r => r.ObjCuentaContable.CuentaContableModelID == Cuenta.CuentaContableModelID).ToList();
+            }
             if (lstDetalle.Count == 0)
                 continue;
 
@@ -1304,7 +1306,7 @@ public class VoucherModel
     public static byte[] GetExcelResultBalanceGeneral(List<VoucherModel> lstVoucher, ClientesContablesModel objCliente, List<CuentaContableModel> lstCuentaContable, bool InformarMembrete, string titulo)
     {
         byte[] ExcelByteArray = null;
-        List<string[]> lstBalanceGeneral = GetBalanceGeneral(lstVoucher, lstCuentaContable);
+        List<string[]> lstBalanceGeneral = GetBalanceGeneral(lstVoucher, lstCuentaContable,0);
         using (XLWorkbook excelFile = new XLWorkbook(@"C:\PROTOEXCEL.xlsx"))
         {
             var workSheet = excelFile.Worksheet(1);

@@ -838,7 +838,7 @@ public class LibrosContablesModel
         return TablaPrestador;
     }
 
-    public static PaginadorModel RescatarLibroCentralizacion(ClientesContablesModel objCliente, TipoCentralizacion tipoLibroCentralizacion, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0,int pagina = 0, int cantidadRegistrosPorPagina = 0, string Rut = "", string RazonSocial = "",int Folio = 0)
+    public static PaginadorModel RescatarLibroCentralizacion(ClientesContablesModel objCliente, TipoCentralizacion tipoLibroCentralizacion, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, int pagina = 0, int cantidadRegistrosPorPagina = 0, string Rut = "", string RazonSocial = "", int Folio = 0)
     {
         bool ConversionFechaInicioExitosa = false;
         DateTime dtFechaInicio = new DateTime();
@@ -854,12 +854,12 @@ public class LibrosContablesModel
         // Solo si es convertido a voucher se listará en el libro de compras.
 
         IQueryable<LibrosContablesModel> lstlibro = (from LibrosContables in db.DBLibrosContables
-                                                    join Vouchers in db.DBVoucher on LibrosContables.VoucherModelID equals Vouchers.VoucherModelID
-                                                    where Vouchers.DadoDeBaja == false && LibrosContables.HaSidoConvertidoAVoucher == true &&
-                                                    Vouchers.ClientesContablesModelID == objCliente.ClientesContablesModelID && Vouchers.Tipo == TipoVoucher.Traspaso &&
-                                                    LibrosContables.TipoLibro == tipoLibroCentralizacion
+                                                     join Vouchers in db.DBVoucher on LibrosContables.VoucherModelID equals Vouchers.VoucherModelID
+                                                     where Vouchers.DadoDeBaja == false && LibrosContables.HaSidoConvertidoAVoucher == true &&
+                                                     Vouchers.ClientesContablesModelID == objCliente.ClientesContablesModelID && Vouchers.Tipo == TipoVoucher.Traspaso &&
+                                                     LibrosContables.TipoLibro == tipoLibroCentralizacion
 
-                                                    select LibrosContables);
+                                                     select LibrosContables);
 
 
         //IQueryable<LibrosContablesModel> lstlibro = db.DBLibrosContables.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.TipoLibro == tipoLibroCentralizacion &&  r.HaSidoConvertidoAVoucher == true);
@@ -881,18 +881,26 @@ public class LibrosContablesModel
 
 
         int totalDeRegistros = lstlibro.Count();
-        if (cantidadRegistrosPorPagina != 0) { 
+        if (cantidadRegistrosPorPagina != 0) {
             lstlibro = lstlibro.OrderBy(r => r.FechaContabilizacion)
                                .Skip((pagina - 1) * cantidadRegistrosPorPagina)
                                .Take(cantidadRegistrosPorPagina);
 
-        }else if(cantidadRegistrosPorPagina == 0)
+        } else if (cantidadRegistrosPorPagina == 0)
         {
             lstlibro = lstlibro.OrderBy(r => r.FechaContabilizacion);
         }
-  
+
         List<string[]> ReturnValues = new List<string[]>();
-      
+
+        decimal TotalExento = 0;
+        decimal TotalNeto = 0;
+        decimal TotalIva = 0;
+        decimal TotalIvaNoRecuperable = 0;
+        decimal TotalIvaUsocomun = 0;
+        decimal TotalMontoTotal = 0;
+
+
         int NumeroRow = 1;
         foreach (LibrosContablesModel Item in lstlibro.ToList())
         {
@@ -924,11 +932,17 @@ public class LibrosContablesModel
                 }
 
                 BalanceRow[7] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoExento);
+                TotalExento += Item.MontoExento;
                 BalanceRow[8] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoNeto);
+                TotalNeto += Item.MontoNeto;
                 BalanceRow[9] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIva);
+                TotalIva += Item.MontoIva;
                 BalanceRow[10] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaNoRecuperable);
+                TotalIvaNoRecuperable += Item.MontoIvaNoRecuperable;
                 BalanceRow[11] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaUsocomun);
+                TotalIvaUsocomun += Item.MontoIvaUsocomun;
                 BalanceRow[12] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoTotal);
+                TotalMontoTotal += Item.MontoTotal;
                 BalanceRow[13] = "True";
 
                 if (Item.TipoDocumento.EsUnaNotaCredito() == false)
@@ -942,7 +956,19 @@ public class LibrosContablesModel
             
         }
 
-        
+        string[] Totales = new string[] { "-", "-", "-", "-", "-", "-", "-", "0", "0", "0", "0", "0", "0", "False" };
+        Totales[6] = "TOTAL: ";
+        Totales[7] = ParseExtensions.NumeroConPuntosDeMiles(TotalExento);
+        Totales[8] = ParseExtensions.NumeroConPuntosDeMiles(TotalNeto);
+        Totales[9] = ParseExtensions.NumeroConPuntosDeMiles(TotalIva);
+        Totales[10] = ParseExtensions.NumeroConPuntosDeMiles(TotalIvaNoRecuperable);
+        Totales[11] = ParseExtensions.NumeroConPuntosDeMiles(TotalIvaUsocomun);
+        Totales[12] = ParseExtensions.NumeroConPuntosDeMiles(TotalMontoTotal);
+
+        ReturnValues.Add(Totales);
+
+
+
         var Paginador = new PaginadorModel();
         Paginador.ResultStringArray = ReturnValues;
         Paginador.PaginaActual = pagina;
