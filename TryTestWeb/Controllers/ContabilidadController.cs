@@ -3554,6 +3554,9 @@ namespace TryTestWeb.Controllers
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
 
+            Session["ObjetoCuentaContableConsultada"] = objCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == Convert.ToInt32(CuentaContableID));
+            db.Dispose();
+
             return Json(ReturnValues.ResultStringArray);
         }
 

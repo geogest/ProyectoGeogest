@@ -1,0 +1,107 @@
+﻿@model ComparacionConciliacionBancariaViewModel
+@{
+    ViewBag.Title = "ImportarCartolaBancaria";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2>Conciliar</h2>
+
+
+<div class="row">
+    @using (Html.BeginForm("EjecutarConciliacion", "ContabilidadConciliacionBancaria", FormMethod.Post))
+    {
+    <div class="card-box col-md-6">  
+        <button type="submit" class="btn-sm btn-success">Conciliar</button>
+        <div class="table table-responsive letra-pequenia">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th colspan="9">@ViewBag.NombreCuentaContable</th>
+                    </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha Contabilizacion</th>
+                        <th>Comprobante</th>
+                        <th>Glosa</th>
+                        <th>Debe</th>
+                        <th>Haber</th>
+                        <th>Saldo</th>
+                        <th>NumDocAsignado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int Correlativo = 0; }
+                    @for (int i = 0;  i < Model.lstLibroMayor.Count(); i++ )
+                    {
+                        Correlativo++;
+                        <tr>
+                            <td>@Correlativo</td>
+                            <td>@ParseExtensions.ToDD_MM_AAAA(Model.lstLibroMayor[i].FechaContabilizacion)  @Html.HiddenFor(m => m.lstLibroMayor[i].FechaContabilizacion, new { @readonly = "true"})</td>
+                            <td>@Model.lstLibroMayor[i].Comprobante                                         @Html.HiddenFor(m => m.lstLibroMayor[i].Comprobante, new { @readonly = "true"})</td>
+                            <td>@Model.lstLibroMayor[i].Glosa                                               @Html.HiddenFor(m => m.lstLibroMayor[i].Glosa, new { @readonly = "true"})</td>
+                            <td class="esconder">                                                           @Html.HiddenFor(m => m.lstLibroMayor[i].RazonSocial, new { @readonly = "true"})</td>
+                            <td class="esconder">                                                           @Html.HiddenFor(m => m.lstLibroMayor[i].Rut, new { @readonly = "true"})</td>
+                            <td>@Model.lstLibroMayor[i].Debe                                                @Html.HiddenFor(m => m.lstLibroMayor[i].Debe, new { @readonly = "true"})</td>
+                            <td>@Model.lstLibroMayor[i].Haber                                               @Html.HiddenFor(m => m.lstLibroMayor[i].Haber, new { @readonly = "true"})</td>
+                            <td>@Model.lstLibroMayor[i].Saldo                                               @Html.HiddenFor(m => m.lstLibroMayor[i].Saldo, new { @readonly = "true"})</td>
+                            <td>@Html.TextBoxFor(m => m.lstLibroMayor[i].NumDocAsignado, new { @class= "form-control input-sm" })</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-box col-md-6">
+        <div class="table table-responsive letra-pequenia">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Cartola Bancaria</th>
+                    </tr>
+                   <tr>
+                       <th>#</th>
+                       <th>Fecha</th>
+                       <th>Folio</th>
+                       <th>Detalle</th>
+                       <th>Debe</th>
+                       <th>Haber</th>
+                       <th>Saldo</th>
+                   </tr>
+                </thead>
+                <tbody>
+                    @{ int CorrelativoCartola = 0; }
+                    @for (int i = 0; i < Model.lstCartola.Count(); i++)
+                    {
+                        CorrelativoCartola++;
+                        <tr>
+                            <td>@CorrelativoCartola</td>
+                            <td>@Model.lstCartola[i].Fecha      @Html.HiddenFor(m => m.lstCartola[i].Fecha, new { @readonly = "true" })</td>
+                            <td>@Model.lstCartola[i].Folio      @Html.HiddenFor(m => m.lstCartola[i].Folio, new { @readonly = "true" })</td>
+                            <td>@Model.lstCartola[i].Detalle    @Html.HiddenFor(m => m.lstCartola[i].Detalle, new { @readonly = "true" })</td>
+                            <td>@Model.lstCartola[i].Debe       @Html.HiddenFor(m => m.lstCartola[i].Debe, new { @readonly = "true" })</td>
+                            <td>@Model.lstCartola[i].Haber      @Html.HiddenFor(m => m.lstCartola[i].Haber, new { @readonly = "true" })</td>
+                            <td>@Model.lstCartola[i].Saldo      @Html.HiddenFor(m => m.lstCartola[i].Saldo, new { @readonly = "true" })</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>    
+    </div>
+    }
+</div>
+
+<style>
+    .letra-pequenia{
+        font-size:1.2rem;
+    }
+    .scroll{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    }
+    .esconder{
+        display:none;
+    }
+</style>
+

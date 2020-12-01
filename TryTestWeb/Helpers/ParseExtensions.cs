@@ -364,6 +364,27 @@ public static class ParseExtensions
         return csvLines;
     }
 
+    public static List<string[]> ReadStructurateCSV(HttpPostedFileBase file)
+    {
+        string fileStringRaw = string.Empty;
+        List<string[]> csvLines = new List<string[]>();
+        using (BinaryReader b = new BinaryReader(file.InputStream))
+        {
+            byte[] binData = b.ReadBytes(file.ContentLength);
+            fileStringRaw = System.Text.Encoding.UTF8.GetString(binData);
+        }
+        using (StringReader reader = new StringReader(fileStringRaw))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                csvLines.Add(line.Split(','));
+
+            }
+        }
+        return csvLines;
+    }
+
 
     public static List<string[]> ReadCSV(HttpPostedFileBase file, DateTime fechAdicional)
     {

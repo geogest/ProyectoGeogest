@@ -231,6 +231,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ContabilidadAuxiliaresController.cs" />
+    <Compile Include="Controllers\ContabilidadConciliacionBancariaController.cs" />
     <Compile Include="Controllers\ContabilidadController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FMSendController.cs" />
@@ -311,6 +312,14 @@
     <Compile Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.Designer.cs">
       <DependentUpon>202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011260540197_CreandotablasCartola.cs" />
+    <Compile Include="Migrations\202011260540197_CreandotablasCartola.Designer.cs">
+      <DependentUpon>202011260540197_CreandotablasCartola.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011261635291_addctacontableintablecartola.cs" />
+    <Compile Include="Migrations\202011261635291_addctacontableintablecartola.Designer.cs">
+      <DependentUpon>202011261635291_addctacontableintablecartola.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
     <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
@@ -331,9 +340,13 @@
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\FiltrosEstadoCtasCorrientes.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\UsoComunAux.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaMacroModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\ConciliacionBancariaViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\CtasContablesPresupuestoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\CuentaContableModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\DetalleVoucherModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\Helpers\UtilesContabilidad.cs" />
     <Compile Include="Models\ModelosSistemaContable\ImpuestosAdicionalesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ImpuestosAdRelacionModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ItemModel.cs" />
@@ -341,6 +354,7 @@
     <Compile Include="Models\ModelosSistemaContable\LibroMayor.cs" />
     <Compile Include="Models\ModelosSistemaContable\LibrosContablesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\MonitoreoModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ObjetosUtiles\FiltroReportesContables.cs" />
     <Compile Include="Models\ModelosSistemaContable\ObjetosUtiles\SessionParaExcel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ParametrosClienteModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\PerfilUsuarioModel.cs" />
@@ -925,9 +939,15 @@
     <Content Include="Views\ContabilidadAuxiliares\EstCtasCtesConciliado.cshtml" />
     <Content Include="Views\ContabilidadAuxiliares\TestCtasCtesConciliadas.cshtml" />
     <Content Include="Views\ContabilidadAuxiliares\TestGroup.cshtml" />
+    <Content Include="Views\ContabilidadConciliacionBancaria\ConciliacionBancaria.cshtml" />
+    <Content Include="Views\ContabilidadConciliacionBancaria\ImportarCartolaBancaria.cshtml" />
+    <Content Include="Views\ContabilidadConciliacionBancaria\EjecutarConciliacion.cshtml" />
+    <Content Include="Views\ContabilidadConciliacionBancaria\ConciliacionBAutomatica.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />
+    <Folder Include="Models\ModelosSistemaContable\ContabilidadViewModels\" />
+    <Folder Include="Models\ModelosSistemaContable\ContabilidaMayor\" />
     <Folder Include="Models\ModelsFacturaRecurrente\" />
     <Folder Include="Views\Error\" />
   </ItemGroup>
@@ -975,6 +995,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.resx">
       <DependentUpon>202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011260540197_CreandotablasCartola.resx">
+      <DependentUpon>202011260540197_CreandotablasCartola.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011261635291_addctacontableintablecartola.resx">
+      <DependentUpon>202011261635291_addctacontableintablecartola.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

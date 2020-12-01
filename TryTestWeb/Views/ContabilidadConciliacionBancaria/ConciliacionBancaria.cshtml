@@ -1,0 +1,263 @@
+﻿<br />
+<div class="row">
+    <div class="panel-heading">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="row">
+
+                @using (Html.BeginForm("GetExcelConciliacionBancaria", "ContabilidadConciliacionBancaria", FormMethod.Post))
+                {
+                    <div class="col-md-2 pull-right">
+
+                        <br />
+                        <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                            <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                        </button>
+                        <br />
+
+                        <br />
+                    </div>
+                }
+                <div class="col-md-1 pull-right">
+
+                    <br />
+                    <button class="btn btn-default" onclick="ExportarPDF()">
+                        <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                    </button>
+                    <br />
+
+                    <br />
+                </div>
+            </div>
+
+            <h2 class="page-header">Conciliación Bancaria</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad Reportes</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Conciliación Bancaria
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="row card-box vertical-align">
+        <div class="container">
+            <div class="col-md-12">
+                <div class="row form-group">
+                    <h3>Configuración</h3>
+                    <div class="form-group col-md-3">
+            
+                        <label>Cuentas Bancarias</label>
+                        <select class="form-control" id="CuentaContableID" name="CuentaContableID">
+                            <option>Selecciona</option>
+                            @foreach (var itemCB in ViewBag.CuentasBancarias)
+                            {
+                                <option value="@itemCB.CuentaContableModelID">@itemCB.nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Año</label>
+                        <input type="number" class="form-control" id="Anio" name="Anio" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Mes</label>
+                        <select class="form-control" id="Mes" name="Mes">
+                            <option>Selecciona</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="form-group ">
+                        <button  onclick="GuardarUltimaBusqueda();" class="btn-sm btn-success boton-centrado">Buscar</button>
+                    </div>
+                </div>
+
+              
+            </div>
+        </div>
+
+    <div id="detalleCta" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Movimientos de esta cuenta</h4>
+                    <br />
+                    <br />
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
+                            <label>Si no tienes la plantilla la puedes descargar</label>
+                            <br />
+                            <button class="btn-sm btn-warning text-white">Descargar plantilla</button>
+                        </div>
+                        @using (Html.BeginForm("ImportarCartolaBancaria", "ContabilidadConciliacionBancaria", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
+                                <label class="control-label">Si ya la tienes lista importala</label>
+                                <br />
+                                <input type="file" name="files" id="files" value="" />
+                                <button type="submit" class="btn-sm btn-success">Importar documento</button>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+                <div class="table table-responsive modal-body compact letra-pequenia" id="tabla-detalle">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr id="tituloCtaCont"></tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha Contabilización</th>
+                                <th>Comprobante</th>
+                                <th>Glosa</th>
+                                <th>Razon Social</th>
+                                <th>Rut</th>
+                                <th>Debe</th>
+                                <th>Haber</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contenido-tabla"></tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+
+<style>
+    .vertical-align {
+        display: flex;
+        align-items: center;
+    }
+    .boton-centrado{
+        margin-top:25px;
+    }
+</style>
+
+
+<script>
+
+    const GuardarUltimaBusqueda = () => {
+
+        const cuentaContable = document.getElementById('CuentaContableID').value;
+        const anio = document.getElementById('Anio').value;
+        const mes = document.getElementById('Mes').value;
+
+        let BusquedaActiva = {
+            Anio: anio,
+            Mes: mes,
+            CuentaContableId: cuentaContable
+        }
+
+        console.log(BusquedaActiva);
+
+        localStorage.setItem("Busqueda", JSON.stringify(BusquedaActiva))
+        console.log(localStorage.getItem("Busqueda"));
+        const Busqueda = ObtenerUltimaBusqueda();
+        GenerarBusquedaLibroMayor(Busqueda);
+    }
+
+    const ObtenerUltimaBusqueda = () => {
+        if (localStorage.getItem("Busqueda")) {
+            const BusquedaActiva = JSON.parse(localStorage.getItem("Busqueda"));
+            return BusquedaActiva;
+        }
+
+       
+    }
+
+
+
+    const GenerarBusquedaLibroMayor = (Busqueda) => {
+
+        const UltimaBusquedaOdefault = ObtenerUltimaBusqueda();
+        
+        const ctaContId = UltimaBusquedaOdefault.CuentaContableId;
+        const anio = UltimaBusquedaOdefault.Anio;
+        const mes = UltimaBusquedaOdefault.Mes;
+        console.log(ctaContId);
+        $.ajax({
+            type:"POST",
+            url:"@Url.Action("LibroMayorDesdeBalance", "Contabilidad")",
+            data: { Anio: anio, Mes: mes, CuentaContableID: ctaContId },
+        success: function (result) {
+            $('#detalleCta').modal("show");
+
+            lstDetalleCta = {
+                filaCtaDetalle:[]
+            }
+
+            debugger;
+            for (var i = 0; i < result.length; i++) {
+
+                detalleCtaObject = {
+                    correlativo: result[i][0],
+                    fechaContabilizacion: result[i][1],
+                    comprobante: result[i][2],
+                    glosa: result[i][3],
+                    razonSocial: result[i][4],
+                    rut: result[i][5],
+                    debe: result[i][6],
+                    haber: result[i][7],
+                    saldo: result[i][8],
+                    cuentaContable: result[i][9],
+                    numVoucher: result[i][10],
+                    idVoucher: result[i][11]
+                }
+
+                lstDetalleCta.filaCtaDetalle.push(detalleCtaObject);
+            }
+
+            const cuentaContable ='<th colspan="4">' + result[0][9] + '</th>';
+            $('#tituloCtaCont').html(cuentaContable);
+
+            const ContenidoTablas = [];
+            for (var i = 0; i < lstDetalleCta.filaCtaDetalle.length; i++) {
+
+                const tablaHtml = `<tr>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].correlativo}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].fechaContabilizacion}</td>
+                                        <td><a href="/Contabilidad/IngresoVoucher?IDVoucher=${lstDetalleCta.filaCtaDetalle[i].idVoucher}" target="_blank" class="label label-table label-primary">${lstDetalleCta.filaCtaDetalle[i].comprobante}</a></td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].glosa}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].razonSocial}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].rut}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].debe}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].haber}</td>
+                                        <td>${lstDetalleCta.filaCtaDetalle[i].saldo}</td>
+                                     </tr>`
+
+                ContenidoTablas.push(tablaHtml);
+            }
+            $('#contenido-tabla').html(ContenidoTablas);
+        }
+    });
+    }
+</script>
+
+
+

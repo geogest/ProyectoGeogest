@@ -1,0 +1,131 @@
+﻿@model ComparacionConciliacionBancariaViewModel
+@{
+    ViewBag.Title = "EjecutarConciliacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+
+<div class="row">
+    <h3>Conciliación Bancaria</h3>
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>DOCUMENTOS NO CONTABILIZADOS EN EL MAYOR</strong></div>
+        <div class="table table-responsive">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Detalle</th>
+                        <th>Debe</th>
+                        <th>Haber</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int CorrNoCont = 0;}
+                    @foreach (var itemNoContabilizado in Model.LstNoContabilizados)
+                    {
+                        CorrNoCont++;
+                        <tr>
+                            <td>@CorrNoCont</td>
+                            <td>@ParseExtensions.ToDD_MM_AAAA(itemNoContabilizado.Fecha)</td>
+                            <td>@itemNoContabilizado.Detalle</td>
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(itemNoContabilizado.Debe)</td>
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(itemNoContabilizado.Haber)</td>
+                            <td>@ParseExtensions.NumeroConPuntosDeMiles(itemNoContabilizado.Saldo)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>DOCUMENTOS NO REGISTRADOS EN LA CARTOLA</strong></div>
+            <div class="table table-responsive compact">
+
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Detalle</th>
+                            <th>Debe</th>
+                            <th>Haber</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int CorrNoRegis = 0; }
+                        @foreach (var itemNoRegistrado in Model.LstNoRegistradosCartola)
+                        {
+                            CorrNoRegis++;
+                            <tr>
+                                <td>@CorrNoRegis</td>
+                                <td>@ParseExtensions.ToDD_MM_AAAA(itemNoRegistrado.FechaContabilizacion)</td>
+                                <td>@itemNoRegistrado.Glosa</td>
+                                <td>@ParseExtensions.NumeroConPuntosDeMiles(itemNoRegistrado.Debe)</td>
+                                <td>@ParseExtensions.NumeroConPuntosDeMiles(itemNoRegistrado.Haber)</td>
+                                <td>@ParseExtensions.NumeroConPuntosDeMiles(itemNoRegistrado.Saldo)</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<div class="row">
+    <h3>Resultado Conciliación</h3>
+    <div class="table table-responsive compact">
+        <div class="alert alert-success">
+            <p>Cantidad de elementos conciliados: @ViewBag.CantidadDeConciliados </p>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@ViewBag.NombreCuentaContable</th>
+                </tr>
+                <tr>
+                    <th>#</th>
+                    <th>Fecha Contabilizacion</th>
+                    <th>Comprobante</th>
+                    <th>Glosa</th>
+                    <th>Razon Social</th>
+                    <th>Rut</th>
+                    <th>Debe</th>
+                    <th>Haber</th>
+                    <th>Saldo</th>
+                    <th>NumDocAsignado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int Correlativo = 0;}
+                @foreach (var itemMayor in Model.lstLibroMayor)
+                {
+                    Correlativo++;
+                    string Style = "";
+                    if(itemMayor.EstaConciliado == true)
+                    {
+                        Style = "bg-success text-white";
+                    }
+                    <tr class="@Style">
+                        <td>@Correlativo</td>
+                        <td>@ParseExtensions.ToDD_MM_AAAA(itemMayor.FechaContabilizacion)</td>
+                        <td>@itemMayor.Comprobante</td>
+                        <td>@itemMayor.Glosa</td>
+                        <td>@itemMayor.RazonSocial</td>
+                        <td>@itemMayor.Rut</td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(itemMayor.Debe)</td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(itemMayor.Haber)</td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(itemMayor.Saldo)</td>
+                        <td>@itemMayor.NumDocAsignado</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
