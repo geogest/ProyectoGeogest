@@ -8,13 +8,13 @@ public class DetalleVoucherModel
     public int DetalleVoucherModelID { get; set; }
 
     public int VoucherModelID { get; set; }
-
     public virtual CuentaContableModel ObjCuentaContable { get; set; }
     public virtual CentroCostoModel objCentroCostro { get; set; }
 
     public decimal MontoDebe { get; set; }
 
     public decimal MontoHaber { get; set; }
+    public bool Conciliado { get; set; }
 
     public string GlosaDetalle { get; set; }
 
@@ -36,6 +36,7 @@ public class DetalleVoucherModel
 
 
     public virtual AuxiliaresModel Auxiliar { get; set; }
+
 
     //public virtual ICollection<AuxiliaresDetalleModel> RelacionPrestador { get; set; }
 

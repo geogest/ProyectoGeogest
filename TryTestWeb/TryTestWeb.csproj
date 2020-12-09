@@ -320,6 +320,22 @@
     <Compile Include="Migrations\202011261635291_addctacontableintablecartola.Designer.cs">
       <DependentUpon>202011261635291_addctacontableintablecartola.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012040146493_SeModicaTablaCartolaBancariaMacro.cs" />
+    <Compile Include="Migrations\202012040146493_SeModicaTablaCartolaBancariaMacro.Designer.cs">
+      <DependentUpon>202012040146493_SeModicaTablaCartolaBancariaMacro.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012040156197_SeAgregaCampoNecesario.cs" />
+    <Compile Include="Migrations\202012040156197_SeAgregaCampoNecesario.Designer.cs">
+      <DependentUpon>202012040156197_SeAgregaCampoNecesario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012040245497_SeEliminaColumnaCartola.cs" />
+    <Compile Include="Migrations\202012040245497_SeEliminaColumnaCartola.Designer.cs">
+      <DependentUpon>202012040245497_SeEliminaColumnaCartola.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs" />
+    <Compile Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.Designer.cs">
+      <DependentUpon>202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
     <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
@@ -725,6 +741,7 @@
     <Content Include="App_Data\EstadoResultadoComparativo.xlsx" />
     <Content Include="App_Data\14Ter.xlsx" />
     <Content Include="App_Data\ESTADOCTASCORRIENTES.xlsx" />
+    <Content Include="App_Data\PlantillaConciliacionAutomatica.csv" />
     <None Include="Properties\PublishProfiles\EFactu Deployment.pubxml" />
     <None Include="Properties\PublishProfiles\EFactuDeploy.pubxml" />
     <None Include="Properties\PublishProfiles\GaryFacturaLabs.pubxml" />
@@ -1001,6 +1018,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011261635291_addctacontableintablecartola.resx">
       <DependentUpon>202011261635291_addctacontableintablecartola.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012040146493_SeModicaTablaCartolaBancariaMacro.resx">
+      <DependentUpon>202012040146493_SeModicaTablaCartolaBancariaMacro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012040156197_SeAgregaCampoNecesario.resx">
+      <DependentUpon>202012040156197_SeAgregaCampoNecesario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012040245497_SeEliminaColumnaCartola.resx">
+      <DependentUpon>202012040245497_SeEliminaColumnaCartola.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.resx">
+      <DependentUpon>202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

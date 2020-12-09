@@ -347,6 +347,21 @@
                                     </li>
                                 }
 
+                                if(ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
+                                {
+                                    <li class="has_sub">
+                                        <a href="javascript:void(0);" class="waves-effect"><i class="ion-android-storage"></i> <span>Conciliación Bancaria</span> <span class="menu-arrow"></span></a>
+                                        <ul>
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ConciliacionBAutomatica","ContabilidadConciliacionBancaria")">Conciliar</a>
+                                                </li>
+                                            }                                                                                   
+                                         </ul>
+                                    </li>
+                                }
+
                                 if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroVenta") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroCompra") ||

@@ -1397,7 +1397,7 @@ public class VoucherModel
             int NumeroFilaExcel = 13;
             foreach (string[] tableRow in lstBalanceGeneral)
             {
-                for (int i = 0; i < tableRow.Length; i++)
+                for (int i = 0; i < tableRow.Length - 1; i++)
                 {
                     workSheet.Cell(NumeroFilaExcel, i + 1).Value = tableRow[i];
                 }

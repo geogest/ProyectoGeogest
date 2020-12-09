@@ -1470,7 +1470,7 @@ namespace TryTestWeb.Controllers
             }
 
             LstVoucher = Predicado
-                        .OrderByDescending(x => x.FechaEmision)
+                        .OrderByDescending(x => x.NumeroVoucher)
                         .Skip((pagina - 1) * cantidadRegistrosPorPagina)
                         .Take(cantidadRegistrosPorPagina)
                         .ToList();
@@ -1510,8 +1510,7 @@ namespace TryTestWeb.Controllers
             if (TipoOrigenVoucher != null)
                 Paginador.ValoresQueryString["TipoOrigenVoucher"] = TipoOrigenVoucher;
 
-            
-
+           
            return View(Paginador);
         }
 
@@ -3553,8 +3552,8 @@ namespace TryTestWeb.Controllers
                 ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
-
-            Session["ObjetoCuentaContableConsultada"] = objCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == Convert.ToInt32(CuentaContableID));
+            int CtaContID = ParseExtensions.ParseInt(CuentaContableID);
+            Session["ObjetoCuentaContableConsultada"] = db.DBCuentaContable.SingleOrDefault(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID && x.CuentaContableModelID == CtaContID).CuentaContableModelID;
             db.Dispose();
 
             return Json(ReturnValues.ResultStringArray);

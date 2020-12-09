@@ -2,34 +2,6 @@
 <div class="row">
     <div class="panel-heading">
         <div class="col-sm-12 col-md-12">
-
-            <div class="row">
-
-                @using (Html.BeginForm("GetExcelConciliacionBancaria", "ContabilidadConciliacionBancaria", FormMethod.Post))
-                {
-                    <div class="col-md-2 pull-right">
-
-                        <br />
-                        <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                            <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                        </button>
-                        <br />
-
-                        <br />
-                    </div>
-                }
-                <div class="col-md-1 pull-right">
-
-                    <br />
-                    <button class="btn btn-default" onclick="ExportarPDF()">
-                        <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                    </button>
-                    <br />
-
-                    <br />
-                </div>
-            </div>
-
             <h2 class="page-header">Conciliación Bancaria</h2>
             <ol class="breadcrumb">
                 <li>
@@ -89,8 +61,6 @@
                     <button onclick="GuardarUltimaBusqueda();" class="btn-sm btn-success boton-centrado">Buscar</button>
                 </div>
             </div>
-
-
         </div>
     </div>
 
@@ -104,24 +74,37 @@
                     <br />
                     <br />
                     <div class="row">
-                        <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
-                            <label>Si no tienes la plantilla la puedes descargar</label>
-                            <br />
-                            <button class="btn-sm btn-warning text-white">Descargar plantilla</button>
+                        <div class="alert alert-info" role="alert">
+                            <p class="texto-negro">Antes de subir el archivo tenga en consideración lo siguiente</p>
+                            <ul class="texto-negro">
+                                <li>Si se ingresa un rut verifique que este ya exista en el sistema, de lo contrario se creará el voucher sin el rut y tendrá que editarlo.</li>
+                                <li>Si se ingresa una cuenta contable que esta exista en el plan de cuentas.</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="row">
-                        @*<form id="Cartola" enctype="multipart/form-data">*@
+                        <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
+                            <label>Si no tienes la plantilla la puedes descargar</label>
+                            <br />
+                            @using (Html.BeginForm("PlantillaExcel", "ContabilidadConciliacionBancaria", FormMethod.Post))
+                            {
+                                <button type="submit"  class="btn-sm btn-warning text-white">Descargar plantilla</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
                         @using (Html.BeginForm("ImportarExcelConciliacionBancaria", "ContabilidadConciliacionBancaria", FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
-                            <h4 class="text-center">Configuración Cartola</h4>
+                            <h4 class="text-center "><b>Configuración Conciliación</b></h4>
+                            <br />
+                            <br />
                             <div class="form-group col-sm-12 col-xs-12 col-md-3 col-lg-3">
                                 <label>Fecha Cartola</label>
-                                <input type="text" name="FechaCartola" id="FechaCartola" class="form-control date" required />
+                                <input type="text" name="FechaCartola" id="FechaCartola" class="form-control date" autocomplete="off" required />
                             </div>
                             <div class="form-group col-sm-12 col-xs-12 col-md-3 col-lg-3">
-                                <label>Nombre Cartola</label>
-                                <input type="text" class="form-control" name="NombreCartola" id="NombreCartola" value="" required/>
+                                <label>Numero Cartola</label>
+                                <input type="number" class="form-control" name="NumeroCartola" id="NumeroCartola" value="" required/>
                             </div>
                             <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
                                 <label class="control-label">Si ya la tienes lista importala</label>
@@ -129,8 +112,7 @@
                                 <input type="file" name="files" id="files" value="" />
                                 <button type="submit" class="btn-sm btn-success">Importar Cartola</button>
                             </div>
-                        }
-                        @*</form>*@                
+                        }             
                     </div>
                     <div id="Exito" class="Esconder alert alert-success"></div>
                     <div id="Error" class="Esconder alert alert-danger"></div>
@@ -180,15 +162,16 @@
     .boton-centrado {
         margin-top: 25px;
     }
+    .texto-negro{
+        color:#000000;
+    }
 </style>
 
 
 <script>
-    $(document).ready(function() {
-        ImportarCartola();
-    })
-    
-
+    //$(document).ready(function() {
+    //    ImportarCartola();
+    //})
     const GuardarUltimaBusqueda = () => {
 
         const cuentaContable = document.getElementById('CuentaContableID').value;
@@ -280,7 +263,7 @@
     });
     }
 
-    const ImportarCartola = () => {
+    @*const ImportarCartola = () => {
         $('#Cartola').submit(function () {
             event.preventDefault();
             $.ajax({
@@ -306,7 +289,7 @@
                 }
             });
         });
-    }
+    }*@
    
 </script>
 

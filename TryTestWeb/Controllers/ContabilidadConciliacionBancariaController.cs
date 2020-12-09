@@ -137,8 +137,6 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
             Session["CartolaImportada"] = null;
-
-            bool Result = false;
        
                 if (DataCartola.files != null && DataCartola.files.Count() > 0)
                 {
@@ -152,27 +150,22 @@ namespace TryTestWeb.Controllers
                             List<string[]> csv = ParseExtensions.ReadStructurateCSV(file);
                             if (csv.Count() > 0)
                             {
-
                                 List<string[]> MayorConsultado = Session["LibroMayorTwo"] as List<string[]>;
                                 List<LibroMayorConciliacion> MayorConsultadoLista = CartolaBancariaModel.getListaLibroMayor(MayorConsultado);
 
                                 string NombreCtaCont = MayorConsultado[0][9];
                                 ViewBag.NombreCuentaContable = NombreCtaCont;
 
-                                CuentaContableModel CuentaConsultada = Session["ObjetoCuentaContableConsultada"] as CuentaContableModel;
+                                int CuentaConsultadaID = (int)Session["ObjetoCuentaContableConsultada"];
+                                CuentaContableModel CuentaConsultada = UtilesContabilidad.CuentaContableDesdeID(CuentaConsultadaID, objCliente);
 
                                 var ObjCartolaCompleto = CartolaBancariaMacroModel.ConvertirAObjetoCartola(csv /*NombreCtaCont*/);
-                                var ResultadoInsercion = CartolaBancariaMacroModel.ConvertirAVoucher(ObjCartolaCompleto, objCliente, db, CuentaConsultada);
-                                var LstCartola = CartolaBancariaModel.getListaCartolaBancaria(csv, DataCartola.FechaCartola, DataCartola.NombreCartola, objCliente);
-                                Result = CartolaBancariaMacroModel.GuardarCartolaBancaria(LstCartola, db);
-
-                            //Generar vouchers automaticos
-                            //Consultar Nuevamente los datos compararlos y conciliarlos automaticos
-                            //Mandar lista de datos conciliados y no conciliados marcando en verde los conciliados
-                            //Crear reporte del resultado de la conciliacion
-
-                            // Una vez tenemos la cartola construida en un objeto la guardarmos en la base de datos
-
+                                var ResultadoInsercion = CartolaBancariaMacroModel.ConvertirAVoucher(ObjCartolaCompleto,  objCliente, db, CuentaConsultada,DataCartola.FechaCartola, DataCartola.NumeroCartola);
+                                if(ResultadoInsercion == false)
+                                {
+                                    TempData["Error"] = "Esta cartola ya existe.";
+                                    return RedirectToAction("ConciliacionBAutomatica", "ContabilidadConciliacionBancaria");
+                                }
                             }
                             else
                             {
@@ -191,6 +184,17 @@ namespace TryTestWeb.Controllers
 
             TempData["Correcto"] = "Cartola y Vouchers creados con éxito.";
             return RedirectToAction("ConciliacionBAutomatica", "ContabilidadConciliacionBancaria");
+        }
+
+        [Authorize]
+        public FileResult PlantillaExcel()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            var FileVirtualPath = ParseExtensions.Get_AppData_Path("PlantillaConciliacionAutomatica.csv");
+            return File(FileVirtualPath, "application/force- download", Path.GetFileName(FileVirtualPath));
         }
     }
  }

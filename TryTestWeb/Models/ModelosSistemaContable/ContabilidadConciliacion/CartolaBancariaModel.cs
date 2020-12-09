@@ -7,6 +7,7 @@ using System.Web;
 public class CartolaBancariaModel
 {
     public int CartolaBancariaModelId { get; set; }
+    public int VoucherModelID { get; set; }
     public DateTime Fecha { get; set; }
     public virtual ClientesContablesModel ClientesContablesModelID { get; set; }
     public virtual CuentaContableModel CuentaContableModelID { get; set; }
@@ -18,58 +19,6 @@ public class CartolaBancariaModel
     public decimal Haber { get; set; }
     public decimal Saldo { get; set; }
     public bool EstaConciliado { get; set; } = false;
-
-    public static CartolaBancariaMacroModel getListaCartolaBancaria(List<string[]> Cartola, string FechaCartola, string NombreCartola, ClientesContablesModel ObjCliente)
-    {
-        CartolaBancariaMacroModel CartolaBancariaMacro = new CartolaBancariaMacroModel();
-
-        List<CartolaBancariaModel> LstCartola = new List<CartolaBancariaModel>();
-
-        if (Cartola.Count() > 1)
-        {
-            Cartola.RemoveAt(0);
-            foreach (string[] FilaCartola in Cartola)
-            {
-                if(FilaCartola.All(x => string.IsNullOrWhiteSpace(x)))
-                {
-                    continue;
-                }
-                else
-                {
-                    CartolaBancariaModel ObjetoCartola = new CartolaBancariaModel();
-                    ObjetoCartola.Fecha = ParseExtensions.ToDD_MM_AAAA_Multi(FilaCartola[0]);
-                    ObjetoCartola.Folio = ParseExtensions.ParseInt(FilaCartola[1]);
-                    ObjetoCartola.Detalle = FilaCartola[2];
-                    ObjetoCartola.ClientesContablesModelID = ObjCliente;
-                    ObjetoCartola.Debe = ParseExtensions.ParseDecimal(FilaCartola[3]);
-                    ObjetoCartola.Haber = ParseExtensions.ParseDecimal(FilaCartola[4]);
-                    ObjetoCartola.Saldo = ParseExtensions.ParseDecimal(FilaCartola[5]);
-
-                    LstCartola.Add(ObjetoCartola);
-                }
-
-            }
-
-            if(LstCartola.Count() > 0)
-            {
-                CartolaBancariaMacro.FechaCartola = ParseExtensions.ToDD_MM_AAAA_Multi(FechaCartola);
-                CartolaBancariaMacro.ClientesContablesModelID = ObjCliente;
-                CartolaBancariaMacro.NombreCartola = NombreCartola;
-                CartolaBancariaMacro.CartolaDetalle = LstCartola;
-            }
-        }
-        return CartolaBancariaMacro;
-    }
-
-
-
-    public static bool CrearVoucherDesdeCartola(List<string[]> Cartola)
-    {
-        bool Result = false;
-        //Posiciones 6,7,8 tienen los datos del voucher a crear
-
-        return Result;
-    }
 
     public static List<LibroMayorConciliacion> getListaLibroMayor(List<string[]> MayorDeLaCuenta)
     {
