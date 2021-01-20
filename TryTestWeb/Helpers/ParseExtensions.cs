@@ -27,6 +27,8 @@ using System.Security.Cryptography.X509Certificates;
 using ClosedXML.Excel;
 using System.Web.Configuration;
 using System.Data.Entity.Validation;
+using Microsoft.Office.Interop.Excel;
+
 
 public static class ParseExtensions
 {
@@ -386,6 +388,7 @@ public static class ParseExtensions
     }
 
 
+
     public static List<string[]> ReadCSV(HttpPostedFileBase file, DateTime fechAdicional)
     {
         string fileStringRaw = string.Empty;
@@ -407,6 +410,13 @@ public static class ParseExtensions
         }
         return csvLines;
     }
+
+    public static List<string[]> ReadXlsGeneric(HttpPostedFileBase file)
+    {
+        return null;
+    }
+
+
 
 
     [Authorize]
@@ -2711,6 +2721,22 @@ public static class ParseExtensions
         string CodigoInternoConNombre = BuscaCtaContable.CodInterno + " " + BuscaCtaContable.nombre;
         return CodigoInternoConNombre;
     }
+
+    public static CuentaContableModel ObtenerCuentaContableDesdeNombre(string Nombre, ClientesContablesModel objCliente)
+    {
+        CuentaContableModel ReturnValues = new CuentaContableModel();
+        ReturnValues = objCliente.CtaContable.FirstOrDefault(x => x.nombre == Nombre);
+        return ReturnValues;
+    }
+
+    public static CuentaContableModel ObtenerCuentaDesdeId(int IdCuenta, ClientesContablesModel ObjCliente)
+    {
+        CuentaContableModel ReturnValues = new CuentaContableModel();
+        ReturnValues = ObjCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == IdCuenta);
+
+        return ReturnValues;
+    }
+
 
     public static dynamic obtieneUnicosEnLista(dynamic lista)
     {

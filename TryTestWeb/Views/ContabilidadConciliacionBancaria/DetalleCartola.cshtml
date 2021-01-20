@@ -1,0 +1,45 @@
+﻿@model List<CartolaBancariaModel>
+@{
+    ViewBag.Title = "DetalleCartola";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2>Detalle Cartola Bancaria</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Cartola Banaria </div>
+    <div class="panel-body">
+        <div class="table table-responsive table-hover table-striped compact">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>       
+                        <th>Folio</th>            
+                        <th>Detalle</th>
+                        <th>debe</th>
+                        <th>Haber</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+               <tbody>
+                   @{ int Corr = 0;}
+                   @foreach (var itemCartola in Model)
+                   {
+                       Corr++;
+                       <tr>
+                           <td>@Corr</td>
+                           <td>@itemCartola.Folio</td>
+                           <td>@itemCartola.Detalle</td>
+                           <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Debe)</td>
+                           <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Haber)</td>
+                           <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Saldo)</td>
+                       </tr>
+                   }
+               </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">Panel Footer</div>
+</div>
+

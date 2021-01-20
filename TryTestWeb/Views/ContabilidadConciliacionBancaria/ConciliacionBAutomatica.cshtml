@@ -74,15 +74,6 @@
                     <br />
                     <br />
                     <div class="row">
-                        <div class="alert alert-info" role="alert">
-                            <p class="texto-negro">Antes de subir el archivo tenga en consideración lo siguiente</p>
-                            <ul class="texto-negro">
-                                <li>Si se ingresa un rut verifique que este ya exista en el sistema, de lo contrario se creará el voucher sin el rut y tendrá que editarlo.</li>
-                                <li>Si se ingresa una cuenta contable que esta exista en el plan de cuentas.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
                             <label>Si no tienes la plantilla la puedes descargar</label>
                             <br />
@@ -208,8 +199,8 @@
         console.log(ctaContId);
         $.ajax({
             type:"POST",
-            url:"@Url.Action("LibroMayorDesdeBalance", "Contabilidad")",
-            data: { Anio: anio, Mes: mes, CuentaContableID: ctaContId },
+            url:"@Url.Action("ServicioLibroMayorConciliacion", "Contabilidad")",
+            data: { Anio: anio, Mes: mes, CuentaContableID: ctaContId, EstaConciliado: true },
         success: function (result) {
             $('#detalleCta').modal("show");
 

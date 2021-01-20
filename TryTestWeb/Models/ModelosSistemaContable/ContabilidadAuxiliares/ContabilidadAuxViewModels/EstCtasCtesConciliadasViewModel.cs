@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
@@ -12,6 +13,7 @@ public class EstCtasCtesConciliadasViewModel
     public DateTime Fecha { get; set; }
     public int Folio { get; set; }
     public int VoucherID { get; set; }
+    public int DetalleVoucherID { get; set; }
     public string Comprobante { get; set; }
     public TipoDte Documento { get; set; }
     public DateTime Vencim { get; set; }
@@ -50,7 +52,8 @@ public class EstCtasCtesConciliadasViewModel
                                                                            HaberAnalisis = Detalle.MontoHaber,
                                                                            CuentaContable = Detalle.ObjCuentaContable,
                                                                            MontoTotal = AuxiliaresDetalle.MontoTotalLinea,
-                                                                           VoucherID = Voucher.VoucherModelID
+                                                                           VoucherID = Voucher.VoucherModelID,
+                                                                           DetalleVoucherID = Detalle.DetalleVoucherModelID
                                                                        });
 
 
@@ -299,9 +302,7 @@ public class EstCtasCtesConciliadasViewModel
                         }
                     }
 
-              
-
-                    var AyudaParaAnalizar = lstCtasCorrientes.Select(x => new { x.Folio, x.RutPrestador, x.Documento, x.CuentaContable.CuentaContableModelID }).Distinct().ToList();
+                    var AyudaParaAnalizar = lstCtasCorrientes.Select(x => new {  x.Folio, x.RutPrestador, x.Documento, x.CuentaContable.CuentaContableModelID }).Distinct().ToList();
 
                     foreach (var PosibleConciliado in AyudaParaAnalizar)
                     {
@@ -334,11 +335,29 @@ public class EstCtasCtesConciliadasViewModel
                                 foreach (var ItemConciliado in PosiblesAConciliar)
                                 {
                                     if (Filtros.TipoListaAmostrar == 2)
+                                    {
                                         lstCtasCorrientes.Remove(ItemConciliado);
+                                    }
+                                     
                                     else if (Filtros.TipoListaAmostrar == 1)
+                                    {
                                         ListaConciliada.Add(ItemConciliado);
+                                    }
+                                       
                                     else if (Filtros.TipoListaAmostrar == 0)
+                                    {
                                         ItemConciliado.EstaConciliado = true;
+                                        //Updateamos el estado de los detalles voucher en la db
+                                        var CambiarAConciliado = db.DBDetalleVoucher.SingleOrDefault(x => x.DetalleVoucherModelID == ItemConciliado.DetalleVoucherID);
+                                        if(CambiarAConciliado.ConciliadoCtasCtes == false)
+                                        {
+                                            CambiarAConciliado.ConciliadoCtasCtes = true;
+                                            db.DBDetalleVoucher.AddOrUpdate(CambiarAConciliado);
+                                            db.SaveChanges();
+                                        }
+                                     
+                                    }
+                                      
                                 }
                             }
                     

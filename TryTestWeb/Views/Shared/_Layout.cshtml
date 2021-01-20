@@ -355,9 +355,15 @@
                                             @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
                                             {
                                                 <li>
-                                                    <a href="@Url.Action("ConciliacionBAutomatica","ContabilidadConciliacionBancaria")">Conciliar</a>
+                                                    <a href="@Url.Action("ConciliacionBAutomatica","ContabilidadConciliacionBancaria")">Conciliación desde excel</a>
                                                 </li>
-                                            }                                                                                   
+                                            }   
+                                             @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ConciliacionBancaria","ContabilidadConciliacionBancaria")">Conciliación Manual</a>
+                                                </li>
+                                            }                                                                                      
                                          </ul>
                                     </li>
                                 }
@@ -613,7 +619,7 @@
 
         <script type="text/javascript">
            
-            @if (VistaAccedida != null && (VistaAccedida == "SeleccionarEmisorDesdeModulos" || VistaAccedida == "SeleccionarClienteContable"))
+            @if (VistaAccedida != null && (VistaAccedida == "SeleccionarEmisorDesdeModulos" || VistaAccedida == "SeleccionarClienteContable") || VistaAccedida == "ImportarCartolaBancaria")
             {
                 @:$("#wrapper").attr('class', 'forced enlarged');
                         }

@@ -11,7 +11,6 @@ namespace TryTestWeb.Controllers
     [Authorize]
     public class ContabilidadAuxiliaresController : Controller
     {
-
         public ActionResult EstadoCtasCorrientes(FiltrosEstadoCtasCorrientes Filtros)
         {
                 string UserID = User.Identity.GetUserId();
@@ -30,8 +29,7 @@ namespace TryTestWeb.Controllers
                 
                 return View(LstCtasConPaginacion);
             }
-
-          public ActionResult GetExcelEstadoCtaCorriente()
+        public ActionResult GetExcelEstadoCtaCorriente()
           {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -50,13 +48,24 @@ namespace TryTestWeb.Controllers
             }
             return null;
         }
-
         public ActionResult EstCtasCtesConciliado(FiltrosEstadoCtasCorrientes Filtros)
         {
             //Condiciones Si elige un tipo de listado.
             //Si se quiere mostrar no conciliada "Eliminar las que esten conciliadas".
             //Si se quiere mostrar las conciliadas "Retornar solo las conciliadas".
             //Si se quiere mostrar todas entonces no pasar por este proceso.
+
+            //Cambiar el estado en la base de datos a conciliado si el movimiento lo está al momento de calcularlo
+            //En el futuro utilizar este modulo para refrescar y calcular los conciliados ¿Con qué sentido? -> 
+            //R: al hacer esto por detrás y no renderizar una vista se habrán establecido los conciliados -> no conciliados y la lista completa que incluye a los 2
+            //Entonces al crear la query simplemente irá a buscar los que estén conciliados y no tendrá que hacer todo el calculo nuevamente lo que permite una mejora
+            //Tremenda en el tiempo de carga de estas listas.
+
+            //Entonces paso 1 -> Según el id del movimiento si está conciliado etiquetarlo como tal.
+            //Paso 2 Crear las querys correspondientes para obtener esta lista conciliada
+            //Paso 3 Crear el modulo de los pendientes que solo tendrá aquellos que no estén conciliados.
+            //Paso 4 Crear la manera de pagar estos documentos basandose en como se hace la conciliación bancaria.
+
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
@@ -88,7 +97,6 @@ namespace TryTestWeb.Controllers
 
             return View(ListaOrdenadaConAcumulados);
         }
-
         public ActionResult getExcelEstadoCuentasCorrientes()
         {
             string UserID = User.Identity.GetUserId();
@@ -109,6 +117,118 @@ namespace TryTestWeb.Controllers
                 }
             }
             return null;
+        }
+        public ActionResult PendientesAuxConfiguracion()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            var LstAuxConMovimiento = UsoComunAux.LstAuxConMovimientoTwo(db, objCliente);
+
+            ViewBag.LstCtasAux = LstAuxConMovimiento;
+
+            return View();
+        }
+        public ActionResult PendientesAuxiliares()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            //Queda pendiente programar los filtros y la forma de pagar.
+            var LstAuxConMovimiento = UsoComunAux.LstAuxConMovimientoTwo(db, objCliente);
+            ViewBag.LstCtasAux = LstAuxConMovimiento;
+
+            //Replantearse el uso del detalle o si hay que hacer un objeto para mostrar solo rut y saldo
+            //Rut y saldo... Ocupa.. ¿AuxiliarModel?
+
+            //Esta es la posible query de los pendientes a nivel Macro
+            var PendientesAux = (from Detalle in db.DBDetalleVoucher
+                                 join Voucher in db.DBVoucher on Detalle.VoucherModelID equals Voucher.VoucherModelID
+                                 join Auxiliar in db.DBAuxiliares on Detalle.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID
+                                 join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID
+
+                                 where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                 Detalle.ObjCuentaContable.TieneAuxiliar == 1 && Detalle.ConciliadoCtasCtes == false
+
+                                 select new AuxPendientes
+                                 {
+                                     Id = Auxiliar.AuxiliaresModelID,
+                                     Rut = AuxiliarDetalle.Individuo2.RUT,
+                                     RazonSocial = AuxiliarDetalle.Individuo2.RazonSocial,
+                                     Saldo = Auxiliar.MontoTotal
+                                 });
+
+            //Aqui van los filtros de la cuenta contable que se está buscando conciliar
+            //¿Aquí también hay conciliación bancaria? -> No entiendo realmente como hacerlo.
+
+
+
+            //var AuxiliaresPendientes = (from Detalle in db.DBDetalleVoucher
+            //                            join Voucher in db.DBVoucher on Detalle.VoucherModelID equals Voucher.VoucherModelID
+            //                            join Auxiliares in db.DBAuxiliares on Detalle.DetalleVoucherModelID equals Auxiliares.DetalleVoucherModelID
+            //                            join AuxiliaresDetalle in db.DBAuxiliaresDetalle on Auxiliares.AuxiliaresModelID equals AuxiliaresDetalle.AuxiliaresModelID
+            //                            where Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+            //                            Detalle.ObjCuentaContable.TieneAuxiliar == 1 &&
+            //                            Detalle.ConciliadoCtasCtes == false
+
+            //                            select new EstadoCuentasCorrientesViewModel
+            //                            {
+            //                                RutPrestador = AuxiliaresDetalle.Individuo2.RUT,
+            //                                NombrePrestador = AuxiliaresDetalle.Individuo2.NombreFantasia,
+            //                                Folio = AuxiliaresDetalle.Folio,
+            //                                Fecha = Detalle.FechaDoc,
+            //                                Debe = Detalle.MontoDebe > 0 ? AuxiliaresDetalle.MontoTotalLinea : 0,
+            //                                Haber = Detalle.MontoHaber > 0 ? AuxiliaresDetalle.MontoTotalLinea : 0,
+            //                                Documento = AuxiliaresDetalle.TipoDocumento,
+            //                            });
+
+
+
+
+            //Por hacer:
+            //Todos aquellos movimientos que se hicieron en la conciliacion bancaria que no tenian información o la cuenta tenia auxiliar y no lo puso
+            //Deben mapearse guardarse o encontrarse y dejarlos en este listado de pendientes
+
+
+            //Por lo que pude notar esto se puede conseguir con la logica hecha en el estado de cuentas corriente
+            //¿Como se van a generar los pagos?
+            // Escriba aquí la planificación
+            // Respuesta rápida -> Con la misma lógica que se usa al importar el excel con sus respectivos movimientos 
+
+
+
+             return View(PendientesAux.ToList());
+        }
+        public ActionResult PendientesAuxDetalle(int IdAux)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            var PendientesAuxDetalle = (from Detalle in db.DBDetalleVoucher
+                                        join Voucher in db.DBVoucher on Detalle.VoucherModelID equals Voucher.VoucherModelID
+                                        join Auxiliar in db.DBAuxiliares on Detalle.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID
+                                        join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID
+
+                                        where Voucher.DadoDeBaja == false &&
+                                              Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                              Detalle.ObjCuentaContable.TieneAuxiliar == 1 &&
+                                              Detalle.ConciliadoCtasCtes == false &&
+                                              Auxiliar.AuxiliaresModelID == IdAux
+
+                                        select new AuxPendientesDetalle
+                                        {
+                                             Id = AuxiliarDetalle.AuxiliaresDetalleModelID,
+                                             Rut = AuxiliarDetalle.Individuo2.RUT,
+                                             RazonSocial = AuxiliarDetalle.Individuo2.RazonSocial,
+                                             Debe = Detalle.MontoDebe > 0 ? AuxiliarDetalle.MontoTotalLinea : 0,
+                                             Haber = Detalle.MontoHaber > 0 ? AuxiliarDetalle.MontoTotalLinea : 0 
+                                        });
+
+
+            return View(PendientesAuxDetalle.ToList());
         }
     }
 }

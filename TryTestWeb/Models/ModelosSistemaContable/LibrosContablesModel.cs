@@ -115,7 +115,7 @@ public class LibrosContablesModel
 
     public virtual QuickReceptorModel individuo { get; set; }
     public bool EsUnRegistroManual { get; set; } = false;
-
+     
     public static void ProcesarLibrosContablesAVoucher(List<LibrosContablesModel> lstEntradasLibro, ClientesContablesModel objCliente, FacturaPoliContext db, List<CuentaContableModel> lstCuentaContable)
     {
 
@@ -167,8 +167,6 @@ public class LibrosContablesModel
         int contadorAnexo = 0;
 
         int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
-        //if (nullableProxVoucherNumber.HasValue)
-        //    nuevoVoucher.NumeroVoucher = nullableProxVoucherNumber.Value;
         int baseNumberFolio = nullableProxVoucherNumber.Value;
         CuentaContableModel cuentaPrincipal = new CuentaContableModel();
 
@@ -193,7 +191,6 @@ public class LibrosContablesModel
             {
                 nuevoVoucher.TipoOrigen = "Compra";
                 nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Compra;
-
             }
 
 

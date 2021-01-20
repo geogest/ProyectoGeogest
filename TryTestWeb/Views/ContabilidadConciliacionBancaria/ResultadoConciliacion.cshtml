@@ -1,8 +1,11 @@
 ﻿@model ReporteResultadoConciliacion
+@{
+    ViewBag.Title = "ResultadoConciliacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <br />
 <div class="col-md-2 pull-right">
-
     <br />
     <button class="btn btn-default" onclick="ExportarPDF();">
         <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
@@ -10,10 +13,9 @@
     <br />
     <br />
 </div>
-
 <br />
-<h2>Resultado Conciliación</h2>
 
+<h2>Resultado Conciliación</h2>
 
 <div class="container">
     <div class="row">
@@ -36,20 +38,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model.LstNoContabilizadosEnElMayor.Count() > 0)
-                            {
-                                foreach (var ItemReporte in Model.LstNoContabilizadosEnElMayor)
+                                @if (Model.LstNoContabilizadosEnElMayor.Count() > 0)
                                 {
-                                    <tr>
-                                        <td>@ItemReporte.Folio</td>
-                                        <td>@ParseExtensions.ToDD_MM_AAAA(ItemReporte.Fecha)</td>
-                                        <td>@ItemReporte.Detalle</td>
-                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Debe)</td>
-                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Haber)</td>
-                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Saldo)</td>
-                                    </tr>
+                                    foreach (var ItemReporte in Model.LstNoContabilizadosEnElMayor)
+                                    {
+                                        <tr>
+                                            <td>@ItemReporte.Folio</td>
+                                            <td>@ParseExtensions.ToDD_MM_AAAA(ItemReporte.Fecha)</td>
+                                            <td>@ItemReporte.Detalle</td>
+                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Debe)</td>
+                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Haber)</td>
+                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Saldo)</td>
+                                        </tr>
+                                    }
                                 }
-                            }
                         </tbody>
                     </table>
 
@@ -73,23 +75,23 @@
 
                         </thead>
                         <tbody>
-
-                            @if (Model.LstNoContabilizadosEnLaCartola.Count() > 1)
-                            {
-                                foreach (var ItemReporte in Model.LstNoContabilizadosEnLaCartola)
+                            
+                                @if (Model.LstNoContabilizadosEnLaCartola.Count() > 1)
                                 {
-                                    <tr>
-                                        <td>@ItemReporte.NumDocAsignado</td>
-                                        <td>@ParseExtensions.ToDD_MM_AAAA(ItemReporte.FechaContabilizacion)</td>
-                                        <td>@ItemReporte.Glosa</td>
-                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Debe)</td>
-                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Haber)</td>
-                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Saldo)</td>
-                                    </tr>
+                                    foreach (var ItemReporte in Model.LstNoContabilizadosEnLaCartola)
+                                    {
+                                        <tr>
+                                            <td>@ItemReporte.NumDocAsignado</td>
+                                            <td>@ParseExtensions.ToDD_MM_AAAA(ItemReporte.FechaContabilizacion)</td>
+                                            <td>@ItemReporte.Glosa</td>
+                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Debe)</td>
+                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Haber)</td>
+                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Saldo)</td>
+                                        </tr>
+                                    }
                                 }
-                            }
 
-
+                                       
                         </tbody>
                     </table>
                     <br />
@@ -131,9 +133,8 @@
 <script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
 
 <script>
-
     ExportarPDF();
-    
+
     function ExportarPDF() {
         var doc = new jsPDF();
 
@@ -153,5 +154,4 @@
 
         doc.save('Reporte Conciliacion Bancaria.pdf');
     }
-
 </script>

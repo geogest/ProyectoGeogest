@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
@@ -14,7 +15,8 @@ public class DetalleVoucherModel
     public decimal MontoDebe { get; set; }
 
     public decimal MontoHaber { get; set; }
-    public bool Conciliado { get; set; }
+    public bool Conciliado { get; set; } 
+    public bool ConciliadoCtasCtes { get; set; }
 
     public string GlosaDetalle { get; set; }
 
@@ -37,9 +39,16 @@ public class DetalleVoucherModel
 
     public virtual AuxiliaresModel Auxiliar { get; set; }
 
+    public static bool CambiarEstadoAconciliado(FacturaPoliContext db, ClientesContablesModel ObjCliente, int Id)
+    {
+        bool Result = false;
 
-    //public virtual ICollection<AuxiliaresDetalleModel> RelacionPrestador { get; set; }
 
+
+        Result = true;
+
+        return Result;
+    }
 }
 public enum Pagado
 {

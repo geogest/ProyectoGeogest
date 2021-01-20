@@ -48,14 +48,58 @@
 <br />
 
 <div class="row card-box vertical-align">
-        <div class="container">
-            <div class="col-md-12">
-                <div class="row form-group">
-                    <h3>Configuración</h3>
+    <div class="container">
+        <div class="col-md-12">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <button id="btnImportar" onclick="MostrarFormImportacion();" class="btn btn-warning text-white pull-right">Importar una Cartola Bancaria</button>
+                </div>
+                <div class="col-md-6">
+                    <button id="btnConciliar" onclick="MostrarFormConciliacion();" class="btn btn-primary pull-right">Conciliar</button>
+                </div>
+            </div>
+
+
+            <br />
+            <br />
+
+            <div id="imp" class="row esconder">
+                @using (Html.BeginForm("ImportarCartolaBancariaManual", "ContabilidadConciliacionBancaria", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <h3>Importar Cartola Bancaria</h3>
+                    <br />
+                    <br />
+                    <div class="col-md-3">
+                        <label>Fecha</label>
+                        <input type="text" class="form-control date" name="FechaCartola" id="FechaCartola" autocomplete="off" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Numero Cartola</label>
+                        <input type="number" class="form-control" name="NumeroCartola" id="NumeroCartola" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="control-label">Selecciona</label>
+                        <br />
+                        <input type="file" name="files" id="files" value="" />
+
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn-sm btn-success">Importar</button>
+                    </div>
+                }
+            </div>
+
+            @using (Html.BeginForm("ImportarCartolaBancaria", "ContabilidadConciliacionBancaria", FormMethod.Post))
+            {
+                <div id="con" class="row esconder">
+                    <h3>Configuración Conciliación</h3>
+                    <br />
+                    <br />
                     <div class="form-group col-md-3">
-            
-                        <label>Cuentas Bancarias</label>
-                        <select class="form-control" id="CuentaContableID" name="CuentaContableID">
+
+                        <label>Cuentas</label>
+                        <select class="form-control" id="IdCuentaContable" name="IdCuentaContable" required>
                             <option>Selecciona</option>
                             @foreach (var itemCB in ViewBag.CuentasBancarias)
                             {
@@ -63,13 +107,13 @@
                             }
                         </select>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label>Año</label>
-                        <input type="number" class="form-control" id="Anio" name="Anio" />
+                        <input type="number" class="form-control" id="Anio" name="Anio" required />
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label>Mes</label>
-                        <select class="form-control" id="Mes" name="Mes">
+                        <select class="form-control" id="Mes" name="Mes" required>
                             <option>Selecciona</option>
                             <option value="1">Enero</option>
                             <option value="2">Febrero</option>
@@ -85,14 +129,17 @@
                             <option value="12">Diciembre</option>
                         </select>
                     </div>
-                    <div class="form-group ">
-                        <button  onclick="GuardarUltimaBusqueda();" class="btn-sm btn-success boton-centrado">Buscar</button>
+                    <div class="form-group col-md-3">
+                        <label>Cartola</label>
+                        <select id="IdCartola" name="IdCartola" class="form-control" required></select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button type="submit" class="btn-sm btn-success boton-centrado">Iniciar Proceso Conciliación</button>
                     </div>
                 </div>
-
-              
-            </div>
+            }
         </div>
+    </div>
 
     <div id="detalleCta" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
@@ -104,11 +151,15 @@
                     <br />
                     <br />
                     <div class="row">
-                        <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
-                            <label>Si no tienes la plantilla la puedes descargar</label>
-                            <br />
-                            <button class="btn-sm btn-warning text-white">Descargar plantilla</button>
-                        </div>
+                        @using (Html.BeginForm("PlantillaExcelConciliacionManual", "ContabilidadConciliacionBancaria", FormMethod.Post))
+                        {
+                            <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
+                                <label>Si no tienes la plantilla la puedes descargar</label>
+                                <br />
+                                <button type="submit" class="btn-sm btn-warning text-white">Descargar plantilla</button>
+                            </div>
+                        }
+
                         @using (Html.BeginForm("ImportarCartolaBancaria", "ContabilidadConciliacionBancaria", FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
                             <div class="form-group col-sm-12 col-xs-12 col-md-6 col-lg-6">
@@ -149,18 +200,29 @@
 </div>
 
 
+
+
+
 <style>
     .vertical-align {
         display: flex;
         align-items: center;
     }
+    .contenido-centrado{
+        margin: 0 auto;
+    }
     .boton-centrado{
         margin-top:25px;
+    }
+    .esconder{
+        display:none;
     }
 </style>
 
 
 <script>
+
+
 
     const GuardarUltimaBusqueda = () => {
 
@@ -187,13 +249,14 @@
             const BusquedaActiva = JSON.parse(localStorage.getItem("Busqueda"));
             return BusquedaActiva;
         }
-
-       
     }
 
 
 
-    const GenerarBusquedaLibroMayor = (Busqueda) => {
+
+
+
+    @*const GenerarBusquedaLibroMayor = (Busqueda) => {
 
         const UltimaBusquedaOdefault = ObtenerUltimaBusqueda();
         
@@ -204,7 +267,7 @@
         $.ajax({
             type:"POST",
             url:"@Url.Action("LibroMayorDesdeBalance", "Contabilidad")",
-            data: { Anio: anio, Mes: mes, CuentaContableID: ctaContId },
+            data: { Anio: anio, Mes: mes, CuentaContableID: ctaContId, EstaConciliado: true },
         success: function (result) {
             $('#detalleCta').modal("show");
 
@@ -256,6 +319,44 @@
             $('#contenido-tabla').html(ContenidoTablas);
         }
     });
+    }*@
+
+    const ObtenerListadoCartolas = () => {
+
+        const SelectLstCartolas = document.getElementById('IdCartola');
+        const Url = "@Url.Action("ObtenerListadoCartolas","ContabilidadConciliacionBancaria")";
+        $.ajax({
+            url: Url,
+            type: "GET",
+            success: function (data) {
+                SelectLstCartolas.innerHTML = data.selectInput;
+            }
+        });
+    }
+
+    const MostrarFormImportacion = () => {
+        
+        const formImportacion = document.getElementById('imp');
+        const formConciliacion = document.getElementById('con');
+        if (formImportacion.classList.contains('esconder')) {
+            formImportacion.classList.remove('esconder');
+            formConciliacion.classList.add('esconder');
+        } else {
+            formImportacion.classList.add('esconder');
+        }
+    }
+
+    const MostrarFormConciliacion = () => {
+        ObtenerListadoCartolas();
+        const formConciliacion = document.getElementById('con');
+        const formImportacion = document.getElementById('imp');
+        if (formConciliacion.classList.contains('esconder')) {
+            formConciliacion.classList.remove('esconder');
+            formImportacion.classList.add('esconder');
+        } 
+        else {
+            formConciliacion.classList.add('esconder');
+        }
     }
 </script>
 

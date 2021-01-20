@@ -59,10 +59,12 @@ public class EstadoResultadoComparativoViewModel
 
                 lstSaldo.Add(Math.Abs(Saldo));
 
-                if (i <= MesesAMostrar && MesesConsultados.Count < MesesAMostrar)
+                
+                if (i <= MesesAMostrar && MesesConsultados.Count < MesesAMostrar && i > 0 && Mes > 0)
                     MesesConsultados.Add(Mes);
-
-                Mes--;
+                
+                if(Mes > 0)
+                    Mes--;
 
                 if (i == MesesAMostrar)
                     Mes = DateTime.Now.Month;

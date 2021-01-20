@@ -1,0 +1,45 @@
+﻿@model List<CartolaBancariaMacroModel>
+@{
+    ViewBag.Title = "ListaCartolaBancaria";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2>Lista Cartola Bancaria</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading"> <h3>Cartolas Bancarias</h3> </div>
+    <div class="panel-body">
+        <div class="table table-responsive ">
+            <table class="table table-striped compact">
+                <thead>
+                    <tr>
+                        <th>Fecha Cartola</th>
+                        <th>Numero Cartola</th>
+                        <th>Cuenta Contable</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var itemCartola in Model)
+                    {
+                        string CtaContable = "";
+                        if (itemCartola.CuentaContableModelID != null)
+                        {
+                            CtaContable = itemCartola.CuentaContableModelID.CodInterno + " " + itemCartola.CuentaContableModelID.nombre;
+                        }
+
+                        <tr>
+                            <td>@ParseExtensions.ToDD_MM_AAAA(itemCartola.FechaCartola)</td>
+                            <td>@itemCartola.NumeroCartola</td>
+                            <td>@CtaContable</td>
+                            <td><a id="EditButton" class="btn btn-icon waves-effect waves-light btn-primary" href="@Url.Action("DetalleCartola", "ContabilidadConciliacionBancaria",  new { Id = itemCartola.CartolaBancariaMacroModelID })" data-toggle="tooltip" data-placement="bottom" title="Ver detalle Cartola" data-original-title="Ver detalle Cartola"><i class="ion-eye"></i></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">Panel Footer</div>
+</div>
+

@@ -799,7 +799,14 @@ public class VoucherModel
 
     }
 
-    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina, ClientesContablesModel objCliente, FacturaPoliContext db, string FechaInicio = "", string FechaFin = "",int Anio = 0,int Mes = 0, string Rut = "", string Glosa ="", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool Filtro = false, int CentroDeCostosID = 0) 
+    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina,
+                                          ClientesContablesModel objCliente, FacturaPoliContext db,
+                                          string FechaInicio = "", string FechaFin = "",
+                                          int Anio = 0, int Mes = 0, string Rut = "",
+                                          string Glosa = "", string CuentaContableID = "",
+                                          string RazonPrestador = "", int NumVoucher = 0,
+                                          bool Filtro = false, int CentroDeCostosID = 0,
+                                          bool EstaConciliado = false)
     {
         List<string[]> ReturnValues = new List<string[]>();
 
@@ -821,7 +828,7 @@ public class VoucherModel
             ConversionFechaInicioExitosa = DateTime.TryParseExact(FechaInicio, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaInicio);
             ConversionFechaFinExitosa = DateTime.TryParseExact(FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
         }
-       
+
 
 
         //Si me robo un auto Tesla, se transforma en un auto Edison?
@@ -835,36 +842,38 @@ public class VoucherModel
 
                                   where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID
 
-                                                     select new LibroMayor
-                                                     {
-                                                         Haber = detalleVoucher.MontoHaber,
-                                                         Debe = detalleVoucher.MontoDebe,
-                                                         Glosa = detalleVoucher.GlosaDetalle,
-                                                         FechaContabilizacion = detalleVoucher.FechaDoc,
-                                                         Rut = AuxiliarDetalle.Individuo2.RUT == null ? "-" : AuxiliarDetalle.Individuo2.RUT,
-                                                         RazonSocial = AuxiliarDetalle.Individuo2.RazonSocial == null ? "-" : AuxiliarDetalle.Individuo2.RazonSocial,
-                                                         CodigoInterno = detalleVoucher.ObjCuentaContable.CodInterno,
-                                                         CtaContNombre = detalleVoucher.ObjCuentaContable.nombre,
-                                                         CtaContablesID = detalleVoucher.ObjCuentaContable.CuentaContableModelID,
-                                                         CtaContableClasi = detalleVoucher.ObjCuentaContable.Clasificacion,
-                                                         Comprobante = Voucher.Tipo,
-                                                         ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
-                                                         ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
-                                                         NumVoucher = Voucher.NumeroVoucher,
-                                                         VoucherId = Voucher.VoucherModelID
-                                                     });
+                                  select new LibroMayor
+                                  {
+                                      Haber = detalleVoucher.MontoHaber,
+                                      Debe = detalleVoucher.MontoDebe,
+                                      Glosa = detalleVoucher.GlosaDetalle,
+                                      FechaContabilizacion = detalleVoucher.FechaDoc,
+                                      Rut = AuxiliarDetalle.Individuo2.RUT == null ? "-" : AuxiliarDetalle.Individuo2.RUT,
+                                      RazonSocial = AuxiliarDetalle.Individuo2.RazonSocial == null ? "-" : AuxiliarDetalle.Individuo2.RazonSocial,
+                                      CodigoInterno = detalleVoucher.ObjCuentaContable.CodInterno,
+                                      CtaContNombre = detalleVoucher.ObjCuentaContable.nombre,
+                                      CtaContablesID = detalleVoucher.ObjCuentaContable.CuentaContableModelID,
+                                      CtaContableClasi = detalleVoucher.ObjCuentaContable.Clasificacion,
+                                      Comprobante = Voucher.Tipo,
+                                      ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
+                                      ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
+                                      NumVoucher = Voucher.NumeroVoucher,
+                                      VoucherId = Voucher.VoucherModelID,
+                                      DetalleVoucherId = detalleVoucher.DetalleVoucherModelID,
+                                      EstaConciliado = detalleVoucher.Conciliado
+                                  });
 
-       
+
         if (Anio != 0)
-        { 
+        {
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == Anio); // Funcionando
         }
 
-        if(Filtro == false)
+        if (Filtro == false)
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == DateTime.Now.Year);
         }
-        
+
         if (Mes != 0)
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Month == Mes); // Funcionando
@@ -872,13 +881,13 @@ public class VoucherModel
 
         if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
         {
-       
+
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion >= dtFechaInicio && r.FechaContabilizacion <= dtFechaFin); // Funcionando
         }
 
         if (!string.IsNullOrWhiteSpace(Rut))
         {
-        
+
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.Rut.Contains(Rut)); // Funcionando
         }
 
@@ -892,7 +901,7 @@ public class VoucherModel
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.CtaContablesID.ToString() == CuentaContableID); // Funcionando
         }
 
-        if(!string.IsNullOrWhiteSpace(RazonPrestador))
+        if (!string.IsNullOrWhiteSpace(RazonPrestador))
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(x => x.RazonSocial.Contains(RazonPrestador));
         }
@@ -900,6 +909,12 @@ public class VoucherModel
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(x => x.NumVoucher == NumVoucher);
         }
+        if (EstaConciliado == true)
+        {
+            LibroMayorCompleto = LibroMayorCompleto.Where(x => x.EstaConciliado == false);
+        }
+
+
 
 
         int TotalRegistros = LibroMayorCompleto.Count();
@@ -910,16 +925,17 @@ public class VoucherModel
                                      .Skip((pagina - 1) * cantidadRegistrosPorPagina)
                                      .Take(cantidadRegistrosPorPagina);
 
-        }else if(cantidadRegistrosPorPagina == 0)
+        }
+        else if (cantidadRegistrosPorPagina == 0)
         {
             LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.FechaContabilizacion);
         }
 
         int NumLinea = 1;
-        
+
         foreach (var itemLibroMayor in LibroMayorCompleto)
         {
-            string[] ArrayLibroMayor = new string[] {"-","-","-","-","-","-","-","-","-","-","-","-" };
+            string[] ArrayLibroMayor = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
 
             string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2.ToString() + "   " + itemLibroMayor.ComprobanteP3;
             //int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
@@ -927,7 +943,7 @@ public class VoucherModel
             {
                 int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
                 if (EvitarRedundanciaPrestadores > 0)
-                   continue;
+                    continue;
             }
 
             ArrayLibroMayor[4] = itemLibroMayor.RazonSocial;
@@ -949,24 +965,24 @@ public class VoucherModel
             if (itemLibroMayor.CtaContableClasi == ClasificacionCtaContable.ACTIVOS ||
                itemLibroMayor.CtaContableClasi == ClasificacionCtaContable.RESULTADOPERDIDA) // Los activos se comportan como las cuentas 5 en terminos de lo que es el calculo del saldo.
             {
-                 TotalSaldoEstaLinea = TotalLineaMontoDebe - TotalLineaMontoHaber;
+                TotalSaldoEstaLinea = TotalLineaMontoDebe - TotalLineaMontoHaber;
             }
 
             // Si es Cuenta 2 o 4
             if (itemLibroMayor.CtaContableClasi == ClasificacionCtaContable.PASIVOS ||
                itemLibroMayor.CtaContableClasi == ClasificacionCtaContable.RESULTADOGANANCIA) // Los Pasivos se comportan como las cuentas 4 en terminos de lo que es el calculo del saldo.
             {
-                 TotalSaldoEstaLinea = TotalLineaMontoHaber - TotalLineaMontoDebe;
+                TotalSaldoEstaLinea = TotalLineaMontoHaber - TotalLineaMontoDebe;
             }
 
             IEnumerable<bool> ResetSaldo = ReturnValues.Select(r => !r.Contains("[" + itemLibroMayor.CodigoInterno + "] " + itemLibroMayor.CtaContNombre));
 
             if (ResetSaldo.All(x => x)) // ".All(x => x)" Si la condición es verdadera 
             {
-                if (TotalLineaMontoHaber != 0) 
+                if (TotalLineaMontoHaber != 0)
                     TotalSaldo = TotalLineaMontoHaber - TotalLineaMontoHaber;
-                
-                if(TotalLineaMontoDebe != 0)
+
+                if (TotalLineaMontoDebe != 0)
                     TotalSaldo = TotalLineaMontoDebe - TotalLineaMontoDebe;
             }
 
@@ -978,6 +994,7 @@ public class VoucherModel
             ArrayLibroMayor[9] = "[" + itemLibroMayor.CodigoInterno + "] " + itemLibroMayor.CtaContNombre;
             ArrayLibroMayor[10] = itemLibroMayor.NumVoucher.ToString();
             ArrayLibroMayor[11] = itemLibroMayor.VoucherId.ToString();
+            ArrayLibroMayor[12] = itemLibroMayor.DetalleVoucherId.ToString();
 
             ReturnValues.Add(ArrayLibroMayor);
 
@@ -987,9 +1004,9 @@ public class VoucherModel
 
             NumLinea++;
         }
-        
-        string[] TotalRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-","-" };
-        
+
+        string[] TotalRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
+
         TotalRow[5] = "Total Final:";
         TotalRow[6] = ParseExtensions.NumeroConPuntosDeMiles(TotalFinalMontoDebe);
         TotalRow[7] = ParseExtensions.NumeroConPuntosDeMiles(TotalFinalMontohaber);
@@ -998,33 +1015,34 @@ public class VoucherModel
 
         //Nota Para el futuro, los valores query strings se tienen que llamar igual que la variable que se desea conservar en el tiempo.
         var Paginacion = new PaginadorModel();
-        Paginacion.ResultStringArray =  ReturnValues;
+        Paginacion.ResultStringArray = ReturnValues;
         Paginacion.PaginaActual = pagina;
         Paginacion.TotalDeRegistros = TotalRegistros;
         Paginacion.RegistrosPorPagina = cantidadRegistrosPorPagina;
         Paginacion.ValoresQueryString = new RouteValueDictionary();
 
-        if(cantidadRegistrosPorPagina != 25)
-        Paginacion.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
+        if (cantidadRegistrosPorPagina != 25)
+            Paginacion.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
 
-        if(Anio != 0)
-        Paginacion.ValoresQueryString["Anio"] = Anio;
+        if (Anio != 0)
+            Paginacion.ValoresQueryString["Anio"] = Anio;
 
-        if(Mes != 0)
-        Paginacion.ValoresQueryString["Mes"] = Mes;
+        if (Mes != 0)
+            Paginacion.ValoresQueryString["Mes"] = Mes;
 
-        if(!string.IsNullOrWhiteSpace(CuentaContableID))
-        Paginacion.ValoresQueryString["CuentaContableID"] = CuentaContableID;
+        if (!string.IsNullOrWhiteSpace(CuentaContableID))
+            Paginacion.ValoresQueryString["CuentaContableID"] = CuentaContableID;
 
-        if(!string.IsNullOrWhiteSpace(Rut))
-        Paginacion.ValoresQueryString["Rut"] = Rut;
+        if (!string.IsNullOrWhiteSpace(Rut))
+            Paginacion.ValoresQueryString["Rut"] = Rut;
 
-        if(!string.IsNullOrWhiteSpace(Glosa))
-        Paginacion.ValoresQueryString["Glosa"] = Glosa;
+        if (!string.IsNullOrWhiteSpace(Glosa))
+            Paginacion.ValoresQueryString["Glosa"] = Glosa;
 
-        if(ConversionFechaInicioExitosa && ConversionFechaFinExitosa) { 
-        Paginacion.ValoresQueryString["FechaInicio"] = FechaInicio;
-        Paginacion.ValoresQueryString["FechaFin"] = FechaFin;
+        if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
+        {
+            Paginacion.ValoresQueryString["FechaInicio"] = FechaInicio;
+            Paginacion.ValoresQueryString["FechaFin"] = FechaFin;
         }
 
         if (!string.IsNullOrWhiteSpace(RazonPrestador))
@@ -1033,10 +1051,12 @@ public class VoucherModel
         if (NumVoucher != 0 && NumVoucher > 0)
             Paginacion.ValoresQueryString["NumVoucher"] = NumVoucher;
 
-        return Paginacion;  
+        return Paginacion;
     }
 
-   
+
+
+
 
     //Balance
     public static List<string[]> GetBalanceGeneral(List<VoucherModel> lstVoucher, List<CuentaContableModel> lstCuentaContable, int CentroCostoID)

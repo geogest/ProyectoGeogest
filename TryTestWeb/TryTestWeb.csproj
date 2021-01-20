@@ -77,6 +77,11 @@
       <HintPath>packages\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
@@ -154,10 +159,6 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="ThenInclude.EF6, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ThenInclude.EF6.1.0.0.8\lib\net452\ThenInclude.EF6.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -336,6 +337,14 @@
     <Compile Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.Designer.cs">
       <DependentUpon>202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012192055402_CampoConciliacionEstaCtasCtes.cs" />
+    <Compile Include="Migrations\202012192055402_CampoConciliacionEstaCtasCtes.Designer.cs">
+      <DependentUpon>202012192055402_CampoConciliacionEstaCtasCtes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.cs" />
+    <Compile Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.Designer.cs">
+      <DependentUpon>202101071752500_SeAgregaTotalCartolaACartolaMacro.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
     <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
@@ -352,6 +361,7 @@
     <Compile Include="Models\ModelosSistemaContable\CentroCostoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesContablesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesProveedoresModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\AuxPendientes.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstadoCuentasCorrientesViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\FiltrosEstadoCtasCorrientes.cs" />
@@ -742,6 +752,8 @@
     <Content Include="App_Data\14Ter.xlsx" />
     <Content Include="App_Data\ESTADOCTASCORRIENTES.xlsx" />
     <Content Include="App_Data\PlantillaConciliacionAutomatica.csv" />
+    <Content Include="App_Data\PlantillaConciliacion.xlsx" />
+    <Content Include="App_Data\PlantillaConciliacionBancaria.xlsx" />
     <None Include="Properties\PublishProfiles\EFactu Deployment.pubxml" />
     <None Include="Properties\PublishProfiles\EFactuDeploy.pubxml" />
     <None Include="Properties\PublishProfiles\GaryFacturaLabs.pubxml" />
@@ -960,6 +972,11 @@
     <Content Include="Views\ContabilidadConciliacionBancaria\ImportarCartolaBancaria.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\EjecutarConciliacion.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\ConciliacionBAutomatica.cshtml" />
+    <Content Include="Views\ContabilidadAuxiliares\PendientesAuxiliares.cshtml" />
+    <Content Include="Views\ContabilidadAuxiliares\PendientesAuxDetalle.cshtml" />
+    <Content Include="Views\ContabilidadConciliacionBancaria\ResultadoConciliacion.cshtml" />
+    <Content Include="Views\ContabilidadConciliacionBancaria\ListaCartolaBancaria.cshtml" />
+    <Content Include="Views\ContabilidadConciliacionBancaria\DetalleCartola.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />
@@ -1030,6 +1047,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.resx">
       <DependentUpon>202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012192055402_CampoConciliacionEstaCtasCtes.resx">
+      <DependentUpon>202012192055402_CampoConciliacionEstaCtasCtes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.resx">
+      <DependentUpon>202101071752500_SeAgregaTotalCartolaACartolaMacro.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
