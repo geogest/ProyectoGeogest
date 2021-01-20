@@ -1,0 +1,38 @@
+﻿+@model List<AuxPendientesDetalle>
+
+<br />
+<br />
+<div class="row">
+    <button class="btn btn-warning">Pagar Todo</button>
+    <div class="table table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Rut</th>
+                    <th>Razon Social</th>
+                    <th>Debe</th>
+                    <th>Haber</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int Corr = 0; }
+                @foreach (var itemPendiente in Model)
+                {
+                    Corr++;
+                    <tr>
+                        <td>@Corr</td>
+                        <td>@itemPendiente.Rut</td>
+                        <td>@itemPendiente.RazonSocial</td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(itemPendiente.Debe)</td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(itemPendiente.Haber)</td>
+                        <td>
+                            <button class="btn btn-success">Pagar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

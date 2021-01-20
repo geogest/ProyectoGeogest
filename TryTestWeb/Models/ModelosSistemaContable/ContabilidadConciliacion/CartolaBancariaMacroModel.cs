@@ -193,7 +193,7 @@ public class CartolaBancariaMacroModel
         {
             if (file.FileName.EndsWith("xls") || file.FileName.EndsWith("xlsx"))
             {
-                string path = ParseExtensions.Get_AppData_Path(file.FileName); // Le indicamos la ruta donde guardará el excel.
+                string path = ParseExtensions.Get_Temp_path(file.FileName); // Le indicamos la ruta donde guardará el excel.
 
                 if (File.Exists(path))
                 {

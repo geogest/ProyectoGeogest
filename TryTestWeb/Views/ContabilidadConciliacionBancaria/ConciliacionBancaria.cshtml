@@ -2,34 +2,6 @@
 <div class="row">
     <div class="panel-heading">
         <div class="col-sm-12 col-md-12">
-
-            <div class="row">
-
-                @using (Html.BeginForm("GetExcelConciliacionBancaria", "ContabilidadConciliacionBancaria", FormMethod.Post))
-                {
-                    <div class="col-md-2 pull-right">
-
-                        <br />
-                        <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                            <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                        </button>
-                        <br />
-
-                        <br />
-                    </div>
-                }
-                <div class="col-md-1 pull-right">
-
-                    <br />
-                    <button class="btn btn-default" onclick="ExportarPDF()">
-                        <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                    </button>
-                    <br />
-
-                    <br />
-                </div>
-            </div>
-
             <h2 class="page-header">Conciliación Bancaria</h2>
             <ol class="breadcrumb">
                 <li>
@@ -59,12 +31,19 @@
                     <button id="btnConciliar" onclick="MostrarFormConciliacion();" class="btn btn-primary pull-right">Conciliar</button>
                 </div>
             </div>
+            <hr />
 
 
             <br />
             <br />
 
             <div id="imp" class="row esconder">
+                @using (Html.BeginForm("PlantillaExcelConciliacionManual", "ContabilidadConciliacionBancaria", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-warning text-white">Descargar plantilla</button>
+                    </div>
+                }
                 @using (Html.BeginForm("ImportarCartolaBancariaManual", "ContabilidadConciliacionBancaria", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     <h3>Importar Cartola Bancaria</h3>
@@ -85,7 +64,7 @@
 
                     </div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn-sm btn-success">Importar</button>
+                        <button type="submit" class="btn btn-success boton-centrado pull-right">Importar</button>
                     </div>
                 }
             </div>
@@ -212,7 +191,7 @@
         margin: 0 auto;
     }
     .boton-centrado{
-        margin-top:25px;
+        margin-top:18px;
     }
     .esconder{
         display:none;

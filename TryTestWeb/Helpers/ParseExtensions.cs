@@ -2299,7 +2299,19 @@ public static class ParseExtensions
         return fullPath;
     }
 
-  
+    public static string Get_Temp_path(string fileName)
+    {
+        string appDataFolder = HttpContext.Current.Server.MapPath("~/Temp/");
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            return appDataFolder;
+        }
+        string NombreArchivoUnico = fileName;
+        string fullPath = Path.Combine(appDataFolder, NombreArchivoUnico);
+        return fullPath;
+    }
+
+
     public static int ObtenerCenbtralizacion(TipoCentralizacion tipo) {
         if (TipoCentralizacion.Compra == tipo)
         {
