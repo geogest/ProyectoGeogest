@@ -751,7 +751,6 @@
     <Content Include="App_Data\EstadoResultadoComparativo.xlsx" />
     <Content Include="App_Data\14Ter.xlsx" />
     <Content Include="App_Data\ESTADOCTASCORRIENTES.xlsx" />
-    <Content Include="App_Data\PlantillaConciliacionAutomatica.csv" />
     <Content Include="App_Data\PlantillaConciliacion.xlsx" />
     <Content Include="App_Data\PlantillaConciliacionBancaria.xlsx" />
     <None Include="Properties\PublishProfiles\EFactu Deployment.pubxml" />
@@ -983,6 +982,7 @@
     <Folder Include="Models\ModelosSistemaContable\ContabilidadViewModels\" />
     <Folder Include="Models\ModelosSistemaContable\ContabilidaMayor\" />
     <Folder Include="Models\ModelsFacturaRecurrente\" />
+    <Folder Include="Temp\" />
     <Folder Include="Views\Error\" />
   </ItemGroup>
   <ItemGroup>
