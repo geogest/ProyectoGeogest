@@ -81,14 +81,6 @@ public class FacturaContext : DbContext
     public DbSet<CartolaBancariaMacroModel> DBCartolaBMacro { get; set; }
 
 
-
-
-
-
-
-    // public DbSet<DatosBaseModel> DBDatosBase { get; set; }
-
-
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
         

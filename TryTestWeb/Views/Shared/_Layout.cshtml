@@ -374,6 +374,7 @@
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral") ||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultado")||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "CatorceTer") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "CtasContPresupuesto") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "MisPresupuestos") ||
@@ -390,6 +391,12 @@
                                                     {
                                                         <li>
                                                             <a href="@Url.Action("BalanceGeneral","Contabilidad")">Balance General</a>
+                                                        </li>
+                                                    }
+                                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultado"))
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("EstadoResultado","Contabilidad")">Estado de Resultados</a>
                                                         </li>
                                                     }
                                                     @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDiario"))

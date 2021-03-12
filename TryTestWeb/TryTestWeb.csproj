@@ -369,6 +369,8 @@
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaMacroModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\ConciliacionBancariaViewModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadViewModels\EstadoResultadoViewModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadViewModels\FiltrosEstadoResultado.cs" />
     <Compile Include="Models\ModelosSistemaContable\CtasContablesPresupuestoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\CuentaContableModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\DetalleVoucherModel.cs" />
@@ -976,10 +978,10 @@
     <Content Include="Views\ContabilidadConciliacionBancaria\ResultadoConciliacion.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\ListaCartolaBancaria.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\DetalleCartola.cshtml" />
+    <Content Include="Views\Contabilidad\EstadoResultado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />
-    <Folder Include="Models\ModelosSistemaContable\ContabilidadViewModels\" />
     <Folder Include="Models\ModelosSistemaContable\ContabilidaMayor\" />
     <Folder Include="Models\ModelsFacturaRecurrente\" />
     <Folder Include="Temp\" />

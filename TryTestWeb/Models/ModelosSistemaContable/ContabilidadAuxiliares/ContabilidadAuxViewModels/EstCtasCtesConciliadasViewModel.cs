@@ -90,6 +90,7 @@ public class EstCtasCtesConciliadasViewModel
 
     public static List<ObjetoCtasCtesPorConciliar> OrdenarListaCtasCtes(List<EstCtasCtesConciliadasViewModel> ListaPorConciliar)
     {
+
         var AgruparPorRutYCodigo = ListaPorConciliar.GroupBy(x => new { x.CuentaContable.CodInterno, x.RutPrestador })
                                                     .Select(grp => new CuentasCorrientesPorConciliar
                                                     {

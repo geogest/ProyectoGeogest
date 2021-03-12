@@ -5763,6 +5763,46 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
+        public ActionResult EstadoResultado(FiltrosEstadoResultado Filtros)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            IQueryable<FatherObjEstadoResultado> Query = EstadoResultadoViewModel.QueryEstadoResultado(db,  objCliente);
+            IQueryable<FatherObjEstadoResultado> QueryFiltrado = EstadoResultadoViewModel.GetEstadoResultadoFiltrado(Query, Filtros);
+            List<EstadoResultadoViewModel> ReporteProcesado = EstadoResultadoViewModel.EstadoResultadoProcesado(QueryFiltrado);
+
+            decimal Ganancias = ReporteProcesado.Where(x => x.Clasificacion == ClasificacionCtaContable.RESULTADOGANANCIA).Sum(x => x.Monto);
+            decimal Perdidas = ReporteProcesado.Where(x => x.Clasificacion == ClasificacionCtaContable.RESULTADOPERDIDA).Sum(x => x.Monto);
+            decimal Resultado = Math.Abs(Ganancias) - Math.Abs(Perdidas);
+
+            //SUMAS
+            ViewBag.TotalGanancias = Ganancias;
+            ViewBag.TotalPerdidas = Perdidas;
+
+            //RESULTADO
+            if(Ganancias > Perdidas)
+            {
+                ViewBag.Resultado = "RESULTADO GANANCIA";
+                ViewBag.TotalesGanancias = ParseExtensions.NumeroConPuntosDeMiles(Ganancias);
+                decimal Total = Math.Abs(Perdidas) + Math.Abs(Resultado);
+                ViewBag.TotalesPerdidas = ParseExtensions.NumeroConPuntosDeMiles(Total);
+            }
+            else if(Perdidas > Ganancias)
+            {
+                ViewBag.Resultado = "RESULTADO PERDIDA";
+                ViewBag.TotalesPerdidas = ParseExtensions.NumeroConPuntosDeMiles(Perdidas);
+                decimal Total = Math.Abs(Ganancias) + Math.Abs(Resultado);
+                ViewBag.TotalesGanancias = ParseExtensions.NumeroConPuntosDeMiles(Total);
+            }
+
+            ViewBag.ResultadoMonto = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(Resultado));
+         
+            return View(ReporteProcesado);
+        }
+
+        [Authorize]
         [ModuloHandler]
         public ActionResult ImportaCartola()
         {

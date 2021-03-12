@@ -1,23 +1,45 @@
 ﻿@model IList<string[]>
 
 
+
+
 <br />
-@using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
-{
-    <div class="pull-right">
-        <br />
-        <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-            <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-        </button>
-        <br />
-    </div>
-    <br />
-}
+
+
 
 <!-- Page-Title -->
 <div class="row">
+
     <div class="col-sm-12">
         <div class="page-header-2">
+            <div class="row container">
+                <div class="col-md-8"></div>
+                    <div class="col-md-2">
+                        <div class="pull-right">
+                            <br />
+                            <button class="btn btn-default" onclick="ExportarPDF()">
+                                <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                            </button>
+                            <br />
+                            <br />
+                        </div>
+                    </div>
+
+                <div class="col-md-2">
+                    @using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
+                    {
+                        <div>
+                            <br />
+                            <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                                <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                            </button>
+                            <br />
+                        </div>
+                        <br />
+                    }
+                </div>
+
+            </div>
             <h2 class="page-header">Balance General</h2>
             <ol class="breadcrumb">
                 <li>
@@ -142,7 +164,15 @@
     .letra-pequenia{
         font-size:1.2rem;
     }
+    .esconder {
+        display:none;
+    }
 </style>
+
+<script src="~/Content/js/jspdf.debug.js"></script>
+<script src="~/Content/js/html2pdf.js"></script>
+<script src="~/Content/js/html2canvas.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -290,5 +320,15 @@
                 $('#contenido-tabla').html(ContenidoTablas);
             }
          });
+    }
+
+    const ExportarPDF = () => {
+        var doc = new jsPDF();
+        let tbBalance = document.getElementById("dataTables-example");
+        let tbFirma = document.getElementById("tbFirma");
+
+        doc.autoTable({ html: tbBalance, theme: 'grid', styles: { fontSize: 7} });
+        doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });
+        doc.save('Balance General.pdf');
     }
 </script>
