@@ -3456,6 +3456,20 @@ namespace TryTestWeb.Controllers
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
 
+            if (Anio <= 0)
+                Anio = DateTime.Now.Year;
+
+            var FechasExcel = new SessionParaExcel() 
+            { 
+                Anio = Anio.ToString(),
+                Mes = Mes.ToString(),
+                FechaInicio = FechaInicio,
+                FechaFin = FechaFin,
+                CtaContId = CuentaContableID
+            };
+
+            Session["FechasExcel"] = FechasExcel;
+
             return View(ReturnValues);
         }
 
@@ -3477,38 +3491,19 @@ namespace TryTestWeb.Controllers
                     for (int i = 0; i < cachedLibroMayor.Count(); i++)
                     {
                         cachedLibroMayor[i] = cachedLibroMayor[i].Select(r => r.Replace(".", "")).ToArray();
-                        }
-
-                    string textAnioLibroMayor = "";
-                    string textMesLibroMayor = "";
-                    string textFechaInicio = "";
-                    string textFechaFin = "";
-                    string textCtaCont = "";
-
-                    textAnioLibroMayor = Request.Form.GetValues("Ano") != null ? Request.Form.GetValues("Ano")[0] : string.Empty; // Cambiar los id a los que estan llamando de acuerdo a la vista.
-                    textMesLibroMayor = Request.Form.GetValues("Mes") != null ? Request.Form.GetValues("Mes")[0] : string.Empty;
-                    textFechaInicio = Request.Form.GetValues("FechaInicio") != null ? Request.Form.GetValues("fechainicio")[0] : string.Empty;
-                    textFechaFin = Request.Form.GetValues("FechaFin") != null ? Request.Form.GetValues("fechafin")[0] : string.Empty;
-                    textCtaCont = Request.Form.GetValues("ctacont") != null ? Request.Form.GetValues("ctacont")[0] : string.Empty;
-
-                    if (string.IsNullOrWhiteSpace(textCtaCont) == false)
-                    {
-                        CuentaContableModel objCtaContable = objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == ParseExtensions.ParseInt(textCtaCont));
-                        if (objCtaContable != null)
-                        {
-                            textCtaCont = objCtaContable.CodInterno + " " + objCtaContable.nombre;
-                        }
-                        else
-                        {
-                            textCtaCont = string.Empty;
-                        }
                     }
+
+                    var FechasExcel = new SessionParaExcel();
+                    FechasExcel = (SessionParaExcel)Session["FechasExcel"];
+
+                    string NombreCuentacont = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(FechasExcel.CtaContId))
+                         NombreCuentacont = UtilesContabilidad.ObtenerNombreCuentaContable(Convert.ToInt32(FechasExcel.CtaContId),objCliente);
 
 
                     //tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(Session["strBalanceGeneralFechaInicio"] as string, Session["strBalanceGeneralFechaFin"] as string, Session["strBalanceGeneralAnio"] as int?, Session["strBalanceGeneralMes"] as int?, "LIBRO MAYOR");
-                    tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(textFechaInicio, textFechaFin, ParseExtensions.ParseInt(textAnioLibroMayor), ParseExtensions.ParseInt(textMesLibroMayor), "LIBRO MAYOR");
-
-                    var cachedStream = VoucherModel.GetExcelLibroMayor(cachedLibroMayor, objCliente, true, tituloDocumento, textCtaCont);
+                    tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(FechasExcel.FechaInicio, FechasExcel.FechaFin, ParseExtensions.ParseInt(FechasExcel.Anio), ParseExtensions.ParseInt(FechasExcel.Mes), "LIBRO MAYOR");
+                    var cachedStream = VoucherModel.GetExcelLibroMayor(cachedLibroMayor, objCliente, true, tituloDocumento, NombreCuentacont);
                     return File(cachedStream, "application/vnd.ms-excel", "LibroMayorTwo" + Guid.NewGuid() + ".xlsx");
                 }
             }
@@ -3641,12 +3636,12 @@ namespace TryTestWeb.Controllers
             return View(LibroMayorCompleto.ToList()); // Funciona
         }
 
-   
+
 
         //Queda pendiente modificar vista para integrar la paginación.
         [Authorize]
         [ModuloHandler]
-        public ActionResult LibroDiario(int pagina = 1,int cantidadRegistrosPorPagina = 25,int Anio = 0, int Mes = 0,
+        public ActionResult LibroDiario(int pagina = 1, int cantidadRegistrosPorPagina = 25, int Anio = 0, int Mes = 0,
                                         string FechaInicio = "", string FechaFin = "", string Folio = "", string Glosa = "",
                                         string CuentaContableID = "")
         {
@@ -3672,14 +3667,19 @@ namespace TryTestWeb.Controllers
             PaginadorModel returnValue = new PaginadorModel();
             if (ConversionFechaFinExitosa && ConversionFechaInicioExitosa)
             {
-                returnValue = VoucherModel.GetLibroDiario(pagina, cantidadRegistrosPorPagina, lstVoucherModel, db, false, Anio, Mes, dtFechaInicio, dtFechaFin, Folio,Glosa,CuentaContableID); //GetLibroMayor(lstVoucherModel, singleCuentaContable, dtFechaInicio, dtFechaFin);
+                returnValue = VoucherModel.GetLibroDiario(pagina, cantidadRegistrosPorPagina, lstVoucherModel, db, false, Anio, Mes, dtFechaInicio, dtFechaFin, Folio, Glosa, CuentaContableID); //GetLibroMayor(lstVoucherModel, singleCuentaContable, dtFechaInicio, dtFechaFin);
                 Session["LibroDiarioF"] = returnValue.ResultStringArray;
             }
             else
             {
-                returnValue = VoucherModel.GetLibroDiario(pagina, cantidadRegistrosPorPagina, lstVoucherModel, db, false, Anio, Mes, null, null, Folio,Glosa,CuentaContableID);
+                returnValue = VoucherModel.GetLibroDiario(pagina, cantidadRegistrosPorPagina, lstVoucherModel, db, false, Anio, Mes, null, null, Folio, Glosa, CuentaContableID);
                 Session["LibroDiarioF"] = returnValue.ResultStringArray;
             }
+
+            var FechaExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(),Mes.ToString(),FechaInicio,FechaFin,CuentaContableID);
+            Session["FechasExcel"] = FechaExcel;
+
+
             return View(returnValue);
         }
 
@@ -3705,19 +3705,15 @@ namespace TryTestWeb.Controllers
                         cachedLibroDiario[i] = cachedLibroDiario[i].Select(r => r.Replace(".", "")).ToArray();
                     }
 
-                    string textAnioLibroDiario = "";
-                    string textMesLibrioDiario = "";
-                    string textFechaInicio = "";
-                    string textFechaFin = "";
+                    var FechasExcel = new SessionParaExcel();
+                    FechasExcel = (SessionParaExcel)Session["FechasExcel"];
 
-                    textAnioLibroDiario = Request.Form.GetValues("AnioLibroDiario") != null ? Request.Form.GetValues("AnioLibroDiario")[0] : string.Empty;
-                    textMesLibrioDiario = Request.Form.GetValues("MesLibroDiario") != null ? Request.Form.GetValues("MesLibroDiario")[0] : string.Empty;
-                    textFechaInicio = Request.Form.GetValues("fechainicio") != null ? Request.Form.GetValues("fechainicio")[0] : string.Empty;
-                    textFechaFin = Request.Form.GetValues("fechafin") != null ? Request.Form.GetValues("fechafin")[0] : string.Empty;
+                    string CtaCont = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(FechasExcel.CtaContId)) CtaCont = UtilesContabilidad.ObtenerNombreCuentaContable(Convert.ToInt32(FechasExcel.CtaContId), objCliente);
 
-                    tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(textFechaInicio, textFechaFin, ParseExtensions.ParseInt(textAnioLibroDiario), ParseExtensions.ParseInt(textMesLibrioDiario), "LIBRO DIARIO");
-
-                    var cachedStream = VoucherModel.GetExcelLibroDiario(cachedLibroDiario, objCliente, true, tituloDocumento);
+                    tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(FechasExcel.FechaInicio, FechasExcel.FechaFin, ParseExtensions.ParseInt(FechasExcel.Anio), ParseExtensions.ParseInt(FechasExcel.Mes), "LIBRO DIARIO");
+                    var TieneFiltrosParaExcel = SessionParaExcel.TieneFiltrosActivos(FechasExcel);
+                    var cachedStream = VoucherModel.GetExcelLibroDiario(cachedLibroDiario, objCliente, true, tituloDocumento, CtaCont, TieneFiltrosParaExcel);
                     return File(cachedStream, "application/vnd.ms-excel", "LibroDiario" + Guid.NewGuid() + ".xlsx");
                 }
             }
@@ -4993,15 +4989,9 @@ namespace TryTestWeb.Controllers
 
             Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Venta, db, FechaInicio, FechaFin, Anio, Mes, pagina, cantidadRegistrosPorPagina, Rut, RazonSocial,Folio);
 
-            SessionParaExcel BolsaParaExcel = new SessionParaExcel();
+            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(), Mes.ToString(),FechaInicio,FechaFin, string.Empty);
 
-            BolsaParaExcel.Anio = Anio.ToString();
-            BolsaParaExcel.Mes = Mes.ToString();
-            BolsaParaExcel.FechaInicio = FechaInicio;
-            BolsaParaExcel.FechaFin = FechaFin;
-
-
-            Session["FechasExcel"] = BolsaParaExcel;
+            Session["FechasExcel"] = FechasExcel;
             Session["LibroVenta"] = Paginador.ResultStringArray;
 
             return View(Paginador);
@@ -5015,11 +5005,9 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            SessionParaExcel BolsaDeFechas = (SessionParaExcel)Session["FechasExcel"];
+            SessionParaExcel FechasExcel = (SessionParaExcel)Session["FechasExcel"];
 
-            int intAnio = Convert.ToInt32(BolsaDeFechas.Anio);
-            int intMes = Convert.ToInt32(BolsaDeFechas.Mes);
-
+          
             //TO-DO: Verificar si vuelve el filtro entre fechas
             string strFechaInicio = string.Empty;//Request.Form.GetValues("fechainicio")[0];
             string strFechaFin = string.Empty;//Request.Form.GetValues("fechafin")[0];
@@ -5033,8 +5021,8 @@ namespace TryTestWeb.Controllers
                 {
                     cachedLibroVenta[i] = cachedLibroVenta[i].Select(r => r.Replace(".", "")).ToArray();
                 }
-                tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteLibroVentaCompra(strFechaInicio, strFechaFin, Session["LibroVentaAnio"] as int?, Session["LibroVentaMes"] as int?, "LIBRO DE VENTAS");
-                var cachedStream = AuxiliaresDetalleModel.ExportExcelLibroVentaCompraNormal(cachedLibroVenta, objCliente, true, TipoCentralizacion.Venta, tituloDocumento, strFechaInicio, strFechaFin, intAnio, intMes); //AuxiliaresDetalleModel.ExportExcelLibroCentralizacionAuxiliaresVentaCompra(objCliente, true, TipoCentralizacion.Venta, tituloDocumento, strFechaInicio, strFechaFin, intAnio, intMes); //AGREGAR ACA FILTRO DE FECHAS 
+                tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteLibroVentaCompra(FechasExcel.FechaInicio, FechasExcel.FechaFin, Convert.ToInt32(FechasExcel.Anio), Convert.ToInt32(FechasExcel.Mes), "LIBRO DE VENTAS");
+                var cachedStream = AuxiliaresDetalleModel.ExportExcelLibroVentaCompraNormal(cachedLibroVenta, objCliente, true, TipoCentralizacion.Venta, tituloDocumento, strFechaInicio, strFechaFin, Convert.ToInt32(FechasExcel.Anio),  Convert.ToInt32(FechasExcel.Mes)); //AuxiliaresDetalleModel.ExportExcelLibroCentralizacionAuxiliaresVentaCompra(objCliente, true, TipoCentralizacion.Venta, tituloDocumento, strFechaInicio, strFechaFin, intAnio, intMes); //AGREGAR ACA FILTRO DE FECHAS 
                 return File(cachedStream, "application/vnd.ms-excel", "LibroVenta" + Guid.NewGuid() + ".xlsx");
             }
 
@@ -5054,14 +5042,10 @@ namespace TryTestWeb.Controllers
 
             Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Compra, db,FechaInicio,FechaFin,Anio,Mes,pagina,cantidadRegistrosPorPagina,Rut,RazonSocial,Folio);
 
-            SessionParaExcel BolsaSesion = new SessionParaExcel();
+      
+            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(), Mes.ToString(), FechaInicio, FechaFin, string.Empty);
 
-            BolsaSesion.Anio = Anio.ToString();
-            BolsaSesion.Mes = Mes.ToString();
-            BolsaSesion.FechaInicio = FechaInicio;
-            BolsaSesion.FechaFin = FechaFin;
-
-            Session["FechasExcel"] = BolsaSesion;
+            Session["FechasExcel"] = FechasExcel;
             Session["LibroCompra"] = Paginador.ResultStringArray;
      
             return View(Paginador);
@@ -5076,11 +5060,7 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            SessionParaExcel BolsaFechas = (SessionParaExcel)Session["FechasExcel"];
-
-            int intAnio = Convert.ToInt32(BolsaFechas.Anio);
-            int intMes = Convert.ToInt32(BolsaFechas.Mes);
-
+        
             //TO-DO: Verificar si vuelve el filtro entre fechas
             string strFechaInicio = string.Empty;//Request.Form.GetValues("fechainicio")[0];
             string strFechaFin = string.Empty;//Request.Form.GetValues("fechafin")[0];
@@ -5094,8 +5074,13 @@ namespace TryTestWeb.Controllers
                 {
                     cachedLibroCompra[i] = cachedLibroCompra[i].Select(r => r.Replace(".", "")).ToArray();
                 }
-                tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteLibroVentaCompra(strFechaInicio, strFechaFin, Session["LibroCompraAnio"] as int?, Session["LibroCompraMes"] as int?, "LIBRO DE COMPRAS");
-                var cachedStream = AuxiliaresDetalleModel.ExportExcelLibroVentaCompraNormal(cachedLibroCompra, objCliente, true, TipoCentralizacion.Compra, tituloDocumento, strFechaInicio, strFechaFin, intAnio, intMes); //AuxiliaresDetalleModel.ExportExcelLibroCentralizacionAuxiliaresVentaCompra(objCliente, true, TipoCentralizacion.Venta, tituloDocumento, strFechaInicio, strFechaFin, intAnio, intMes); //AGREGAR ACA FILTRO DE FECHAS 
+
+                var FechasExcel = new SessionParaExcel();
+                FechasExcel = (SessionParaExcel)Session["FechasExcel"];
+
+                tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteLibroVentaCompra(FechasExcel.FechaInicio, FechasExcel.FechaFin, Convert.ToInt32(FechasExcel.Anio), Convert.ToInt32(FechasExcel.Mes), "LIBRO DE COMPRAS");
+                var TieneFiltros = SessionParaExcel.TieneFiltrosActivos(FechasExcel);
+                var cachedStream = AuxiliaresDetalleModel.ExportExcelLibroVentaCompraNormal(cachedLibroCompra, objCliente, true, TipoCentralizacion.Compra, tituloDocumento, strFechaInicio, strFechaFin, Convert.ToInt32(FechasExcel.Anio), Convert.ToInt32(FechasExcel.Mes), TieneFiltros); //AuxiliaresDetalleModel.ExportExcelLibroCentralizacionAuxiliaresVentaCompra(objCliente, true, TipoCentralizacion.Venta, tituloDocumento, strFechaInicio, strFechaFin, intAnio, intMes); //AGREGAR ACA FILTRO DE FECHAS 
 
 
                 return File(cachedStream, "application/vnd.ms-excel", "LibroCompra" + Guid.NewGuid() + ".xlsx");
@@ -5546,6 +5531,8 @@ namespace TryTestWeb.Controllers
             }
 
             Session["LibroDeHonorarios"] = ReturnValues;
+            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(), Mes.ToString(), FechaInicio, FechaFin, string.Empty);
+            Session["FechasExcel"] = FechasExcel;
 
             return View(Paginacion);
         }
@@ -5569,23 +5556,13 @@ namespace TryTestWeb.Controllers
                         cachedLibroHonorarios[i] = cachedLibroHonorarios[i].Select(r => r.Replace(".", "")).ToArray();
                     }
 
-                    string textAnioLibroMayor = "";
-                    string textMesLibroMayor = "";
-                    string textFechaInicio = "";
-                    string textFechaFin = "";
-                   
-
-                    textAnioLibroMayor = Request.Form.GetValues("Anio") != null ? Request.Form.GetValues("Anio")[0] : string.Empty; // Cambiar los id a los que estan llamando de acuerdo a la vista.
-                    textMesLibroMayor = Request.Form.GetValues("Mes") != null ? Request.Form.GetValues("Mes")[0] : string.Empty;
-                    textFechaInicio = Request.Form.GetValues("FechaInicio") != null ? Request.Form.GetValues("fechainicio")[0] : string.Empty;
-                    textFechaFin = Request.Form.GetValues("FechaFin") != null ? Request.Form.GetValues("fechafin")[0] : string.Empty;
-                  
-
+                    var FechasExcel = new SessionParaExcel();
+                    FechasExcel = (SessionParaExcel)Session["FechasExcel"];
 
                     //tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(Session["strBalanceGeneralFechaInicio"] as string, Session["strBalanceGeneralFechaFin"] as string, Session["strBalanceGeneralAnio"] as int?, Session["strBalanceGeneralMes"] as int?, "LIBRO MAYOR");
-                    tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(textFechaInicio, textFechaFin, ParseExtensions.ParseInt(textAnioLibroMayor), ParseExtensions.ParseInt(textMesLibroMayor), "LIBRO HONORARIOS");
-
-                    var cachedStream = VoucherModel.GetExcelLibroHonorarios(cachedLibroHonorarios, objCliente, true, tituloDocumento);
+                    tituloDocumento = ParseExtensions.ObtenerFechaTextualMembreteReportes(FechasExcel.FechaInicio, FechasExcel.FechaFin, ParseExtensions.ParseInt(FechasExcel.Anio), ParseExtensions.ParseInt(FechasExcel.Mes), "LIBRO HONORARIOS");
+                    var TieneFiltro = SessionParaExcel.TieneFiltrosActivos(FechasExcel);
+                    var cachedStream = VoucherModel.GetExcelLibroHonorarios(cachedLibroHonorarios, objCliente, true, tituloDocumento,string.Empty, TieneFiltro);
                     return File(cachedStream, "application/vnd.ms-excel", "LibroHonorarios" + Guid.NewGuid() + ".xlsx");
                 }
             }
@@ -5749,7 +5726,7 @@ namespace TryTestWeb.Controllers
 
             if(Session["CatorceTer"] != null) { 
             List<CatorceTerViewModel> lstAExportar = (List<CatorceTerViewModel>)Session["CatorceTer"];
-                SessionParaExcel Fechas14Ter = new SessionParaExcel();
+                var Fechas14Ter = new SessionParaExcel();
                 if(Session["FechasCatorceTer"] != null) { 
                       Fechas14Ter = (SessionParaExcel)Session["FechasCatorceTer"];
                 }

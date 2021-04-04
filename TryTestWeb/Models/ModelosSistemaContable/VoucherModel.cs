@@ -82,6 +82,9 @@ public class VoucherModel
         //if (lstVoucher == null || lstVoucher.Count == 0)
         //    return Paginacion;
 
+        decimal TotalHaber = 0;
+        decimal TotalDebe = 0;
+
         lstVoucher = lstVoucher.OrderBy(r => r.FechaEmision).ToList();
         int NumeroRow = 1;
 
@@ -144,7 +147,9 @@ public class VoucherModel
                 BalanceRow[3] = detalleVoucher.GlosaDetalle;
 
                 BalanceRow[4] = ParseExtensions.NumberWithDots_para_BalanceGeneral(detalleVoucher.MontoDebe);
+                TotalDebe += detalleVoucher.MontoDebe;
                 BalanceRow[5] = ParseExtensions.NumberWithDots_para_BalanceGeneral(detalleVoucher.MontoHaber);
+                TotalHaber += detalleVoucher.MontoHaber;
 
                 BalanceRow[6] = detalleVoucher.ObjCuentaContable.CodInterno;
                 string nombreCuentaContable = detalleVoucher.ObjCuentaContable.nombre;
@@ -169,31 +174,12 @@ public class VoucherModel
                     }
 
                 }
-
-
-                //BalanceRow[8] = (Voucher.CentroDeCosto.CentroCostoModelID).ToString();
-
-                 
-
                 ReturnValues.Add(BalanceRow);
+
+              
                 NumeroRow++;
             }
         }
-
-        //string[] TotalRow = new string[]
-        //{
-        //    "",
-        //    "",
-        //    "",
-        //    "T O T A L",
-        //    ParseExtensions.NumberWithDots_para_BalanceGeneral(GetTotalDebe(lstVoucher)),
-        //    ParseExtensions.NumberWithDots_para_BalanceGeneral(GetTotalHaber(lstVoucher)),
-        //    "",
-        //    "",
-        //    ""
-        //};
-
-        //ReturnValues.Add(TotalRow);
 
         int TotalRegistros = ReturnValues.Count();
 
@@ -236,7 +222,7 @@ public class VoucherModel
         return Paginador;
     }
 
-    public static byte[] GetExcelLibroDiario(List<string[]> lstLibroDiario, ClientesContablesModel objCliente, bool InformarMembrete, string titulo, string subtitulo = "")
+    public static byte[] GetExcelLibroDiario(List<string[]> lstLibroDiario, ClientesContablesModel objCliente, bool InformarMembrete, string titulo, string subtitulo = "",bool TieneFiltrosActivos = false)
     {
         List<string[]> newStrList = new List<string[]>();
         //lstLibroDiario.OrderBy();
@@ -274,13 +260,13 @@ public class VoucherModel
                 workSheet.Cell("A7").Value = string.Empty;
             }
 
-            if (string.IsNullOrWhiteSpace(titulo) == false)
+            if (TieneFiltrosActivos == false)
             {
-                workSheet.Cell("C4").Value = titulo;
+                workSheet.Cell("C4").Value = "TODOS LOS AÑOS";
             }
             else
             {
-                workSheet.Cell("C8").Value = string.Empty;
+                workSheet.Cell("C4").Value = titulo;
             }
 
             if (string.IsNullOrWhiteSpace(subtitulo) == false)
@@ -418,8 +404,6 @@ public class VoucherModel
                             {
                                 ObjFechaUtil = ParseExtensions.ToDD_MM_AAAA_Multi(ItemMayor[j]);
                             }
-
-
                             if(j == 5 && ItemMayor[j] != "0")
                             {
                                 Debe += Convert.ToDecimal(ItemMayor[j]);
@@ -479,7 +463,7 @@ public class VoucherModel
             return ExcelByteArray;
     }
 
-    public static byte[] GetExcelLibroHonorarios(List<string[]> lstLibroHonorarios, ClientesContablesModel objCliente, bool InformarMembrete, string titulo, string subtitulo = "")
+    public static byte[] GetExcelLibroHonorarios(List<string[]> lstLibroHonorarios, ClientesContablesModel objCliente, bool InformarMembrete, string titulo, string subtitulo = "", bool tieneFiltro = false)
     {
         List<string[]> newStrList = new List<string[]>();
         foreach (string[] newOrderValues in lstLibroHonorarios)
@@ -516,13 +500,13 @@ public class VoucherModel
                 workSheet.Cell("A7").Value = string.Empty;
             }
 
-            if (string.IsNullOrWhiteSpace(titulo) == false)
+            if (tieneFiltro)
             {
                 workSheet.Cell("F4").Value = titulo;
             }
-            else
+            else if(!tieneFiltro)
             {
-                workSheet.Cell("D8").Value = string.Empty;
+                workSheet.Cell("F4").Value = "TODOS LOS AÑOS";
             }
 
             if (string.IsNullOrWhiteSpace(subtitulo) == false)

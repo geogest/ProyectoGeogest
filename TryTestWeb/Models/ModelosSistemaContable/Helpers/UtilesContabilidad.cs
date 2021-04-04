@@ -42,6 +42,17 @@ public class UtilesContabilidad
         return ReturnValues;
     }
 
+    public static string ObtenerNombreCuentaContable(int CuentaContableID, ClientesContablesModel ObjCliente)
+    {
+        string NombreCtaCont = string.Empty;
+        CuentaContableModel CuentaCont = new CuentaContableModel();
+        if (ObjCliente != null)
+            CuentaCont = ObjCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == CuentaContableID);
+
+        NombreCtaCont = CuentaCont.CodInterno + "  " + CuentaCont.nombre;
+        return NombreCtaCont;
+    }
+
     public static QuickReceptorModel ObtenerPrestadorSiExiste(string Rut, FacturaPoliContext db, ClientesContablesModel ObjCliente)
     {
         var Receptor = new QuickReceptorModel();

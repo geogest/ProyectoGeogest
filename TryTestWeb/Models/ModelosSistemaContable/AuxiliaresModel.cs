@@ -149,7 +149,7 @@ public class AuxiliaresDetalleModel
         return LaLista;
     }
 
-    public static byte[] ExportExcelLibroVentaCompraNormal(List<string[]> cachedLibroCompra, ClientesContablesModel objCliente, bool InformarMembrete, TipoCentralizacion tipoLibroCentralizacion, string tituloDocumento, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0)
+    public static byte[] ExportExcelLibroVentaCompraNormal(List<string[]> cachedLibroCompra, ClientesContablesModel objCliente, bool InformarMembrete, TipoCentralizacion tipoLibroCentralizacion, string tituloDocumento, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, bool TieneFiltros = false)
     {
      
         byte[] ExcelByteArray = null;
@@ -196,13 +196,13 @@ public class AuxiliaresDetalleModel
                 workSheet.Cell("A9").Value = string.Empty;
             }
 
-            if (string.IsNullOrWhiteSpace(tituloDocumento) == false)
+            if (TieneFiltros)
             {
-                workSheet.Cell("A12").Value = tituloDocumento;
+                workSheet.Cell("C4").Value = tituloDocumento;
             }
-            else
+            else if(!TieneFiltros)
             {
-                workSheet.Cell("A12").Value = string.Empty;
+                workSheet.Cell("C4").Value = "TODOS LOS AÑOS";
             }
 
             if(tipoLibroCentralizacion == TipoCentralizacion.Compra)
