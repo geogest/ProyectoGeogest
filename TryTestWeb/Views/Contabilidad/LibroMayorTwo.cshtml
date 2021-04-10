@@ -3,9 +3,9 @@
 <div class="row">
     <div class="panel-heading">
         <div class="col-sm-12">
-          
-          @using (Html.BeginForm("GetExcelLibroMayorTwo", "Contabilidad", FormMethod.Post))
-          {
+
+            @using (Html.BeginForm("GetExcelLibroMayorTwo", "Contabilidad", FormMethod.Post))
+            {
                 <div class="pull-right">
                     <br />
                     <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
@@ -35,99 +35,99 @@
 
 @using (Html.BeginForm("LibroMayorTwo", "Contabilidad", FormMethod.Post))
 {
-<div class="panel-heading">
-    @if (ViewBag.AnioSinFiltro != null)
-    {
-        <div class="alert alert-success">
-            @ViewBag.AnioSinFiltro
-        </div>
-    }
-    <div class="row form-group">
+    <div class="panel-heading">
+        @if (ViewBag.AnioSinFiltro != null)
+        {
+            <div class="alert alert-success">
+                @ViewBag.AnioSinFiltro
+            </div>
+        }
+        <div class="row form-group">
 
-        <div class="col-md-2">
-            <label>Cantidad de Registros</label>
-            <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="0">Todos</option>
-            </select>
-        </div>
+            <div class="col-md-2">
+                <label>Cantidad de Registros</label>
+                <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="0">Todos</option>
+                </select>
+            </div>
 
-        <div class="col-md-2">
-            <label>Año</label>
-            <input type="number" name="Anio" id="Anio" value="" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label>Mes</label>
-            <select id="Mes" name="Mes" class="form-control">
-                <option value="0">Todos</option>
-                <option value="1">Enero</option>
-                <option value="2">Febrero</option>
-                <option value="3">Marzo</option>
-                <option value="4">Abril</option>
-                <option value="5">Mayo</option>
-                <option value="6">Junio</option>
-                <option value="7">Julio</option>
-                <option value="8">Agosto</option>
-                <option value="9">Septiembre</option>
-                <option value="10">Octubre</option>
-                <option value="11">Noviembre</option>
-                <option value="12">Diciembre</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <label class="control-label">Cuenta Contable</label>
-            <select id="CuentaContableID" name="CuentaContableID" class="selectpicker show-tick form-control" data-live-search="true" data-size="10">
-                @Html.Raw(ViewBag.HtmlStr)
-            </select>
-        </div>
-        <div class="col-md-2 Unidos">
-            <label>Fecha Inicio</label>
-            <input type="text" name="FechaInicio" id="FechaInicio" value="" class="form-control date" autocomplete="off" />
-        </div>
-        <div class="col-md-2 Unidos">
-            <label>Fecha Fin</label>
-            <input type="text" name="FechaFin" id="FechaFin" value="" class="form-control date" autocomplete="off" />
-        </div>
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-                    <label>Glosa</label>
-                    <input class="form-control" type="text" name="Glosa" id="Glosa" value="" />
-                </div>
-                <div class="col-md-2 ">
-                    <label>Rut</label>
-                    <input class="form-control" type="text" name="Rut" id="Rut" value="" maxlength="10" />
-                </div>
-                <div class="col-md-2 Unidos">
-                    <label>Tipo Prestador</label>
-                    <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()">
-                        <option value="">Selecciona</option>
-                        <option value="CL">Cliente</option>
-                        <option value="PR">Proveedor</option>
-                        <option value="P">Persona</option>
-                    </select>
-                </div>
-                <div class="col-md-2 Unidos">
-                    <label>Razon Social Prestador</label>
-                    <select class="form-control" id="RazonPrestador" name="RazonPrestador"></select>
-                </div>
-                <div class="col-md-2">
-                    <label>Num Voucher</label>
-                    <input type="Number" class="form-control" name="NumVoucher" id="NumVoucher" value="" />
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
+            <div class="col-md-2">
+                <label>Año</label>
+                <input type="number" name="Anio" id="Anio" value="" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label>Mes</label>
+                <select id="Mes" name="Mes" class="form-control">
+                    <option value="0">Todos</option>
+                    <option value="1">Enero</option>
+                    <option value="2">Febrero</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Mayo</option>
+                    <option value="6">Junio</option>
+                    <option value="7">Julio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Septiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11">Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="control-label">Cuenta Contable</label>
+                <select id="CuentaContableID" name="CuentaContableID" class="selectpicker show-tick form-control" data-live-search="true" data-size="10">
+                    @Html.Raw(ViewBag.HtmlStr)
+                </select>
+            </div>
+            <div class="col-md-2 Unidos">
+                <label>Fecha Inicio</label>
+                <input type="text" name="FechaInicio" id="FechaInicio" value="" class="form-control date" autocomplete="off" />
+            </div>
+            <div class="col-md-2 Unidos">
+                <label>Fecha Fin</label>
+                <input type="text" name="FechaFin" id="FechaFin" value="" class="form-control date" autocomplete="off" />
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Glosa</label>
+                        <input class="form-control" type="text" name="Glosa" id="Glosa" value="" />
+                    </div>
+                    <div class="col-md-2 ">
+                        <label>Rut</label>
+                        <input class="form-control" type="text" name="Rut" id="Rut" value="" maxlength="10" />
+                    </div>
+                    <div class="col-md-2 Unidos">
+                        <label>Tipo Prestador</label>
+                        <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()">
+                            <option value="">Selecciona</option>
+                            <option value="CL">Cliente</option>
+                            <option value="PR">Proveedor</option>
+                            <option value="P">Persona</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 Unidos">
+                        <label>Razon Social Prestador</label>
+                        <select class="form-control" id="RazonPrestador" name="RazonPrestador"></select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Num Voucher</label>
+                        <input type="Number" class="form-control" name="NumVoucher" id="NumVoucher" value="" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 }
 
-
+@Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
 <div class="card-box">
     <div class="panel-body" id="parshial">
 
@@ -164,10 +164,10 @@
                             @{int totalDebe = 0;}
 
                             @foreach (string[] ListaLibMayor in Model.ResultStringArray)
-                    {
-                        if (ListaLibMayor[9] == rowThingie1[i])
-                        {
-                            string classAlign = "text-right";
+                            {
+                                if (ListaLibMayor[9] == rowThingie1[i])
+                                {
+                                    string classAlign = "text-right";
 
                                     <tr class="odd gradeX">
                                         @for (int k = 0; k < ListaLibMayor.Length - 4; k++)
@@ -221,81 +221,86 @@
                         </tbody>
 
                     </table>
-                                        }
-                                    }
+                }
+            }
 
-                @:  </div>
+        @:  </div>
 
-                          
-                                @:<table class="table table-responsive table-bordered table-hover" id="dataTables-example">
-                                    <thead>
-                                        <tr>
-                                            <th class="FontSize text-center" colspan="5">-</th>
-                                            <th class="FontSize text-center">TOTAL</th>
-                                            <th class="FontSize text-center">DEBE</th>
-                                            <th class="FontSize text-center">HABER</th>
-                                            <th class="FontSize text-center">SALDO</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (string[] Totales in Model.ResultStringArray)
-                                        {
-                                            <tr>
-                                                @for (int i = 0; i < Totales.Length; i++)
-                                                {
 
-                                                    if (Totales[5] == "Total Final:")
-                                                    {
 
-                                                        <th class="FontSize text-center">@Totales[i]</th>
 
-                                                    }
-                                                }
-                                            </tr>
-                                        }
-                                    </tbody>
+        @:<table class="table table-responsive table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th class="FontSize text-center" colspan="5">-</th>
+                    <th class="FontSize text-center">TOTAL</th>
+                    <th class="FontSize text-center">DEBE</th>
+                    <th class="FontSize text-center">HABER</th>
+                    <th class="FontSize text-center">SALDO</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (string[] Totales in Model.ResultStringArray)
+                {
+                    <tr>
+                        @for (int i = 0; i < Totales.Length; i++)
+                        {
 
-                               @:</table>
+                            if (Totales[5] == "Total Final:")
+                            {
 
-                          
-                           @: </div>
-                                    //Paginador
-                                    Html.RenderPartial("_paginador", Model);
+                                <th class="FontSize text-center">@Totales[i]</th>
+
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+
+        @:</table>
+
+
+
+
+    @: </div>
+    //Paginador
+    Html.RenderPartial("_paginador", Model);
 
         }
 
-</>
+        </>
 
-<style>
-    #parshial {
-        background-color: #fff;
-    }
+        <style>
+                    #parshial {
+                        background-color: #fff;
+                    }
 
-    .panel-heading {
-        background-color: #fff;
-    }
-    .centrar{
-        margin-top:25px;
-    }
-    /*.Unidos{
-        color:white;
-        background-color:lightgreen;
-        border-radius:5px;
-        padding-bottom:10px;
-    }*/
+                    .panel-heading {
+                        background-color: #fff;
+                    }
 
-</style>
+                    .centrar {
+                        margin-top: 25px;
+                    }
+                    /*.Unidos{
+                color:white;
+                background-color:lightgreen;
+                border-radius:5px;
+                padding-bottom:10px;
+            }*/
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+        </style>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
 
 
-<script type="text/javascript">
+        <script type="text/javascript">
     $(document).ready(function () {
 
         $('#CuentaContableID').select2();
-    
+
         ObtenerInputs();
         GuardarSeleccionado();
         ObtenerSeleccionado();
@@ -465,6 +470,6 @@
             FechaFin.value = ObtenerFechaFin;
         }
     }
-</script>
+        </script>
 
 

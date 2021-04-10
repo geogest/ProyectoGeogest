@@ -2392,6 +2392,7 @@ namespace TryTestWeb.Controllers
 
             List<VoucherModel> lstVoucherCliente = objCliente.ListVoucher.Where(r => r.FechaEmision.Year == DateTime.Now.Year && r.DadoDeBaja == false).ToList();
             List<CuentaContableModel> lstCuentasContablesClientes = objCliente.CtaContable.ToList();
+            ViewBag.ObjClienteContable = objCliente;
 
             var lstCentroDeCostos = objCliente.ListCentroDeCostos.ToList();
             ViewBag.lstCentroDeCostos = lstCentroDeCostos;
@@ -3429,6 +3430,7 @@ namespace TryTestWeb.Controllers
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
             ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsString(objCliente);
+            ViewBag.ObjClienteContable = objCliente;
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
@@ -3511,7 +3513,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public JsonResult LibroMayorDesdeBalance(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool BusquedaDesdeBalance = false)
+        public JsonResult LibroMayorDesdeBalance(int pagina = 1, int cantidadRegistrosPorPagina = 0, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool BusquedaDesdeBalance = false)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -3521,16 +3523,16 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
-            bool Filtro = false;
+            bool Filtro = true;
 
-            if (Anio > 0 || !string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
-            {
-                Filtro = true;
-            }
-            else if (Filtro == false)
-            {
-                ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
-            }
+            //if (Anio > 0 || !string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            //{
+            //    Filtro = true;
+            //}
+            //else if (Filtro == false)
+            //{
+            //    ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
+            //}
 
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
 
@@ -3648,6 +3650,8 @@ namespace TryTestWeb.Controllers
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            ViewBag.ObjClienteContable = objCliente;
 
             bool ConversionFechaInicioExitosa = false;
             DateTime dtFechaInicio = new DateTime();
@@ -4986,6 +4990,7 @@ namespace TryTestWeb.Controllers
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
             var Paginador = new PaginadorModel();
+            ViewBag.ObjClienteContable = objCliente;
 
             Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Venta, db, FechaInicio, FechaFin, Anio, Mes, pagina, cantidadRegistrosPorPagina, Rut, RazonSocial,Folio);
 
@@ -5037,6 +5042,8 @@ namespace TryTestWeb.Controllers
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            ViewBag.ObjClienteContable = objCliente;
 
             var Paginador = new PaginadorModel();
 
@@ -5449,6 +5456,8 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+
+            ViewBag.ObjClienteContable = objCliente;
 
             List<string[]> ReturnValues = new List<string[]>();
            //Definir filtros

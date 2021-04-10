@@ -23,6 +23,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -238,6 +239,7 @@
     <Compile Include="Controllers\FMSendController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PartialHelpersController.cs" />
     <Compile Include="DAL\FacturaContext.cs" />
     <Compile Include="DAL\FacturaInitializer.cs" />
     <Compile Include="Global.asax.cs">
@@ -979,6 +981,7 @@
     <Content Include="Views\ContabilidadConciliacionBancaria\ListaCartolaBancaria.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\DetalleCartola.cshtml" />
     <Content Include="Views\Contabilidad\EstadoResultado.cshtml" />
+    <Content Include="Views\PartialHelpers\DatosClienteParaPDFPArtial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />

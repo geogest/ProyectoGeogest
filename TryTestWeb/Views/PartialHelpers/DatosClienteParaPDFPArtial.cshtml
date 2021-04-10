@@ -1,0 +1,63 @@
+﻿@if (ViewBag.ObjClienteContable != null)
+{
+    ClientesContablesModel ObjCliente = new ClientesContablesModel();
+    ObjCliente = ViewBag.ObjClienteContable;
+    string RepresentanteDatos = ObjCliente.RUTRepresentante + " " + ObjCliente.Representante;
+
+    <table id="datosCliente" class="table esconder">
+        <thead>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@ObjCliente.RazonSocial</td>
+            </tr>
+            <tr>
+                <td>Rut: @ObjCliente.RUTEmpresa</td>
+            </tr>
+            <tr>
+                <td>@ObjCliente.Giro</td>
+            </tr>
+            <tr>
+                <td>@ObjCliente.Direccion</td>
+            </tr>
+            <tr>
+                <td>@ObjCliente.Ciudad</td>
+            </tr>
+            <tr>
+                <td>@RepresentanteDatos</td>
+            </tr>
+
+        </tbody>
+    </table>
+}
+
+<table id="tbFirma" class="esconder">
+
+    <tr>
+
+        <td>__________________________</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>__________________________</td>
+
+
+    </tr>
+    <tr>
+        <td><strong>FIRMA CONTADOR</strong></td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td><strong>FIRMA REP.LEGAL</strong></td>
+
+    </tr>
+</table>
+
+<style>
+
+    .esconder {
+        display: none;
+    }
+</style>
