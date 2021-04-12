@@ -4,25 +4,35 @@
     <div class="panel-heading">
         <div class="col-sm-12">
 
-            <div class="pull-right">
-                <br />
-                <button class="btn btn-default" onclick="ExportarPDF()">
-                    <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                </button>
-                <br />
-                <br />
-            </div>
-            @using (Html.BeginForm("GetExcelLibroCompra", "Contabilidad", FormMethod.Post))
-            {
-                <div class="pull-right">
-                    <br />
-                    <button @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                    </button>
-                    <br />
+            <div class="row container">
+                <div class="col-md-8"></div>
+                <div class="col-md-2">
+                    <div class="pull-right">
+                        <br />
+                        <button class="btn btn-default" onclick="ExportarPDF()">
+                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                        </button>
+                        <br />
+                        <br />
+                    </div>
                 </div>
-                <br />
-            }
+
+                <div class="col-md-2">
+                    @using (Html.BeginForm("GetExcelLibroCompra", "Contabilidad", FormMethod.Post))
+                    {
+                        <div>
+                            <br />
+                            <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                                <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                            </button>
+                            <br />
+                        </div>
+                        <br />
+                    }
+                </div>
+
+            </div>
+
             <h2 class="page-header">Libro de Compra</h2>
             <ol class="breadcrumb">
                 <li>
@@ -114,7 +124,16 @@
                 </div>
             }
 
+
+
             @Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
+            <table id="LibroComprasTitle" class="table esconder">
+                <thead>
+                    <tr>
+                        <th colspan="13">Libro de compras</th>
+                    </tr>
+                </thead>
+            </table>
 
             <div class="panel-body" id="parshial" style="font-size:13px;">
                 @if (Model.ResultStringArray.Count() == 0)
@@ -198,6 +217,8 @@
         GuardarSeleccionado();
         ObtenerSeleccionado();
     });
+
+
 
     function CondicionesParaLimpiar() {
         //Eliminamos la memoria de los Storage solo si se recarga la página sin realizar ninguna busqueda.
@@ -297,17 +318,22 @@
             FechaFin.value = ObtenerFechaFin;
         }
     }
+
     const ExportarPDF = () => {
         var doc = new jsPDF();
         let tbLibroCompra = document.getElementById("dataTables");
         let tbDatosClientes = document.getElementById("datosCliente");
         let tbFirma = document.getElementById("tbFirma");
+        let tbTitle = document.getElementById("LibroComprasTitle");
 
+        doc.autoTable({ html: tbTitle, theme: 'plain', styles: { fontSize: 20 } });
         doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
         doc.autoTable({ html: tbLibroCompra, theme: 'grid', styles: { fontSize: 7 } });
         doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });
         doc.save('Libro de compras.pdf');
     }
+
+
 
 
 </script>

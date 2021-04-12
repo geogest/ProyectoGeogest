@@ -4,25 +4,38 @@
 <div class="row">
     <div class="col-sm-12">
         <br />
-        <div class="pull-right">
-            <br />
-            <button class="btn btn-default" onclick="ExportarPDF()">
-                <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-            </button>
-            <br />
-            <br />
-        </div>
-        @using (Html.BeginForm("GetExcelLibroDiario", "Contabilidad", FormMethod.Post))
-        {
-            <div class="pull-right">
-                <br />
-                <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit">
-                    <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                </button>
-                <br />
+
+        <div class="row container">
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+                <div class="pull-right">
+                    <br />
+                    <button class="btn btn-default" onclick="ExportarPDF()">
+                        <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                    </button>
+                    <br />
+                    <br />
+                </div>
             </div>
-            <br />
-        }
+
+            <div class="col-md-2">
+                @using (Html.BeginForm("GetExcelLibroDiario", "Contabilidad", FormMethod.Post))
+                {
+                    <div>
+                        <br />
+                        <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                            <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
+                        </button>
+                        <br />
+                    </div>
+                    <br />
+                }
+            </div>
+
+        </div>
+
+
+
         <div class="page-header-2">
             <h2 class="page-header">Libro Diario</h2>
             <ol class="breadcrumb">
@@ -110,6 +123,13 @@
                     </div>
                 }
                 @Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
+                <table id="LibroDiarioTitle" class="table esconder">
+                    <thead>
+                        <tr>
+                            <th colspan="13">Libro Diario</th>
+                        </tr>
+                    </thead>
+                </table>
 
                 <div class="panel-body" id="parshial">
                     @if (Model.ResultStringArray.Count() == 0)
@@ -310,7 +330,9 @@
         let tbLibroDiario = document.getElementById("dataTables");
         let tbDatosClientes = document.getElementById("datosCliente");
         let tbFirma = document.getElementById("tbFirma");
+        let tbTitle = document.getElementById("LibroDiarioTitle");
 
+        doc.autoTable({ html: tbTitle, theme: 'plain', styles: { fontSize: 20 } });
         doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
         doc.autoTable({ html: tbLibroDiario, theme: 'grid', styles: { fontSize: 7 } });
         doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });

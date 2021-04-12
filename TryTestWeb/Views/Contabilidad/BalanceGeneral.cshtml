@@ -160,6 +160,13 @@
                 else
                 {
                     @Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
+                    <table id="BalanceGeneralTitle" class="table esconder">
+                        <thead>
+                            <tr>
+                                <th colspan="13">Balance general</th>
+                            </tr>
+                        </thead>
+                    </table>
                     @Html.Partial("BalanceGeneralPartial", Model)
                 }
             </div>
@@ -347,7 +354,9 @@
         let tbBalance = document.getElementById("dataTables-example");
         let tbDatosClientes = document.getElementById("datosCliente");
         let tbFirma = document.getElementById("tbFirma");
-
+        let tbTitle = document.getElementById("BalanceGeneralTitle");
+        
+        doc.autoTable({ html: tbTitle, theme: 'plain', styles: { fontSize: 20 } });
         doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
         doc.autoTable({ html: tbBalance, theme: 'grid', styles: { fontSize: 7} });
         doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });
