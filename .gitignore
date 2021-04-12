@@ -3,3 +3,10 @@
 ################################################################################
 
 /.vs
+/TryTestWeb/.vs/TryTestWeb/config/applicationhost.config
+/TryTestWeb/.vs/TryTestWeb/v16/.suo
+/TryTestWeb/.vs/slnx.sqlite
+/TryTestWeb/.vs/VSWorkspaceState.json
+/TryTestWeb/obj/Debug/.NETFramework,Version=v4.6.AssemblyAttributes.cs
+/TryTestWeb/obj/Debug/TryTestWeb.csprojAssemblyReference.cache
+/TryTestWeb/obj/Release/.NETFramework,Version=v4.6.AssemblyAttributes.cs
