@@ -729,6 +729,7 @@ public static class ParseExtensions
 
 
 
+
     public static string ObtenerCuentaContableDropdownAsString(ClientesContablesModel ObjCliente, int ID_CtaContable)
     {
         List<CuentaContableModel> ListaCuentas = new List<CuentaContableModel>();

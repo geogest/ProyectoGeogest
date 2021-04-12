@@ -116,25 +116,32 @@
                             <h4 class="modal-title">Movimientos de esta cuenta</h4>
                         </div>
                         <div class="table table-responsive modal-body compact letra-pequenia" id="tabla-detalle">
-                                <table class="table table-responsive">
-                                    <thead>
-                                        <tr id="tituloCtaCont"></tr>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Fecha Contabilización</th>
-                                            <th>Comprobante</th>
-                                            <th>Glosa</th>
-                                            <th>Razon Social</th>
-                                            <th>Rut</th>
-                                            <th>Debe</th>
-                                            <th>Haber</th>
-                                            <th>Saldo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="contenido-tabla">
-                                       
-                                    </tbody>
-                                </table>
+                            <div class="pull-right">
+                                <br />
+                                <button class="btn btn-default" onclick="ExportarPDFModal();">
+                                    <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                                </button>
+                                <br />
+                                <br />
+                            </div>
+                            <table id="tbCtaCont" class="table">
+                                <thead>
+                                    <tr id="tituloCtaCont"></tr>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Fecha Contabilización</th>
+                                        <th>Comprobante</th>
+                                        <th>Glosa</th>
+                                        <th>Razon Social</th>
+                                        <th>Rut</th>
+                                        <th>Debe</th>
+                                        <th>Haber</th>
+                                        <th>Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contenido-tabla">
+                                </tbody>
+                            </table>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -149,8 +156,11 @@
                     <div class="alert alert-danger" role="alert">
                         No se encontraron registros.
                     </div>
-                }else { 
-                @Html.Partial("BalanceGeneralPartial", Model)
+                }
+                else
+                {
+                    @Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
+                    @Html.Partial("BalanceGeneralPartial", Model)
                 }
             </div>
         </div>
@@ -275,8 +285,6 @@
                 lstDetalleCta = {
                     filaCtaDetalle:[]
                 }
-
-                debugger;
                 for (var i = 0; i < result.length; i++) {
 
                     detalleCtaObject = {
@@ -297,7 +305,7 @@
                     lstDetalleCta.filaCtaDetalle.push(detalleCtaObject);
                 }
 
-                const cuentaContable ='<th colspan="4">' + result[0][9] + '</th>';
+                const cuentaContable ='<th colspan="9">' + result[0][9] + '</th>';
                 $('#tituloCtaCont').html(cuentaContable);
 
                 const ContenidoTablas = [];
@@ -322,11 +330,25 @@
          });
     }
 
+    const ExportarPDFModal = () => {
+        var doc = new jsPDF();
+        let tbDatosClientes = document.getElementById("datosCliente");
+        let tbModal = document.getElementById("tbCtaCont");
+        let tbFirma = document.getElementById("tbFirma");
+
+        doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
+        doc.autoTable({ html: tbModal, theme: 'grid', styles: { fontSize: 7 } });
+        doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });
+        doc.save('Reporte Cuenta Contable.pdf');
+    }
+
     const ExportarPDF = () => {
         var doc = new jsPDF();
         let tbBalance = document.getElementById("dataTables-example");
+        let tbDatosClientes = document.getElementById("datosCliente");
         let tbFirma = document.getElementById("tbFirma");
 
+        doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
         doc.autoTable({ html: tbBalance, theme: 'grid', styles: { fontSize: 7} });
         doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });
         doc.save('Balance General.pdf');

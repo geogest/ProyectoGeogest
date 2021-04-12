@@ -3,6 +3,14 @@
 <div class="row">
     <div class="panel-heading">
         <div class="col-sm-12">
+            <div class="pull-right">
+                <br />
+                <button class="btn btn-default" onclick="ExportarPDF()">
+                    <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                </button>
+                <br />
+                <br />
+            </div>
             @using (Html.BeginForm("GetExcelLibroDeHonorarios", "Contabilidad", FormMethod.Post))
             {
                 <div class="pull-right">
@@ -104,9 +112,10 @@
                 </div>
             }
 
+            @Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
             <div class="panel-body" id="parshial" style="font-size:13px;">
                 @if (Model.ResultStringArray.Count() == 0)
-            {
+                {
                     <div class="alert alert-danger" role="alert">
                         No se encontraron registros.
                     </div>
@@ -165,6 +174,11 @@
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+<script src="~/Content/js/jspdf.debug.js"></script>
+<script src="~/Content/js/html2pdf.js"></script>
+<script src="~/Content/js/html2canvas.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -272,6 +286,18 @@
             FechaInicio.value = ObtenerFechaInicio;
             FechaFin.value = ObtenerFechaFin;
         }
+    }
+
+    const ExportarPDF = () => {
+        var doc = new jsPDF();
+        let tbLibroHonorario = document.getElementById("dataTables");
+        let tbDatosClientes = document.getElementById("datosCliente");
+        let tbFirma = document.getElementById("tbFirma");
+
+        doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
+        doc.autoTable({ html: tbLibroHonorario, theme: 'grid', styles: { fontSize: 7 } });
+        doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });
+        doc.save('Libro de honorarios.pdf');
     }
 
 </script>
