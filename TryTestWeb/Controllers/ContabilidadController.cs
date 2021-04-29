@@ -1355,56 +1355,62 @@ namespace TryTestWeb.Controllers
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
-
-
-            List<LibrosContablesModel> lstProperLibros = new List<LibrosContablesModel>();
-            foreach (LibrosContablesModel LibrosID in model)
+            try
             {
-                var elLibroReal = db.DBLibrosContables.SingleOrDefault(r => r.LibrosContablesModelID == LibrosID.LibrosContablesModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.HaSidoConvertidoAVoucher == false);
-
-                lstProperLibros.Add(elLibroReal);
-            }
-
-
-
-
-            int totalVenta = 0;
-            int totalCompra = 0;
-            foreach (LibrosContablesModel libro in lstProperLibros)
-            {
-                if (ParseExtensions.ObtenerCenbtralizacion(libro.TipoLibro) == 1)
+                List<LibrosContablesModel> lstProperLibros = new List<LibrosContablesModel>();
+                foreach (LibrosContablesModel LibrosID in model)
                 {
-                    totalVenta++;
-                }
-                if (ParseExtensions.ObtenerCenbtralizacion(libro.TipoLibro) == 2)
-                {
-                    totalCompra++;
+                    var elLibroReal = db.DBLibrosContables.Where(r => r.LibrosContablesModelID == LibrosID.LibrosContablesModelID &&
+                                                                      r.ClientesContablesModelID == objCliente.ClientesContablesModelID)
+                                                          .FirstOrDefault();
+
+                    lstProperLibros.Add(elLibroReal);
                 }
 
-            }
-            string[] valuesCuentaContable = Request.Form.GetValues("cuenta");
+                int totalVenta = 0;
+                int totalCompra = 0;
+                foreach (LibrosContablesModel libro in lstProperLibros)
+                {
+                    if (ParseExtensions.ObtenerCenbtralizacion(libro.TipoLibro) == 1)
+                    {
+                        totalVenta++;
+                    }
+                    if (ParseExtensions.ObtenerCenbtralizacion(libro.TipoLibro) == 2)
+                    {
+                        totalCompra++;
+                    }
 
-            if (valuesCuentaContable == null || valuesCuentaContable.Length == 0 || valuesCuentaContable.Length != model.Count() || valuesCuentaContable.Any(r => String.IsNullOrWhiteSpace(r)))
+                }
+                string[] valuesCuentaContable = Request.Form.GetValues("cuenta");
+
+                if (valuesCuentaContable == null || valuesCuentaContable.Length == 0 || valuesCuentaContable.Length != model.Count() || valuesCuentaContable.Any(r => String.IsNullOrWhiteSpace(r)))
+                {
+                    TempData["ErrorMensaje"] = "Falta por favor asignar una cuenta contable para todos los elementos";
+                    return RedirectToAction("InfoImportada", "Contabilidad");
+                }
+
+
+                List<CuentaContableModel> lstCuentaContable = new List<CuentaContableModel>();
+                foreach (string strCuentaContable in valuesCuentaContable)
+                {
+                    int keyCuentaContable = ParseExtensions.ParseInt(strCuentaContable);
+                    CuentaContableModel objCuentaContable = db.DBCuentaContable.Find(keyCuentaContable);
+                    lstCuentaContable.Add(objCuentaContable);
+                }
+                string ResultadoProceso = LibrosContablesModel.ProcesarLibrosContablesAVoucher(lstProperLibros, objCliente, db, lstCuentaContable);
+                if (ResultadoProceso.Contains("Error"))
+                {
+                    TempData["Error"] = ResultadoProceso;
+                    return RedirectToAction("CargarLibros", "Contabilidad");
+                }
+                TempData["Correcto"] = "Libros ingresados con éxito.";
+                return RedirectToAction("CargarLibros", "Contabilidad");
+            }
+            catch(Exception ex)
             {
-                TempData["ErrorMensaje"] = "Falta por favor asignar una cuenta contable para todos los elementos";
-                return RedirectToAction("InfoImportada", "Contabilidad");
+                TempData["Error"] = "Ha ocurrido un error inesperado" + ex.Message;
+               return RedirectToAction("CargarLibros", "Contabilidad");
             }
-
-
-            List<CuentaContableModel> lstCuentaContable = new List<CuentaContableModel>();
-            foreach (string strCuentaContable in valuesCuentaContable)
-            {
-                int keyCuentaContable = ParseExtensions.ParseInt(strCuentaContable);
-                CuentaContableModel objCuentaContable = db.DBCuentaContable.Find(keyCuentaContable);
-                lstCuentaContable.Add(objCuentaContable);
-            }
-
-            // Se valida que no exista un folio igual en la base de datos en caso de que ya exista, redirecciona a la carga masiva.
-
-            LibrosContablesModel.ProcesarLibrosContablesAVoucher(lstProperLibros, objCliente, db, lstCuentaContable);
-            //Crear un mensaje de éxito.
-            TempData["Correcto"] = "Libros ingresados con éxito.";
-            return RedirectToAction("CargarLibros", "Contabilidad");
         }
 
         [Authorize]
@@ -5167,6 +5173,7 @@ namespace TryTestWeb.Controllers
                 ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
                 List<LibrosContablesModel> InfoImportada = new List<LibrosContablesModel>();
+                var InfoImportadaTrue = new Tuple<List<LibrosContablesModel>, string>(InfoImportada,"");
                 if (files != null && files.Count() > 0)
                 {
                     HttpPostedFileBase file = files.ElementAt(0);
@@ -5180,13 +5187,22 @@ namespace TryTestWeb.Controllers
                             List<string[]> csv = ParseExtensions.ReadCSV(file, fecont);
 
                             //AAA PARAMETRIZAR EL TIPO DE CCENTRALIZACION RECIBIDA
-                            InfoImportada = ProcesarLibroCentralizacion(csv, objCliente, db);
+              
+                            InfoImportadaTrue = ProcesarLibroCentralizacion(csv, objCliente, db);
+
+                            if (InfoImportadaTrue.Item2.Contains("Error"))
+                            {
+                                TempData["Error"] = "Ha ocurrido un error inesperado " + InfoImportadaTrue.Item2;
+                                return RedirectToAction("CargarLibros", "Contabilidad");
+                            }
+                                
+                            
                             //csv = ObtenerFilaDetalleDesdeImport(csv);
                             //Session["filasCentralizacion"] = csv;
 
                         }
                     }
-                    Session["InfoImportada"] = InfoImportada;
+                    Session["InfoImportada"] = InfoImportadaTrue.Item1;
                     
                     return RedirectToAction("InfoImportada", "Contabilidad");
                 }
@@ -5992,7 +6008,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public static List<LibrosContablesModel> ProcesarLibroCentralizacion(List<string[]> csvInput, ClientesContablesModel objCliente, FacturaPoliContext db)
+        public  static Tuple<List<LibrosContablesModel>, string>  ProcesarLibroCentralizacion(List<string[]> csvInput, ClientesContablesModel objCliente, FacturaPoliContext db)
         {
             //Si la data del CSV no contiene nada regresar
             if (csvInput == null || csvInput.Count == 0)
@@ -6026,369 +6042,355 @@ namespace TryTestWeb.Controllers
             var MontoIvaUsoComun = ""; //[17]
             var MontoIvaActivoFijo = ""; //[16]
 
-            //Recorrer la data
-            foreach (string[] strFilaCSV in csvInput)
-            {
-
-
-                string tipoOrigen = null;
-
-                if (csvInput.First() == strFilaCSV)
+           using(var dbContextTransaction = db.Database.BeginTransaction())
+           {
+                try
                 {
-
-                    if (strFilaCSV[2] == "Tipo Compra")
+                    var VerificaRepetidos = ContabilidadHelper.VerificaRepetidosEnExcelImportSIICoV(csvInput, objCliente, db);
+                    if (!string.IsNullOrWhiteSpace(VerificaRepetidos))
                     {
-                        tipoCentralizacion = TipoCentralizacion.Compra;
-                        tipoReceptor = "PR";
+                        throw new Exception("Error Algunos de los datos que intentas exportar ya existen en tus libros. Los siguientes folios están repetidos:  " + VerificaRepetidos);
                     }
-                    else if (strFilaCSV[2] == "Tipo Venta")
+                    foreach (string[] strFilaCSV in csvInput)
                     {
-                        tipoCentralizacion = TipoCentralizacion.Venta;
-                        tipoReceptor = "CL";
+                        if (csvInput.First() == strFilaCSV)
+                        {
+
+                            if (strFilaCSV[2] == "Tipo Compra")
+                            {
+                                tipoCentralizacion = TipoCentralizacion.Compra;
+                                tipoReceptor = "PR";
+                            }
+                            else if (strFilaCSV[2] == "Tipo Venta")
+                            {
+                                tipoCentralizacion = TipoCentralizacion.Venta;
+                                tipoReceptor = "CL";
+                            }
+                            else
+                            {
+                                //MANEJAR ERROR ACA, NO SE PUEDE MANEJAR UN LIBRO QUE NO SEA DE VENTA O COMPRA
+                                return null;
+                            }
+
+                            continue;
+                        }
+                        //Crear nuevo doc centralizacion
+                        LibrosContablesModel NewLibroContableModel = new LibrosContablesModel();
+
+                        //Si corresponde a un libro de VENTA o COMPRA (¿O Honorarios?)
+                        NewLibroContableModel.TipoLibro = tipoCentralizacion;
+
+                        //Asignar a este cliente
+                        NewLibroContableModel.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+
+
+                        NewLibroContableModel.TipoDocumento = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[1]);
+
+
+                        //Razon social (CLIENTE / PROVEEDOR) y RUT se transforman en un objeto de tipo Prestador
+                        string RutPrestador = strFilaCSV[3];
+                        string RazonSocialPrestador = strFilaCSV[4];
+
+                        if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
+                        {
+                            RutDupleDuple = strFilaCSV[3];
+                            RazonSocialDuple = strFilaCSV[4];
+                        }
+                        //Aquí construimos la fila que copiaremos.
+                        if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
+                        {
+                            QuickReceptorModel objPrestador = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutDupleDuple, RazonSocialDuple, objCliente, db, tipoReceptor);
+
+                            NewLibroContableModel.individuo = objPrestador;
+                        }
+
+
+
+                        if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
+                        {
+                            //AuxiliaresPrestadoresModel objPrestador = AuxiliaresPrestadoresModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db);
+                            QuickReceptorModel objPrestador = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db, tipoReceptor);
+
+                            // NewLibroContableModel.Prestador = objPrestador;
+                            NewLibroContableModel.individuo = objPrestador;
+
+                        }
+
+                        NewLibroContableModel.Folio = ParseExtensions.ParseInt(strFilaCSV[5]);
+
+                        // Volver a activar después de hacer las pruebas.
+                        //Errores en caso de que ya exista el libro y haya sido dado de alta.
+                        if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
+                        {
+                            //FECHA DE DOCUMENTO
+                            NewLibroContableModel.FechaDoc = ParseExtensions.ToDD_MM_AAAA_Multi(strFilaCSV[6]);
+
+                            //FECHA RECEPCION
+                            NewLibroContableModel.FechaRecep = ParseExtensions.ToDD_MM_AAAA_Multi(strFilaCSV[7]);
+                        }
+                        //Siempre parece estar vacia en los documentos del SII
+
+                        //Montos documento contable
+
+                        if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
+                        {
+                            TipoDocDuple = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[1]);
+
+                            FolioDuple = strFilaCSV[5];
+                            FechaDocumentoDuple = strFilaCSV[6];
+                            FechaRecepcionDuple = strFilaCSV[7];
+                            TipoLibro = tipoCentralizacion;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
+                        {
+                            NewLibroContableModel.TipoDocumento = TipoDocDuple;
+                            NewLibroContableModel.Folio = ParseExtensions.ParseInt(FolioDuple);
+                            NewLibroContableModel.FechaDoc = ParseExtensions.ToDD_MM_AAAA_Multi(FechaDocumentoDuple);
+                            NewLibroContableModel.FechaRecep = ParseExtensions.ToDD_MM_AAAA_Multi(FechaRecepcionDuple);
+                        }
+
+                        // Para fecha de contabilización tanto en compra como en venta
+                        int CantidadDeFilas = strFilaCSV.Count();
+                        int NumeroIndiceVariable = CantidadDeFilas - 1;
+
+                        if (tipoCentralizacion == TipoCentralizacion.Venta)
+                        {
+                            if (!string.IsNullOrWhiteSpace(strFilaCSV[NumeroIndiceVariable]))
+                            {
+                                NewLibroContableModel.FechaContabilizacion = ParseExtensions.ToDD_MM_AAAA(strFilaCSV[NumeroIndiceVariable]);
+                            }
+
+
+                            NewLibroContableModel.MontoExento = ParseExtensions.ParseDecimal(strFilaCSV[10]);
+                            NewLibroContableModel.MontoNeto = ParseExtensions.ParseDecimal(strFilaCSV[11]);
+                            NewLibroContableModel.MontoIva = ParseExtensions.ParseDecimal(strFilaCSV[12]);
+                            NewLibroContableModel.MontoTotal = ParseExtensions.ParseDecimal(strFilaCSV[13]);
+                        }
+                        else if (tipoCentralizacion == TipoCentralizacion.Compra)
+                        {
+
+                            if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
+                            {
+                                MontoExentoDuple = ParseExtensions.ParseDecimal(strFilaCSV[25]);
+                                MontoNetoDuple = strFilaCSV[10];
+                                MontoIvaDuple = strFilaCSV[11];
+                                MontoTotalDuple = strFilaCSV[14];
+                                MontoIvaNorecuperable = strFilaCSV[12];
+                                MontoIvaUsoComun = strFilaCSV[17];
+                                MontoIvaActivoFijo = strFilaCSV[16];
+                            }
+                            //Duplicamos las filas para que queden iguales para luego dejar al que tenga la suma del exento mayor
+                            if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
+                            {
+                                NewLibroContableModel.MontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
+                                NewLibroContableModel.MontoNeto = ParseExtensions.ParseDecimal(MontoNetoDuple);
+                                NewLibroContableModel.MontoIva = ParseExtensions.ParseDecimal(MontoIvaDuple);
+                                NewLibroContableModel.MontoTotal = ParseExtensions.ParseDecimal(MontoTotalDuple);
+
+                                NewLibroContableModel.MontoIvaNoRecuperable = ParseExtensions.ParseDecimal(MontoIvaNorecuperable);
+                                NewLibroContableModel.MontoIvaUsocomun = ParseExtensions.ParseDecimal(MontoIvaUsoComun);
+                                NewLibroContableModel.MontoIvaActivoFijo = ParseExtensions.ParseDecimal(MontoIvaActivoFijo);
+                            }
+
+
+
+                            if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
+                            {
+                                NewLibroContableModel.MontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
+                                NewLibroContableModel.MontoNeto = ParseExtensions.ParseDecimal(strFilaCSV[10]);
+                                NewLibroContableModel.MontoIva = ParseExtensions.ParseDecimal(strFilaCSV[11]);
+                                NewLibroContableModel.MontoTotal = ParseExtensions.ParseDecimal(strFilaCSV[14]);
+
+                                NewLibroContableModel.MontoIvaNoRecuperable = ParseExtensions.ParseDecimal(strFilaCSV[12]);
+                                NewLibroContableModel.MontoIvaUsocomun = ParseExtensions.ParseDecimal(strFilaCSV[17]);
+                                NewLibroContableModel.MontoIvaActivoFijo = ParseExtensions.ParseDecimal(strFilaCSV[16]);
+                            }
+                            if (string.IsNullOrWhiteSpace(strFilaCSV[20]) != true)
+                            {
+                                decimal tabacoPuros = 0;
+                                decimal tabacosPurosMasMontoExento = 0;
+                                tabacoPuros = ParseExtensions.ParseDecimal(strFilaCSV[20]);
+
+                                tabacosPurosMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
+
+                                NewLibroContableModel.MontoExento = (tabacosPurosMasMontoExento + tabacoPuros);
+                            }
+                            if (string.IsNullOrWhiteSpace(strFilaCSV[21]) != true)
+                            {
+                                decimal tabacosCigarrillos = 0;
+                                decimal tabacosCigarrillosMasMontoExento = 0;
+                                tabacosCigarrillos = ParseExtensions.ParseDecimal(strFilaCSV[21]);
+
+                                tabacosCigarrillosMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
+
+                                NewLibroContableModel.MontoExento = (tabacosCigarrillosMasMontoExento + tabacosCigarrillos);
+                            }
+                            if (string.IsNullOrWhiteSpace(strFilaCSV[22]) != true)
+                            {
+                                decimal tabacosElaborados = 0;
+                                decimal tabacosTabacosElaMasMontoExento = 0;
+                                tabacosElaborados = ParseExtensions.ParseDecimal(strFilaCSV[22]);
+
+                                tabacosTabacosElaMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
+
+                                NewLibroContableModel.MontoExento = (tabacosTabacosElaMasMontoExento + tabacosElaborados);
+                            }
+                            if (string.IsNullOrWhiteSpace(strFilaCSV[25]) != true)
+                            {
+                                decimal valorOtrosImpuestos = 0;
+                                decimal valorOtrosImpMasMontoExento = 0;
+                                valorOtrosImpuestos = ParseExtensions.ParseDecimal(strFilaCSV[25]);
+
+                                valorOtrosImpMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
+
+                                NewLibroContableModel.MontoExento = (valorOtrosImpMasMontoExento + valorOtrosImpuestos);
+                            }
+                            if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25])) // Esta regla se aplica para las lineas de impuestos adcionales, se usa para acumular el exento.
+                            {
+                                decimal valorOtrosImpuestos = 0;
+                                decimal valorOtrosImpMasMontoExento = 0;
+                                valorOtrosImpuestos = ParseExtensions.ParseDecimal(strFilaCSV[25]);
+
+                                valorOtrosImpMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
+
+                                NewLibroContableModel.MontoExento = (valorOtrosImpMasMontoExento + valorOtrosImpuestos);
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(strFilaCSV[NumeroIndiceVariable]))
+                            {
+                                NewLibroContableModel.FechaContabilizacion = ParseExtensions.ToDD_MM_AAAA(strFilaCSV[NumeroIndiceVariable]);
+                            }
+
+
+                        }
+
+                        NewLibroContableModel.estado = true;
+
+
+                        //AGREGAR ACA IVAS RETENIDOS EN EL FUTURO DE SER NECESARIO
+
+                        //REFERENCIA DEL DOCUMENTO CONTABLE
+                        if (string.IsNullOrWhiteSpace(strFilaCSV[24]) == false && strFilaCSV[24] != "0")
+                        {
+                            NewLibroContableModel.TipoDocReferencia = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[24]);
+                            NewLibroContableModel.FolioDocReferencia = ParseExtensions.ParseInt(strFilaCSV[25]);
+                        }
+
+                        //Agregamos lo necesario 
+
+
+                        //Caso 1: Recibe Todos para poder evaluar.
+
+
+                        if (tipoCentralizacion == TipoCentralizacion.Venta)
+                        {
+                            lstLibroContableCentralizacionAretornar.Add(NewLibroContableModel);
+                        }
+
+                        if (tipoCentralizacion == TipoCentralizacion.Compra)
+                        {
+
+                            if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
+                            {
+                                lstLibroContableCentralizacionImpuestos.Add(NewLibroContableModel);
+                            }
+
+                            //Caso 3: Recibe todos aquellos que no contienen impuestos
+                            if (!string.IsNullOrWhiteSpace(strFilaCSV[0]) && string.IsNullOrWhiteSpace(strFilaCSV[25]))
+                            {
+                                lstLibroContableCentralizacionAretornar.Add(NewLibroContableModel);
+                            }
+                            //Caso 4: Recibe todos los que tienen impuestos más no las lineas hijas de estos impuestos.
+                            if (!string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
+                            {
+                                lstLibroContableCentralizacionImpuestos.Add(NewLibroContableModel);
+                            }
+                        }
+                    }
+
+                    if (lstLibroContableCentralizacionImpuestos != null && tipoCentralizacion == TipoCentralizacion.Compra)
+                    {
+                        //Si no está vacio unelo con los hijos.
+
+                        //En caso de necesitar comparar más atributos para mayor seguridad, añadirlo en estas query y en la query del foreach.
+                        var TodosLosImpuestos = lstLibroContableCentralizacionImpuestos.Select(x => new { x.Folio, x.MontoIva, x.MontoNeto, x.MontoTotal });
+
+                        TodosLosImpuestos = TodosLosImpuestos.Distinct().ToList();
+                        foreach (var item in TodosLosImpuestos)
+                        {
+                            List<LibrosContablesModel> ResultOneTaxe = lstLibroContableCentralizacionImpuestos.Where(x => x.Folio == item.Folio &&
+                                                                                                                          x.MontoNeto == item.MontoNeto &&
+                                                                                                                          x.MontoIva == item.MontoIva &&
+                                                                                                                          x.MontoTotal == item.MontoTotal).ToList();
+                            //Codigo Que los Relacionará
+                            Random ObjCodigoUnion = new Random();
+                            int CodigoUnion = ObjCodigoUnion.Next();
+
+                            decimal MontoSumado = ResultOneTaxe.Sum(x => x.MontoExento);
+
+                            foreach (LibrosContablesModel item2 in ResultOneTaxe)
+                            {
+                                ImpuestosAdRelacionModel InsertarImpuesto = new ImpuestosAdRelacionModel();
+
+                                InsertarImpuesto.CodigoUnionImpuesto = CodigoUnion;
+                                InsertarImpuesto.CodigoImpuesto = Convert.ToInt32(item2.TipoDocReferencia);
+                                InsertarImpuesto.ClienteContableModelID = objCliente.ClientesContablesModelID;
+
+                                List<ImpuestosAdicionalesModel> lstImpuestos = db.DBImpuestosAdicionalesSII.ToList();
+                                ImpuestosAdicionalesModel BuscandoID = lstImpuestos.SingleOrDefault(x => x.CodigoImpuesto == InsertarImpuesto.CodigoImpuesto);
+
+                                if (BuscandoID != null)
+                                {
+                                    InsertarImpuesto.ImpuestosAdicionalesModelID = BuscandoID.ImpuestosAdicionalesModelID;
+                                }
+
+                                db.DBImpuestosAdRelacionSII.Add(InsertarImpuesto);
+                                db.SaveChanges();
+
+                                item2.MontoExento = MontoSumado;
+                                item2.CodigoUnionImpuesto = CodigoUnion;
+                            }
+
+                        }
+
+                        foreach (var item in TodosLosImpuestos)
+                        {
+                            LibrosContablesModel ResultOneTaxe = lstLibroContableCentralizacionImpuestos.Where(x => x.Folio == item.Folio &&
+                                                                                                                    x.MontoNeto == item.MontoNeto &&
+                                                                                                                    x.MontoIva == item.MontoIva &&
+                                                                                                                    x.MontoTotal == item.MontoTotal).FirstOrDefault();
+                            lstLibroContableCentralizacionImpuestosLimpios.Add(ResultOneTaxe);
+                        }
+                        lstLibroContableCentralizacionAretornar.AddRange(lstLibroContableCentralizacionImpuestosLimpios);
+
+                    }
+
+
+                    foreach (LibrosContablesModel DetalleLibro in lstLibroContableCentralizacionAretornar)
+                    {
+                        db.DBLibrosContables.Add(DetalleLibro);
+                    }
+
+                    // db.SaveChanges();
+                    int NumFilasAlteradas = db.SaveChanges();
+
+
+                    if (NumFilasAlteradas == 0)
+                    {
+                       throw new Exception("Error inesperado no se pudo procesar el excel.");
                     }
                     else
                     {
-                        //MANEJAR ERROR ACA, NO SE PUEDE MANEJAR UN LIBRO QUE NO SEA DE VENTA O COMPRA
-                        return null;
+                        dbContextTransaction.Commit();
+                        return Tuple.Create(lstLibroContableCentralizacionAretornar, "Exito");
                     }
-
-                    continue;
                 }
-
-
-
-                //Crear nuevo doc centralizacion
-                LibrosContablesModel NewLibroContableModel = new LibrosContablesModel();
-
-                //Si corresponde a un libro de VENTA o COMPRA (¿O Honorarios?)
-                NewLibroContableModel.TipoLibro = tipoCentralizacion;
-
-                //Asignar a este cliente
-                NewLibroContableModel.ClientesContablesModelID = objCliente.ClientesContablesModelID;
-
-
-                NewLibroContableModel.TipoDocumento = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[1]);
-
-
-                //Razon social (CLIENTE / PROVEEDOR) y RUT se transforman en un objeto de tipo Prestador
-                string RutPrestador = strFilaCSV[3];
-                string RazonSocialPrestador = strFilaCSV[4];
-
-                if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) {
-                    RutDupleDuple = strFilaCSV[3];
-                    RazonSocialDuple = strFilaCSV[4];
-                }
-                //Aquí construimos la fila que copiaremos.
-                if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
+                catch (Exception ex)
                 {
-                    QuickReceptorModel objPrestador = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutDupleDuple, RazonSocialDuple, objCliente, db, tipoReceptor);
-
-                    NewLibroContableModel.individuo = objPrestador;
+                    dbContextTransaction.Rollback();
+                    return Tuple.Create(lstLibroContableCentralizacionAretornar, ex.Message);
                 }
-
-
-
-                if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) {
-                    //AuxiliaresPrestadoresModel objPrestador = AuxiliaresPrestadoresModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db);
-                    QuickReceptorModel objPrestador = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutPrestador, RazonSocialPrestador, objCliente, db, tipoReceptor);
-
-                    // NewLibroContableModel.Prestador = objPrestador;
-                    NewLibroContableModel.individuo = objPrestador;
-
-                }
-
-                NewLibroContableModel.Folio = ParseExtensions.ParseInt(strFilaCSV[5]);
-
-                // Volver a activar después de hacer las pruebas.
-                //Errores en caso de que ya exista el libro y haya sido dado de alta.
-
-                List<LibrosContablesModel> SinRepetidos = db.DBLibrosContables.Where(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                                                                x.Folio == NewLibroContableModel.Folio &&
-                                                                                                x.TipoDocumento == NewLibroContableModel.TipoDocumento &&
-                                                                                                x.individuo.RUT == NewLibroContableModel.individuo.RUT &&
-                                                                                                x.HaSidoConvertidoAVoucher == true &&
-                                                                                                x.TipoLibro == tipoCentralizacion).ToList();
-
-                List<VoucherModel> Repetidos = new List<VoucherModel>();
-                VoucherModel VoucherEncontrado = new VoucherModel();
-                if (SinRepetidos != null)
-                {
-                    foreach (var ItemRepetido in SinRepetidos)
-                    {
-                        VoucherEncontrado = db.DBVoucher.SingleOrDefault(x => x.VoucherModelID == ItemRepetido.VoucherModelID);
-                        if (VoucherEncontrado.DadoDeBaja == false && VoucherEncontrado.Tipo == TipoVoucher.Traspaso)
-                        {
-                            Repetidos.Add(VoucherEncontrado);
-                        }
-                    }
-
-                }
-
-                if (SinRepetidos != null && Repetidos != null && Repetidos.Count() > 0)
-                {
-                    throw new Exception();
-                }
-
-
-                if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) { 
-                //FECHA DE DOCUMENTO
-                NewLibroContableModel.FechaDoc = ParseExtensions.ToDD_MM_AAAA_Multi(strFilaCSV[6]);
-
-                //FECHA RECEPCION
-                NewLibroContableModel.FechaRecep = ParseExtensions.ToDD_MM_AAAA_Multi(strFilaCSV[7]);
-                }
-                //Siempre parece estar vacia en los documentos del SII
-
-                //Montos documento contable
-
-                if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
-                {
-                    TipoDocDuple = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[1]);
-                    
-                    FolioDuple = strFilaCSV[5];
-                    FechaDocumentoDuple = strFilaCSV[6];
-                    FechaRecepcionDuple = strFilaCSV[7];
-                    TipoLibro = tipoCentralizacion;
-                }
-
-                if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
-                {
-                    NewLibroContableModel.TipoDocumento = TipoDocDuple;
-                    NewLibroContableModel.Folio = ParseExtensions.ParseInt(FolioDuple);
-                    NewLibroContableModel.FechaDoc = ParseExtensions.ToDD_MM_AAAA_Multi(FechaDocumentoDuple);
-                    NewLibroContableModel.FechaRecep = ParseExtensions.ToDD_MM_AAAA_Multi(FechaRecepcionDuple);
-                }
-
-                // Para fecha de contabilización tanto en compra como en venta
-                int CantidadDeFilas = strFilaCSV.Count();
-                int NumeroIndiceVariable = CantidadDeFilas - 1;
-
-                if (tipoCentralizacion == TipoCentralizacion.Venta)
-                {
-                    if (!string.IsNullOrWhiteSpace(strFilaCSV[NumeroIndiceVariable])) { 
-                        NewLibroContableModel.FechaContabilizacion = ParseExtensions.ToDD_MM_AAAA(strFilaCSV[NumeroIndiceVariable]);
-                    }
-
-
-                    NewLibroContableModel.MontoExento = ParseExtensions.ParseDecimal(strFilaCSV[10]); 
-                    NewLibroContableModel.MontoNeto = ParseExtensions.ParseDecimal(strFilaCSV[11]);
-                    NewLibroContableModel.MontoIva = ParseExtensions.ParseDecimal(strFilaCSV[12]);
-                    NewLibroContableModel.MontoTotal = ParseExtensions.ParseDecimal(strFilaCSV[13]);
-                }
-                else if (tipoCentralizacion == TipoCentralizacion.Compra)
-                {
-                
-                    if (!string.IsNullOrWhiteSpace(strFilaCSV[0]))
-                    {
-                        MontoExentoDuple = ParseExtensions.ParseDecimal(strFilaCSV[25]);
-                        MontoNetoDuple = strFilaCSV[10];
-                        MontoIvaDuple = strFilaCSV[11];
-                        MontoTotalDuple = strFilaCSV[14];
-                        MontoIvaNorecuperable = strFilaCSV[12];
-                        MontoIvaUsoComun = strFilaCSV[17];
-                        MontoIvaActivoFijo = strFilaCSV[16];
-                    }
-                    //Duplicamos las filas para que queden iguales para luego dejar al que tenga la suma del exento mayor
-                    if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
-                        {
-                            NewLibroContableModel.MontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]); 
-                            NewLibroContableModel.MontoNeto = ParseExtensions.ParseDecimal(MontoNetoDuple);
-                            NewLibroContableModel.MontoIva = ParseExtensions.ParseDecimal(MontoIvaDuple);
-                            NewLibroContableModel.MontoTotal = ParseExtensions.ParseDecimal(MontoTotalDuple);
-
-                            NewLibroContableModel.MontoIvaNoRecuperable = ParseExtensions.ParseDecimal(MontoIvaNorecuperable);
-                            NewLibroContableModel.MontoIvaUsocomun = ParseExtensions.ParseDecimal(MontoIvaUsoComun);
-                            NewLibroContableModel.MontoIvaActivoFijo = ParseExtensions.ParseDecimal(MontoIvaActivoFijo);
-                         }
-
-
-
-                        if (!string.IsNullOrWhiteSpace(strFilaCSV[0])) { 
-                            NewLibroContableModel.MontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
-                            NewLibroContableModel.MontoNeto = ParseExtensions.ParseDecimal(strFilaCSV[10]);
-                            NewLibroContableModel.MontoIva = ParseExtensions.ParseDecimal(strFilaCSV[11]);
-                            NewLibroContableModel.MontoTotal = ParseExtensions.ParseDecimal(strFilaCSV[14]);
-
-                            NewLibroContableModel.MontoIvaNoRecuperable = ParseExtensions.ParseDecimal(strFilaCSV[12]);
-                            NewLibroContableModel.MontoIvaUsocomun = ParseExtensions.ParseDecimal(strFilaCSV[17]);
-                            NewLibroContableModel.MontoIvaActivoFijo = ParseExtensions.ParseDecimal(strFilaCSV[16]);
-                        }
-                    if (string.IsNullOrWhiteSpace(strFilaCSV[20]) != true)
-                    {
-                        decimal tabacoPuros = 0;
-                        decimal tabacosPurosMasMontoExento = 0;
-                        tabacoPuros = ParseExtensions.ParseDecimal(strFilaCSV[20]);
-
-                        tabacosPurosMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
-
-                        NewLibroContableModel.MontoExento = (tabacosPurosMasMontoExento + tabacoPuros);
-                    }
-                    if (string.IsNullOrWhiteSpace(strFilaCSV[21]) != true)
-                    {
-                        decimal tabacosCigarrillos = 0;
-                        decimal tabacosCigarrillosMasMontoExento = 0;
-                        tabacosCigarrillos = ParseExtensions.ParseDecimal(strFilaCSV[21]);
-
-                        tabacosCigarrillosMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
-
-                        NewLibroContableModel.MontoExento = (tabacosCigarrillosMasMontoExento + tabacosCigarrillos);
-                    }
-                    if (string.IsNullOrWhiteSpace(strFilaCSV[22]) != true)
-                    {
-                        decimal tabacosElaborados = 0;
-                        decimal tabacosTabacosElaMasMontoExento = 0;
-                        tabacosElaborados = ParseExtensions.ParseDecimal(strFilaCSV[22]);
-
-                        tabacosTabacosElaMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
-
-                        NewLibroContableModel.MontoExento = (tabacosTabacosElaMasMontoExento + tabacosElaborados);
-                    }
-                    if (string.IsNullOrWhiteSpace(strFilaCSV[25]) != true)
-                    {
-                        decimal valorOtrosImpuestos = 0;
-                        decimal valorOtrosImpMasMontoExento = 0;
-                        valorOtrosImpuestos = ParseExtensions.ParseDecimal(strFilaCSV[25]);
-
-                        valorOtrosImpMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
-
-                        NewLibroContableModel.MontoExento = (valorOtrosImpMasMontoExento + valorOtrosImpuestos);
-                    }
-                    if(string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25])) // Esta regla se aplica para las lineas de impuestos adcionales, se usa para acumular el exento.
-                    {
-                        decimal valorOtrosImpuestos = 0;
-                        decimal valorOtrosImpMasMontoExento = 0;
-                        valorOtrosImpuestos = ParseExtensions.ParseDecimal(strFilaCSV[25]);
-
-                        valorOtrosImpMasMontoExento = ParseExtensions.ParseDecimal(strFilaCSV[9]);
-
-                        NewLibroContableModel.MontoExento = (valorOtrosImpMasMontoExento + valorOtrosImpuestos);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(strFilaCSV[NumeroIndiceVariable]))
-                    {
-                        NewLibroContableModel.FechaContabilizacion = ParseExtensions.ToDD_MM_AAAA(strFilaCSV[NumeroIndiceVariable]);
-                    }
-
-
-                }
-
-                NewLibroContableModel.estado = true;
-
-
-                //AGREGAR ACA IVAS RETENIDOS EN EL FUTURO DE SER NECESARIO
-
-                //REFERENCIA DEL DOCUMENTO CONTABLE
-                if (string.IsNullOrWhiteSpace(strFilaCSV[24]) == false && strFilaCSV[24] != "0")
-                {
-                    NewLibroContableModel.TipoDocReferencia = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[24]);
-                    NewLibroContableModel.FolioDocReferencia = ParseExtensions.ParseInt(strFilaCSV[25]);
-                }
-
-                //Agregamos lo necesario 
-         
-
-                //Caso 1: Recibe Todos para poder evaluar.
-                
-
-                if(tipoCentralizacion == TipoCentralizacion.Venta)
-                {
-                    lstLibroContableCentralizacionAretornar.Add(NewLibroContableModel);
-                }
-
-                if(tipoCentralizacion == TipoCentralizacion.Compra) {
-
-                    if(string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
-                    {
-                       lstLibroContableCentralizacionImpuestos.Add(NewLibroContableModel);
-                    }
-           
-                    //Caso 3: Recibe todos aquellos que no contienen impuestos
-                    if (!string.IsNullOrWhiteSpace(strFilaCSV[0]) && string.IsNullOrWhiteSpace(strFilaCSV[25]))
-                    {
-                        lstLibroContableCentralizacionAretornar.Add(NewLibroContableModel);
-                    }
-                    //Caso 4: Recibe todos los que tienen impuestos más no las lineas hijas de estos impuestos.
-                    if (!string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
-                    {
-                      lstLibroContableCentralizacionImpuestos.Add(NewLibroContableModel);
-                    }
-             }
-          }
-
-            if (lstLibroContableCentralizacionImpuestos != null && tipoCentralizacion == TipoCentralizacion.Compra)
-            {
-                //Si no está vacio unelo con los hijos.
-                
-                //En caso de necesitar comparar más atributos para mayor seguridad, añadirlo en estas query y en la query del foreach.
-                var TodosLosImpuestos = lstLibroContableCentralizacionImpuestos.Select(x => new { x.Folio, x.MontoIva, x.MontoNeto, x.MontoTotal });
-               
-                TodosLosImpuestos = TodosLosImpuestos.Distinct().ToList();
-                foreach (var item in TodosLosImpuestos)
-                {
-                    List<LibrosContablesModel> ResultOneTaxe = lstLibroContableCentralizacionImpuestos.Where(x => x.Folio == item.Folio &&
-                                                                                                                  x.MontoNeto == item.MontoNeto &&
-                                                                                                                  x.MontoIva == item.MontoIva &&
-                                                                                                                  x.MontoTotal == item.MontoTotal).ToList();
-                    //Codigo Que los Relacionará
-                    Random ObjCodigoUnion = new Random();
-                    int CodigoUnion = ObjCodigoUnion.Next();
-
-                    decimal MontoSumado = ResultOneTaxe.Sum(x => x.MontoExento);
-
-                    foreach (LibrosContablesModel item2 in ResultOneTaxe)
-                    {
-                        ImpuestosAdRelacionModel InsertarImpuesto = new ImpuestosAdRelacionModel();
-
-                        InsertarImpuesto.CodigoUnionImpuesto = CodigoUnion;
-                        InsertarImpuesto.CodigoImpuesto = Convert.ToInt32(item2.TipoDocReferencia);
-                        InsertarImpuesto.ClienteContableModelID = objCliente.ClientesContablesModelID;
-
-                        List<ImpuestosAdicionalesModel> lstImpuestos = db.DBImpuestosAdicionalesSII.ToList();
-                        ImpuestosAdicionalesModel BuscandoID = lstImpuestos.SingleOrDefault(x => x.CodigoImpuesto == InsertarImpuesto.CodigoImpuesto);
-
-                        if(BuscandoID != null)
-                        {
-                            InsertarImpuesto.ImpuestosAdicionalesModelID = BuscandoID.ImpuestosAdicionalesModelID;
-                        }
-
-                        db.DBImpuestosAdRelacionSII.Add(InsertarImpuesto);
-                        db.SaveChanges();
-
-                        item2.MontoExento = MontoSumado;
-                        item2.CodigoUnionImpuesto = CodigoUnion;
-                    }
-
-                }
-
-                foreach (var item in TodosLosImpuestos)
-                {
-                    LibrosContablesModel ResultOneTaxe = lstLibroContableCentralizacionImpuestos.Where(x => x.Folio == item.Folio &&
-                                                                                                            x.MontoNeto == item.MontoNeto &&
-                                                                                                            x.MontoIva == item.MontoIva &&
-                                                                                                            x.MontoTotal == item.MontoTotal).FirstOrDefault();
-                    lstLibroContableCentralizacionImpuestosLimpios.Add(ResultOneTaxe);
-                }
-                lstLibroContableCentralizacionAretornar.AddRange(lstLibroContableCentralizacionImpuestosLimpios);
-
-            }
-
-    
-            foreach (LibrosContablesModel DetalleLibro in lstLibroContableCentralizacionAretornar)
-            {
-                db.DBLibrosContables.Add(DetalleLibro);
-            }
-          
-            // db.SaveChanges();
-            int NumFilasAlteradas = db.SaveChanges();
-            
-
-            if (NumFilasAlteradas == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return lstLibroContableCentralizacionAretornar;
             }
         }
 

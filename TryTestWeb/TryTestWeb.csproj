@@ -247,6 +247,7 @@
     </Compile>
     <Compile Include="Helpers\CaptchaValidatorAttribute.cs" />
     <Compile Include="Helpers\CodigosErrorUpload.cs" />
+    <Compile Include="Helpers\ContabilidadHelper.cs" />
     <Compile Include="Helpers\CuentaContable.cs" />
     <Compile Include="Helpers\DTE_CodRef.cs" />
     <Compile Include="Helpers\F29Provisorio.cs" />
@@ -759,11 +760,13 @@
     <Content Include="App_Data\PlantillaConciliacionBancaria.xlsx" />
     <None Include="Properties\PublishProfiles\EFactu Deployment.pubxml" />
     <None Include="Properties\PublishProfiles\EFactuDeploy.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\GaryFacturaLabs.pubxml" />
     <None Include="Properties\PublishProfiles\GaryPublish1.pubxml">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\geogest1.pubxml" />
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
     <Content Include="Scripts\dataTables.responsive.js" />
@@ -969,8 +972,6 @@
     <Content Include="Views\Contabilidad\CatorceTer.cshtml" />
     <Content Include="Views\ContabilidadAuxiliares\EstadoCtasCorrientes.cshtml" />
     <Content Include="Views\ContabilidadAuxiliares\EstCtasCtesConciliado.cshtml" />
-    <Content Include="Views\ContabilidadAuxiliares\TestCtasCtesConciliadas.cshtml" />
-    <Content Include="Views\ContabilidadAuxiliares\TestGroup.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\ConciliacionBancaria.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\ImportarCartolaBancaria.cshtml" />
     <Content Include="Views\ContabilidadConciliacionBancaria\EjecutarConciliacion.cshtml" />

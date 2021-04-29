@@ -116,485 +116,409 @@ public class LibrosContablesModel
     public virtual QuickReceptorModel individuo { get; set; }
     public bool EsUnRegistroManual { get; set; } = false;
      
-    public static void ProcesarLibrosContablesAVoucher(List<LibrosContablesModel> lstEntradasLibro, ClientesContablesModel objCliente, FacturaPoliContext db, List<CuentaContableModel> lstCuentaContable)
+    public static string ProcesarLibrosContablesAVoucher(List<LibrosContablesModel> lstEntradasLibro, ClientesContablesModel objCliente, FacturaPoliContext db, List<CuentaContableModel> lstCuentaContable)
     {
 
-        if (lstEntradasLibro == null || lstEntradasLibro.Count == 0 || objCliente == null || objCliente.ParametrosCliente == null)
-            return;
-
-        // Para evitar redundancia en los libros que entran por carga masiva.
-
-        // Se compara el folio que viene del excel a importar con el folio de algún registro de la base de datos y en caso de que el folio ya exista-
-        // El programa deja de ejecutarse.
-        // Se deja como tarea cortar con la ejecución de una manera más amigable (Lea control de errores con C# Entity Framework).
-        var folioExcel = lstEntradasLibro.First().Folio.ToString();
-        //IQueryable<VoucherModel> CompExcelAndDb = db.DBVoucher.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.Glosa.Contains(folioExcel));
-        //List<VoucherModel> CompExcelAndDbLst = CompExcelAndDb.ToList(); // Comp -> quiere decir "Comparación" hace alusión a la comparación de la base de datos con el excel que viene desde afuera antes de insertarse en la base de datos.
-
-        //if (CompExcelAndDbLst != null && CompExcelAndDbLst.Count > 0) // Validamos si salió algún resultado coincidente. En caso de que exista un folio igual al que viene del excel en la base de datos; se corta la ejecución del programa.
-        //{
-        //    throw new Exception();
-        //}
-
-        if (lstEntradasLibro.Count != lstCuentaContable.Count)
+        using(var dbContextTransaction = db.Database.BeginTransaction())
         {
-            throw new Exception();
-        }
-
-
-
-        // List<LibrosContablesModel> resultComparacion = Comparacion.ToList();
-
-        /*if (resultComparacion != null && resultComparacion.Count > 0)
-        {
-            throw new Exception();
-        }*/
-
-
-
-
-        CuentaContableModel CuentaIVAAUsar = null;
-        if (lstEntradasLibro.First().TipoLibro == TipoCentralizacion.Compra)
-            CuentaIVAAUsar = db.DBCuentaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaCompras.CuentaContableModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID);
-        else if (lstEntradasLibro.First().TipoLibro == TipoCentralizacion.Venta)
-            CuentaIVAAUsar = db.DBCuentaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaVentas.CuentaContableModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID);
-        else
-            return;
-        if (CuentaIVAAUsar == null)
-            return;
-
-        List<VoucherModel> lstNuevosVouchers = new List<VoucherModel>();
-        int contadorAnexo = 0;
-
-        int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
-        int baseNumberFolio = nullableProxVoucherNumber.Value;
-        CuentaContableModel cuentaPrincipal = new CuentaContableModel();
-
-
-
-
-        foreach (LibrosContablesModel entradaLibro in lstEntradasLibro)
-        {
-
-            //CuentaIVAAUsar = db.DBCuentaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaCompras.CuentaContableModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID );
-
-
-            VoucherModel nuevoVoucher = new VoucherModel();
-            if (entradaLibro.TipoLibro == TipoCentralizacion.Venta)
+            string FeedBack = "";
+            try
             {
-                nuevoVoucher.TipoOrigen = "Venta";
-                nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Venta;
+                if (lstEntradasLibro == null || lstEntradasLibro.Count == 0 || objCliente == null || objCliente.ParametrosCliente == null)
+                    throw new Exception("Error no hay datos para procesar.");
 
-            }
+                var folioExcel = lstEntradasLibro.First().Folio.ToString();
 
-            if (entradaLibro.TipoLibro == TipoCentralizacion.Compra)
-            {
-                nuevoVoucher.TipoOrigen = "Compra";
-                nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Compra;
-            }
+                if (lstEntradasLibro.Count != lstCuentaContable.Count)
+                    throw new Exception("Error no hay cuentas contables asignadas para cada registro.");
 
-
-            nuevoVoucher.ClientesContablesModelID = objCliente.ClientesContablesModelID;
-            nuevoVoucher.FechaEmision = entradaLibro.FechaContabilizacion;
-            nuevoVoucher.Tipo = TipoVoucher.Traspaso;
-
-
-
-            string FullDescripcionDocOriginal = (int)entradaLibro.TipoDocumento + " / Folio: " + entradaLibro.Folio + " / " + entradaLibro.individuo.RazonSocial;
-
-            nuevoVoucher.Glosa = FullDescripcionDocOriginal;
-
-            nuevoVoucher.NumeroVoucher = baseNumberFolio;
-
-            //DEFINIR CUAL ES LA CUENTA DE VENTA O COMPRA DONDE VAN LAS VENTAS O COMPRAS
-            List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
-
-
-            if (entradaLibro.TipoLibro == TipoCentralizacion.Venta)
-            {
-                // decimal CostoNeto = entradaLibro.MontoTotal - entradaLibro.MontoIva;
-                decimal CostoNeto = entradaLibro.MontoNeto;
-                decimal MontoTotal = entradaLibro.MontoTotal;
-                decimal MontoIva = entradaLibro.MontoIva;
-                decimal MontoExento = entradaLibro.MontoExento;
-
-
-                DetalleVoucherModel detalleGastoNeto = new DetalleVoucherModel();
-                detalleGastoNeto.FechaDoc = entradaLibro.FechaContabilizacion;
-
-                //EN VENTA EL TOTAL VA AL DEBE, EN EL HABER VA EL GASTO NETO Y EL IVA ... pero si es una nota de credito los del haber van al debe y viceversa
-                if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
-                {
-                    detalleGastoNeto.MontoHaber = CostoNeto + MontoExento;
-                    detalleGastoNeto.MontoDebe = 0;
-                }
+                CuentaContableModel CuentaIVAAUsar = null;
+                if (lstEntradasLibro.First().TipoLibro == TipoCentralizacion.Compra)
+                    CuentaIVAAUsar = db.DBCuentaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaCompras.CuentaContableModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID);
+                else if (lstEntradasLibro.First().TipoLibro == TipoCentralizacion.Venta)
+                    CuentaIVAAUsar = db.DBCuentaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaVentas.CuentaContableModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID);
                 else
+                    throw new Exception("Error el documento no es de compra ni venta.");
+                if (CuentaIVAAUsar == null)
+                    throw new Exception("Error no se encontró configuración valida en el modulo parametros clientes, Por favor parametrizar las cuentas contables.");
+
+                List<VoucherModel> lstNuevosVouchers = new List<VoucherModel>();
+                int contadorAnexo = 0;
+
+                int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
+                int baseNumberFolio = nullableProxVoucherNumber.Value;
+                CuentaContableModel cuentaPrincipal = new CuentaContableModel();
+
+                foreach (LibrosContablesModel entradaLibro in lstEntradasLibro)
                 {
-                    detalleGastoNeto.MontoHaber = 0;
-                    detalleGastoNeto.MontoDebe = CostoNeto + MontoExento;
-                }
-
-                detalleGastoNeto.GlosaDetalle = "Costo Neto " + FullDescripcionDocOriginal;
-
-                detalleGastoNeto.ObjCuentaContable = lstCuentaContable[contadorAnexo];
-
-                DetalleVoucher.Add(detalleGastoNeto);
-
-                DetalleVoucherModel detalleGastoIVA = new DetalleVoucherModel();
-                if (entradaLibro.MontoIva > 0)
-                {
-                    detalleGastoIVA.FechaDoc = entradaLibro.FechaContabilizacion;
-
-                    //EN VENTA EL TOTAL VA AL DEBE, EN EL HABER VA EL GASTO NETO Y EL IVA ... pero si es una nota de credito los del haber van al debe y viceversa
-                    if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                    //CuentaIVAAUsar = db.DBCuentaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaCompras.CuentaContableModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID );
+                    VoucherModel nuevoVoucher = new VoucherModel();
+                    if (entradaLibro.TipoLibro == TipoCentralizacion.Venta)
                     {
-                        detalleGastoIVA.MontoHaber = MontoIva;
-                        detalleGastoIVA.MontoDebe = 0;
+                        nuevoVoucher.TipoOrigen = "Venta";
+                        nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Venta;
                     }
-                    else
-                    {
-                        detalleGastoIVA.MontoHaber = 0;
-                        detalleGastoIVA.MontoDebe = MontoIva;
-                    }
-
-                    detalleGastoIVA.GlosaDetalle = "IVA Ventas " + FullDescripcionDocOriginal;
-                    detalleGastoIVA.ObjCuentaContable = CuentaIVAAUsar;//objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaVentas.CuentaContableModelID);
-                    DetalleVoucher.Add(detalleGastoIVA);
-                }
-
-                DetalleVoucherModel detalleCtaVenta = new DetalleVoucherModel();
-                detalleCtaVenta.FechaDoc = entradaLibro.FechaContabilizacion;
-
-                //EN VENTA EL TOTAL VA AL DEBE, EN EL HABER VA EL GASTO NETO Y EL IVA ... pero si es una nota de credito los del haber van al debe y viceversa
-                if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
-                {
-                    detalleCtaVenta.MontoHaber = 0;
-                    detalleCtaVenta.MontoDebe = MontoTotal;
-                }
-                else
-                {
-                    detalleCtaVenta.MontoHaber = MontoTotal;
-                    detalleCtaVenta.MontoDebe = 0;
-                }
-
-                detalleCtaVenta.ObjCuentaContable = objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaVentas.CuentaContableModelID);
-                cuentaPrincipal = detalleCtaVenta.ObjCuentaContable;
-                detalleCtaVenta.GlosaDetalle = detalleCtaVenta.ObjCuentaContable.nombre + " (Venta) " + FullDescripcionDocOriginal;
-                DetalleVoucher.Add(detalleCtaVenta);
-            }
-            //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA... ...pero si es una nota de credito los del debe van al haber y viceversa
-            else if (entradaLibro.TipoLibro == TipoCentralizacion.Compra)
-            {
-
-                decimal CostoNeto = entradaLibro.MontoNeto;//entradaLibro.MontoTotal - entradaLibro.MontoIva;
-                decimal CostoIvaNoRecuperable = entradaLibro.MontoIvaNoRecuperable;
-                decimal CostoIvaActivoFijo = entradaLibro.MontoIvaActivoFijo;
-                decimal CostoIvaUsoComun = entradaLibro.MontoIvaUsocomun;
-                decimal MontoTotal = entradaLibro.MontoTotal;
-                decimal MontoIva = entradaLibro.MontoIva;
-                decimal montoExento = entradaLibro.MontoExento;
-                String tipocompra = "";
-                //Iva No Recuperable
-                if (CostoIvaNoRecuperable > 0 && CostoIvaUsoComun == 0 && MontoIva == 0)
-                {
-                    tipocompra = "IvaNoRecuperable";
-                }
-                if (CostoIvaUsoComun == 0 && MontoIva > 0 && CostoIvaNoRecuperable == 0)
-                {
-                    tipocompra = "IvaRecuperable";
-                }
-                if (CostoIvaNoRecuperable > 0 || CostoIvaNoRecuperable == 0 && MontoIva == 0 && CostoIvaUsoComun > 0)
-                {
-                    tipocompra = "IvaUsoComun";
-                }
-
-
-
-                DetalleVoucherModel detalleGastoNeto = new DetalleVoucherModel();
-                detalleGastoNeto.FechaDoc = entradaLibro.FechaContabilizacion;
-
-                //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA...
-                //pero si es una nota de credito los del debe van al haber y viceversa
-                if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
-                {
-                    detalleGastoNeto.MontoHaber = 0;
-                    detalleGastoNeto.MontoDebe = CostoNeto + montoExento;
-                }
-                else
-                {
-                    detalleGastoNeto.MontoHaber = CostoNeto + montoExento;
-                    detalleGastoNeto.MontoDebe = 0;
-                }
-
-                detalleGastoNeto.GlosaDetalle = "Costo Neto " + FullDescripcionDocOriginal;
-
-                detalleGastoNeto.ObjCuentaContable = lstCuentaContable[contadorAnexo];
-
-                DetalleVoucher.Add(detalleGastoNeto);
-
-
-                //DetalleVoucherModel detalleGastoNetoCopiaIva = new DetalleVoucherModel();
-                //if (tipocompra == "IvaNoRecuperable" || tipocompra == "IvaUsoComun")
-                //{
-                //    detalleGastoNetoCopiaIva.FechaDoc = entradaLibro.FechaContabilizacion;
-                //    if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
-                //    {
-                //        detalleGastoNetoCopiaIva.MontoHaber = 0;
-                //        detalleGastoNetoCopiaIva.MontoDebe = CostoIvaNoRecuperable;
-                //    }
-                //    else
-                //    {
-                //        detalleGastoNetoCopiaIva.MontoHaber = CostoIvaNoRecuperable;
-                //        detalleGastoNetoCopiaIva.MontoDebe = 0;
-                //    }
-
-                //    detalleGastoNetoCopiaIva.GlosaDetalle = "Costo Iva No Recuperable " + FullDescripcionDocOriginal;
-
-                //    detalleGastoNetoCopiaIva.ObjCuentaContable = lstCuentaContable[contadorAnexo];
-
-                //    DetalleVoucher.Add(detalleGastoNetoCopiaIva);
-
-
-                //}
-
-
-
-                DetalleVoucherModel detalleGastoIVA = new DetalleVoucherModel();
-                // if (entradaLibro.MontoIva > 0)
-                //Genero lineas según tipoCompra
-                if (tipocompra == "IvaRecuperable" || tipocompra == "IvaUsoComun")
-                {
-                    detalleGastoIVA.FechaDoc = entradaLibro.FechaContabilizacion;
-
-                    decimal montoIvaTotal = MontoIva;
-
-                    if (tipocompra == "IvaUsoComun")
-                    {
-                        montoIvaTotal = CostoIvaUsoComun; //CostoIvaNoRecuperable + CostoIvaUsoComun;
-                    }
-
-                    //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA...
-                    //pero si es una nota de credito los del debe van al haber y viceversa
-                    if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
-                    {
-                        detalleGastoIVA.MontoHaber = 0;
-                        detalleGastoIVA.MontoDebe = montoIvaTotal;//MontoIva;
-                    }
-                    else
-                    {
-                        detalleGastoIVA.MontoHaber = montoIvaTotal;// MontoIva;
-                        detalleGastoIVA.MontoDebe = 0;
-                    }
-
-                    detalleGastoIVA.GlosaDetalle = "IVA Compras " + FullDescripcionDocOriginal;
-                    detalleGastoIVA.ObjCuentaContable = CuentaIVAAUsar;//objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaVentas.CuentaContableModelID);
-                    DetalleVoucher.Add(detalleGastoIVA);
-                }
-
-
-
-
-
-                DetalleVoucherModel detalleCtaCompra = new DetalleVoucherModel();
-                detalleCtaCompra.FechaDoc = entradaLibro.FechaContabilizacion;
-
-                //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA...
-                //pero si es una nota de credito los del debe van al haber y viceversa
-                if(tipocompra == "IvaUsoComun")
-                {
-                    if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
-                    {
-                        detalleCtaCompra.MontoHaber = montoExento + CostoNeto + CostoIvaUsoComun;
-                        detalleCtaCompra.MontoDebe = 0;
-                    }
-                    else
-                    {
-                        detalleCtaCompra.MontoHaber = 0;
-                        detalleCtaCompra.MontoDebe = montoExento + CostoNeto + CostoIvaUsoComun;
-                    }
-                }else { 
-
-                        if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
-                        {
-                            detalleCtaCompra.MontoHaber = montoExento + CostoNeto + MontoIva;
-                            detalleCtaCompra.MontoDebe = 0;
-                        }
-                        else
-                        {
-                            detalleCtaCompra.MontoHaber = 0;
-                            detalleCtaCompra.MontoDebe = montoExento + CostoNeto + MontoIva;
-                        }
-                }
-
-                detalleCtaCompra.ObjCuentaContable = objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaCompras.CuentaContableModelID);
-                cuentaPrincipal = detalleCtaCompra.ObjCuentaContable;
-                detalleCtaCompra.GlosaDetalle = detalleCtaCompra.ObjCuentaContable.nombre + " (Compra) " + FullDescripcionDocOriginal;
-                DetalleVoucher.Add(detalleCtaCompra);
-            }
-
-            if (DetalleVoucher.Sum(r => r.MontoDebe) == DetalleVoucher.Sum(r => r.MontoHaber))
-            {
-                nuevoVoucher.ListaDetalleVoucher = DetalleVoucher;
-                entradaLibro.HaSidoConvertidoAVoucher = true;
-
-                //Convertimosa voucher solo si el libro ya es convertido a voucher.
-                List<ImpuestosAdRelacionModel> AConvertir = db.DBImpuestosAdRelacionSII.Where(x => x.CodigoUnionImpuesto == entradaLibro.CodigoUnionImpuesto).ToList();
-                if (AConvertir.Count != 0)
-                {
-                    foreach (ImpuestosAdRelacionModel Convertidor in AConvertir)
-                    {
-                        Convertidor.HaSidoConvertidoAVoucher = true;
-                        db.DBImpuestosAdRelacionSII.AddOrUpdate(Convertidor);
-                        db.SaveChanges();
-                    }
-                }
-
-            }
-            else
-            {
-                contadorAnexo++;
-                continue; //Pensar en como reportar que hubo problemas importando la linea X del libro
-            }
-
-            lstNuevosVouchers.Add(nuevoVoucher);
-
-
-
-
-
-            foreach (DetalleVoucherModel NuevoDetalleVoucher in nuevoVoucher.ListaDetalleVoucher)
-            {
-
-                if (NuevoDetalleVoucher.ObjCuentaContable == cuentaPrincipal)
-                {
-
-                    //CREO NUEVO DOCUMENTO AUXULIAR 
-
-                    AuxiliaresModel Auxiliar = new AuxiliaresModel();
-
-                    Auxiliar.DetalleVoucherModelID = NuevoDetalleVoucher.DetalleVoucherModelID;
-                    Auxiliar.LineaNumeroDetalle = nuevoVoucher.ListaDetalleVoucher.Count;
-                    Auxiliar.MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber;
-                    Auxiliar.objCtaContable = NuevoDetalleVoucher.ObjCuentaContable;
-                    //Auxiliar.DetalleVoucherModelID = NuevoDetalleVoucher.DetalleVoucherModelID;
-                    db.DBAuxiliares.Add(Auxiliar);
-
-                    AuxiliaresDetalleModel nuevoAuxDetalle = new AuxiliaresDetalleModel();
-                    nuevoAuxDetalle.TipoDocumento = entradaLibro.TipoDocumento;
-                    nuevoAuxDetalle.Fecha = entradaLibro.FechaDoc;
-                    nuevoAuxDetalle.FechaContabilizacion = entradaLibro.FechaContabilizacion;
-
-                    //revisar
-                    // nuevoAuxDetalle.FechaVencimiento =   entradaLibro.fe
-                    nuevoAuxDetalle.Folio = entradaLibro.Folio;
-                    nuevoAuxDetalle.Individuo2 = entradaLibro.individuo;
-                    nuevoAuxDetalle.MontoNetoLinea = entradaLibro.MontoNeto;
-                    nuevoAuxDetalle.MontoExentoLinea = entradaLibro.MontoExento;
-                    nuevoAuxDetalle.MontoIVALinea = entradaLibro.MontoIva;
-
-                    nuevoAuxDetalle.MontoTotalLinea = entradaLibro.MontoTotal;
-                    nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
 
                     if (entradaLibro.TipoLibro == TipoCentralizacion.Compra)
                     {
-                        nuevoAuxDetalle.MontoIVANoRecuperable = entradaLibro.MontoIvaNoRecuperable;
-                        nuevoAuxDetalle.MontoIVAUsoComun = entradaLibro.MontoIvaUsocomun;
-                        nuevoAuxDetalle.MontoIVAActivoFijo = entradaLibro.MontoIvaActivoFijo;
-
+                        nuevoVoucher.TipoOrigen = "Compra";
+                        nuevoVoucher.TipoOrigenVoucher = TipoOrigen.Compra;
                     }
 
-                    db.DBAuxiliaresDetalle.Add(nuevoAuxDetalle);
-                    db.SaveChanges();
+                    nuevoVoucher.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                    nuevoVoucher.FechaEmision = entradaLibro.FechaContabilizacion;
+                    nuevoVoucher.Tipo = TipoVoucher.Traspaso;
 
-                }
+                    string FullDescripcionDocOriginal = (int)entradaLibro.TipoDocumento + " / Folio: " + entradaLibro.Folio + " / " + entradaLibro.individuo.RazonSocial;
 
-            }
+                    nuevoVoucher.Glosa = FullDescripcionDocOriginal;
 
-            contadorAnexo++;
-            baseNumberFolio++;
-        }
+                    nuevoVoucher.NumeroVoucher = baseNumberFolio;
 
-        if (lstNuevosVouchers != null && lstNuevosVouchers.Count > 0)
-        {
-
-            foreach (VoucherModel NuevoVoucher in lstNuevosVouchers)
-            {
-                //objCliente.ListVoucher.Add(NuevoVoucher);
-                db.DBVoucher.Add(NuevoVoucher);
-            }
-            db.SaveChanges();
-            int posicion = 0;
-            foreach (VoucherModel NuevoVoucher in lstNuevosVouchers)
-            {
+                    //DEFINIR CUAL ES LA CUENTA DE VENTA O COMPRA DONDE VAN LAS VENTAS O COMPRAS
+                    List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
 
 
-                int posicion2 = 0;
-                foreach (LibrosContablesModel entradaLibro in lstEntradasLibro)
-                {
-
-                    if (posicion == posicion2)
+                    if (entradaLibro.TipoLibro == TipoCentralizacion.Venta)
                     {
-                        entradaLibro.VoucherModelID = NuevoVoucher.VoucherModelID;
-                        entradaLibro.estado = true;
-                        db.DBLibrosContables.AddOrUpdate(entradaLibro);
-                        db.SaveChanges();
-                    }
-                    posicion2++;
-                }
-
-                int total = NuevoVoucher.ListaDetalleVoucher.Count;
-                foreach (DetalleVoucherModel NuevoDetalleVoucher in NuevoVoucher.ListaDetalleVoucher)
-                {
-
-                    if (NuevoDetalleVoucher.ObjCuentaContable == cuentaPrincipal)
-                    {
+                        // decimal CostoNeto = entradaLibro.MontoTotal - entradaLibro.MontoIva;
+                        decimal CostoNeto = entradaLibro.MontoNeto;
+                        decimal MontoTotal = entradaLibro.MontoTotal;
+                        decimal MontoIva = entradaLibro.MontoIva;
+                        decimal MontoExento = entradaLibro.MontoExento;
 
 
-                        AuxiliaresModel auxiliar = (from c in db.DBAuxiliares
-                                                    where c.LineaNumeroDetalle == total && c.objCtaContable.ClientesContablesModelID == cuentaPrincipal.ClientesContablesModelID && c.DetalleVoucherModelID == 0
-                                                    select c).FirstOrDefault();
+                        DetalleVoucherModel detalleGastoNeto = new DetalleVoucherModel();
+                        detalleGastoNeto.FechaDoc = entradaLibro.FechaContabilizacion;
 
-                        // AuxiliaresModel auxiliar = db..Where(r => r.LineaNumeroDetalle == 3 && r.objCtaContable.CuentaContableModelID ==  cuentaPrincipal.ClientesContablesModelID).FirstOrDefault();
-
-                        if (auxiliar != null)
+                        //EN VENTA EL TOTAL VA AL DEBE, EN EL HABER VA EL GASTO NETO Y EL IVA ... pero si es una nota de credito los del haber van al debe y viceversa
+                        if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
                         {
-
-
-                            auxiliar.DetalleVoucherModelID = NuevoDetalleVoucher.DetalleVoucherModelID;
-                            db.DBAuxiliares.AddOrUpdate(auxiliar);
-
-                            NuevoDetalleVoucher.Auxiliar = auxiliar;
-                            db.DBDetalleVoucher.AddOrUpdate(NuevoDetalleVoucher);
-
-                            db.SaveChanges();
-
+                            detalleGastoNeto.MontoHaber = CostoNeto + MontoExento;
+                            detalleGastoNeto.MontoDebe = 0;
+                        }
+                        else
+                        {
+                            detalleGastoNeto.MontoHaber = 0;
+                            detalleGastoNeto.MontoDebe = CostoNeto + MontoExento;
                         }
 
+                        detalleGastoNeto.GlosaDetalle = "Costo Neto " + FullDescripcionDocOriginal;
+
+                        detalleGastoNeto.ObjCuentaContable = lstCuentaContable[contadorAnexo];
+
+                        DetalleVoucher.Add(detalleGastoNeto);
+
+                        DetalleVoucherModel detalleGastoIVA = new DetalleVoucherModel();
+                        if (entradaLibro.MontoIva > 0)
+                        {
+                            detalleGastoIVA.FechaDoc = entradaLibro.FechaContabilizacion;
+
+                            //EN VENTA EL TOTAL VA AL DEBE, EN EL HABER VA EL GASTO NETO Y EL IVA ... pero si es una nota de credito los del haber van al debe y viceversa
+                            if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                            {
+                                detalleGastoIVA.MontoHaber = MontoIva;
+                                detalleGastoIVA.MontoDebe = 0;
+                            }
+                            else
+                            {
+                                detalleGastoIVA.MontoHaber = 0;
+                                detalleGastoIVA.MontoDebe = MontoIva;
+                            }
+
+                            detalleGastoIVA.GlosaDetalle = "IVA Ventas " + FullDescripcionDocOriginal;
+                            detalleGastoIVA.ObjCuentaContable = CuentaIVAAUsar;//objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaVentas.CuentaContableModelID);
+                            DetalleVoucher.Add(detalleGastoIVA);
+                        }
+
+                        DetalleVoucherModel detalleCtaVenta = new DetalleVoucherModel();
+                        detalleCtaVenta.FechaDoc = entradaLibro.FechaContabilizacion;
+
+                        //EN VENTA EL TOTAL VA AL DEBE, EN EL HABER VA EL GASTO NETO Y EL IVA ... pero si es una nota de credito los del haber van al debe y viceversa
+                        if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                        {
+                            detalleCtaVenta.MontoHaber = 0;
+                            detalleCtaVenta.MontoDebe = MontoTotal;
+                        }
+                        else
+                        {
+                            detalleCtaVenta.MontoHaber = MontoTotal;
+                            detalleCtaVenta.MontoDebe = 0;
+                        }
+
+                        detalleCtaVenta.ObjCuentaContable = objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaVentas.CuentaContableModelID);
+                        cuentaPrincipal = detalleCtaVenta.ObjCuentaContable;
+                        detalleCtaVenta.GlosaDetalle = detalleCtaVenta.ObjCuentaContable.nombre + " (Venta) " + FullDescripcionDocOriginal;
+                        DetalleVoucher.Add(detalleCtaVenta);
+                    }
+                    //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA... ...pero si es una nota de credito los del debe van al haber y viceversa
+                    else if (entradaLibro.TipoLibro == TipoCentralizacion.Compra)
+                    {
+                        decimal CostoNeto = entradaLibro.MontoNeto;//entradaLibro.MontoTotal - entradaLibro.MontoIva;
+                        decimal CostoIvaNoRecuperable = entradaLibro.MontoIvaNoRecuperable;
+                        decimal CostoIvaActivoFijo = entradaLibro.MontoIvaActivoFijo;
+                        decimal CostoIvaUsoComun = entradaLibro.MontoIvaUsocomun;
+                        decimal MontoTotal = entradaLibro.MontoTotal;
+                        decimal MontoIva = entradaLibro.MontoIva;
+                        decimal montoExento = entradaLibro.MontoExento;
+                        String tipocompra = "";
+                        //Iva No Recuperable
+                        if (CostoIvaNoRecuperable > 0 && CostoIvaUsoComun == 0 && MontoIva == 0)
+                        {
+                            tipocompra = "IvaNoRecuperable";
+                        }
+                        if (CostoIvaUsoComun == 0 && MontoIva > 0 && CostoIvaNoRecuperable == 0)
+                        {
+                            tipocompra = "IvaRecuperable";
+                        }
+                        if (CostoIvaNoRecuperable > 0 || CostoIvaNoRecuperable == 0 && MontoIva == 0 && CostoIvaUsoComun > 0)
+                        {
+                            tipocompra = "IvaUsoComun";
+                        }
+
+                        DetalleVoucherModel detalleGastoNeto = new DetalleVoucherModel();
+                        detalleGastoNeto.FechaDoc = entradaLibro.FechaContabilizacion;
+
+                        //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA...
+                        //pero si es una nota de credito los del debe van al haber y viceversa
+                        if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                        {
+                            detalleGastoNeto.MontoHaber = 0;
+                            detalleGastoNeto.MontoDebe = CostoNeto + montoExento;
+                        }
+                        else
+                        {
+                            detalleGastoNeto.MontoHaber = CostoNeto + montoExento;
+                            detalleGastoNeto.MontoDebe = 0;
+                        }
+
+                        detalleGastoNeto.GlosaDetalle = "Costo Neto " + FullDescripcionDocOriginal;
+
+                        detalleGastoNeto.ObjCuentaContable = lstCuentaContable[contadorAnexo];
+
+                        DetalleVoucher.Add(detalleGastoNeto);
 
 
+                        //DetalleVoucherModel detalleGastoNetoCopiaIva = new DetalleVoucherModel();
+                        //if (tipocompra == "IvaNoRecuperable" || tipocompra == "IvaUsoComun")
+                        //{
+                        //    detalleGastoNetoCopiaIva.FechaDoc = entradaLibro.FechaContabilizacion;
+                        //    if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                        //    {
+                        //        detalleGastoNetoCopiaIva.MontoHaber = 0;
+                        //        detalleGastoNetoCopiaIva.MontoDebe = CostoIvaNoRecuperable;
+                        //    }
+                        //    else
+                        //    {
+                        //        detalleGastoNetoCopiaIva.MontoHaber = CostoIvaNoRecuperable;
+                        //        detalleGastoNetoCopiaIva.MontoDebe = 0;
+                        //    }
 
+                        //    detalleGastoNetoCopiaIva.GlosaDetalle = "Costo Iva No Recuperable " + FullDescripcionDocOriginal;
+
+                        //    detalleGastoNetoCopiaIva.ObjCuentaContable = lstCuentaContable[contadorAnexo];
+
+                        //    DetalleVoucher.Add(detalleGastoNetoCopiaIva);
+
+
+                        //}
+                        DetalleVoucherModel detalleGastoIVA = new DetalleVoucherModel();
+                        // if (entradaLibro.MontoIva > 0)
+                        //Genero lineas según tipoCompra
+                        if (tipocompra == "IvaRecuperable" || tipocompra == "IvaUsoComun")
+                        {
+                            detalleGastoIVA.FechaDoc = entradaLibro.FechaContabilizacion;
+
+                            decimal montoIvaTotal = MontoIva;
+
+                            if (tipocompra == "IvaUsoComun")
+                            {
+                                montoIvaTotal = CostoIvaUsoComun; //CostoIvaNoRecuperable + CostoIvaUsoComun;
+                            }
+
+                            //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA...
+                            //pero si es una nota de credito los del debe van al haber y viceversa
+                            if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                            {
+                                detalleGastoIVA.MontoHaber = 0;
+                                detalleGastoIVA.MontoDebe = montoIvaTotal;//MontoIva;
+                            }
+                            else
+                            {
+                                detalleGastoIVA.MontoHaber = montoIvaTotal;// MontoIva;
+                                detalleGastoIVA.MontoDebe = 0;
+                            }
+
+                            detalleGastoIVA.GlosaDetalle = "IVA Compras " + FullDescripcionDocOriginal;
+                            detalleGastoIVA.ObjCuentaContable = CuentaIVAAUsar;//objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaVentas.CuentaContableModelID);
+                            DetalleVoucher.Add(detalleGastoIVA);
+                        }
+
+                        DetalleVoucherModel detalleCtaCompra = new DetalleVoucherModel();
+                        detalleCtaCompra.FechaDoc = entradaLibro.FechaContabilizacion;
+
+                        //EN COMPRA EL TOTAL VA AL HABER, EN EL DEBE VA EL GASTO NETO Y EL IVA...
+                        //pero si es una nota de credito los del debe van al haber y viceversa
+                        if (tipocompra == "IvaUsoComun")
+                        {
+                            if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                            {
+                                detalleCtaCompra.MontoHaber = montoExento + CostoNeto + CostoIvaUsoComun;
+                                detalleCtaCompra.MontoDebe = 0;
+                            }
+                            else
+                            {
+                                detalleCtaCompra.MontoHaber = 0;
+                                detalleCtaCompra.MontoDebe = montoExento + CostoNeto + CostoIvaUsoComun;
+                            }
+                        }
+                        else
+                        {
+                            if (entradaLibro.TipoDocumento.EsUnaNotaCredito() == false)
+                            {
+                                detalleCtaCompra.MontoHaber = montoExento + CostoNeto + MontoIva;
+                                detalleCtaCompra.MontoDebe = 0;
+                            }
+                            else
+                            {
+                                detalleCtaCompra.MontoHaber = 0;
+                                detalleCtaCompra.MontoDebe = montoExento + CostoNeto + MontoIva;
+                            }
+                        }
+
+                        detalleCtaCompra.ObjCuentaContable = objCliente.CtaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaCompras.CuentaContableModelID);
+                        cuentaPrincipal = detalleCtaCompra.ObjCuentaContable;
+                        detalleCtaCompra.GlosaDetalle = detalleCtaCompra.ObjCuentaContable.nombre + " (Compra) " + FullDescripcionDocOriginal;
+                        DetalleVoucher.Add(detalleCtaCompra);
                     }
 
+                    if (DetalleVoucher.Sum(r => r.MontoDebe) == DetalleVoucher.Sum(r => r.MontoHaber))
+                    {
+                        nuevoVoucher.ListaDetalleVoucher = DetalleVoucher;
+                        entradaLibro.HaSidoConvertidoAVoucher = true;
 
+                        //Convertimosa voucher solo si el libro ya es convertido a voucher.
+                        List<ImpuestosAdRelacionModel> AConvertir = db.DBImpuestosAdRelacionSII.Where(x => x.CodigoUnionImpuesto == entradaLibro.CodigoUnionImpuesto).ToList();
+                        if (AConvertir.Count != 0)
+                        {
+                            foreach (ImpuestosAdRelacionModel Convertidor in AConvertir)
+                            {
+                                Convertidor.HaSidoConvertidoAVoucher = true;
+                                db.DBImpuestosAdRelacionSII.AddOrUpdate(Convertidor);
+                                db.SaveChanges();
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        contadorAnexo++;
+                        continue; //Pensar en como reportar que hubo problemas importando la linea X del libro
+                    }
+
+                    lstNuevosVouchers.Add(nuevoVoucher);
+
+                    foreach (DetalleVoucherModel NuevoDetalleVoucher in nuevoVoucher.ListaDetalleVoucher)
+                    {
+                        if (NuevoDetalleVoucher.ObjCuentaContable == cuentaPrincipal)
+                        {
+                            AuxiliaresModel Auxiliar = new AuxiliaresModel();
+
+                            Auxiliar.DetalleVoucherModelID = NuevoDetalleVoucher.DetalleVoucherModelID;
+                            Auxiliar.LineaNumeroDetalle = nuevoVoucher.ListaDetalleVoucher.Count;
+                            Auxiliar.MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber;
+                            Auxiliar.objCtaContable = NuevoDetalleVoucher.ObjCuentaContable;
+                            //Auxiliar.DetalleVoucherModelID = NuevoDetalleVoucher.DetalleVoucherModelID;
+                            db.DBAuxiliares.Add(Auxiliar);
+
+                            AuxiliaresDetalleModel nuevoAuxDetalle = new AuxiliaresDetalleModel();
+                            nuevoAuxDetalle.TipoDocumento = entradaLibro.TipoDocumento;
+                            nuevoAuxDetalle.Fecha = entradaLibro.FechaDoc;
+                            nuevoAuxDetalle.FechaContabilizacion = entradaLibro.FechaContabilizacion;
+
+                            //revisar
+                            // nuevoAuxDetalle.FechaVencimiento =   entradaLibro.fe
+                            nuevoAuxDetalle.Folio = entradaLibro.Folio;
+                            nuevoAuxDetalle.Individuo2 = entradaLibro.individuo;
+                            nuevoAuxDetalle.MontoNetoLinea = entradaLibro.MontoNeto;
+                            nuevoAuxDetalle.MontoExentoLinea = entradaLibro.MontoExento;
+                            nuevoAuxDetalle.MontoIVALinea = entradaLibro.MontoIva;
+
+                            nuevoAuxDetalle.MontoTotalLinea = entradaLibro.MontoTotal;
+                            nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
+
+                            if (entradaLibro.TipoLibro == TipoCentralizacion.Compra)
+                            {
+                                nuevoAuxDetalle.MontoIVANoRecuperable = entradaLibro.MontoIvaNoRecuperable;
+                                nuevoAuxDetalle.MontoIVAUsoComun = entradaLibro.MontoIvaUsocomun;
+                                nuevoAuxDetalle.MontoIVAActivoFijo = entradaLibro.MontoIvaActivoFijo;
+                            }
+                            db.DBAuxiliaresDetalle.Add(nuevoAuxDetalle);
+                            db.SaveChanges();
+                        }
+                    }
+                    contadorAnexo++;
+                    baseNumberFolio++;
                 }
 
-                posicion++;
+                if (lstNuevosVouchers != null && lstNuevosVouchers.Count > 0)
+                {
+                    foreach (VoucherModel NuevoVoucher in lstNuevosVouchers)
+                    {
+                        //objCliente.ListVoucher.Add(NuevoVoucher);
+                        db.DBVoucher.Add(NuevoVoucher);
+                    }
+                    db.SaveChanges();
+                    int posicion = 0;
+                    foreach (VoucherModel NuevoVoucher in lstNuevosVouchers)
+                    {
+                        int posicion2 = 0;
+                        foreach (LibrosContablesModel entradaLibro in lstEntradasLibro)
+                        {
+                            if (posicion == posicion2)
+                            {
+                                entradaLibro.VoucherModelID = NuevoVoucher.VoucherModelID;
+                                entradaLibro.estado = true;
+                                db.DBLibrosContables.AddOrUpdate(entradaLibro);
+                                db.SaveChanges();
+                            }
+                            posicion2++;
+                        }
 
+                        int total = NuevoVoucher.ListaDetalleVoucher.Count;
+                        foreach (DetalleVoucherModel NuevoDetalleVoucher in NuevoVoucher.ListaDetalleVoucher)
+                        {
+                            if (NuevoDetalleVoucher.ObjCuentaContable == cuentaPrincipal)
+                            {
+                                AuxiliaresModel auxiliar = (from c in db.DBAuxiliares
+                                                            where c.LineaNumeroDetalle == total && c.objCtaContable.ClientesContablesModelID == cuentaPrincipal.ClientesContablesModelID && c.DetalleVoucherModelID == 0
+                                                            select c).FirstOrDefault();
+                                if (auxiliar != null)
+                                {
+                                    auxiliar.DetalleVoucherModelID = NuevoDetalleVoucher.DetalleVoucherModelID;
+                                    db.DBAuxiliares.AddOrUpdate(auxiliar);
+
+                                    NuevoDetalleVoucher.Auxiliar = auxiliar;
+                                    db.DBDetalleVoucher.AddOrUpdate(NuevoDetalleVoucher);
+
+                                    db.SaveChanges();
+                                }
+                            }
+                        }
+                        posicion++;
+                    }
+                }
+                dbContextTransaction.Commit();
+                FeedBack = "Exito";
+                return FeedBack;
             }
-            // con el vaucher generado, puedo guardar el documento como  auxiliar del detalle
-            /*
-            db.DBUsuarioCompaniasHabilitidas.AddOrUpdate(p => new { p.UsuarioModelID, p.CompaniaModelID }, objCompaniaHabilitada);
-            db.SaveChanges();
-            */
-
+            catch (Exception ex)
+            {
+                dbContextTransaction.Rollback();
+                FeedBack = "Error inesperado " + ex.Message;
+                return FeedBack;
+            }
         }
-        //Ingresamos Impuestos
-
-        //Ingresamos Impuestos
-
-
-
-
     }
 
     public static void ProcesarLibroHonorarioAVoucher(List<LibroDeHonorariosModel> lstLibroHonorImport, ClientesContablesModel objCliente, FacturaPoliContext db, List<CuentaContableModel> lstCuentaContable)
