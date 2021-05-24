@@ -4,13 +4,25 @@
 <form>
     <!-- Page-Title -->
     <div class="row">
+
         <div class="col-sm-12">
+
             <div class="btn-group pull-right m-t-30">
                 <div class="button-list">
                     <a onclick="javascript:NuevaCtaContable();" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a" id="AddEgreso">
                         <span class="btn-label"><i class="ion-android-add"></i></span>Agregar
                     </a>
                 </div>
+        
+                    <div class="button-list">
+                        <br />
+                        <button class="btn btn-default" onclick="ExportarPDF()">
+                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                        </button>
+                        <br />
+                        <br />
+                    </div>
+   
             </div>
             <div class="page-header-2">
                 <h2 class="page-header">Plan de Cuentas</h2>
@@ -28,34 +40,34 @@
             </div>
         </div>
     </div>
- 
+
     @using (Html.BeginForm("ListaCuentasContables", "Contabilidad", FormMethod.Post))
     {
-    <div class="row">
-        <div class="col-lg-2 form-group">
-            <label class="control-label">Código:</label>
-            <input type="number" class="form-control" name="codigo" id="codigo" value="@ViewBag.codigo" />
-</div>
+        <div class="row">
+            <div class="col-lg-2 form-group">
+                <label class="control-label">Código:</label>
+                <input type="number" class="form-control" name="codigo" id="codigo" value="@ViewBag.codigo" />
+            </div>
 
 
 
-<div class="col-lg-2 form-group">
-            <label class="control-label">Nombre:</label>
-            <input type="text" class="form-control" name="nombre" id="nombre" value="@ViewBag.nombre" />
-        </div>
+            <div class="col-lg-2 form-group">
+                <label class="control-label">Nombre:</label>
+                <input type="text" class="form-control" name="nombre" id="nombre" value="@ViewBag.nombre" />
+            </div>
 
 
-        <div class="col-md-2" form-group>
-            <div style="text-align: center;">
-                <label class="control-label" style="color:transparent;"> _</label>
-                <button class="btn btn-1 btnPress form-control" type="submit"><i class="fa fa-search"></i> &nbsp; Buscar</button>
+            <div class="col-md-2" form-group>
+                <div style="text-align: center;">
+                    <label class="control-label" style="color:transparent;"> _</label>
+                    <button class="btn btn-1 btnPress form-control" type="submit"><i class="fa fa-search"></i> &nbsp; Buscar</button>
+                </div>
             </div>
         </div>
-    </div>
     }
-   
 
-   
+
+
     <!-- Filtros -->
 
     <div class="row m-t-15">
@@ -88,6 +100,14 @@
         <div class="card-box">
             <div class="table-rep-plugin">
                 <div class="table-responsive" data-pattern="priority-columns">
+                    @Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
+                    <table id="PlanDeCuentasTitle" class="table esconder">
+                        <thead>
+                            <tr>
+                                <th colspan="13">Plan de cuentas</th>
+                            </tr>
+                        </thead>
+                    </table>
                     <table id="CtaContableTable" class="table  table-striped">
                         <thead>
                             <tr>
@@ -98,7 +118,7 @@
                         </thead>
                         <tbody>
                             @foreach (CuentaContableModel Cuenta in Model)
-                            {                                
+                            {
                                 <tr>
                                     <td>@Cuenta.CodInterno</td>
                                     <td>@Cuenta.nombre</td>
@@ -137,12 +157,12 @@
                             <label class="control-label">Nombre </label>
                             <input type="text" class="form-control" name="nombrecta" id="nombrecta" required />
                         </div>
-                        
+
                         <div class="col-lg-4 form-group">
                             <label class="control-label">Código Sugerido</label>
                             <input type="text" class="required form-control" name="codcta" id="codcta" readonly />
                         </div>
-                    
+
                         <div class="col-lg-4 form-group">
                             <label class="control-label">Centro Costo:</label>
                             <select id="centroCosto" name="centroCosto" class="required form-control">
@@ -153,7 +173,7 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        
+
                         <div class="col-lg-4 form-group">
                             <label class="control-label">Item:</label>
                             <select id="item" name="item" class="required form-control">
@@ -214,8 +234,8 @@
                             </select>
                         </div>
                     </div>
-                   
-                    </div>
+
+                </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
                 </div>
@@ -248,10 +268,10 @@
                             <input type="text" class="required form-control" name="codctaedit" id="codctaedit" readonly />
                         </div>
                         @*<div class="col-lg-4 form-group">
-                            <div class="checkbox">
-                                <label><input type="checkbox" id="analisisedit" name="analisisedit"> Analisis </label>
-                            </div>
-                        </div>*@
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="analisisedit" name="analisisedit"> Analisis </label>
+                                </div>
+                            </div>*@
 
                     </div>
                     <div class="row form-group">
@@ -293,7 +313,7 @@
                     </div>
 
                     <div class="row form-group">
-                       
+
                         <div class="col-lg-4 form-group">
                             <label class="control-label">Centro Costo:</label>
                             <select id="centroCostoE" name="centroCostoE" onchange="getCentroDeCostos();" class="form-control">
@@ -302,7 +322,7 @@
                                 <option value="2">NO</option>
                             </select>
                         </div>
-            
+
                     </div>
 
                     <div class="row form-group">
@@ -319,7 +339,7 @@
                             <input type="text" class="required form-control" name="subsubclasificacionedit" id="subsubclasificacionedit" readonly />
                         </div>
                     </div>
-                    </div>
+                </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
                 </div>
@@ -329,10 +349,15 @@
 }
 
 <style>
-    .Esconder{
-        display:none;
+    .Esconder {
+        display: none;
     }
 </style>
+
+<script src="~/Content/js/jspdf.debug.js"></script>
+<script src="~/Content/js/html2pdf.js"></script>
+<script src="~/Content/js/html2canvas.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
 
 <script>
     function NuevaCtaContable()
@@ -344,7 +369,7 @@
     {
         debugger;
         getCtaContableEdit(valueID);
-        
+
     }
 
 
@@ -353,7 +378,7 @@
         debugger;
         var url = '@Url.Action("ObtenerCCEdit")';
         var cID = value;
-        
+
         if (cID != 0)
         {
             $.getJSON(url, { IDCtaContable: cID },
@@ -370,7 +395,7 @@
                     $('#analisisE').val(data.jAnalisis);
                     $('#auxiliarE').val(data.JAuxiliar);
                     $('#concilacionE').val(data.jConsiliacion);
-                 
+
                     $('#editModal').modal('show');
                 }
                 else {
@@ -388,11 +413,13 @@
                     $('#auxiliarE').val('');
                 }
             });
-        }        
+        }
     }
 
-  
+
 </script>
+
+
 
 
 <script>
@@ -448,7 +475,7 @@
     function GetSubClasfificacion(value) {
         var url = '@Url.Action("ObtenerSubclasificacion")';
         var cID = $("#clasificacion").val();
-        
+
         if (cID == 0)
         {
             var optionSelect = $('#subclasificacion');
@@ -519,5 +546,19 @@
                 $("#codcta").val(data.a_stringSugerido);
             }
             )
+    }
+
+    const ExportarPDF = () => {
+        var doc = new jsPDF();
+        let tbCuentasContables = document.getElementById("CtaContableTable");
+        let tbDatosClientes = document.getElementById("datosCliente");
+        let tbFirma = document.getElementById("tbFirma");
+        let tbTitle = document.getElementById("PlanDeCuentasTitle");
+
+        doc.autoTable({ html: tbTitle, theme: 'plain', styles: { fontSize: 20 } });
+        doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
+        doc.autoTable({ html: tbCuentasContables, theme: 'grid', styles: { fontSize: 7 } });
+        doc.autoTable({ html: tbFirma, theme: 'plain', styles: { fontSize: 7 } });
+        doc.save('Plan de cuentas.pdf');
     }
 </script>

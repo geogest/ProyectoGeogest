@@ -902,6 +902,7 @@ namespace TryTestWeb.Controllers
             string osCuentasContables = ParseExtensions.EnumAsHTML_Input_Select<ClasificacionCtaContable>(null, true);
             ViewBag.osCuentasContables = osCuentasContables;
             List<CuentaContableModel> lstCuentasContables = objCliente.CtaContable.OrderBy(r => r.CodInterno).ToList();
+            ViewBag.ObjClienteContable = objCliente;
 
             if (codigo != "" && codigo != "")
             {
