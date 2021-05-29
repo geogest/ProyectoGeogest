@@ -46,11 +46,11 @@
     <Reference Include="AE.Net.Mail">
       <HintPath>..\packages\AE.Net.Mail.1.7.10.0\lib\net45\AE.Net.Mail.dll</HintPath>
     </Reference>
-    <Reference Include="ClosedXML">
-      <HintPath>..\packages\ClosedXML.0.86.0\lib\net46\ClosedXML.dll</HintPath>
+    <Reference Include="ClosedXML, Version=0.87.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>packages\ClosedXML.0.87.1\lib\net40\ClosedXML.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
@@ -99,6 +99,9 @@
     </Reference>
     <Reference Include="Recaptcha">
       <HintPath>packages\Recaptcha.dll</HintPath>
+    </Reference>
+    <Reference Include="SpreadsheetLight, Version=3.4.9.0, Culture=neutral, PublicKeyToken=32fbb46dc1730c57, processorArchitecture=MSIL">
+      <HintPath>packages\SpreadsheetLight.3.4.9\lib\SpreadsheetLight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -348,7 +351,12 @@
     <Compile Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.Designer.cs">
       <DependentUpon>202101071752500_SeAgregaTotalCartolaACartolaMacro.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.cs" />
+    <Compile Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.Designer.cs">
+      <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AdminMonitoreo\ErrorMensajeMonitoreo.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
     <Compile Include="Models\CentroCostoPresupuestoModels.cs" />
     <Compile Include="Models\CertificadosModels.cs" />
@@ -364,7 +372,8 @@
     <Compile Include="Models\ModelosSistemaContable\CentroCostoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesContablesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesProveedoresModel.cs" />
-    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\AuxPendientes.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\AuxPendientesViewModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\DataCuentaContableViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstadoCuentasCorrientesViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\FiltrosEstadoCtasCorrientes.cs" />
@@ -1059,6 +1068,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.resx">
       <DependentUpon>202101071752500_SeAgregaTotalCartolaACartolaMacro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.resx">
+      <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

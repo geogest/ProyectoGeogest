@@ -8,6 +8,7 @@ using System.Web;
 using Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Data.Entity.Migrations;
+using SpreadsheetLight;
 
 public class CartolaBancariaMacroModel
 {
@@ -178,6 +179,40 @@ public class CartolaBancariaMacroModel
         LstCartola = db.DBCartolaBMacro.Where(x => x.ClientesContablesModelID.ClientesContablesModelID == ObjCliente.ClientesContablesModelID).ToList();
 
         return LstCartola;
+    }
+
+    public static List<CartolaBancariaPuraModel> DeExcelAObjetoCartolaYVoucher(HttpPostedFileBase file)
+    {
+        List<CartolaBancariaPuraModel> ReturnValues = new List<CartolaBancariaPuraModel>();
+        SLDocument Excel = new SLDocument(file.InputStream);
+
+        int row = 2;
+        while (!string.IsNullOrEmpty(Excel.GetCellValueAsString(row, 1)))
+        {
+            DateTime Fecha = Excel.GetCellValueAsDateTime(row, 1);
+            int Docum = Excel.GetCellValueAsInt32(row,2);
+            string Detalle = Excel.GetCellValueAsString(row, 3);
+            decimal Debe = Excel.GetCellValueAsDecimal(row, 4);
+            decimal Haber = Excel.GetCellValueAsDecimal(row,5);
+            decimal Saldo = Excel.GetCellValueAsDecimal(row, 6);
+
+            CartolaBancariaPuraModel FilaAGuardar = new CartolaBancariaPuraModel() 
+            { 
+                Fecha = Fecha,
+                Docum = Docum,
+                Detalle = Detalle,
+                Debe = Debe,
+                Haber = Haber,
+                Saldo = Saldo,
+            };
+
+            ReturnValues.Add(FilaAGuardar);
+
+            row++;
+        }
+
+
+        return ReturnValues;
     }
 
     //Queda pendiente crear este mismo metodo pero generico para reutilizar.
