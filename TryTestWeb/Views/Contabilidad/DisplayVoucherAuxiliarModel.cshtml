@@ -189,13 +189,13 @@
                                     @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
                                     {
                                         <td class="form-group">
-                                             @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.ValorLiquido)
+                                             @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoTotalLinea)
                                         </td>
                                         <td class="form-group">
                                             @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.ValorRetencion)
                                         </td>
                                         <td class="form-group">
-                                           @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoTotalLinea)
+                                           @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.ValorLiquido)
                                         </td>
                                     }
                                     else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)

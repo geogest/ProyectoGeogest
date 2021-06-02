@@ -17,6 +17,7 @@ using Elmah;
 using PagedList;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Data.Entity.Validation;
 
 namespace TryTestWeb.Controllers
 {
@@ -1869,38 +1870,60 @@ namespace TryTestWeb.Controllers
 
             QuickReceptorModel PHonorAInsertar = new QuickReceptorModel();
 
-            int ValidarRedundancia = db.Receptores.Where(x => x.QuickEmisorModelID == objEmisor.QuickEmisorModelID &&
-                                                              x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                              x.RUT == RutPHonor &&
-                                                              x.tipoReceptor == "H" &&
-                                                              x.DadoDeBaja == false).Count();
+            try
+            {
+                int ValidarRedundancia = db.Receptores.Where(x => x.QuickEmisorModelID == objEmisor.QuickEmisorModelID &&
+                                                  x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                  x.RUT == RutPHonor &&
+                                                  x.tipoReceptor == "H" &&
+                                                  x.DadoDeBaja == false).Count();
 
-            if(ValidarRedundancia == 0) { 
+                if (ValidarRedundancia == 0)
+                {
 
-                if(!string.IsNullOrWhiteSpace(NombrePHonor) && !string.IsNullOrWhiteSpace(RutPHonor) &&  objCliente != null) { 
+                    if (!string.IsNullOrWhiteSpace(NombrePHonor) && !string.IsNullOrWhiteSpace(RutPHonor) && objCliente != null)
+                    {
 
-                    PHonorAInsertar.NombreFantasia = NombrePHonor;
-                    PHonorAInsertar.RazonSocial = NombrePHonor;
-                    PHonorAInsertar.RUT = RutPHonor;
-                    PHonorAInsertar.ClientesContablesModelID = objCliente.ClientesContablesModelID;
-                    PHonorAInsertar.QuickEmisorModelID = objEmisor.QuickEmisorModelID;
-                    PHonorAInsertar.tipoReceptor = "H";
+                        PHonorAInsertar.NombreFantasia = NombrePHonor;
+                        PHonorAInsertar.RazonSocial = NombrePHonor;
+                        PHonorAInsertar.RUT = RutPHonor;
+                        PHonorAInsertar.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                        PHonorAInsertar.QuickEmisorModelID = objEmisor.QuickEmisorModelID;
+                        PHonorAInsertar.tipoReceptor = "H";
 
-                    db.Receptores.Add(PHonorAInsertar);
-                    db.SaveChanges();
+                        db.Receptores.Add(PHonorAInsertar);
+                        db.SaveChanges();
 
-                    TempData["Correcto"] = "Prestador ingresado con éxito.";
+                        TempData["Correcto"] = "Prestador ingresado con éxito.";
 
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Error inesperado.";
+                    }
                 }
                 else
                 {
-                    TempData["Error"] = "Error inesperado.";
+                    TempData["Error"] = "Ya existe el prestador.";
                 }
             }
-            else
+            catch (DbEntityValidationException e)
             {
-                TempData["Error"] = "Ya existe el prestador.";
+
+                TempData["Error"] = "Error: " + e.EntityValidationErrors.FirstOrDefault().ValidationErrors.FirstOrDefault().ErrorMessage;
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
             }
+
 
             return RedirectToAction("ListarHonorarios", "Home");
         }
