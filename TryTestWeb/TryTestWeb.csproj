@@ -425,6 +425,8 @@
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\owl.carousel.css" />
     <Content Include="Content\css\owl.theme.default.min.css" />
+    <Content Include="Content\css\SeleccionarClienteContable.css" />
+    <Content Include="Content\css\SeleccionarEmisorDesdeModulos.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\dataTables.bootstrap.css" />
     <Content Include="Content\dataTables.responsive.css" />
@@ -496,6 +498,7 @@
     <Content Include="Content\images\home_seo2_icon3.png" />
     <Content Include="Content\images\home_seo2_icon4.png" />
     <Content Include="Content\images\home_seo2_offer1.png" />
+    <Content Include="Content\images\icono empresa.png" />
     <Content Include="Content\images\img_10.jpg" />
     <Content Include="Content\images\img_7.jpg" />
     <Content Include="Content\images\img_8.jpg" />
@@ -549,6 +552,7 @@
     <Content Include="Content\images\user.jpg" />
     <Content Include="Content\images\user2.jpg" />
     <Content Include="Content\images\user3.jpg" />
+    <Content Include="Content\images\usuario.png" />
     <Content Include="Content\images\woman.png" />
     <Content Include="Content\images\work_1.jpg" />
     <Content Include="Content\images\work_2.jpg" />
@@ -575,6 +579,8 @@
     <Content Include="Content\js\jspdf.js" />
     <Content Include="Content\js\owl.carousel.min.js" />
     <Content Include="Content\js\require.js" />
+    <Content Include="Content\js\SeleccionarClienteContable.js" />
+    <Content Include="Content\js\SeleccionarEmisorDesdeModulos.js" />
     <Content Include="Content\js\SmoothScroll.js" />
     <Content Include="Content\images\logo_facturalabs%402x.png" />
     <Content Include="Content\js\test_harness.js" />
@@ -983,6 +989,7 @@
     <Content Include="Views\ContabilidadConciliacionBancaria\DetalleCartola.cshtml" />
     <Content Include="Views\Contabilidad\EstadoResultado.cshtml" />
     <Content Include="Views\PartialHelpers\DatosClienteParaPDFPArtial.cshtml" />
+    <Content Include="Views\Contabilidad\testkim.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />

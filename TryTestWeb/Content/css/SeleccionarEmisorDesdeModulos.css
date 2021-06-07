@@ -1,0 +1,70 @@
+﻿.label-primary:hover {
+    background-color: #00ffff;
+}
+
+#barralateral {
+    display: none;
+}
+
+.efectos {
+    border: 1px solid #ccc;
+    box-shadow: 7px 7px 7px #737373;
+    width: 50%;
+    margin: auto;
+}
+
+.card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    background: #36404a;
+    padding-top: 3%;
+    padding-bottom: 2%;
+    margin: 5px;
+}
+
+    /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,5);
+        background: #495562;
+    }
+
+/* Add some padding inside the card container */
+.container {
+    padding: 2px 16px;
+}
+
+.colorletra {
+    color: #ffffff;
+    font-size: 12px;
+    height: 40px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.boton {
+    margin-top: 25%;
+    background-color: #5d9cec;
+}
+
+.tamañoImagen {
+    width:50px; 
+    height:50px;
+
+}
+
+@media only screen and (max-width: 768px) {
+    .colorletra {
+        font-size: 20px;
+    }
+    .card:hover {
+        box-shadow: none;
+        background: #36404a;
+    }
+    .card {
+    padding-top:20px;
+    }
+    .boton {
+    margin-top:15px;
+    }
+}
