@@ -20,6 +20,10 @@
                         <th>debe</th>
                         <th>Haber</th>
                         <th>Saldo</th>
+                        <th>Cuenta Contable</th>
+                        <th>Rut</th>
+                        <th>Glosa</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                <tbody>
@@ -27,19 +31,23 @@
                    @foreach (var itemCartola in Model)
                    {
                        Corr++;
-                       <tr>
-                           <td>@Corr</td>
-                           <td>@itemCartola.Folio</td>
-                           <td>@itemCartola.Detalle</td>
-                           <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Debe)</td>
-                           <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Haber)</td>
-                           <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Saldo)</td>
-                       </tr>
+                   <tr>
+                       <td>@Corr</td>
+                       <td>@itemCartola.Folio</td>
+                       <td>@itemCartola.Detalle</td>
+                       <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Debe)</td>
+                       <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Haber)</td>
+                       <td>@ParseExtensions.NumeroConPuntosDeMiles(itemCartola.Saldo)</td>
+                       <td><input type="text" name="name" value="" /></td>
+                       <td><input type="text" name="name" value="" /></td>
+                       <td><input type="text" name="name" value="" /></td>
+                       <td><button class="btn-sm btn-success">Enviar</button></td>
+                   </tr>
                    }
                </tbody>
             </table>
         </div>
     </div>
-    <div class="panel-footer">Panel Footer</div>
+    <div class="panel-footer"></div>
 </div>
 

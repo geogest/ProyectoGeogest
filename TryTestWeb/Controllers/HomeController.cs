@@ -17,6 +17,7 @@ using Elmah;
 using PagedList;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Data.Entity.Validation;
 
 namespace TryTestWeb.Controllers
 {
@@ -33,107 +34,107 @@ namespace TryTestWeb.Controllers
             return View();
         }
 
-        [Authorize]
-        [ModuloHandler]
-        //[PrivilegiosHandler(PrivilegioMinimoRequerido = Privilegios.Informador)]
-        public ActionResult ListaHonorarios(string anno, string meses, int? page, string id_pagados, string Exportar = null, string ExportarLibro = null)
-        {
-            string UserID = User.Identity.GetUserId();
+        //[Authorize]
+        //[ModuloHandler]
+        ////[PrivilegiosHandler(PrivilegioMinimoRequerido = Privilegios.Informador)]
+        //public ActionResult ListaHonorarios(string anno, string meses, int? page, string id_pagados, string Exportar = null, string ExportarLibro = null)
+        //{
+        //    string UserID = User.Identity.GetUserId();
 
-            int numAnno = DateTime.Now.Year;
-            int numMeses = DateTime.Now.Month;
+        //    int numAnno = DateTime.Now.Year;
+        //    int numMeses = DateTime.Now.Month;
 
-            if (page == null)
-            {
-                page = 1;
-            }
-            if (meses == null)
-            {
+        //    if (page == null)
+        //    {
+        //        page = 1;
+        //    }
+        //    if (meses == null)
+        //    {
 
-                meses = DateTime.Now.Month + "";
+        //        meses = DateTime.Now.Month + "";
 
-            }
+        //    }
 
-            if (anno == null)
-            {
+        //    if (anno == null)
+        //    {
 
-                anno = DateTime.Now.Year + "";
+        //        anno = DateTime.Now.Year + "";
 
-            }
+        //    }
 
-            ViewBag.Meses = meses;
-            ViewBag.Anno = anno;
+        //    ViewBag.Meses = meses;
+        //    ViewBag.Anno = anno;
 
-            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
-            QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+        //    FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+        //    QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
 
-            ViewBag.FormaDePago = ParseExtensions.EnumAsHTML_Input_Select<FormaPago>();
-            ViewBag.TipoDePago = ParseExtensions.EnumAsHTML_Input_Select<TipoPago>();
+        //    ViewBag.FormaDePago = ParseExtensions.EnumAsHTML_Input_Select<FormaPago>();
+        //    ViewBag.TipoDePago = ParseExtensions.EnumAsHTML_Input_Select<TipoPago>();
 
-            ViewBag.ConSinRetenciones = ParseExtensions.EnumAsHTML_Input_Select<OpcionRetencion>();
+        //    ViewBag.ConSinRetenciones = ParseExtensions.EnumAsHTML_Input_Select<OpcionRetencion>();
 
-            List<BoletasHonorariosModel> lstHonorarios;
-            if (objEmisor.collectionBoletasHonorarios == null)
-            {
-                lstHonorarios = new List<BoletasHonorariosModel>();
-            }
-            else
-            {
-                lstHonorarios = objEmisor.collectionBoletasHonorarios.OrderByDescending(x => x.Fecha).ToList();
-            }
+        //    List<BoletasHonorariosModel> lstHonorarios;
+        //    if (objEmisor.collectionBoletasHonorarios == null)
+        //    {
+        //        lstHonorarios = new List<BoletasHonorariosModel>();
+        //    }
+        //    else
+        //    {
+        //        lstHonorarios = objEmisor.collectionBoletasHonorarios.OrderByDescending(x => x.Fecha).ToList();
+        //    }
 
-            int pageSize = 10;
-            int pageNumber = (page ?? 1);
-            /*
-            if (!String.IsNullOrEmpty(meses))
-            {
-                lstHonorarios = (List<BoletasHonorariosModel>)lstHonorarios.Where(s => s.Fecha.Month == int.Parse(meses) && s.Fecha.Year == int.Parse(anno)).ToList();
-            }*/
-            if (!String.IsNullOrEmpty(meses))
-            {
-                numAnno = ParseExtensions.ParseInt(anno);
-                numMeses = ParseExtensions.ParseInt(meses);
-                if (numAnno < DateTime.MinValue.Year || numAnno > DateTime.MaxValue.Year)
-                {
-                    numAnno = DateTime.Now.Year;
-                }
-                if (numMeses > 13 || numMeses < 0)
-                {
-                    numMeses = DateTime.Now.Month;
-                }
-                lstHonorarios = (List<BoletasHonorariosModel>)lstHonorarios.Where(s => s.Fecha.Year == numAnno).ToList();
-                if (numMeses != 13 && numMeses != 0)
-                {
-                    lstHonorarios = lstHonorarios.Where(s => s.Fecha.Month == numMeses).ToList();
-                }
-            }
+        //    int pageSize = 10;
+        //    int pageNumber = (page ?? 1);
+        //    /*
+        //    if (!String.IsNullOrEmpty(meses))
+        //    {
+        //        lstHonorarios = (List<BoletasHonorariosModel>)lstHonorarios.Where(s => s.Fecha.Month == int.Parse(meses) && s.Fecha.Year == int.Parse(anno)).ToList();
+        //    }*/
+        //    if (!String.IsNullOrEmpty(meses))
+        //    {
+        //        numAnno = ParseExtensions.ParseInt(anno);
+        //        numMeses = ParseExtensions.ParseInt(meses);
+        //        if (numAnno < DateTime.MinValue.Year || numAnno > DateTime.MaxValue.Year)
+        //        {
+        //            numAnno = DateTime.Now.Year;
+        //        }
+        //        if (numMeses > 13 || numMeses < 0)
+        //        {
+        //            numMeses = DateTime.Now.Month;
+        //        }
+        //        lstHonorarios = (List<BoletasHonorariosModel>)lstHonorarios.Where(s => s.Fecha.Year == numAnno).ToList();
+        //        if (numMeses != 13 && numMeses != 0)
+        //        {
+        //            lstHonorarios = lstHonorarios.Where(s => s.Fecha.Month == numMeses).ToList();
+        //        }
+        //    }
 
-            ViewBag.id_pagados = id_pagados;
-            if (string.IsNullOrWhiteSpace(id_pagados) == false)
-            {
-                int NumericPagosFlag = ParseExtensions.ParseInt(id_pagados);
-                if (NumericPagosFlag == 1)
-                {
-                    lstHonorarios = lstHonorarios.Where(r => r.EstaPagada() == true).ToList();
-                }
-                else if (NumericPagosFlag == 2)
-                {
-                    lstHonorarios = lstHonorarios.Where(r => r.EstaPagada() == false).ToList();
-                }
-            }
+        //    ViewBag.id_pagados = id_pagados;
+        //    if (string.IsNullOrWhiteSpace(id_pagados) == false)
+        //    {
+        //        int NumericPagosFlag = ParseExtensions.ParseInt(id_pagados);
+        //        if (NumericPagosFlag == 1)
+        //        {
+        //            lstHonorarios = lstHonorarios.Where(r => r.EstaPagada() == true).ToList();
+        //        }
+        //        else if (NumericPagosFlag == 2)
+        //        {
+        //            lstHonorarios = lstHonorarios.Where(r => r.EstaPagada() == false).ToList();
+        //        }
+        //    }
 
-            if (Exportar != null)
-            {
-                return ExportarHonorarios(lstHonorarios, objEmisor, numAnno, numMeses);
-            }
+        //    if (Exportar != null)
+        //    {
+        //        return ExportarHonorarios(lstHonorarios, objEmisor, numAnno, numMeses);
+        //    }
 
-            if (ExportarLibro != null)
-            {
-                return ExportarLibroHonorarios(lstHonorarios, objEmisor, numAnno, numMeses);
-            }
+        //    if (ExportarLibro != null)
+        //    {
+        //        return ExportarLibroHonorarios(lstHonorarios, objEmisor, numAnno, numMeses);
+        //    }
 
-            return View(lstHonorarios.ToPagedList(pageNumber, pageSize));
-        }
+        //    return View(lstHonorarios.ToPagedList(pageNumber, pageSize));
+        //}
 
         public FileContentResult ExportarClientes(List<QuickReceptorModel> lstClientes, QuickEmisorModel objEmisor)
         {
@@ -211,129 +212,129 @@ namespace TryTestWeb.Controllers
 
       
 
-        public FileContentResult ExportarLibroHonorarios(List<BoletasHonorariosModel> lstHonorarios, QuickEmisorModel objEmisor, int YearToLook, int MesToLook, bool BleachMembrette = false)
-        {
-            string RutaExport = ParseExtensions.Get_AppData_Path("LibroHonorariosTemplate.xlsx");
-            using (XLWorkbook excelFile = new XLWorkbook(RutaExport))
-            {
-                var workSheet = excelFile.Worksheet(1);
-                #region oldRegionMembrete
-                //SETUP MEMBRETTEEEEE
-                /*
-                if (BleachMembrette)
-                {
-                    workSheet.Cells("C1").Value = string.Empty;
-                    workSheet.Cells("C2").Value = string.Empty;
-                    workSheet.Cells("C3").Value = string.Empty;
-                    workSheet.Cells("C4").Value = string.Empty;
-                    workSheet.Cells("C5").Value = string.Empty;
-                    workSheet.Cells("C6").Value = string.Empty;
-                }
-                else
-                {
-                    workSheet.Cells("C1").Value = objEmisor.RazonSocial;
-                    workSheet.Cells("C2").Value = objEmisor.RUTEmpresa;
-                    workSheet.Cells("C3").Value = objEmisor.Giro;
-                    workSheet.Cells("C4").Value = objEmisor.Direccion;
-                    workSheet.Cells("C5").Value = ParseExtensions.FirstLetterToUpper(objEmisor.Ciudad) +" "+ ParseExtensions.FirstLetterToUpper(objEmisor.Comuna);
-                    workSheet.Cells("C6").Value = objEmisor.RUTRepresentante +" "+ objEmisor.Representante;
-                }*/
-                #endregion
+        //public FileContentResult ExportarLibroHonorarios(List<BoletasHonorariosModel> lstHonorarios, QuickEmisorModel objEmisor, int YearToLook, int MesToLook, bool BleachMembrette = false)
+        //{
+        //    string RutaExport = ParseExtensions.Get_AppData_Path("LibroHonorariosTemplate.xlsx");
+        //    using (XLWorkbook excelFile = new XLWorkbook(RutaExport))
+        //    {
+        //        var workSheet = excelFile.Worksheet(1);
+        //        #region oldRegionMembrete
+        //        //SETUP MEMBRETTEEEEE
+        //        /*
+        //        if (BleachMembrette)
+        //        {
+        //            workSheet.Cells("C1").Value = string.Empty;
+        //            workSheet.Cells("C2").Value = string.Empty;
+        //            workSheet.Cells("C3").Value = string.Empty;
+        //            workSheet.Cells("C4").Value = string.Empty;
+        //            workSheet.Cells("C5").Value = string.Empty;
+        //            workSheet.Cells("C6").Value = string.Empty;
+        //        }
+        //        else
+        //        {
+        //            workSheet.Cells("C1").Value = objEmisor.RazonSocial;
+        //            workSheet.Cells("C2").Value = objEmisor.RUTEmpresa;
+        //            workSheet.Cells("C3").Value = objEmisor.Giro;
+        //            workSheet.Cells("C4").Value = objEmisor.Direccion;
+        //            workSheet.Cells("C5").Value = ParseExtensions.FirstLetterToUpper(objEmisor.Ciudad) +" "+ ParseExtensions.FirstLetterToUpper(objEmisor.Comuna);
+        //            workSheet.Cells("C6").Value = objEmisor.RUTRepresentante +" "+ objEmisor.Representante;
+        //        }*/
+        //        #endregion
 
-                workSheet.Cells("C1").Value = objEmisor.RazonSocial;
-                workSheet.Cells("C2").Value = objEmisor.RUTEmpresa;
-                workSheet.Cells("C3").Value = objEmisor.Giro;
-                workSheet.Cells("C4").Value = objEmisor.Direccion;
-                workSheet.Cells("C5").Value = ParseExtensions.FirstLetterToUpper(objEmisor.Ciudad) + " " + ParseExtensions.FirstLetterToUpper(objEmisor.Comuna);
-                workSheet.Cells("C6").Value = objEmisor.RUTRepresentante + " " + objEmisor.Representante;
+        //        workSheet.Cells("C1").Value = objEmisor.RazonSocial;
+        //        workSheet.Cells("C2").Value = objEmisor.RUTEmpresa;
+        //        workSheet.Cells("C3").Value = objEmisor.Giro;
+        //        workSheet.Cells("C4").Value = objEmisor.Direccion;
+        //        workSheet.Cells("C5").Value = ParseExtensions.FirstLetterToUpper(objEmisor.Ciudad) + " " + ParseExtensions.FirstLetterToUpper(objEmisor.Comuna);
+        //        workSheet.Cells("C6").Value = objEmisor.RUTRepresentante + " " + objEmisor.Representante;
 
-                string NombreMonth = string.Empty;
-                if (MesToLook != 13)
-                    NombreMonth = ParseExtensions.FirstLetterToUpper(CultureInfo.CreateSpecificCulture("es").DateTimeFormat.GetMonthName(MesToLook)) + " de";
-                workSheet.Cells("A8").Value = "LIBRO DE RETENCIONES DE HONORARIOS  " + NombreMonth + " " + YearToLook;
+        //        string NombreMonth = string.Empty;
+        //        if (MesToLook != 13)
+        //            NombreMonth = ParseExtensions.FirstLetterToUpper(CultureInfo.CreateSpecificCulture("es").DateTimeFormat.GetMonthName(MesToLook)) + " de";
+        //        workSheet.Cells("A8").Value = "LIBRO DE RETENCIONES DE HONORARIOS  " + NombreMonth + " " + YearToLook;
 
-                int correlCounter = 1;
-                List<string[]> ListaOnDoc = new List<string[]>();
-                foreach (BoletasHonorariosModel Honorario in lstHonorarios)
-                {
-                    ListaOnDoc.Add(new string[] {
-                        correlCounter.ToString(),
-                        ParseExtensions.ToDD_MM_AAAA(Honorario.Fecha),
-                        "B/H-EL",
-                        Honorario.NumeroBoleta.ToString(),
-                        Honorario.RUT_txt,
-                        Honorario.RazonSocial,
-                        "NO",
-                        Honorario.GlosaDescripcion,//Honorario.Descripcion,
-                        ParseExtensions.NumeroConPuntosDeMiles(Honorario.Brutos),
-                        ParseExtensions.NumeroConPuntosDeMiles(Honorario.Retenido),
-                        ParseExtensions.NumeroConPuntosDeMiles(Honorario.Liquido)
-                    });
-                    correlCounter++;
-                }
+        //        int correlCounter = 1;
+        //        List<string[]> ListaOnDoc = new List<string[]>();
+        //        foreach (BoletasHonorariosModel Honorario in lstHonorarios)
+        //        {
+        //            ListaOnDoc.Add(new string[] {
+        //                correlCounter.ToString(),
+        //                ParseExtensions.ToDD_MM_AAAA(Honorario.Fecha),
+        //                "B/H-EL",
+        //                Honorario.NumeroBoleta.ToString(),
+        //                Honorario.RUT_txt,
+        //                Honorario.RazonSocial,
+        //                "NO",
+        //                Honorario.GlosaDescripcion,//Honorario.Descripcion,
+        //                ParseExtensions.NumeroConPuntosDeMiles(Honorario.Brutos),
+        //                ParseExtensions.NumeroConPuntosDeMiles(Honorario.Retenido),
+        //                ParseExtensions.NumeroConPuntosDeMiles(Honorario.Liquido)
+        //            });
+        //            correlCounter++;
+        //        }
 
-                int lastRowLocation = 0;
-                if (ListaOnDoc.Count > 0)
-                {
-                    var rangeWithArrays = workSheet.Cell(12, 1).InsertData(ListaOnDoc);
-                    rangeWithArrays.Cells().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                    rangeWithArrays.LastRow().Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                    lastRowLocation = rangeWithArrays.LastRowUsed().RowNumber() + 1;
-                }
-                else
-                {
-                    lastRowLocation = 12;
-                }
+        //        int lastRowLocation = 0;
+        //        if (ListaOnDoc.Count > 0)
+        //        {
+        //            var rangeWithArrays = workSheet.Cell(12, 1).InsertData(ListaOnDoc);
+        //            rangeWithArrays.Cells().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+        //            rangeWithArrays.LastRow().Style.Border.BottomBorder = XLBorderStyleValues.Thick;
+        //            lastRowLocation = rangeWithArrays.LastRowUsed().RowNumber() + 1;
+        //        }
+        //        else
+        //        {
+        //            lastRowLocation = 12;
+        //        }
 
-                //TOTALES
-                workSheet.Cell(lastRowLocation, 1).Value = "TOTALES";
-                var rangeTotals = workSheet.Range(lastRowLocation, 1, lastRowLocation, 8).Merge();
-                rangeTotals.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        //        //TOTALES
+        //        workSheet.Cell(lastRowLocation, 1).Value = "TOTALES";
+        //        var rangeTotals = workSheet.Range(lastRowLocation, 1, lastRowLocation, 8).Merge();
+        //        rangeTotals.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                decimal sumaBrutos = lstHonorarios.Sum(r => r.Brutos);
-                decimal sumaRetenido = lstHonorarios.Sum(r => r.Retenido);
-                decimal sumaLiquido = lstHonorarios.Sum(r => r.Liquido);
+        //        decimal sumaBrutos = lstHonorarios.Sum(r => r.Brutos);
+        //        decimal sumaRetenido = lstHonorarios.Sum(r => r.Retenido);
+        //        decimal sumaLiquido = lstHonorarios.Sum(r => r.Liquido);
 
-                workSheet.Cell(lastRowLocation, 9).SetValue(ParseExtensions.NumeroConPuntosDeMiles(sumaBrutos)).SetDataType(XLDataType.Text); 
-                workSheet.Cell(lastRowLocation, 10).SetValue(ParseExtensions.NumeroConPuntosDeMiles(sumaRetenido)).SetDataType(XLDataType.Text);
-                workSheet.Cell(lastRowLocation, 11).SetValue(ParseExtensions.NumeroConPuntosDeMiles(sumaLiquido)).SetDataType(XLDataType.Text);
+        //        workSheet.Cell(lastRowLocation, 9).SetValue(ParseExtensions.NumeroConPuntosDeMiles(sumaBrutos)).SetDataType(XLDataType.Text); 
+        //        workSheet.Cell(lastRowLocation, 10).SetValue(ParseExtensions.NumeroConPuntosDeMiles(sumaRetenido)).SetDataType(XLDataType.Text);
+        //        workSheet.Cell(lastRowLocation, 11).SetValue(ParseExtensions.NumeroConPuntosDeMiles(sumaLiquido)).SetDataType(XLDataType.Text);
 
-                var RangeTotalesFull = workSheet.Range(lastRowLocation, 1, lastRowLocation, 11);
-                RangeTotalesFull.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+        //        var RangeTotalesFull = workSheet.Range(lastRowLocation, 1, lastRowLocation, 11);
+        //        RangeTotalesFull.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
 
-                lastRowLocation = rangeTotals.LastRowUsed().RowNumber() + 3;
+        //        lastRowLocation = rangeTotals.LastRowUsed().RowNumber() + 3;
 
-                //AGREGAR RESUMEN AQUI
-                workSheet.Cell(lastRowLocation, 7).Value = "RESUMEN";
-                var rangeResumen = workSheet.Range(lastRowLocation, 7, lastRowLocation, 11).Merge();
-                rangeResumen.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                rangeResumen.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
-                lastRowLocation = lastRowLocation + 1;
+        //        //AGREGAR RESUMEN AQUI
+        //        workSheet.Cell(lastRowLocation, 7).Value = "RESUMEN";
+        //        var rangeResumen = workSheet.Range(lastRowLocation, 7, lastRowLocation, 11).Merge();
+        //        rangeResumen.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        //        rangeResumen.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+        //        lastRowLocation = lastRowLocation + 1;
 
-                List<string[]> ListaResumen = new List<string[]>();
-                ListaResumen.Add(new string[] {
-                            lstHonorarios.Count.ToString(),
-                            "BOLETAS DE HONORARIOS ELECT. (B/H-EL)",
-                            ParseExtensions.NumeroConPuntosDeMiles(sumaBrutos),
-                            ParseExtensions.NumeroConPuntosDeMiles(sumaRetenido),
-                            ParseExtensions.NumeroConPuntosDeMiles(sumaLiquido)
-                        });
+        //        List<string[]> ListaResumen = new List<string[]>();
+        //        ListaResumen.Add(new string[] {
+        //                    lstHonorarios.Count.ToString(),
+        //                    "BOLETAS DE HONORARIOS ELECT. (B/H-EL)",
+        //                    ParseExtensions.NumeroConPuntosDeMiles(sumaBrutos),
+        //                    ParseExtensions.NumeroConPuntosDeMiles(sumaRetenido),
+        //                    ParseExtensions.NumeroConPuntosDeMiles(sumaLiquido)
+        //                });
 
-                var neoRangeResumen = workSheet.Cell(lastRowLocation, 7).InsertData(ListaResumen);
-                neoRangeResumen.Cells().Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
-                lastRowLocation = neoRangeResumen.LastRowUsed().RowNumber() + 1;
+        //        var neoRangeResumen = workSheet.Cell(lastRowLocation, 7).InsertData(ListaResumen);
+        //        neoRangeResumen.Cells().Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+        //        lastRowLocation = neoRangeResumen.LastRowUsed().RowNumber() + 1;
 
-                //FILE OUTPUT
-                workSheet.Columns().AdjustToContents();
+        //        //FILE OUTPUT
+        //        workSheet.Columns().AdjustToContents();
 
-                using (var ms = new MemoryStream())
-                {
-                    excelFile.SaveAs(ms);
-                    return File(ms.ToArray(), "application/vnd.ms-excel", "LIBRO_HONORARIOS_" + objEmisor.RUTEmpresa + "_" + NombreMonth + " " + YearToLook + ".xlsx");
-                }
+        //        using (var ms = new MemoryStream())
+        //        {
+        //            excelFile.SaveAs(ms);
+        //            return File(ms.ToArray(), "application/vnd.ms-excel", "LIBRO_HONORARIOS_" + objEmisor.RUTEmpresa + "_" + NombreMonth + " " + YearToLook + ".xlsx");
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         public FileContentResult ExportarHonorarios(List<BoletasHonorariosModel> lstHonorarios, QuickEmisorModel objEmisor, int YearToLook, int MesToLook)
         {
@@ -1869,38 +1870,60 @@ namespace TryTestWeb.Controllers
 
             QuickReceptorModel PHonorAInsertar = new QuickReceptorModel();
 
-            int ValidarRedundancia = db.Receptores.Where(x => x.QuickEmisorModelID == objEmisor.QuickEmisorModelID &&
-                                                              x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                              x.RUT == RutPHonor &&
-                                                              x.tipoReceptor == "H" &&
-                                                              x.DadoDeBaja == false).Count();
+            try
+            {
+                int ValidarRedundancia = db.Receptores.Where(x => x.QuickEmisorModelID == objEmisor.QuickEmisorModelID &&
+                                                  x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                  x.RUT == RutPHonor &&
+                                                  x.tipoReceptor == "H" &&
+                                                  x.DadoDeBaja == false).Count();
 
-            if(ValidarRedundancia == 0) { 
+                if (ValidarRedundancia == 0)
+                {
 
-                if(!string.IsNullOrWhiteSpace(NombrePHonor) && !string.IsNullOrWhiteSpace(RutPHonor) &&  objCliente != null) { 
+                    if (!string.IsNullOrWhiteSpace(NombrePHonor) && !string.IsNullOrWhiteSpace(RutPHonor) && objCliente != null)
+                    {
 
-                    PHonorAInsertar.NombreFantasia = NombrePHonor;
-                    PHonorAInsertar.RazonSocial = NombrePHonor;
-                    PHonorAInsertar.RUT = RutPHonor;
-                    PHonorAInsertar.ClientesContablesModelID = objCliente.ClientesContablesModelID;
-                    PHonorAInsertar.QuickEmisorModelID = objEmisor.QuickEmisorModelID;
-                    PHonorAInsertar.tipoReceptor = "H";
+                        PHonorAInsertar.NombreFantasia = NombrePHonor;
+                        PHonorAInsertar.RazonSocial = NombrePHonor;
+                        PHonorAInsertar.RUT = RutPHonor;
+                        PHonorAInsertar.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                        PHonorAInsertar.QuickEmisorModelID = objEmisor.QuickEmisorModelID;
+                        PHonorAInsertar.tipoReceptor = "H";
 
-                    db.Receptores.Add(PHonorAInsertar);
-                    db.SaveChanges();
+                        db.Receptores.Add(PHonorAInsertar);
+                        db.SaveChanges();
 
-                    TempData["Correcto"] = "Prestador ingresado con éxito.";
+                        TempData["Correcto"] = "Prestador ingresado con éxito.";
 
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Error inesperado.";
+                    }
                 }
                 else
                 {
-                    TempData["Error"] = "Error inesperado.";
+                    TempData["Error"] = "Ya existe el prestador.";
                 }
             }
-            else
+            catch (DbEntityValidationException e)
             {
-                TempData["Error"] = "Ya existe el prestador.";
+
+                TempData["Error"] = "Error: " + e.EntityValidationErrors.FirstOrDefault().ValidationErrors.FirstOrDefault().ErrorMessage;
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
             }
+
 
             return RedirectToAction("ListarHonorarios", "Home");
         }

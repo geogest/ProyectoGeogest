@@ -79,7 +79,7 @@ public class FacturaContext : DbContext
     public DbSet<LibroHonorariosDeTerceros> DBLibroHonorariosTerceros { get; set; }
     public DbSet<CartolaBancariaModel> DBCartolaBancaria { get; set; }
     public DbSet<CartolaBancariaMacroModel> DBCartolaBMacro { get; set; }
-
+    public DbSet<ErrorMensajeMonitoreo> DBErrores { get; set; }
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
@@ -168,6 +168,7 @@ public class FacturaProduccionContext : DbContext
     public DbSet<LibroHonorariosDeTerceros> DBLibroHonorariosTerceros { get; set; }
     public DbSet<CartolaBancariaModel> DBCartolaBancaria { get; set; }
     public DbSet<CartolaBancariaMacroModel> DBCartolaBMacro { get; set; }
+    public DbSet<ErrorMensajeMonitoreo> DBErrores { get; set; }
     //Base de datos Sistema de remuneraciones
 
 
@@ -253,6 +254,7 @@ public class FacturaPoliContext : DbContext
     public DbSet<LibroHonorariosDeTerceros> DBLibroHonorariosTerceros { get; set; }
     public DbSet<CartolaBancariaModel> DBCartolaBancaria { get; set; }
     public DbSet<CartolaBancariaMacroModel> DBCartolaBMacro { get; set; }
+    public DbSet<ErrorMensajeMonitoreo> DBErrores { get; set; }
 
 
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }

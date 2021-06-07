@@ -43,7 +43,8 @@ namespace TryTestWeb.Controllers
             }
             if (DataCartola.files != null && DataCartola.files.ContentLength > 0) {
 
-                var CartolaPura = CartolaBancariaModel.DeExcelACartolaBancaria(DataCartola.files);
+                var CartolaPura = CartolaBancariaMacroModel.DeExcelAObjetoCartolaYVoucher(DataCartola.files);
+                //var CartolaPura = CartolaBancariaModel.DeExcelACartolaBancaria(DataCartola.files, db);
                 LstDetalleCartola = CartolaBancariaModel.ObtenerCartolaBancariaManual(CartolaPura, objCliente);
                 Result = CartolaBancariaMacroModel.GuardarCartolaBancariaManual(LstDetalleCartola, DataCartola.FechaCartola, DataCartola.NumeroCartola, objCliente, db);
 
@@ -132,7 +133,8 @@ namespace TryTestWeb.Controllers
 
                     int CuentaConsultadaID = (int)Session["ObjetoCuentaContableConsultada"];
                     CuentaContableModel CuentaConsultada = UtilesContabilidad.CuentaContableDesdeID(CuentaConsultadaID, objCliente);
-
+                    //DeExcelAObjetoCartolaYVoucher
+                    
                     var ObjCartolaCompleto = CartolaBancariaMacroModel.ConvertirAObjetoCartola(DataCartola.files /*NombreCtaCont*/);
                     var ResultadoInsercion = CartolaBancariaMacroModel.ConvertirAVoucher(ObjCartolaCompleto, objCliente, db, CuentaConsultada, DataCartola.FechaCartola, DataCartola.NumeroCartola);
 

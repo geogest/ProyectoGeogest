@@ -130,6 +130,11 @@ namespace TryTestWeb.Controllers
 
             return View();
         }
+
+        
+
+ 
+
         public ActionResult PendientesAuxiliares()
         {
             string UserID = User.Identity.GetUserId();
@@ -149,43 +154,32 @@ namespace TryTestWeb.Controllers
                                  join Auxiliar in db.DBAuxiliares on Detalle.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID
                                  join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID
 
-                                 where Voucher.DadoDeBaja == false && Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                 Detalle.ObjCuentaContable.TieneAuxiliar == 1 && Detalle.ConciliadoCtasCtes == false
+                                 where Voucher.DadoDeBaja == false &&
+                                 Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                 Detalle.ObjCuentaContable.TieneAuxiliar == 1 &&
+                                 Detalle.ConciliadoCtasCtes == false && Detalle.FechaDoc.Year == 2020
 
-                                 select new AuxPendientes
+                                 select new 
                                  {
                                      Id = Auxiliar.AuxiliaresModelID,
                                      Rut = AuxiliarDetalle.Individuo2.RUT,
                                      RazonSocial = AuxiliarDetalle.Individuo2.RazonSocial,
-                                     Saldo = Auxiliar.MontoTotal
+                                     Debe = Detalle.MontoDebe,
+                                     Haber = Detalle.MontoHaber
                                  });
 
+            var PendientesAuxOrder = PendientesAux.GroupBy(x => new { x.Rut, x.RazonSocial })
+                                                  .Select(y => new AuxPendientesViewModel 
+                                                  {
+                                                      Rut = y.Key.Rut,
+                                                      RazonSocial = y.Key.RazonSocial,
+                                                      Saldo = y.Sum(z => Math.Abs(z.Haber)) - y.Sum(z => Math.Abs(z.Debe))
+                                                  }).ToList();
+
+
+            //Nota Revisar nubox
             //Aqui van los filtros de la cuenta contable que se está buscando conciliar
             //¿Aquí también hay conciliación bancaria? -> No entiendo realmente como hacerlo.
-
-
-
-            //var AuxiliaresPendientes = (from Detalle in db.DBDetalleVoucher
-            //                            join Voucher in db.DBVoucher on Detalle.VoucherModelID equals Voucher.VoucherModelID
-            //                            join Auxiliares in db.DBAuxiliares on Detalle.DetalleVoucherModelID equals Auxiliares.DetalleVoucherModelID
-            //                            join AuxiliaresDetalle in db.DBAuxiliaresDetalle on Auxiliares.AuxiliaresModelID equals AuxiliaresDetalle.AuxiliaresModelID
-            //                            where Voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-            //                            Detalle.ObjCuentaContable.TieneAuxiliar == 1 &&
-            //                            Detalle.ConciliadoCtasCtes == false
-
-            //                            select new EstadoCuentasCorrientesViewModel
-            //                            {
-            //                                RutPrestador = AuxiliaresDetalle.Individuo2.RUT,
-            //                                NombrePrestador = AuxiliaresDetalle.Individuo2.NombreFantasia,
-            //                                Folio = AuxiliaresDetalle.Folio,
-            //                                Fecha = Detalle.FechaDoc,
-            //                                Debe = Detalle.MontoDebe > 0 ? AuxiliaresDetalle.MontoTotalLinea : 0,
-            //                                Haber = Detalle.MontoHaber > 0 ? AuxiliaresDetalle.MontoTotalLinea : 0,
-            //                                Documento = AuxiliaresDetalle.TipoDocumento,
-            //                            });
-
-
-
 
             //Por hacer:
             //Todos aquellos movimientos que se hicieron en la conciliacion bancaria que no tenian información o la cuenta tenia auxiliar y no lo puso
@@ -196,10 +190,7 @@ namespace TryTestWeb.Controllers
             //¿Como se van a generar los pagos?
             // Escriba aquí la planificación
             // Respuesta rápida -> Con la misma lógica que se usa al importar el excel con sus respectivos movimientos 
-
-
-
-             return View(PendientesAux.ToList());
+            return View(PendientesAuxOrder);
         }
         public ActionResult PendientesAuxDetalle(int IdAux)
         {

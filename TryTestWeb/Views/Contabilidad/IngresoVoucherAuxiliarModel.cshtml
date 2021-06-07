@@ -320,6 +320,7 @@
                                                 <option value="Selecciona">Selecciona</option>
                                                 <option value="Ret10">Retención 10%</option>
                                                 <option value="Ret1075">Retención 10.75%</option>
+                                                <option value="Ret1150">Retención 11.5%</option>
                                                 <option value="Ret20">Retención 20%</option>
                                                 <option value="RetNo">Sin Retención</option>
                                             </select>
@@ -424,7 +425,7 @@
                                           {
 
                                             <td class="form-group">
-                                                <input type="number" class="form-control" id="AuxTotal@(contadorDatePicker)" name="AuxTotal" required value="@lineaDetalleAux.ValorLiquido" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                                <input type="number" class="form-control" id="AuxTotal@(contadorDatePicker)" name="AuxTotal" required value="@lineaDetalleAux.MontoTotalLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
                                             </td>
 
                                             <td class="form-group">
@@ -432,6 +433,7 @@
                                                     <option value="Selecciona">Selecciona</option>
                                                     <option value="Ret10">Retención 10%</option>
                                                     <option value="Ret1075">Retención 10.75%</option>
+                                                    <option value="Ret1150">Retención 11.5%</option>
                                                     <option value="Ret20">Retención 20%</option>
                                                     <option value="RetNo">Sin Retención</option>
                                                     
@@ -442,7 +444,7 @@
                                                 <input type="number" class="form-control" id="AUXValorRetencion@(contadorDatePicker)" name="AUXValorRetencion" value="@lineaDetalleAux.ValorRetencion"  @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
                                             </td>
                                             <td class="form-group">
-                                                <input type="number" class="form-control" id="AUXValorLiquido@(contadorDatePicker)" name="AUXValorLiquido" required value="@lineaDetalleAux.MontoTotalLinea"  @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
+                                                <input type="number" class="form-control" id="AUXValorLiquido@(contadorDatePicker)" name="AUXValorLiquido" required value="@lineaDetalleAux.ValorLiquido"  @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
                                             </td>
                                         }
                                         else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
@@ -555,7 +557,7 @@
 
 @if (ViewBag.NOTOPERABLE == null)
 {
-    <script>
+<script>
         $(document).ready(function(){
             EsBoletaDeVenta();
             RevisarSeleccionDePrestador();
@@ -579,7 +581,7 @@
             var newRow = "";
             @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
             {
-                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group"  width="12%" style="display:none;"><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td> <td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal' + idRowCountAux + '" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><select class="form-control" id="AUXtipoRetencion' + idRowCountAux + '" name="AUXtipoRetencion" onclick="CuadrarValores(this)"><option value="Selecciona">Selecciona</option><option value="Ret10">Retención 10%</option><option value="Ret1075">Retención 10.75%<option value="Ret20">Retención 20%</option><option value="RetNo">Sin Retención</option></select></td><td class="form-group"><input type="number" class="form-control" id="AUXValorRetencion' + idRowCountAux + '" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" readonly /></td><td class="form-group"><input type="number" class="form-control" id="AUXValorLiquido' + idRowCountAux + '" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" readonly/></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;"><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;"><input type="text" class="form-control" id="tipoIndividuo' + idRowCountAux + '" name="tipoIndividuo" /></td><td class="form-group"  width="12%" style="display:none;"><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td> <td class="form-group" width="15%" style="display:none;"><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal' + idRowCountAux + '" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><select class="form-control" id="AUXtipoRetencion' + idRowCountAux + '" name="AUXtipoRetencion" onclick="CuadrarValores(this)"><option value="Selecciona">Selecciona</option><option value="Ret10">Retención 10%</option><option value="Ret1075">Retención 10.75%</option><option value="Ret1150">Retención 11.5%</option><option value="Ret20">Retención 20%</option><option value="RetNo">Sin Retención</option></select></td><td class="form-group"><input type="number" class="form-control" id="AUXValorRetencion' + idRowCountAux + '" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" readonly /></td><td class="form-group"><input type="number" class="form-control" id="AUXValorLiquido' + idRowCountAux + '" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" readonly/></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
                                     }
             else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
             {
@@ -689,7 +691,7 @@
 
                 @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
             {
-                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;><select  name="tipoIndividuo" class="selectpicker show-tick form-control" ><option value="">Seleccione</option><option value="CL">Cliente</option><option value="PR">Proveedor</option><option value="P">Persona</option></select></td><td class="form-group"  width="12%" style="display:none;><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td> <td class="form-group" width="15%" style="display:none;><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal' + idRowCountAux + '" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><select class="form-control" id="AUXtipoRetencion' + idRowCountAux + '" name="AUXtipoRetencion" onfocusout="CuadrarValores(this)"><option value="Selecciona">Selecciona</option><option value="Ret10">Retención 10%</option><option value="1075">Retención 10.75%<option value="Ret20">Retención 20%</option><option value="RetNo">Sin Retención</option></select></td><td class="form-group"><input type="number" class="form-control" id="AUXValorRetencion' + idRowCountAux + '" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" readonly/></td><td class="form-group"><input type="number" class="form-control" id="AUXValorLiquido' + idRowCountAux + '" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" readonly/></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
+                @:var newRow = '<tr id="detalleAux' + idRowCountAux + '"><td class="form-group" width="11%" style="display:none;><input type="text" class="form-control" id="AUXfecha' + idRowCountAux + '" name="AUXfecha" required /></td><td style="display:none;><select  name="tipoIndividuo" class="selectpicker show-tick form-control" ><option value="">Seleccione</option><option value="CL">Cliente</option><option value="PR">Proveedor</option><option value="P">Persona</option></select></td><td class="form-group"  width="12%" style="display:none;><input type="text" class="form-control" onblur="CSGetPrestadorAuxiliar(this);"  id="AUXrut' + idRowCountAux + '" name="AUXrut" data-valRut="foo" required /></td> <td class="form-group" width="15%" style="display:none;><input type="text" class="form-control" name="AUXrazoncta" id="AUXrazoncta' + idRowCountAux + '" required /></td><td class="form-group"><input type="number" class="form-control" id="AuxFolio' + idRowCountAux + '" name="AuxFolio" min="1" step="1" required/></td><td class="form-group"><input type="number" class="form-control" id="AuxTotal' + idRowCountAux + '" name="AuxTotal" required onfocusout="CuadrarValores(this)" /></td><td class="form-group"><select class="form-control" id="AUXtipoRetencion' + idRowCountAux + '" name="AUXtipoRetencion" onfocusout="CuadrarValores(this)"><option value="Selecciona">Selecciona</option><option value="Ret10">Retención 10%</option><option value="1075">Retención 10.75%</option><option value="Ret1150">Retención 11.5%</option><option value="Ret20">Retención 20%</option><option value="RetNo">Sin Retención</option></select></td><td class="form-group"><input type="number" class="form-control" id="AUXValorRetencion' + idRowCountAux + '" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" readonly/></td><td class="form-group"><input type="number" class="form-control" id="AUXValorLiquido' + idRowCountAux + '" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" readonly/></td><td class="form-group"><button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" tabstop="false" onclick="removeRow(detalleAux' + idRowCountAux + ')">X</button></td></tr>';
                                             }
             else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
             {
@@ -1010,6 +1012,13 @@
                                 @:    jAUXRetencion.removeAttr("onfocusout");
                                 @:    jAUXTotal.removeAttr("onfocusout");
                                 @:    }
+                                @:    else if (selectedOption.text == "Retención 11.5%") {
+                                @:    valorRetencion = Math.round(nmbrize(jAUXBruto) * 0.1150);
+                                @:    jAUXRetencion.val(valorRetencion);
+                                @:    jAUXTotal.val(nmbrize(jAUXBruto) - valorRetencion);
+                                @:    jAUXRetencion.removeAttr("onfocusout");
+                                @:    jAUXTotal.removeAttr("onfocusout");
+                                @:    }
                                 @:    else if (selectedOption.text == "Retención 20%") {
                                 @:    valorRetencion = Math.round(nmbrize(jAUXBruto) * 0.2);
                                 @:    jAUXRetencion.val(valorRetencion);
@@ -1045,19 +1054,21 @@
         @:    var jAUXExento = $("#" + TheTD + " input[name='AUXExento']");
         @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
         @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
-        @:
-        @:    debugger;
-        @:   
+        @:    
+        @*@:    let Iva = new Decimal(jAUXIva);
+        @:    let Neto = new Decimal(jAUXNeto);
+        @:    let Total = new Decimal(jAUXTotal);
+        @:    let Excento = new Decimal(jAUXExento);*@
         @:       if (nmbrize(jAUXNeto) == 0 && (nmbrize(jAUXTotal)) != 0 && (nmbrize(jAUXIva)) == 0) {
         @:             jAUXIva.val(Math.round( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  * 0.19 / 1.19));
-        @:             jAUXNeto.val( (nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  - nmbrize(jAUXIva));
+        @:             jAUXNeto.val( Math.round((nmbrize(jAUXTotal) - nmbrize(jAUXExento) )  - nmbrize(jAUXIva)));
         @:       }else {
         @:             jAUXIva.val(Math.round(nmbrize(jAUXNeto) * 0.19));
-        @:             jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
+        @:             jAUXTotal.val(Math.round(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva)));
         @:       }
         @:
-        @:    
-        @:   
+        @:
+        @:
         @:    ValidarTotales2();
         @:}
         @:function CuadrarIVAExplicito(inputThing)
@@ -1068,7 +1079,7 @@
         @:    var jAUXIva = $("#" + TheTD + " input[name='AUXIva']");
         @:    var jAUXTotal = $("#" + TheTD + " input[name='AuxTotal']");
         @:
-        @:    jAUXTotal.val(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva));
+        @:    jAUXTotal.val(Math.round(nmbrize(jAUXNeto) + nmbrize(jAUXExento) + nmbrize(jAUXIva)));
         @:    ValidarTotales2();
         @:}
         }
@@ -1273,7 +1284,7 @@
             jQuery(id).remove();
             TotalValor();
         }
-    </script>
+</script>
 }
 else
 {

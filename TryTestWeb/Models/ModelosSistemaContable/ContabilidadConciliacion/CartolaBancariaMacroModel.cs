@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +8,7 @@ using System.Web;
 using Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Data.Entity.Migrations;
+using SpreadsheetLight;
 
 public class CartolaBancariaMacroModel
 {
@@ -171,65 +172,145 @@ public class CartolaBancariaMacroModel
     //    return LstObjCartolaAutomatica;
     //}
 
+    public static CartolaBancariaMacroModel GetCartolaById(FacturaPoliContext db, ClientesContablesModel ObjCliente, int id)
+    {
+        CartolaBancariaMacroModel ReturnValues = new CartolaBancariaMacroModel();
+
+        ReturnValues = db.DBCartolaBMacro.Include("CartolaDetalle").Where(x => x.ClientesContablesModelID.ClientesContablesModelID == ObjCliente.ClientesContablesModelID).FirstOrDefault();
+
+        return ReturnValues;
+    }
     public static List<CartolaBancariaMacroModel> GetListaCartola(FacturaPoliContext db, ClientesContablesModel ObjCliente)
     {
         var LstCartola = new List<CartolaBancariaMacroModel>();
 
-        LstCartola = db.DBCartolaBMacro.Where(x => x.ClientesContablesModelID.ClientesContablesModelID == ObjCliente.ClientesContablesModelID).ToList();
+        LstCartola = db.DBCartolaBMacro.Include("CuentaContableModelID").Where(x => x.ClientesContablesModelID.ClientesContablesModelID == ObjCliente.ClientesContablesModelID).ToList();
 
         return LstCartola;
     }
 
-    //Queda pendiente crear este mismo metodo pero generico para reutilizar.
+    public static List<CartolaBancariaPuraModel> DeExcelAObjetoCartolaYVoucher(HttpPostedFileBase file)
+    {
+        List<CartolaBancariaPuraModel> ReturnValues = new List<CartolaBancariaPuraModel>();
+        SLDocument Excel = new SLDocument(file.InputStream);
+
+        int row = 2;
+        while (!string.IsNullOrEmpty(Excel.GetCellValueAsString(row, 1)))
+        {
+            DateTime Fecha = Excel.GetCellValueAsDateTime(row, 1);
+            int Docum = Excel.GetCellValueAsInt32(row,2);
+            string Detalle = Excel.GetCellValueAsString(row, 3);
+            decimal Debe = Excel.GetCellValueAsDecimal(row, 4);
+            decimal Haber = Excel.GetCellValueAsDecimal(row,5);
+            decimal Saldo = Excel.GetCellValueAsDecimal(row, 6);
+
+            CartolaBancariaPuraModel FilaAGuardar = new CartolaBancariaPuraModel() 
+            { 
+                Fecha = Fecha,
+                Docum = Docum,
+                Detalle = Detalle,
+                Debe = Debe,
+                Haber = Haber,
+                Saldo = Saldo,
+            };
+
+            ReturnValues.Add(FilaAGuardar);
+
+            row++;
+        }
+
+
+        return ReturnValues;
+    }
+
     public static List<ObjCartolaYVouchers> ConvertirAObjetoCartola(HttpPostedFileBase file)
     {
         List<ObjCartolaYVouchers> ReturnValues = new List<ObjCartolaYVouchers>();
+        SLDocument Excel = new SLDocument(file.InputStream);
 
-        if (file == null || file.ContentLength == 0)
+        int row = 2;
+        while (!string.IsNullOrEmpty(Excel.GetCellValueAsString(row, 1)))
         {
-            string Error = "Error Excel Vacio";
-        }
-        else
-        {
-            if (file.FileName.EndsWith("xls") || file.FileName.EndsWith("xlsx"))
+            DateTime Fecha = Excel.GetCellValueAsDateTime(row, 1);
+            int Docum = Excel.GetCellValueAsInt32(row, 2);
+            string Detalle = Excel.GetCellValueAsString(row, 3);
+            decimal Debe = Excel.GetCellValueAsDecimal(row, 4);
+            decimal Haber = Excel.GetCellValueAsDecimal(row, 5);
+            decimal Saldo = Excel.GetCellValueAsDecimal(row, 6);
+            string CodigoInterno = Excel.GetCellValueAsString(row, 7);
+            string Rut = Excel.GetCellValueAsString(row, 8);
+            string Glosa = Excel.GetCellValueAsString(row, 9);
+
+            ObjCartolaYVouchers FilaAGuardar = new ObjCartolaYVouchers()
             {
-                string path = ParseExtensions.Get_Temp_path(file.FileName); // Le indicamos la ruta donde guardará el excel.
+                Fecha = Fecha,
+                Docum = Docum,
+                Detalle = Detalle,
+                Debe = Debe,
+                Haber = Haber,
+                Saldo = Saldo,
+                CodigoInterno = CodigoInterno,
+                Rut = Rut,
+                Glosa = Glosa 
+            };
 
-                if (File.Exists(path))
-                {
-                    File.Delete(path); //Si ya existe lo elimina.
-                }
-                file.SaveAs(path); //Guardamos momentaneamente el fichero. -> La idea es extraer su información y luego eliminarlo.
-
-                Application application = new Application();
-                Workbook workBook = application.Workbooks.Open(path);
-                Worksheet worksheet = workBook.ActiveSheet;
-                Range range = worksheet.UsedRange;
-
-                for (int row = 2; row <= range.Rows.Count; row++)
-                {
-                    ObjCartolaYVouchers FilaAGuardar = new ObjCartolaYVouchers();
-
-                    FilaAGuardar.Fecha = ParseExtensions.ToDD_MM_AAAA_Multi(((Range)range.Cells[row, 1]).Text);
-                    FilaAGuardar.Docum = Convert.ToInt32(((Range)range.Cells[row, 2]).Text);
-                    FilaAGuardar.Detalle = ((Range)range.Cells[row, 3]).Text;
-                    FilaAGuardar.Debe = decimal.Parse(((Range)range.Cells[row, 4]).Text);
-                    FilaAGuardar.Haber = decimal.Parse(((Range)range.Cells[row, 5]).Text);
-                    FilaAGuardar.Saldo = decimal.Parse(((Range)range.Cells[row, 6]).Text);
-                    //Parte del voucher
-                    FilaAGuardar.CodigoInterno = ((Range)range.Cells[row, 7]).Text;
-                    FilaAGuardar.Rut = ((Range)range.Cells[row, 8]).Text;
-                    FilaAGuardar.Glosa = ((Range)range.Cells[row, 9]).Text;
-
-                    ReturnValues.Add(FilaAGuardar);
-                }
-                workBook.Close();
-                File.Delete(path); 
-            }
+            ReturnValues.Add(FilaAGuardar);
+            row++;
         }
 
         return ReturnValues;
     }
+
+    //Queda pendiente crear este mismo metodo pero generico para reutilizar.
+    //public static List<ObjCartolaYVouchers> ConvertirAObjetoCartola(HttpPostedFileBase file)
+    //{
+    //    List<ObjCartolaYVouchers> ReturnValues = new List<ObjCartolaYVouchers>();
+
+    //    if (file == null || file.ContentLength == 0)
+    //    {
+    //        string Error = "Error Excel Vacio";
+    //    }
+    //    else
+    //    {
+    //        if (file.FileName.EndsWith("xls") || file.FileName.EndsWith("xlsx"))
+    //        {
+    //            string path = ParseExtensions.Get_Temp_path(file.FileName); // Le indicamos la ruta donde guardará el excel.
+
+    //            if (File.Exists(path))
+    //            {
+    //                File.Delete(path); //Si ya existe lo elimina.
+    //            }
+    //            file.SaveAs(path); //Guardamos momentaneamente el fichero. -> La idea es extraer su información y luego eliminarlo.
+
+    //            Application application = new Application();
+    //            Workbook workBook = application.Workbooks.Open(path);
+    //            Worksheet worksheet = workBook.ActiveSheet;
+    //            Range range = worksheet.UsedRange;
+
+    //            for (int row = 2; row <= range.Rows.Count; row++)
+    //            {
+    //                ObjCartolaYVouchers FilaAGuardar = new ObjCartolaYVouchers();
+
+    //                FilaAGuardar.Fecha = ParseExtensions.ToDD_MM_AAAA_Multi(((Range)range.Cells[row, 1]).Text);
+    //                FilaAGuardar.Docum = Convert.ToInt32(((Range)range.Cells[row, 2]).Text);
+    //                FilaAGuardar.Detalle = ((Range)range.Cells[row, 3]).Text;
+    //                FilaAGuardar.Debe = decimal.Parse(((Range)range.Cells[row, 4]).Text);
+    //                FilaAGuardar.Haber = decimal.Parse(((Range)range.Cells[row, 5]).Text);
+    //                FilaAGuardar.Saldo = decimal.Parse(((Range)range.Cells[row, 6]).Text);
+    //                //Parte del voucher
+    //                FilaAGuardar.CodigoInterno = ((Range)range.Cells[row, 7]).Text;
+    //                FilaAGuardar.Rut = ((Range)range.Cells[row, 8]).Text;
+    //                FilaAGuardar.Glosa = ((Range)range.Cells[row, 9]).Text;
+
+    //                ReturnValues.Add(FilaAGuardar);
+    //            }
+    //            workBook.Close();
+    //            File.Delete(path); 
+    //        }
+    //    }
+
+    //    return ReturnValues;
+    //}
 
     public static Tuple<bool, List<CartolaBancariaModel>> ConvertirAVoucher(List<ObjCartolaYVouchers> LstCartolaYVouchers, ClientesContablesModel ObjCliente,FacturaPoliContext db,CuentaContableModel CuentaConsultada, string FechaCartola, int NumeroCartola)
     {
@@ -262,30 +343,48 @@ public class CartolaBancariaMacroModel
         if (LstCartolaYVouchers.Count() > 0)
         {
                 DateTime FechaConvertida = ParseExtensions.ToDD_MM_AAAA_Multi(FechaCartola);
-                var YaExiste = ExistenRepetidos(FechaConvertida, NumeroCartola,db, ObjCliente);
-                if(YaExiste == false)
-                {
-                    List<CartolaBancariaModel> CartolaDetalle = new List<CartolaBancariaModel>();
+                SiExisteReemplazala(FechaConvertida, NumeroCartola,db, ObjCliente);
+                List<CartolaBancariaModel> CartolaDetalle = new List<CartolaBancariaModel>();
                 foreach (var itemCartola in LosQueTienenInformacion)
                 {
                     CuentaContableModel CuentaAUsar = UtilesContabilidad.CuentaContableDesdeCodInterno(itemCartola.CodigoInterno, ObjCliente);
+                    var Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
+                    var TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
 
+                    if(CuentaAUsar.TieneAuxiliar == 1 && Prestador == null)
+                    {
+                        CartolaBancariaModel LineaConAuxiliarNoValida = new CartolaBancariaModel()
+                        {
+                            VoucherModelID = 0,
+                            Fecha = itemCartola.Fecha,
+                            ClientesContablesModelID = ObjCliente,
+                            CuentaContableModelID = null,
+                            Folio = itemCartola.Docum,
+                            Detalle = itemCartola.Detalle,
+                            Oficina = "",
+                            Debe = itemCartola.Debe,
+                            Haber = itemCartola.Haber,
+                            Saldo = itemCartola.Saldo,
+                            EstaConciliado = false
+                        };
 
+                        LosQueNoEstanEnElMayor.Add(LineaConAuxiliarNoValida);
+                    }
+
+                    if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null || CuentaAUsar.TieneAuxiliar == 0 && Prestador == null)
+                    {
                         int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(ObjCliente, db);
                         int baseNumberFolio = nullableProxVoucherNumber.Value;
 
                         VoucherModel CapaVoucher = new VoucherModel();
 
-                        var Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
-
-                        var TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
 
                         CapaVoucher.TipoOrigenVoucher = TipoPrestador;
 
                         CapaVoucher.FechaEmision = itemCartola.Fecha;
                         CapaVoucher.NumeroVoucher = baseNumberFolio;
                         CapaVoucher.ClientesContablesModelID = ObjCliente.ClientesContablesModelID;
-                        CapaVoucher.Glosa = itemCartola.Detalle;
+                        CapaVoucher.Glosa = itemCartola.Glosa;
 
                         if (itemCartola.Debe > 0 && itemCartola.Haber == 0)
                             CapaVoucher.Tipo = TipoVoucher.Egreso;
@@ -299,7 +398,7 @@ public class CartolaBancariaMacroModel
                         DetalleCartola.VoucherModelID = CapaVoucher.VoucherModelID;
                         DetalleCartola.ObjCuentaContable = CuentaConsultada;
                         DetalleCartola.FechaDoc = itemCartola.Fecha;
-                        DetalleCartola.GlosaDetalle = itemCartola.Detalle;
+                        DetalleCartola.GlosaDetalle = itemCartola.Glosa;
 
                         if (itemCartola.Debe > 0 && itemCartola.Haber == 0)
                             DetalleCartola.MontoDebe = itemCartola.Debe;
@@ -329,7 +428,7 @@ public class CartolaBancariaMacroModel
                             foreach (var itemDetalle in LstDetalle)
                             {
                                 itemDetalle.VoucherModelID = CapaVoucher.VoucherModelID;
-                                itemDetalle.Conciliado = true; 
+                                itemDetalle.Conciliado = true;
                             }
 
                             db.DBDetalleVoucher.AddRange(LstDetalle);
@@ -384,21 +483,18 @@ public class CartolaBancariaMacroModel
                                     }
                                 }
                             }
-                        
-                        baseNumberFolio++;
+
+                            baseNumberFolio++;
+                        }
                     }
+
+
 
                 }
                 //Se inserta toda la cartola bancaria para tener respaldo.
                 CartolaCompleta = ObtenerCartolaParaResultadoConciliacion(LosQueNoEstanEnElMayor, CartolaDetalle);
                 var ResultadoInsercionCartolaBancaria = GuardarCartolaBancaria(CartolaDetalle, LosQueNoEstanEnElMayor, FechaCartola, NumeroCartola, CuentaConsultada, ObjCliente, db);
-                Result = true;
-            }else
-            {
-                Result = false;
-            }
-   
-     
+                Result = true;  
         }
         return Tuple.Create(Result, CartolaCompleta);
     }
@@ -421,6 +517,30 @@ public class CartolaBancariaMacroModel
         //Se obtiene el resultado
 
         return none;
+    }
+
+    public static void SiExisteReemplazala(DateTime FechaCartola, int NumeroCartola, FacturaPoliContext db, ClientesContablesModel objCliente)
+    {
+        CartolaBancariaMacroModel CartolaEncontrada = db.DBCartolaBMacro.Include("CartolaDetalle").Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                x.FechaCartola.Month == FechaCartola.Month &&
+                                                                x.FechaCartola.Year == FechaCartola.Year &&
+                                                                x.NumeroCartola == NumeroCartola).FirstOrDefault();
+        List<int> lstVouchersId = new List<int>();
+        if(CartolaEncontrada != null)
+            lstVouchersId = CartolaEncontrada.CartolaDetalle.Select(x => x.VoucherModelID).ToList();
+
+        List<VoucherModel> VouchersADarDeBaja = new List<VoucherModel>();
+        if (lstVouchersId.Any())
+            VouchersADarDeBaja = db.DBVoucher.Where(x => lstVouchersId.Contains(x.VoucherModelID)).ToList();
+
+        if (VouchersADarDeBaja.Any())
+        {
+            VouchersADarDeBaja = VouchersADarDeBaja.Select(x => { x.DadoDeBaja = true; return x; }).ToList();
+            db.DBVoucher.AddOrUpdate(VouchersADarDeBaja.ToArray());
+        }
+
+        if (CartolaEncontrada != null)
+            db.DBCartolaBMacro.Remove(CartolaEncontrada);
     }
 
 

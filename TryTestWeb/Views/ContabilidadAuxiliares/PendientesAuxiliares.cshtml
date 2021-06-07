@@ -1,4 +1,4 @@
-﻿@model List<AuxPendientes>
+﻿@model List<AuxPendientesViewModel>
 
 <br />
 <br />
@@ -16,7 +16,7 @@
             </thead>
             <tbody>
                 @{ int Corr = 0; }
-                @foreach (var itemPendiente in Model)
+                @foreach (AuxPendientesViewModel itemPendiente in Model)
                 {
                     Corr++;
                     <tr>

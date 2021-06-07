@@ -118,51 +118,66 @@ public class CartolaBancariaModel
         return CartolaPura;
     }
 
-    public static List<CartolaBancariaPuraModel> DeExcelACartolaBancaria(HttpPostedFileBase file)
+    public static List<CartolaBancariaPuraModel> DeExcelACartolaBancaria(HttpPostedFileBase file, FacturaPoliContext db)
     {
         List<CartolaBancariaPuraModel> ReturnValues = new List<CartolaBancariaPuraModel>();
-
-        if (file == null || file.ContentLength == 0)
+        try
         {
-            string Error = "Error Excel Vacio";
-        }
-        else
-        {
-            if (file.FileName.EndsWith("xls") || file.FileName.EndsWith("xlsx"))
+            
+            if (file == null || file.ContentLength == 0)
             {
-                string path = ParseExtensions.Get_Temp_path(file.FileName); // Le indicamos la ruta donde guardará el excel.
-
-                if (File.Exists(path))
+                string Error = "Error Excel Vacio";
+            }
+            else
+            {
+                if (file.FileName.EndsWith("xls") || file.FileName.EndsWith("xlsx"))
                 {
-                    File.Delete(path); //Si ya existe lo elimina.
+                    string path = ParseExtensions.Get_Temp_path(file.FileName); // Le indicamos la ruta donde guardará el excel.
+
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path); //Si ya existe lo elimina.
+                    }
+                    file.SaveAs(path); //Guardamos momentaneamente el fichero. -> La idea es extraer su información y luego eliminarlo.
+
+                    Application application = new Application();
+                    Workbook workBook = application.Workbooks.Open(path);
+                    Worksheet worksheet = workBook.ActiveSheet;
+                    Range range = worksheet.UsedRange;
+
+                    for (int row = 2; row <= range.Rows.Count; row++)
+                    {
+                        CartolaBancariaPuraModel FilaAGuardar = new CartolaBancariaPuraModel();
+
+                        FilaAGuardar.Fecha = ParseExtensions.ToDD_MM_AAAA_Multi(((Range)range.Cells[row, 1]).Text);
+                        FilaAGuardar.Docum = Convert.ToInt32(((Range)range.Cells[row, 2]).Text);
+                        FilaAGuardar.Detalle = ((Range)range.Cells[row, 3]).Text;
+                        FilaAGuardar.Debe = decimal.Parse(((Range)range.Cells[row, 4]).Text);
+                        FilaAGuardar.Haber = decimal.Parse(((Range)range.Cells[row, 5]).Text);
+                        FilaAGuardar.Saldo = decimal.Parse(((Range)range.Cells[row, 6]).Text);
+                        //Parte del voucher
+
+                        ReturnValues.Add(FilaAGuardar);
+                    }
+                    workBook.Close();
+                    File.Delete(path);
                 }
-                file.SaveAs(path); //Guardamos momentaneamente el fichero. -> La idea es extraer su información y luego eliminarlo.
-
-                Application application = new Application();
-                Workbook workBook = application.Workbooks.Open(path);
-                Worksheet worksheet = workBook.ActiveSheet;
-                Range range = worksheet.UsedRange;
-
-                for (int row = 2; row <= range.Rows.Count; row++)
-                {
-                    CartolaBancariaPuraModel FilaAGuardar = new CartolaBancariaPuraModel();
-
-                    FilaAGuardar.Fecha = ParseExtensions.ToDD_MM_AAAA_Multi(((Range)range.Cells[row, 1]).Text);
-                    FilaAGuardar.Docum = Convert.ToInt32(((Range)range.Cells[row, 2]).Text);
-                    FilaAGuardar.Detalle = ((Range)range.Cells[row, 3]).Text;
-                    FilaAGuardar.Debe = decimal.Parse(((Range)range.Cells[row, 4]).Text);
-                    FilaAGuardar.Haber = decimal.Parse(((Range)range.Cells[row, 5]).Text);
-                    FilaAGuardar.Saldo = decimal.Parse(((Range)range.Cells[row, 6]).Text);
-                    //Parte del voucher
-
-                    ReturnValues.Add(FilaAGuardar);
-                }
-                workBook.Close();
-                File.Delete(path);
+                return ReturnValues;
             }
         }
+        catch(Exception ex)
+        {
+            ErrorMensajeMonitoreo Error = new ErrorMensajeMonitoreo() { Mensaje = ex.Message };
+            db.DBErrores.Add(Error);
+            db.SaveChanges();
+
+            return null;
+        }
+
+
 
         return ReturnValues;
+
     }
 
     public static ReporteResultadoConciliacion calcularReporteConciliacionManual(List<CartolaBancariaModel> Cartola, List<LibroMayorConciliacion> LibroMayor)
