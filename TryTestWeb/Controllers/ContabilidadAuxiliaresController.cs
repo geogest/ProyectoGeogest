@@ -131,10 +131,6 @@ namespace TryTestWeb.Controllers
             return View();
         }
 
-        
-
- 
-
         public ActionResult PendientesAuxiliares()
         {
             string UserID = User.Identity.GetUserId();
@@ -147,6 +143,7 @@ namespace TryTestWeb.Controllers
 
             //Replantearse el uso del detalle o si hay que hacer un objeto para mostrar solo rut y saldo
             //Rut y saldo... Ocupa.. ¿AuxiliarModel?
+
 
             //Esta es la posible query de los pendientes a nivel Macro
             var PendientesAux = (from Detalle in db.DBDetalleVoucher
