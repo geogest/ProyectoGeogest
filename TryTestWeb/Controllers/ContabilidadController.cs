@@ -101,6 +101,21 @@ namespace TryTestWeb.Controllers
 
             return View();
         }
+
+        public ActionResult testkim() {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            //se crea la base de datos
+            List<UsuarioModel> usuarios = db.DBUsuarios.ToList();
+            //se crea la consulta y luego se pasa a la vista
+            //string UserID = User.Identity.GetUserId();
+            //FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            //List<RegionModels> vicente = new List<RegionModels>();
+            //vicente = db.DBRegiones.ToList();
+            //ViewBag.lucho = vicente;
+            return View(usuarios);
+        }
+
         [ModuloHandler]
         [Authorize]
         public ActionResult EditarClienteContable()
@@ -621,8 +636,9 @@ namespace TryTestWeb.Controllers
 
         [Authorize]
         [ModuloHandler]
-        public ActionResult SeleccionarClienteContable()
+        public ActionResult SeleccionarClienteContable(string ClienteContable)
         {
+            
             ModuloHelper.PurgeSessionContable(Session);
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -643,22 +659,33 @@ namespace TryTestWeb.Controllers
                 ViewBag.PerfilUsuario = TipoUsuario.NombrePerfil;
 
 
-            List<ClientesContablesModel> ReturnValues = new List<ClientesContablesModel>();
+            //List<ClientesContablesModel> ReturnValues = new List<ClientesContablesModel>();
+            //List<UserClientesContablesModels> Habilitados = db.DBUserToClientesContables.Where(r => r.UsuarioModelID == ObjUsuario.UsuarioModelID && r.QuickEmisorModelID == objEmisor.QuickEmisorModelID).ToList();
 
-            List<UserClientesContablesModels> Habilitados = db.DBUserToClientesContables.Where(r => r.UsuarioModelID == ObjUsuario.UsuarioModelID && r.QuickEmisorModelID == objEmisor.QuickEmisorModelID).ToList();
 
-                foreach (UserClientesContablesModels ItemHabilitados in Habilitados)
-                {
-                    List<ClientesContablesModel> ClientesEnables = db.DBClientesContables.Where(r => r.ClientesContablesModelID == ItemHabilitados.ClientesContablesHabilitadosID).ToList();
 
-                    foreach (ClientesContablesModel ItemProcesado in ClientesEnables)
-                    {
-                        ReturnValues.Add(ItemProcesado);
-                    }
-                }
+            //    foreach (UserClientesContablesModels ItemHabilitados in Habilitados)
+            //    {
+            //        List<ClientesContablesModel> ClientesEnables = db.DBClientesContables.Where(r => r.ClientesContablesModelID == ItemHabilitados.ClientesContablesHabilitadosID).ToList();
 
-            
-            return View(ReturnValues);
+            //        foreach (ClientesContablesModel ItemProcesado in ClientesEnables)
+            //        {
+            //            ReturnValues.Add(ItemProcesado);
+            //        }
+            //    }
+
+            IQueryable<ClientesContablesModel> ReturnValues = null;
+
+            List<int> HabilitadosId = db.DBUserToClientesContables.Where(r => r.UsuarioModelID == ObjUsuario.UsuarioModelID && r.QuickEmisorModelID == objEmisor.QuickEmisorModelID).Select(x => x.ClientesContablesHabilitadosID).ToList();
+
+            if (HabilitadosId.Any())
+            {
+                ReturnValues = db.DBClientesContables.Where(x => HabilitadosId.Contains(x.ClientesContablesModelID));
+                if (!string.IsNullOrWhiteSpace(ClienteContable))
+                    ReturnValues = ReturnValues.Where(x => x.RazonSocial.Contains(ClienteContable));
+            }
+
+            return View(ReturnValues.ToList());
         }
 
         [Authorize]

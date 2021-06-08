@@ -581,9 +581,9 @@ if (ViewBag.vbVoucherModel != null)
                 ctacont: { required: true },
                 glosaDetalle: "required",
                 debe: { required: true, number: true },
-                haber: { required: true, number: true },
+                haber: { required: true, number: true }
                 //idItem:{ validaItems: true   },
-                centrocosto:{ validaCentroCosto: true   }
+/*                centrocosto:{ validaCentroCosto: true   }*/
             },
             messages: {
 
@@ -596,7 +596,6 @@ if (ViewBag.vbVoucherModel != null)
                 debe: "Monto invalido",
                 haber: "Monto invalido",
                 //idItem : "Debe seleccionar un item",
-                centrocosto: "Debe seleccionar una centro de costo"
             }
         });
        // $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
@@ -733,12 +732,12 @@ if (ViewBag.vbVoucherModel != null)
                 }
             });
 
-            $("#centrocost_"+idRowCount).rules('add', {
-                validaCentroCosto : true,
-                messages: {
-                    validaCentroCosto : "Debe seleccionar una centro de costo"
-                }
-            });
+            //$("#centrocost_"+idRowCount).rules('add', {
+            //    validaCentroCosto : true,
+            //    messages: {
+            //        validaCentroCosto : "Debe seleccionar una centro de costo"
+            //    }
+            //});
 
 
 
@@ -811,12 +810,12 @@ if (ViewBag.vbVoucherModel != null)
                     }
                 });
 
-              $("#centrocost_"+idRowCount).rules('add', {
-                  validaCentroCosto : true,
-                  messages: {
-                      validaCentroCosto : "Debe seleccionar una centro de costo"
-                  }
-              });
+              //$("#centrocost_"+idRowCount).rules('add', {
+              //    validaCentroCosto : true,
+              //    messages: {
+              //        validaCentroCosto : "Debe seleccionar una centro de costo"
+              //    }
+              //});
 
 
 
