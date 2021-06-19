@@ -541,7 +541,15 @@ public class CartolaBancariaMacroModel
 
         if (CartolaEncontrada != null)
             db.DBCartolaBMacro.Remove(CartolaEncontrada);
+
+        db.SaveChanges();
     }
+
+    //Crear objeto voucher
+    //public static bool ValidarRedundanciaVoucher()
+    //{
+
+    //}
 
 
     public static bool ExistenRepetidos(DateTime FechaCartola, int NumeroCartola, FacturaPoliContext db, ClientesContablesModel  objCliente)

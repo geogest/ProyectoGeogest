@@ -69,6 +69,7 @@ namespace TryTestWeb.Controllers
             var LibroMayor = new List<LibroMayorConciliacion>();
 
             var DetalleCartola = CartolaBancariaModel.ObtenerDetalleCartola(DatosConciliacion.IdCartola, db, objCliente);
+            FiltrosParaLibros Filtro = MapperConciliacionBancaria.MapperFiltrosParaLibros(1, 0, "", "", DatosConciliacion.Anio, DatosConciliacion.Mes, "", "", DatosConciliacion.IdCuentaContable.ToString(), "", 0, true, 0, true);
             var LibroMayorConsultado = VoucherModel.GetLibroMayorTwo(1, 0, objCliente, db, "", "", DatosConciliacion.Anio, DatosConciliacion.Mes, "", "", DatosConciliacion.IdCuentaContable.ToString(), "", 0, true, 0, true);
             LibroMayor = CartolaBancariaModel.getListaLibroMayor(LibroMayorConsultado.ResultStringArray);
 

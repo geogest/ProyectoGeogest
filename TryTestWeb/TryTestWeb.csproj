@@ -378,9 +378,12 @@
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\FiltrosEstadoCtasCorrientes.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\UsoComunAux.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadBoletas\BoletasExcelModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaMacroModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\ConciliacionBancariaViewModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\FiltrosParaLibros.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\MapperConciliacionBancaria.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadViewModels\EstadoResultadoViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadViewModels\FiltrosEstadoResultado.cs" />
     <Compile Include="Models\ModelosSistemaContable\CtasContablesPresupuestoModel.cs" />

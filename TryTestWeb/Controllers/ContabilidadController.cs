@@ -14,6 +14,7 @@ using System.Xml;
 using ClosedXML.Excel;
 using System.Web.Routing;
 using System.Data.Entity;
+using TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas;
 
 namespace TryTestWeb.Controllers
 {
@@ -2012,6 +2013,28 @@ namespace TryTestWeb.Controllers
 
             return View(ListaBoletas.ToList());
         }
+
+        [Authorize]
+        public ActionResult ImportarBoletas()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult ProcesarExcelBoleta(HttpPostedFile Excel)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+            var ReturnValues = new BoletasExcelModel();
+
+
+            return View();
+        }
         
         [Authorize]
         public JsonResult ObtenerPrestador(string TipoPrestador)
@@ -3001,6 +3024,8 @@ namespace TryTestWeb.Controllers
         }
 
 
+
+
         [Authorize]
         [ModuloHandler]
         public ActionResult BAPasivoFijoNoCorriente()
@@ -3637,35 +3662,35 @@ namespace TryTestWeb.Controllers
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
 
- IQueryable<LibroMayor> LibroMayorCompleto = from detalleVoucher in db.DBDetalleVoucher
-                                     join Voucher in db.DBVoucher on detalleVoucher.VoucherModelID equals Voucher.VoucherModelID into vouchGroup
-                                     from Voucher in vouchGroup.DefaultIfEmpty()
-                                     join ClienteContable in db.DBClientesContables on Voucher.ClientesContablesModelID equals ClienteContable.ClientesContablesModelID into clientecontGroup
-                                     from ClienteContable in clientecontGroup.DefaultIfEmpty()
-                                     join Auxiliar in db.DBAuxiliares on detalleVoucher.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID into auxGroup
-                                     from Auxiliar in auxGroup.DefaultIfEmpty()
-                                     join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID into auxdetallGroup
-                                     from AuxiliarDetalle in auxdetallGroup.DefaultIfEmpty()
-                                     join CtaContable in db.DBCuentaContable on detalleVoucher.ObjCuentaContable.CuentaContableModelID equals CtaContable.CuentaContableModelID into ctaGroup
-                                     from CtaContable in ctaGroup.DefaultIfEmpty()
-                                     join Receptor in db.Receptores on AuxiliarDetalle.Individuo2.QuickReceptorModelID equals Receptor.QuickReceptorModelID into recepGroup
-                                     from Receptor in recepGroup.DefaultIfEmpty()
+     IQueryable<LibroMayor> LibroMayorCompleto = from detalleVoucher in db.DBDetalleVoucher
+                                         join Voucher in db.DBVoucher on detalleVoucher.VoucherModelID equals Voucher.VoucherModelID into vouchGroup
+                                         from Voucher in vouchGroup.DefaultIfEmpty()
+                                         join ClienteContable in db.DBClientesContables on Voucher.ClientesContablesModelID equals ClienteContable.ClientesContablesModelID into clientecontGroup
+                                         from ClienteContable in clientecontGroup.DefaultIfEmpty()
+                                         join Auxiliar in db.DBAuxiliares on detalleVoucher.DetalleVoucherModelID equals Auxiliar.DetalleVoucherModelID into auxGroup
+                                         from Auxiliar in auxGroup.DefaultIfEmpty()
+                                         join AuxiliarDetalle in db.DBAuxiliaresDetalle on Auxiliar.AuxiliaresModelID equals AuxiliarDetalle.AuxiliaresModelID into auxdetallGroup
+                                         from AuxiliarDetalle in auxdetallGroup.DefaultIfEmpty()
+                                         join CtaContable in db.DBCuentaContable on detalleVoucher.ObjCuentaContable.CuentaContableModelID equals CtaContable.CuentaContableModelID into ctaGroup
+                                         from CtaContable in ctaGroup.DefaultIfEmpty()
+                                         join Receptor in db.Receptores on AuxiliarDetalle.Individuo2.QuickReceptorModelID equals Receptor.QuickReceptorModelID into recepGroup
+                                         from Receptor in recepGroup.DefaultIfEmpty()
 
-                                     select new LibroMayor
-                                     {
-                                         Haber = detalleVoucher.MontoHaber,
-                                         Debe = detalleVoucher.MontoDebe,
-                                         Glosa = detalleVoucher.GlosaDetalle,
-                                         FechaContabilizacion = detalleVoucher.FechaDoc,
-                                         Rut = Receptor.RUT == null ? "-" : Receptor.RUT,
-                                         CodigoInterno = CtaContable.CodInterno,
-                                         CtaContNombre = CtaContable.nombre,
-                                         CtaContablesID = CtaContable.CuentaContableModelID,
-                                         CtaContableClasi = CtaContable.Clasificacion,
-                                         Comprobante = Voucher.Tipo,
-                                         ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
-                                         ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString()
-                                     };
+                                         select new LibroMayor
+                                         {
+                                             Haber = detalleVoucher.MontoHaber,
+                                             Debe = detalleVoucher.MontoDebe,
+                                             Glosa = detalleVoucher.GlosaDetalle,
+                                             FechaContabilizacion = detalleVoucher.FechaDoc,
+                                             Rut = Receptor.RUT == null ? "-" : Receptor.RUT,
+                                             CodigoInterno = CtaContable.CodInterno,
+                                             CtaContNombre = CtaContable.nombre,
+                                             CtaContablesID = CtaContable.CuentaContableModelID,
+                                             CtaContableClasi = CtaContable.Clasificacion,
+                                             Comprobante = Voucher.Tipo,
+                                             ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
+                                             ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString()
+                                         };
             
 
 
