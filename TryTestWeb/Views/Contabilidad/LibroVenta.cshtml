@@ -104,11 +104,23 @@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Fecha Inicio</label>
-                        <input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" value="" />
+                        <div class='input-group date'>
+                            <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        @*<input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" value="" />*@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Fecha Fin</label>
-                        <input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" value="" />
+                        <div class='input-group date '>
+                            <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        @*<input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" value="" />*@
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
@@ -191,9 +203,10 @@
 <script src="~/Content/js/jspdf.debug.js"></script>
 <script src="~/Content/js/html2pdf.js"></script>
 <script src="~/Content/js/html2canvas.js"></script>
-<script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
+<script src="~/Content/js/Contabilidad/jspdf.plugin.autotable.js"></script>
 
 <script>
+   
     $(document).ready(function () {
 
         $("#libroTitle").text("@ViewBag.AnioFrontEnd");

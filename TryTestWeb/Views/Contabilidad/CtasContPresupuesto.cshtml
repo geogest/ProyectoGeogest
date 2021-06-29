@@ -97,11 +97,23 @@
                     <div class="form-group">
                         <div class="col-md-3">
                             <label>FechaInicio Presupuesto</label>
-                            <input type="text" id="FechaInicio" name="FechaInicio" class="form-control" autocomplete="off" required />
+                            <div class='input-group date '>
+                                <input type="text" id="FechaInicio" name="FechaInicio" class="form-control anotherSelector" autocomplete="off" required />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            
                         </div>
                         <div class="col-md-3">
                             <label>Fecha Vencimineto Presupuesto</label>
-                            <input type="text" id="FechaVencimiento" name="FechaVencimiento" class="form-control" autocomplete="off" required />
+                            <div class='input-group date '>
+                                <input type="text" id="FechaVencimiento" name="FechaVencimiento" class="form-control anotherSelector" autocomplete="off" required />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            
                         </div>
                         <div class="col-md-3">
                             <label>Nombre Presupuesto</label>
@@ -165,31 +177,6 @@
 </style>
 
 <script>
-
-    $(document).ready(function(){
-
-        $.datepicker.regional['es'] = {
-            closeText: 'Cerrar',
-            prevText: '<Ant',
-            nextText: 'Sig>',
-            currentText: 'Hoy',
-            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-            weekHeader: 'Sm',
-            dateFormat: 'dd-mm-yy',
-            firstDay: 1,
-            isRTL: false,
-            showMonthAfterYear: false,
-            yearSuffix: ''
-        };
-        $.datepicker.setDefaults($.datepicker.regional['es']);
-        $("#FechaInicio").datepicker();
-        $("#FechaVencimiento").datepicker();
-
-    });
 
     function CheckFunction(CheckSeleccionado, id) {
 

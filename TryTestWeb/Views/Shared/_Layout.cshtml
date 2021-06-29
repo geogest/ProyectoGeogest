@@ -20,7 +20,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geogest</title>
     <meta name="description" content="Sistema de contabilidad" />
@@ -28,12 +28,15 @@
     <meta name="author" content="geogest1.cl" />
     <meta name="copyright" content="Propietario del copyright Geogest" />
     <meta http-equiv=”Content-Language” content=”es” />
- 
+
     <!-- AMA [20-03-2018] : Se generan cambios de layout-->
     @Styles.Render("~/bundles/template2css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/JQueros")
     @Scripts.Render("~/bundles/jqueryval")
+    @*<script src="~/Content/Template2/js/moment.min.js"></script>
+    <script src="~/Content/Template2/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script src="~/Content/Template2/js/bootstrap-datetimepicker.min.js"></script>*@
     <!--[if lt IE 9]>
         @Scripts.Render("~/bundles/HTML5Shiv")
     <![endif]-->
@@ -41,7 +44,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119864475-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'UA-119864475-1');
@@ -62,7 +65,7 @@
                     @*<a href="@Url.Action("Index", "Home")" class="logo"><i class="fa fa-edge icon-c-logo"></i><span>E-Factu</span></a>*@
                     <!-- Image Logo here -->
                     <a href="@Url.Action("SeleccionarEmisorDesdeModulos", "Home")" class="logo">
-                    <i class="fa icon-c-logo"><img src="~/Content/images/Logo/simbologeo.png" height="60" /></i>
+                        <i class="fa icon-c-logo"><img src="~/Content/images/Logo/simbologeo.png" height="60" /></i>
                         <span class="text-center"><img src="~/Content/images/Logo/logogeogest.png" height="63" width="240" /></span>
                     </a>
                 </div>
@@ -80,12 +83,12 @@
                         <li><a href="" target="_blank" class="waves-effect waves-light">Soporte</a></li>
                         @if (!string.IsNullOrWhiteSpace(RazonSocialClienteCont))
                         {
-                        <li class="waves-effect waves-light">
-                            <a href="#">
-                                <b class="text-white">USTED ESTÁ TRABAJANDO EN:&nbsp;&nbsp;&nbsp;@RazonSocialClienteCont</b>
-                            </a>
-                        </li>
-                         }
+                            <li class="waves-effect waves-light">
+                                <a href="#">
+                                    <b class="text-white">USTED ESTÁ TRABAJANDO EN:&nbsp;&nbsp;&nbsp;@RazonSocialClienteCont</b>
+                                </a>
+                            </li>
+                        }
                         @if (ParseExtensions.ItsUserOnCertificationEnvironment(User.Identity.GetUserId()))
                         {
                             <li><a href="#" class="waves-effect waves-light"><i class="ion-alert-circled"></i><span><b> Certificación SII</b></span></a></li>
@@ -112,13 +115,13 @@
                     <ul id="sidebar-menu">
                         <ul>
                             <li class="text-muted menu-title">@RazonS @*Navegación*@</li>
-                          
+
                             @if (VistaAccedida != "SeleccionarClienteContable")
                             {
 
 
-                                            if (ModuloHandler.FuncionRequerida(HttpContext.Current, "Index"))
-                                            {
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "Index"))
+                                {
                                     <li class="has_sub">
                                         <a href="javascript:void(0);" class="waves-effect"><i class="ion-ios7-home-outline"></i> <span>Inicio </span> <span class="menu-arrow"></span></a>
                                         <ul class="list-unstyled">
@@ -347,7 +350,7 @@
                                     </li>
                                 }
 
-                                if(ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
+                                if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
                                 {
                                     <li class="has_sub">
                                         <a href="javascript:void(0);" class="waves-effect"><i class="ion-android-storage"></i> <span>Conciliación Bancaria</span> <span class="menu-arrow"></span></a>
@@ -357,14 +360,14 @@
                                                 <li>
                                                     <a href="@Url.Action("ConciliacionBAutomatica","ContabilidadConciliacionBancaria")">Conciliación desde excel</a>
                                                 </li>
-                                            }   
-                                             @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
+                                            }
+                                            @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "ConciliacionBAutomatica"))
                                             {
                                                 <li>
                                                     <a href="@Url.Action("ConciliacionBancaria","ContabilidadConciliacionBancaria")">Conciliación Manual</a>
                                                 </li>
-                                            }                                                                                      
-                                         </ul>
+                                            }
+                                        </ul>
                                     </li>
                                 }
 
@@ -374,7 +377,7 @@
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroMayorTwo") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "LibroDeHonorarios") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "BalanceGeneral") ||
-                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultado")||
+                                    ModuloHandler.FuncionRequerida(HttpContext.Current, "EstadoResultado") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "CatorceTer") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "CtasContPresupuesto") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "MisPresupuestos") ||
@@ -527,7 +530,7 @@
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaBoletas") ||
                                     ModuloHandler.FuncionRequerida(HttpContext.Current, "ListaVouchersBaja")
                                     )
-                                    {
+                                {
                                     <li class="has_sub">
                                         <a href="javascript:void(0);" class="waves-effect"><i class="ion-android-note"></i> <span> Voucher </span> <span class="menu-arrow"></span></a>
                                         <ul class="list-unstyled">
@@ -589,16 +592,16 @@
                             }
 
 
-                           
 
-                        <!-- //if (ModuloHandler.FuncionAnyContabilidad(HttpContext.Current))-->
 
-                        
-            
+                            <!-- //if (ModuloHandler.FuncionAnyContabilidad(HttpContext.Current))-->
 
-                        </ul>
+
+
 
                         </ul>
+
+                    </ul>
                 </div>
             </div>
         }
@@ -622,10 +625,12 @@
         <!-- AMA [20-03-2018] : Se generan cambios de layout-->
         @Scripts.Render("~/bundles/template2js")
         @Scripts.Render("~/bundles/jqueryval")
+        <link rel="stylesheet" href="~/Content/css/flatpickr.min.css">
+        <script src="~/Content/js/flatpickr.js"></script>
 
 
         <script type="text/javascript">
-           
+
             @if (VistaAccedida != null && (VistaAccedida == "SeleccionarEmisorDesdeModulos" || VistaAccedida == "SeleccionarClienteContable") || VistaAccedida == "ImportarCartolaBancaria")
             {
                 @:$("#wrapper").attr('class', 'forced enlarged');
@@ -637,11 +642,28 @@
                         event.preventDefault();
                         return false;
                     }
+
                 });
 
                 $.validator.addMethod("rutValidator", function (value, element) {
                     return this.optional(element) || $.Rut.validar(value);
                 }, "Debe ingresar un rut valido.");
+
+                flatpickr(".anotherSelector", {
+                    enableTime: false,
+                    dateFormat: "d-m-Y",
+                    locale: {
+                        firstDayOfWeek: 1,
+                        weekdays: {
+                            shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                            longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                        },
+                        months: {
+                            shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Оct', 'Nov', 'Dic'],
+                            longhand: ['Enero', 'Febrero', 'Мarzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                        },
+                    },
+                });
             });
 
 
@@ -650,7 +672,7 @@
             }
 
             $('input.date').datepicker({ dateFormat: 'dd-mm-yy' });
-                
+
             function ShowMessage(message, messagetype) {
                 var cssclass;
                 var color;

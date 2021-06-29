@@ -69,10 +69,16 @@ namespace TryTestWeb.Controllers
             var LibroMayor = new List<LibroMayorConciliacion>();
 
             var DetalleCartola = CartolaBancariaModel.ObtenerDetalleCartola(DatosConciliacion.IdCartola, db, objCliente);
-            var LibroMayorConsultado = VoucherModel.GetLibroMayorTwo(1, 0, objCliente, db, "", "", DatosConciliacion.Anio, DatosConciliacion.Mes, "", "", DatosConciliacion.IdCuentaContable.ToString(), "", 0, true, 0, true);
+            var Filtros = MapperConciliacionBancaria.MapperFiltrosParaLibros(1, 0, "", "", DatosConciliacion.Anio,
+                                                                     DatosConciliacion.Mes, "", "", DatosConciliacion.IdCuentaContable.ToString(),
+                                                                     "", 0, true, 0, true);
+            var LibroMayorConsultado = VoucherModel.GetLibroMayorTwo(Filtros, objCliente, db);
             LibroMayor = CartolaBancariaModel.getListaLibroMayor(LibroMayorConsultado.ResultStringArray);
+            int CantidadRegistroLibroMayor = LibroMayor.Count();
+            var remover = LibroMayor.Where(x => x.Rut.Contains("Total Final")).FirstOrDefault();
+            LibroMayor.Remove(remover);
 
-            if (DetalleCartola.Count() > 0 && LibroMayor.Count() > 1)
+            if (DetalleCartola.Count() > 0 && LibroMayor.Count() > 0)
             {
                 DatosAcomparar.lstCartola = DetalleCartola;
                 DatosAcomparar.lstLibroMayor = LibroMayor;

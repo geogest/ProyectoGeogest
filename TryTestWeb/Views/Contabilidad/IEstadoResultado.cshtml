@@ -67,11 +67,23 @@
         </div>
         <div class="col-md-3">
             <label>Fecha Inicio</label>
-            <input type="text" name="FechaInicio" id="FechaInicio" value="" class="form-control date" autocomplete="off"/>
+            <div class='input-group date '>
+                <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            @*<input type="text" name="FechaInicio" id="FechaInicio" value="" class="form-control date" autocomplete="off"/>*@
         </div>
         <div class="col-md-3">
             <label>Fecha Fin</label>
-            <input type="text" name="FechaFin" id="FechaFin" value="" class="form-control date" autocomplete="off"/>
+            <div class='input-group date '>
+                <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            @*<input type="text" name="FechaFin" id="FechaFin" value="" class="form-control date" autocomplete="off"/>*@
         </div>
     </div>
 </div>
@@ -94,8 +106,8 @@
 
 </style>
 
-
 <script type="text/javascript">
+   
     $(document).ready(function () {
         $('#FechaInicio').change(function (e) { filtrar(); });
         $('#FechaFin').change(function (e) { filtrar(); });

@@ -96,11 +96,23 @@
 
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Fecha Inicio</label>
-                        <input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" />
+                        <div class='input-group date '>
+                            <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        @*<input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" />*@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Fecha Fin</label>
-                        <input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" />
+                        <div class='input-group date '>
+                            <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        @*<input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" />*@
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
@@ -186,10 +198,11 @@
     }
 </style>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/css/Contabilidad/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="~/Content/js/Contabilidad/jquery.dataTables.js"></script>
 
 <script>
+
     $(document).ready(function () {
         $("#libroTitle").text("@ViewBag.AnioFrontEnd");
 

@@ -3457,7 +3457,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult LibroMayorTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool BusquedaDesdeBalance = false)
+        public ActionResult LibroMayorTwo(FiltrosParaLibros flibros)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -3470,7 +3470,7 @@ namespace TryTestWeb.Controllers
 
             bool Filtro = false;
 
-            if (Anio > 0 || !string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            if (flibros.Anio > 0 || !string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
                 Filtro = true;
             }
@@ -3481,27 +3481,27 @@ namespace TryTestWeb.Controllers
 
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
 
-            if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
             else
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, null, null, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
 
-            if (Anio <= 0)
-                Anio = DateTime.Now.Year;
+            if (flibros.Anio <= 0)
+                flibros.Anio = DateTime.Now.Year;
 
             var FechasExcel = new SessionParaExcel() 
             { 
-                Anio = Anio.ToString(),
-                Mes = Mes.ToString(),
-                FechaInicio = FechaInicio,
-                FechaFin = FechaFin,
-                CtaContId = CuentaContableID
+                Anio = flibros.Anio.ToString(),
+                Mes = flibros.Mes.ToString(),
+                FechaInicio = flibros.FechaInicio,
+                FechaFin = flibros.FechaFin,
+                CtaContId = flibros.CuentaContableID
             };
 
             Session["FechasExcel"] = FechasExcel;
@@ -3547,7 +3547,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public JsonResult LibroMayorDesdeBalance(int pagina = 1, int cantidadRegistrosPorPagina = 0, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool BusquedaDesdeBalance = false)
+        public JsonResult LibroMayorDesdeBalance(FiltrosParaLibros flibros)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -3570,17 +3570,17 @@ namespace TryTestWeb.Controllers
 
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
 
-            if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
             else
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
-            int CtaContID = ParseExtensions.ParseInt(CuentaContableID);
+            int CtaContID = ParseExtensions.ParseInt(flibros.CuentaContableID);
             Session["ObjetoCuentaContableConsultada"] = db.DBCuentaContable.SingleOrDefault(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID && x.CuentaContableModelID == CtaContID).CuentaContableModelID;
             db.Dispose();
 
@@ -3588,7 +3588,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public JsonResult ServicioLibroMayorConciliacion(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string Glosa = "", string CuentaContableID = "", string RazonPrestador = "", int NumVoucher = 0, bool BusquedaDesdeBalance = false)
+        public JsonResult ServicioLibroMayorConciliacion(FiltrosParaLibros flibros)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -3600,7 +3600,7 @@ namespace TryTestWeb.Controllers
 
             bool Filtro = false;
 
-            if (Anio > 0 || !string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            if (flibros.Anio > 0 || !string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
                 Filtro = true;
             }
@@ -3611,17 +3611,17 @@ namespace TryTestWeb.Controllers
 
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
 
-            if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro, 0, true);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
             else
             {
-                ReturnValues = VoucherModel.GetLibroMayorTwo(pagina, cantidadRegistrosPorPagina, objCliente, db, FechaInicio, FechaFin, Anio, Mes, Rut, Glosa, CuentaContableID, RazonPrestador, NumVoucher, Filtro, 0, true);
+                ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
                 Session["LibroMayorTwo"] = ReturnValues.ResultStringArray;
             }
-            int CtaContID = ParseExtensions.ParseInt(CuentaContableID);
+            int CtaContID = ParseExtensions.ParseInt(flibros.CuentaContableID);
             Session["ObjetoCuentaContableConsultada"] = db.DBCuentaContable.SingleOrDefault(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID && x.CuentaContableModelID == CtaContID).CuentaContableModelID;
             db.Dispose();
 
@@ -3677,9 +3677,7 @@ namespace TryTestWeb.Controllers
         //Queda pendiente modificar vista para integrar la paginación.
         [Authorize]
         [ModuloHandler]
-        public ActionResult LibroDiario(int pagina = 1, int cantidadRegistrosPorPagina = 25, int Anio = 0, int Mes = 0,
-                                        string FechaInicio = "", string FechaFin = "", string Folio = "", string Glosa = "",
-                                        string CuentaContableID = "")
+        public ActionResult LibroDiario(FiltrosParaLibros flibros)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -3692,29 +3690,29 @@ namespace TryTestWeb.Controllers
             bool ConversionFechaFinExitosa = false;
             DateTime dtFechaFin = new DateTime();
 
-            ConversionFechaInicioExitosa = DateTime.TryParse(FechaInicio, out dtFechaInicio);
-            ConversionFechaFinExitosa = DateTime.TryParse(FechaFin, out dtFechaFin);
+            ConversionFechaInicioExitosa = DateTime.TryParse(flibros.FechaInicio, out dtFechaInicio);
+            ConversionFechaFinExitosa = DateTime.TryParse(flibros.FechaFin, out dtFechaFin);
 
             ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsString(objCliente);
 
             //Anio = DateTime.Now.Year;
 
             List<VoucherModel> lstVoucherModel = objCliente.ListVoucher.Where(r => r.DadoDeBaja == false).ToList();
-            ViewBag.AnioFrontEnd = "Diario General " + " de " + Anio;
+            ViewBag.AnioFrontEnd = "Diario General " + " de " + flibros.Anio;
 
             PaginadorModel returnValue = new PaginadorModel();
             if (ConversionFechaFinExitosa && ConversionFechaInicioExitosa)
             {
-                returnValue = VoucherModel.GetLibroDiario(pagina, cantidadRegistrosPorPagina, lstVoucherModel, db, false, Anio, Mes, dtFechaInicio, dtFechaFin, Folio, Glosa, CuentaContableID); //GetLibroMayor(lstVoucherModel, singleCuentaContable, dtFechaInicio, dtFechaFin);
+                returnValue = VoucherModel.GetLibroDiario(flibros.pagina, flibros.cantidadRegistrosPorPagina, lstVoucherModel, db, false, flibros.Anio, flibros.Mes, dtFechaInicio, dtFechaFin, flibros.Folio, flibros.Glosa, flibros.CuentaContableID); //GetLibroMayor(lstVoucherModel, singleCuentaContable, dtFechaInicio, dtFechaFin);
                 Session["LibroDiarioF"] = returnValue.ResultStringArray;
             }
             else
             {
-                returnValue = VoucherModel.GetLibroDiario(pagina, cantidadRegistrosPorPagina, lstVoucherModel, db, false, Anio, Mes, null, null, Folio, Glosa, CuentaContableID);
+                returnValue = VoucherModel.GetLibroDiario(flibros.pagina, flibros.cantidadRegistrosPorPagina, lstVoucherModel, db, false, flibros.Anio, flibros.Mes, null, null, flibros.Folio, flibros.Glosa, flibros.CuentaContableID);
                 Session["LibroDiarioF"] = returnValue.ResultStringArray;
             }
 
-            var FechaExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(),Mes.ToString(),FechaInicio,FechaFin,CuentaContableID);
+            var FechaExcel = SessionParaExcel.ObtenerObjetoExcel(flibros.Anio.ToString(),flibros.Mes.ToString(),flibros.FechaInicio,flibros.FechaFin,flibros.CuentaContableID);
             Session["FechasExcel"] = FechaExcel;
 
 
@@ -5017,7 +5015,7 @@ namespace TryTestWeb.Controllers
         //PENDING
         [Authorize]
         [ModuloHandler]
-        public ActionResult LibroVenta(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string RazonSocial = "", string RutInicio = "", string RutFinal = "", int Folio = 0)
+        public ActionResult LibroVenta(FiltrosParaLibros flibros)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -5026,9 +5024,9 @@ namespace TryTestWeb.Controllers
             var Paginador = new PaginadorModel();
             ViewBag.ObjClienteContable = objCliente;
 
-            Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Venta, db, FechaInicio, FechaFin, Anio, Mes, pagina, cantidadRegistrosPorPagina, Rut, RazonSocial,Folio);
+            Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Venta, db, flibros.FechaInicio, flibros.FechaFin, flibros.Anio, flibros.Mes, flibros.pagina, flibros.cantidadRegistrosPorPagina, flibros.Rut, flibros.RazonSocial,flibros.IFolio);
 
-            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(), Mes.ToString(),FechaInicio,FechaFin, string.Empty);
+            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(flibros.Anio.ToString(), flibros.Mes.ToString(),flibros.FechaInicio,flibros.FechaFin, string.Empty);
 
             Session["FechasExcel"] = FechasExcel;
             Session["LibroVenta"] = Paginador.ResultStringArray;
@@ -5071,7 +5069,7 @@ namespace TryTestWeb.Controllers
         //PENDING
         [Authorize]
         [ModuloHandler]
-        public ActionResult LibroCompra(int pagina = 1, int cantidadRegistrosPorPagina = 25, string FechaInicio = "", string FechaFin = "", int Anio = 0, int Mes = 0, string Rut = "", string RazonSocial = "",int Folio = 0)
+        public ActionResult LibroCompra(FiltrosParaLibros flibros)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -5081,10 +5079,10 @@ namespace TryTestWeb.Controllers
 
             var Paginador = new PaginadorModel();
 
-            Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Compra, db,FechaInicio,FechaFin,Anio,Mes,pagina,cantidadRegistrosPorPagina,Rut,RazonSocial,Folio);
+            Paginador = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Compra, db,flibros.FechaInicio,flibros.FechaFin,flibros.Anio,flibros.Mes,flibros.pagina,flibros.cantidadRegistrosPorPagina,flibros.Rut,flibros.RazonSocial,flibros.IFolio);
 
       
-            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(), Mes.ToString(), FechaInicio, FechaFin, string.Empty);
+            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(flibros.Anio.ToString(), flibros.Mes.ToString(), flibros.FechaInicio, flibros.FechaFin, string.Empty);
 
             Session["FechasExcel"] = FechasExcel;
             Session["LibroCompra"] = Paginador.ResultStringArray;
@@ -5494,7 +5492,7 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult LibroDeHonorarios(int pagina = 1, int cantidadRegistrosPorPagina = 25, int Mes = 0, int Anio = 0, string RazonSocial = "", string Rut = "", string FechaInicio = "",string FechaFin = "",int Folio = 0)
+        public ActionResult LibroDeHonorarios(FiltrosParaLibros flibros)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
@@ -5508,17 +5506,17 @@ namespace TryTestWeb.Controllers
 
             string TipoReceptor = "H";
 
-            IQueryable<AuxiliaresDetalleModel> LibroHonorario = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db, TipoReceptor, Mes, Anio, RazonSocial, Rut, FechaInicio, FechaFin,Folio);
+            IQueryable<AuxiliaresDetalleModel> LibroHonorario = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db, TipoReceptor, flibros.Mes, flibros.Anio, flibros.RazonSocial, flibros.Rut, flibros.FechaInicio, flibros.FechaFin,flibros.IFolio);
 
             int TotalRegistros = LibroHonorario.Count();
 
-            if (cantidadRegistrosPorPagina != 0)
+            if (flibros.cantidadRegistrosPorPagina != 0)
             {
                 LibroHonorario = LibroHonorario.OrderBy(x => x.FechaContabilizacion)
-                                         .Skip((pagina - 1) * cantidadRegistrosPorPagina)
-                                         .Take(cantidadRegistrosPorPagina);
+                                         .Skip((flibros.pagina - 1) * flibros.cantidadRegistrosPorPagina)
+                                         .Take(flibros.cantidadRegistrosPorPagina);
             }
-            else if (cantidadRegistrosPorPagina == 0)
+            else if (flibros.cantidadRegistrosPorPagina == 0)
             {
                 LibroHonorario = LibroHonorario.OrderBy(x => x.FechaContabilizacion);
             }
@@ -5562,29 +5560,29 @@ namespace TryTestWeb.Controllers
             
             var Paginacion = new PaginadorModel();
             Paginacion.ResultStringArray = ReturnValues;
-            Paginacion.PaginaActual = pagina;
+            Paginacion.PaginaActual = flibros.pagina;
             Paginacion.TotalDeRegistros = TotalRegistros;
-            Paginacion.RegistrosPorPagina = cantidadRegistrosPorPagina;
+            Paginacion.RegistrosPorPagina = flibros.cantidadRegistrosPorPagina;
             Paginacion.ValoresQueryString = new RouteValueDictionary();
 
-            if (cantidadRegistrosPorPagina != 25)
-                Paginacion.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
-            if (Mes != 0)
-                Paginacion.ValoresQueryString["Mes"] = Mes;
-            if (Anio != 0)
-                Paginacion.ValoresQueryString["Anio"] = Anio; 
-            if (!string.IsNullOrWhiteSpace(RazonSocial))
-                Paginacion.ValoresQueryString["RazonSocial"] = RazonSocial;
-            if (!string.IsNullOrWhiteSpace(Rut))
-                Paginacion.ValoresQueryString["Rut"] = Rut;
-            if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            if (flibros.cantidadRegistrosPorPagina != 25)
+                Paginacion.ValoresQueryString["cantidadRegistrosPorPagina"] = flibros.cantidadRegistrosPorPagina;
+            if (flibros.Mes != 0)
+                Paginacion.ValoresQueryString["Mes"] = flibros.Mes;
+            if (flibros.Anio != 0)
+                Paginacion.ValoresQueryString["Anio"] = flibros.Anio; 
+            if (!string.IsNullOrWhiteSpace(flibros.RazonSocial))
+                Paginacion.ValoresQueryString["RazonSocial"] = flibros.RazonSocial;
+            if (!string.IsNullOrWhiteSpace(flibros.Rut))
+                Paginacion.ValoresQueryString["Rut"] = flibros.Rut;
+            if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                Paginacion.ValoresQueryString["FechaInicio"] = FechaInicio;
-                Paginacion.ValoresQueryString["FechaFin"] = FechaFin;
+                Paginacion.ValoresQueryString["FechaInicio"] = flibros.FechaInicio;
+                Paginacion.ValoresQueryString["FechaFin"] = flibros.FechaFin;
             }
 
             Session["LibroDeHonorarios"] = ReturnValues;
-            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(), Mes.ToString(), FechaInicio, FechaFin, string.Empty);
+            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(flibros.Anio.ToString(), flibros.Mes.ToString(), flibros.FechaInicio, flibros.FechaFin, string.Empty);
             Session["FechasExcel"] = FechasExcel;
 
             return View(Paginacion);

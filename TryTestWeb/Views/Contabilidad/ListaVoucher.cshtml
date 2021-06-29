@@ -95,11 +95,23 @@
                                     </div>
                                     <div class="col-lg-2 form-group">
                                         <label class="control-label">Fecha Inicio</label>
-                                        <input class="form-control" type="text" name="FechaInicio" id="FechaInicio" value="" autocomplete="off" />
+                                        <div class='input-group date'>
+                                            <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                        @*<input class="form-control" type="text" name="FechaInicio" id="FechaInicio" value="" autocomplete="off" />*@
                                     </div>
                                     <div class="col-lg-2 form-group">
                                         <label class="control-label">Fecha Fin</label>
-                                        <input class="form-control" type="text" name="FechaFin" id="FechaFin" value="" autocomplete="off" />
+                                        <div class='input-group date'>
+                                            <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                        @*<input class="form-control" type="text" name="FechaFin" id="FechaFin" value="" autocomplete="off" />*@
                                     </div>
                                     <div class="col-md-2 form-group">
                                         <button type="submit" id="Guardar" name="Guardar" class="btn btn-success centrar">Buscar</button>
@@ -354,7 +366,7 @@
 
 
 <script>
-
+   
     var deletThis = 0;
 
     $(document).ready(function () {
@@ -386,27 +398,6 @@
             });
 
         });
-
-        $.datepicker.regional['es'] = {
-            closeText: 'Cerrar',
-            prevText: '<Ant',
-            nextText: 'Sig>',
-            currentText: 'Hoy',
-            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-            weekHeader: 'Sm',
-            dateFormat: 'dd-mm-yy',
-            firstDay: 1,
-            isRTL: false,
-            showMonthAfterYear: false,
-            yearSuffix: ''
-        };
-        $.datepicker.setDefaults($.datepicker.regional['es']);
-        $("#FechaInicio").datepicker();
-        $("#FechaFin").datepicker();
 
         ObtenerInputs();
         GuardarSeleccionado();
