@@ -4,8 +4,9 @@ using System.Linq;
 using System.Web;
 using TryTestWeb.Controllers;
 
-public class MapperConciliacionBancaria
-{
+
+    public class MapperConciliacionBancaria
+    {
 
     public static FiltrosParaLibros MapperFiltrosParaLibros(int pagina, int registrosPorPagina, string fechaInicio, string fechaFin, int anio, int mes, string rut, string glosa, string cuentacontableId, string razonprestador, int numvoucher, bool filtro, int centrocosto, bool estaconciliado)
     {
