@@ -42,6 +42,7 @@ public class AuxiliaresDetalleModel
     public int Folio { get; set; }
     public int FolioHasta { get; set; }
     //Utilizado por TipoAuxiliar = 1 / ProveedoresDeudores
+    public decimal MontoBrutoLinea { get; set; }
     public decimal MontoNetoLinea { get; set; }
     public decimal MontoExentoLinea { get; set; }
     public decimal MontoIVALinea { get; set; }

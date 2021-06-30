@@ -242,7 +242,8 @@ public class LibroHonorariosDeTerceros
                     nuevoAuxDetalle.FechaVencimiento = itemLibroHonor.FechaFinal;
                     nuevoAuxDetalle.Folio = itemLibroHonor.NumOFolio;
                     nuevoAuxDetalle.Individuo2 = itemLibroHonor.Receptor;
-                    nuevoAuxDetalle.ValorLiquido = MontoBruto;
+                    nuevoAuxDetalle.MontoBrutoLinea = MontoBruto;
+                    nuevoAuxDetalle.ValorLiquido = MontoPagado;
                     nuevoAuxDetalle.ValorRetencion = MontoRetenido;
                     nuevoAuxDetalle.MontoTotalLinea = MontoPagado;
                     nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;

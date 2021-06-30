@@ -378,7 +378,6 @@ public class CartolaBancariaMacroModel
 
                         VoucherModel CapaVoucher = new VoucherModel();
 
-
                         CapaVoucher.TipoOrigenVoucher = TipoPrestador;
 
                         CapaVoucher.FechaEmision = itemCartola.Fecha;
@@ -387,9 +386,9 @@ public class CartolaBancariaMacroModel
                         CapaVoucher.Glosa = itemCartola.Glosa;
 
                         if (itemCartola.Debe > 0 && itemCartola.Haber == 0)
-                            CapaVoucher.Tipo = TipoVoucher.Egreso;
-                        else if (itemCartola.Haber > 0 && itemCartola.Debe == 0)
                             CapaVoucher.Tipo = TipoVoucher.Ingreso;
+                        else if (itemCartola.Haber > 0 && itemCartola.Debe == 0)
+                            CapaVoucher.Tipo = TipoVoucher.Egreso;
 
                         //Armamos tabla Detalle Voucher
                         List<DetalleVoucherModel> LstDetalle = new List<DetalleVoucherModel>();

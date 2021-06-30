@@ -647,7 +647,8 @@ public class LibrosContablesModel
                     nuevoAuxDetalle.FechaContabilizacion = itemLibroHonor.FechaContabilizacion;
                     nuevoAuxDetalle.Folio = itemLibroHonor.NumIdenficiador;
                     nuevoAuxDetalle.Individuo2 = itemLibroHonor.Prestador;
-                    nuevoAuxDetalle.ValorLiquido = MontoBruto;
+                    nuevoAuxDetalle.MontoBrutoLinea = MontoBruto;
+                    nuevoAuxDetalle.ValorLiquido = MontoPagado;
                     nuevoAuxDetalle.ValorRetencion = MontoRetenido;
                     nuevoAuxDetalle.MontoTotalLinea = MontoPagado;
                     nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
