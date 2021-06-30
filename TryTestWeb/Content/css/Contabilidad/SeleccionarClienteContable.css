@@ -1,0 +1,79 @@
+﻿body {
+}
+
+.tamanoContenido 
+{
+    display: flex;
+    margin-top: 18px;
+}
+
+.panel-heading 
+{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    margin-bottom: 10px;
+}
+
+#barralateral 
+{
+    display: none;
+}
+
+.letras 
+{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
+    font-size: 12px;
+}
+
+.icono 
+{
+    float: left;
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 5px;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+}
+
+.card 
+{
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    background: #36404a;
+    padding-top: 3%;
+    padding-bottom: 2%;
+    margin: 5px;
+}
+
+.card:hover 
+{
+    /* On mouse-over, add a deeper shadow */
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,5);
+    background: #495562;
+}
+
+.usuarioimg 
+{
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.botonesDetalle 
+{
+    margin-left: 45%;
+    background-color: #5d9cec;
+}
+@media (max-width: 768px) {
+    .division {
+        font-size: 14px;
+    }
+    .padingtop {
+        padding-top:12px;
+    }
+}

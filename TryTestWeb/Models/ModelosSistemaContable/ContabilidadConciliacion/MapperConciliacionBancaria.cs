@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using TryTestWeb.Controllers;
 
 
     public class MapperConciliacionBancaria
@@ -13,7 +14,7 @@ using System.Web;
         {
             pagina = pagina,
             cantidadRegistrosPorPagina = registrosPorPagina,
-            FechaInicio  = fechaInicio,
+            FechaInicio = fechaInicio,
             FechaFin = fechaFin,
             Anio = anio,
             Mes = mes,

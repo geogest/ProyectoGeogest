@@ -2,10 +2,7 @@
 
 
 
-
 <br />
-
-
 
 <!-- Page-Title -->
 <div class="row">
@@ -14,16 +11,16 @@
         <div class="page-header-2">
             <div class="row container">
                 <div class="col-md-8"></div>
-                    <div class="col-md-2">
-                        <div class="pull-right">
-                            <br />
-                            <button class="btn btn-default" onclick="ExportarPDF()">
-                                <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                            </button>
-                            <br />
-                            <br />
-                        </div>
+                <div class="col-md-2">
+                    <div class="pull-right">
+                        <br />
+                        <button class="btn btn-default" onclick="ExportarPDF()">
+                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
+                        </button>
+                        <br />
+                        <br />
                     </div>
+                </div>
 
                 <div class="col-md-2">
                     @using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
@@ -86,11 +83,28 @@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Fecha Inicio</label>
-                        <input type="text" class="form-control date" name="fechainicio" id="fechainicio" />
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" name="fechainicio" id="fechainicio" value="" class="form-control anotherSelector" autocomplete="off" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        @*<input type="text" class="form-control date" name="fechainicio" id="fechainicio" />*@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Fecha Fin</label>
-                        <input type="text" class="form-control date" name="fechafin" id="fechafin" />
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" name="fechafin" id="fechafin" value="" class="form-control anotherSelector" autocomplete="off" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        @*<input type="text" class="form-control date" name="fechafin" id="fechafin" />*@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label>Centro de Costos</label>
@@ -108,7 +122,7 @@
                 </div>
             </div>
 
-            <div id="detalleCta" class="modal fade" tabindex="-1" role="dialog" >
+            <div id="detalleCta" class="modal fade" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -178,20 +192,27 @@
     .centrar {
         margin-top: 25px;
     }
-    .letra-pequenia{
-        font-size:1.2rem;
+
+    .letra-pequenia {
+        font-size: 1.2rem;
     }
+
     .esconder {
-        display:none;
+        display: none;
     }
 </style>
 
 <script src="~/Content/js/jspdf.debug.js"></script>
 <script src="~/Content/js/html2pdf.js"></script>
 <script src="~/Content/js/html2canvas.js"></script>
-<script src="https://unpkg.com/jspdf-autotable@3.5.6/dist/jspdf.plugin.autotable.js"></script>
+<script src="~/Content/js/Contabilidad/jspdf.plugin.autotable.js"></script>
+
+
 
 <script type="text/javascript">
+
+    
+
     $(document).ready(function () {
 
         GuardarUltimaBusqueda();
@@ -203,28 +224,6 @@
             filtrar();
             GuardarUltimaBusqueda();
         });
-
-
-        $.datepicker.regional['es'] = {
-            closeText: 'Cerrar',
-            prevText: '<Ant',
-            nextText: 'Sig>',
-            currentText: 'Hoy',
-            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-            weekHeader: 'Sm',
-            dateFormat: 'dd-mm-yy',
-            firstDay: 1,
-            isRTL: false,
-            showMonthAfterYear: false,
-            yearSuffix: ''
-        };
-        $.datepicker.setDefaults($.datepicker.regional['es']);
-        $("#fechainicio").datepicker();
-        $("#fechafin").datepicker();
 
     });
 
@@ -275,7 +274,7 @@
     const GenerarBusquedaLibroMayor = (idCuentaCont) => {
 
         const UltimaBusquedaOdefault = ObtenerUltimaBusqueda();
-        
+
         const ctaContId = idCuentaCont;
         const anio = UltimaBusquedaOdefault.Anio;
         const mes = UltimaBusquedaOdefault.Mes;
@@ -355,7 +354,7 @@
         let tbDatosClientes = document.getElementById("datosCliente");
         let tbFirma = document.getElementById("tbFirma");
         let tbTitle = document.getElementById("BalanceGeneralTitle");
-        
+
         doc.autoTable({ html: tbTitle, theme: 'plain', styles: { fontSize: 20 } });
         doc.autoTable({ html: tbDatosClientes, theme: 'plain', styles: { fontSize: 7 } });
         doc.autoTable({ html: tbBalance, theme: 'grid', styles: { fontSize: 7} });

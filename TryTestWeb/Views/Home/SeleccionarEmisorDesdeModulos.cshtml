@@ -5,7 +5,7 @@
 }
 
 @*@using Microsoft.AspNet.Identity*@
-<link href="~/Content/css/SeleccionarEmisorDesdeModulos.css" rel="stylesheet" type="text/css">
+<link href="~/Content/css/Home/SeleccionarEmisorDesdeModulos.css" rel="stylesheet" type="text/css">
 
 <p class="text-muted m-b-30 "></p>
 <div class="row">
@@ -27,12 +27,15 @@
 
                                 {
                                     
-                                    <div class="card col-xs-12 col-sm-3 col-md-2" id="tablaCliente">
-                                        <img src="~/Content/images/icono empresa.png" alt="empresa" class="tamañoImagen"/>
+                                    <div class="card col-xs-12 col-sm-3 col-md-2" id="tablaCliente"> 
+                                        <a href="javascript:SelecCliente('@Emisor.QuickEmisorModelID');">
+                                            <img src="~/Content/images/icono empresa.png" alt="empresa" class="tamañoImagen" />
                                             <div class="container" id="@Emisor.QuickEmisorModelID">
                                                 <h4 class="colorletra"><b>@Emisor.RazonSocial</b></h4>
                                                 <p class="colorletra">@Emisor.RUTEmpresa</p>
                                             </div>
+                                        </a>
+
                                         <button class="btn boton"><a href="javascript:SelecCliente('@Emisor.QuickEmisorModelID');"><span style="color:white">Seleccionar</span></a></button>
 
                                     </div>
@@ -49,4 +52,4 @@
 
 </div>
 
-<script src="~/Content/js/SeleccionarEmisorDesdeModulos.js"></script>
+<script src="~/Content/js/Home/SeleccionarEmisorDesdeModulos.js"></script>

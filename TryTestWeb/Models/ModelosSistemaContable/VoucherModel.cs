@@ -5,6 +5,7 @@ using ClosedXML.Excel;
 using System.Web;
 using System.Globalization;
 using System.Web.Routing;
+using TryTestWeb.Controllers;
 
 public class VoucherModel
 {
@@ -783,14 +784,8 @@ public class VoucherModel
 
     }
 
-    public static PaginadorModel GetLibroMayorTwo(int pagina, int cantidadRegistrosPorPagina,
-                                          ClientesContablesModel objCliente, FacturaPoliContext db,
-                                          string FechaInicio = "", string FechaFin = "",
-                                          int Anio = 0, int Mes = 0, string Rut = "",
-                                          string Glosa = "", string CuentaContableID = "",
-                                          string RazonPrestador = "", int NumVoucher = 0,
-                                          bool Filtro = false, int CentroDeCostosID = 0,
-                                          bool EstaConciliado = false)
+    public static PaginadorModel GetLibroMayorTwo(FiltrosParaLibros flibros,ClientesContablesModel objCliente, 
+                                                  FacturaPoliContext db)
     {
         List<string[]> ReturnValues = new List<string[]>();
 
@@ -807,10 +802,10 @@ public class VoucherModel
         bool ConversionFechaFinExitosa = false;
         DateTime dtFechaFin = new DateTime();
 
-        if (string.IsNullOrWhiteSpace(FechaInicio) == false && string.IsNullOrWhiteSpace(FechaFin) == false)
+        if (string.IsNullOrWhiteSpace(flibros.FechaInicio) == false && string.IsNullOrWhiteSpace(flibros.FechaFin) == false)
         {
-            ConversionFechaInicioExitosa = DateTime.TryParseExact(FechaInicio, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaInicio);
-            ConversionFechaFinExitosa = DateTime.TryParseExact(FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
+            ConversionFechaInicioExitosa = DateTime.TryParseExact(flibros.FechaInicio, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaInicio);
+            ConversionFechaFinExitosa = DateTime.TryParseExact(flibros.FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
         }
 
 
@@ -848,19 +843,19 @@ public class VoucherModel
                                   });
 
 
-        if (Anio != 0)
+        if (flibros.Anio != 0)
         {
-            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == Anio); // Funcionando
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == flibros.Anio); // Funcionando
         }
 
-        if (Filtro == false)
+        if (flibros.Filtro == false)
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == DateTime.Now.Year);
         }
 
-        if (Mes != 0)
+        if (flibros.Mes != 0)
         {
-            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Month == Mes); // Funcionando
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Month == flibros.Mes); // Funcionando
         }
 
         if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
@@ -869,31 +864,31 @@ public class VoucherModel
             LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion >= dtFechaInicio && r.FechaContabilizacion <= dtFechaFin); // Funcionando
         }
 
-        if (!string.IsNullOrWhiteSpace(Rut))
+        if (!string.IsNullOrWhiteSpace(flibros.Rut))
         {
 
-            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.Rut.Contains(Rut)); // Funcionando
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.Rut.Contains(flibros.Rut)); // Funcionando
         }
 
-        if (!string.IsNullOrWhiteSpace(Glosa))
+        if (!string.IsNullOrWhiteSpace(flibros.Glosa))
         {
-            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.Glosa.Contains(Glosa)); // Funcionando
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.Glosa.Contains(flibros.Glosa)); // Funcionando
         }
 
-        if (!string.IsNullOrWhiteSpace(CuentaContableID))
+        if (!string.IsNullOrWhiteSpace(flibros.CuentaContableID))
         {
-            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.CtaContablesID.ToString() == CuentaContableID); // Funcionando
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.CtaContablesID.ToString() == flibros.CuentaContableID); // Funcionando
         }
 
-        if (!string.IsNullOrWhiteSpace(RazonPrestador))
+        if (!string.IsNullOrWhiteSpace(flibros.RazonPrestador))
         {
-            LibroMayorCompleto = LibroMayorCompleto.Where(x => x.RazonSocial.Contains(RazonPrestador));
+            LibroMayorCompleto = LibroMayorCompleto.Where(x => x.RazonSocial.Contains(flibros.RazonPrestador));
         }
-        if (NumVoucher != 0 && NumVoucher > 0)
+        if (flibros.NumVoucher != 0 && flibros.NumVoucher > 0)
         {
-            LibroMayorCompleto = LibroMayorCompleto.Where(x => x.NumVoucher == NumVoucher);
+            LibroMayorCompleto = LibroMayorCompleto.Where(x => x.NumVoucher == flibros.NumVoucher);
         }
-        if (EstaConciliado == true)
+        if (flibros.EstaConciliado == true)
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(x => x.EstaConciliado == false);
         }
@@ -903,14 +898,14 @@ public class VoucherModel
 
         int TotalRegistros = LibroMayorCompleto.Count();
 
-        if (cantidadRegistrosPorPagina != 0)
+        if (flibros.cantidadRegistrosPorPagina != 0)
         {
             LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.FechaContabilizacion)
-                                     .Skip((pagina - 1) * cantidadRegistrosPorPagina)
-                                     .Take(cantidadRegistrosPorPagina);
+                                     .Skip((flibros.pagina - 1) * flibros.cantidadRegistrosPorPagina)
+                                     .Take(flibros.cantidadRegistrosPorPagina);
 
         }
-        else if (cantidadRegistrosPorPagina == 0)
+        else if (flibros.cantidadRegistrosPorPagina == 0)
         {
             LibroMayorCompleto = LibroMayorCompleto.OrderBy(r => r.FechaContabilizacion);
         }
@@ -1000,40 +995,40 @@ public class VoucherModel
         //Nota Para el futuro, los valores query strings se tienen que llamar igual que la variable que se desea conservar en el tiempo.
         var Paginacion = new PaginadorModel();
         Paginacion.ResultStringArray = ReturnValues;
-        Paginacion.PaginaActual = pagina;
+        Paginacion.PaginaActual = flibros.pagina;
         Paginacion.TotalDeRegistros = TotalRegistros;
-        Paginacion.RegistrosPorPagina = cantidadRegistrosPorPagina;
+        Paginacion.RegistrosPorPagina = flibros.cantidadRegistrosPorPagina;
         Paginacion.ValoresQueryString = new RouteValueDictionary();
 
-        if (cantidadRegistrosPorPagina != 25)
-            Paginacion.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
+        if (flibros.cantidadRegistrosPorPagina != 25)
+            Paginacion.ValoresQueryString["cantidadRegistrosPorPagina"] = flibros.cantidadRegistrosPorPagina;
 
-        if (Anio != 0)
-            Paginacion.ValoresQueryString["Anio"] = Anio;
+        if (flibros.Anio != 0)
+            Paginacion.ValoresQueryString["Anio"] = flibros.Anio;
 
-        if (Mes != 0)
-            Paginacion.ValoresQueryString["Mes"] = Mes;
+        if (flibros.Mes != 0)
+            Paginacion.ValoresQueryString["Mes"] = flibros.Mes;
 
-        if (!string.IsNullOrWhiteSpace(CuentaContableID))
-            Paginacion.ValoresQueryString["CuentaContableID"] = CuentaContableID;
+        if (!string.IsNullOrWhiteSpace(flibros.CuentaContableID))
+            Paginacion.ValoresQueryString["CuentaContableID"] = flibros.CuentaContableID;
 
-        if (!string.IsNullOrWhiteSpace(Rut))
-            Paginacion.ValoresQueryString["Rut"] = Rut;
+        if (!string.IsNullOrWhiteSpace(flibros.Rut))
+            Paginacion.ValoresQueryString["Rut"] = flibros.Rut;
 
-        if (!string.IsNullOrWhiteSpace(Glosa))
-            Paginacion.ValoresQueryString["Glosa"] = Glosa;
+        if (!string.IsNullOrWhiteSpace(flibros.Glosa))
+            Paginacion.ValoresQueryString["Glosa"] = flibros.Glosa;
 
         if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
         {
-            Paginacion.ValoresQueryString["FechaInicio"] = FechaInicio;
-            Paginacion.ValoresQueryString["FechaFin"] = FechaFin;
+            Paginacion.ValoresQueryString["FechaInicio"] = flibros.FechaInicio;
+            Paginacion.ValoresQueryString["FechaFin"] = flibros.FechaFin;
         }
 
-        if (!string.IsNullOrWhiteSpace(RazonPrestador))
-            Paginacion.ValoresQueryString["RazonPrestador"] = RazonPrestador;
+        if (!string.IsNullOrWhiteSpace(flibros.RazonPrestador))
+            Paginacion.ValoresQueryString["RazonPrestador"] = flibros.RazonPrestador;
 
-        if (NumVoucher != 0 && NumVoucher > 0)
-            Paginacion.ValoresQueryString["NumVoucher"] = NumVoucher;
+        if (flibros.NumVoucher != 0 && flibros.NumVoucher > 0)
+            Paginacion.ValoresQueryString["NumVoucher"] = flibros.NumVoucher;
 
         return Paginacion;
     }
