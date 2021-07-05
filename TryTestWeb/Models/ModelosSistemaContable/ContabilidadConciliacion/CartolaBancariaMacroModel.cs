@@ -231,7 +231,7 @@ public class CartolaBancariaMacroModel
         int row = 2;
         while (!string.IsNullOrEmpty(Excel.GetCellValueAsString(row, 1)))
         {
-            DateTime Fecha = Excel.GetCellValueAsDateTime(row, 1);
+            string Fecha = Excel.GetCellValueAsString(row, 1);
             int Docum = Excel.GetCellValueAsInt32(row, 2);
             string Detalle = Excel.GetCellValueAsString(row, 3);
             decimal Debe = Excel.GetCellValueAsDecimal(row, 4);
@@ -241,9 +241,12 @@ public class CartolaBancariaMacroModel
             string Rut = Excel.GetCellValueAsString(row, 8);
             string Glosa = Excel.GetCellValueAsString(row, 9);
 
+            if (!Fecha.Contains("-"))
+                throw new Exception("El formato de la fecha no es correcto");
+
             ObjCartolaYVouchers FilaAGuardar = new ObjCartolaYVouchers()
             {
-                Fecha = Fecha,
+                Fecha = ParseExtensions.CreaFechaLiteral(Fecha),
                 Docum = Docum,
                 Detalle = Detalle,
                 Debe = Debe,
@@ -312,15 +315,19 @@ public class CartolaBancariaMacroModel
     //    return ReturnValues;
     //}
 
-    public static Tuple<bool, List<CartolaBancariaModel>> ConvertirAVoucher(List<ObjCartolaYVouchers> LstCartolaYVouchers, ClientesContablesModel ObjCliente,FacturaPoliContext db,CuentaContableModel CuentaConsultada, string FechaCartola, int NumeroCartola)
+    public static Tuple<bool, List<ObjCartolaYVouchers>> ConvertirAVoucher(List<ObjCartolaYVouchers> LstCartolaYVouchers, ClientesContablesModel ObjCliente,FacturaPoliContext db,CuentaContableModel CuentaConsultada, string FechaCartola, int NumeroCartola)
     {
         
         bool Result = false;
         List<CartolaBancariaModel> LosQueNoEstanEnElMayor = new List<CartolaBancariaModel>();
 
+        List<ObjCartolaYVouchers> LosQueNoPudieronInsertarse = new List<ObjCartolaYVouchers>();
+
         List<ObjCartolaYVouchers> LosQueTienenInformacion = LstCartolaYVouchers.Where(x => !string.IsNullOrWhiteSpace(x.CodigoInterno)).ToList();
         //Los que están en la cartola pero no en el mayor...
         List<ObjCartolaYVouchers> Pendientes = LstCartolaYVouchers.Where(x => string.IsNullOrWhiteSpace(x.CodigoInterno)).ToList();
+        LosQueNoPudieronInsertarse.AddRange(Pendientes);
+
 
         LosQueNoEstanEnElMayor = Pendientes.Select(x => new CartolaBancariaModel
                                                    {
@@ -338,7 +345,6 @@ public class CartolaBancariaMacroModel
                                                    }).ToList();
 
         List<CartolaBancariaModel> CartolaCompleta = new List<CartolaBancariaModel>();
-        
 
         if (LstCartolaYVouchers.Count() > 0)
         {
@@ -350,6 +356,9 @@ public class CartolaBancariaMacroModel
                     CuentaContableModel CuentaAUsar = UtilesContabilidad.CuentaContableDesdeCodInterno(itemCartola.CodigoInterno, ObjCliente);
                     var Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
                     var TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
+
+                    if (CuentaAUsar == null)
+                        throw new Exception($"La cuenta contable que intentas ingresar no está en el plan de cuentas O no está digitada en el excel CUENTA CONTABLE CON ERROR : {itemCartola.CodigoInterno}");
 
                     if(CuentaAUsar.TieneAuxiliar == 1 && Prestador == null)
                     {
@@ -486,16 +495,21 @@ public class CartolaBancariaMacroModel
                             baseNumberFolio++;
                         }
                     }
-
-
-
+                    else
+                    {
+                        LosQueNoPudieronInsertarse.Add(itemCartola);
+                    }    
                 }
                 //Se inserta toda la cartola bancaria para tener respaldo.
                 CartolaCompleta = ObtenerCartolaParaResultadoConciliacion(LosQueNoEstanEnElMayor, CartolaDetalle);
                 var ResultadoInsercionCartolaBancaria = GuardarCartolaBancaria(CartolaDetalle, LosQueNoEstanEnElMayor, FechaCartola, NumeroCartola, CuentaConsultada, ObjCliente, db);
-                Result = true;  
+                Result = true;
         }
-        return Tuple.Create(Result, CartolaCompleta);
+        else
+        {
+            throw new Exception("No hay registros para insertar.");
+        }
+        return Tuple.Create(Result, LosQueNoPudieronInsertarse);
     }
 
     public static object ProcesarResultadoConciliacion(List<ObjCartolaYVouchers> Cartola)
@@ -540,8 +554,6 @@ public class CartolaBancariaMacroModel
 
         if (CartolaEncontrada != null)
             db.DBCartolaBMacro.Remove(CartolaEncontrada);
-
-        db.SaveChanges();
     }
 
     //Crear objeto voucher

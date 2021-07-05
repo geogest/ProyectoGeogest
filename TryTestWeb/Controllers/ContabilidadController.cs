@@ -3549,13 +3549,11 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
-            bool Filtro = false;
-
             if (flibros.Anio > 0 || !string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                Filtro = true;
+                flibros.Filtro = true;
             }
-            else if (Filtro == false)
+            else if (flibros.Filtro == false)
             {
                 ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
             }
@@ -3638,18 +3636,7 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
-            bool Filtro = true;
-
-            //if (Anio > 0 || !string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
-            //{
-            //    Filtro = true;
-            //}
-            //else if (Filtro == false)
-            //{
-            //    ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
-            //}
-
-            //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
+            flibros.Filtro = true;
 
             if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
@@ -3679,13 +3666,11 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
-            bool Filtro = false;
-
             if (flibros.Anio > 0 || !string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                Filtro = true;
+                flibros.Filtro = true;
             }
-            else if (Filtro == false)
+            else if (flibros.Filtro == false)
             {
                 ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
             }
@@ -3852,6 +3837,7 @@ namespace TryTestWeb.Controllers
             int _TotalRegistros = 0;
 
             _TotalRegistros = objCliente.ListVoucher.Where(r => r.DadoDeBaja == true).Count();
+
 
            LstVoucher = objCliente.ListVoucher.Where(r => r.DadoDeBaja == true)
                                                .OrderByDescending(x => x.VoucherModelID)

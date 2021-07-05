@@ -1,4 +1,4 @@
-﻿@model ReporteResultadoConciliacion
+﻿
 @{
     ViewBag.Title = "ResultadoConciliacion";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,117 +15,52 @@
 </div>
 <br />
 
-<h2>Resultado Conciliación</h2>
-
-<div class="container">
+@if (ViewBag.NoInsertados != null)
+{
+    <div class="alert alert-info">Registros no ingresados por alguna falta de datos o datos erroneos</div>
+    <br />
     <div class="row">
-        <div class="panel panel-default">
-            <div class="panel-heading"><h2>Conciliación Bancaria</h2></div>
-            <div class="panel-body">
-                <div class="table table-responsive">
-                    <table class="table" id="reportNoContMayor">
-                        <thead>
-                            <tr>
-                                <th colspan="6">DOCUMENTOS NO CONTABILIZADOS EN EL MAYOR</th>
-                            </tr>
-                            <tr>
-                                <th>Docum</th>
-                                <th>Fecha</th>
-                                <th>Detalle</th>
-                                <th>Debe</th>
-                                <th>Haber</th>
-                                <th>Saldo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                @if (Model.LstNoContabilizadosEnElMayor.Count() > 0)
-                                {
-                                    foreach (var ItemReporte in Model.LstNoContabilizadosEnElMayor)
-                                    {
-                                        <tr>
-                                            <td>@ItemReporte.Folio</td>
-                                            <td>@ParseExtensions.ToDD_MM_AAAA(ItemReporte.Fecha)</td>
-                                            <td>@ItemReporte.Detalle</td>
-                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Debe)</td>
-                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Haber)</td>
-                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Saldo)</td>
-                                        </tr>
-                                    }
-                                }
-                        </tbody>
-                    </table>
-
-                    <br />
-                    <br />
-                    <hr />
-
-                    <table class="table table-bordered compact" id="reportNoRegisCartola">
-                        <thead>
-                            <tr>
-                                <th colspan="6">DOCUMENTOS NO REGISTRADOS EN LA CARTOLA</th>
-                            </tr>
-                            <tr>
-                                <th>Docum</th>
-                                <th>Fecha</th>
-                                <th>Detalle</th>
-                                <th>Debe</th>
-                                <th>Haber</th>
-                                <th>Saldo</th>
-                            </tr>
-
-                        </thead>
-                        <tbody>
-                            
-                                @if (Model.LstNoContabilizadosEnLaCartola.Count() > 1)
-                                {
-                                    foreach (var ItemReporte in Model.LstNoContabilizadosEnLaCartola)
-                                    {
-                                        <tr>
-                                            <td>@ItemReporte.NumDocAsignado</td>
-                                            <td>@ParseExtensions.ToDD_MM_AAAA(ItemReporte.FechaContabilizacion)</td>
-                                            <td>@ItemReporte.Glosa</td>
-                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Debe)</td>
-                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Haber)</td>
-                                            <td>@ParseExtensions.NumeroConPuntosDeMiles(ItemReporte.Saldo)</td>
-                                        </tr>
-                                    }
-                                }
-
-                                       
-                        </tbody>
-                    </table>
-                    <br />
-                    <br />
-                    <table class="table" id="reporteTotales">
-                        <thead>
-                            <tr>
-                                <th>Saldo Mayor</th>
-                                <th>Documentos No Contabilizados en el Mayor</th>
-                                <th>Total Mayor</th>
-                                <th>Saldo Cartola</th>
-                                <th>Documentos no registrados en la Cartola</th>
-                                <th>Total Cartola</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>@ParseExtensions.NumeroConPuntosDeMiles(Model.TotalSaldoMayor)</td>
-                                <td>@ParseExtensions.NumeroConPuntosDeMiles(Model.TotalSaldoNoContabilizadosMayor)</td>
-                                <td>@ParseExtensions.NumeroConPuntosDeMiles(Model.TotalMayor)</td>
-                                <td>@ParseExtensions.NumeroConPuntosDeMiles(Model.TotalSaldoCartola)</td>
-                                <td>@ParseExtensions.NumeroConPuntosDeMiles(Model.TotalDocumNoContaCartola)</td>
-                                <td>@ParseExtensions.NumeroConPuntosDeMiles(Model.TotalCartola)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="panel-footer">
-
-            </div>
+        <div class="table table-responsive">
+            <table id="noinsertados" class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Docum </th>
+                        <th>Detalle </th>
+                        <th>Debe </th>
+                        <th>Haber </th>
+                        <th>Saldo </th>
+                        <th>CodigoInterno </th>
+                        <th>Rut </th>
+                        <th>Glosa </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.NoInsertados)
+                    {
+                    <tr>
+                        <td>@ParseExtensions.ToDD_MM_AAAA(item.Fecha)</td>
+                        <td>@item.Docum </td>
+                        <td>@item.Detalle </td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(item.Debe)</td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(item.Haber) </td>
+                        <td>@ParseExtensions.NumeroConPuntosDeMiles(item.Saldo) </td>
+                        <td>@item.CodigoInterno </td>
+                        <td>@item.Rut </td>
+                        <td>@item.Glosa </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
+}
+else 
+{
+    <div class="alert alert-success">Todos los registros fueron insertados con éxito</div>
+}
+
+
 
 <script src="~/Content/js/jspdf.debug.js"></script>
 <script src="~/Content/js/html2pdf.js"></script>
@@ -138,20 +73,12 @@
     function ExportarPDF() {
         var doc = new jsPDF();
 
-        let reportNoContMayor = document.getElementById('reportNoContMayor');
-        let reportNoContCartola = document.getElementById('reportNoRegisCartola');
-        let reportTotales = document.getElementById('reporteTotales');
+        let noInsertados = document.getElementById('noinsertados');
 
         doc.autoTable({
-            html: reportNoContMayor, theme: 'grid'
+            html: noInsertados, theme: 'grid'
         });
-        doc.autoTable({
-            html: reportNoContCartola, theme: 'grid'
-        });
-        doc.autoTable({
-            html: reporteTotales, theme: 'grid'
-        });
-
-        doc.save('Reporte Conciliacion Bancaria.pdf');
+      
+        doc.save('ReporteRegistrosNoInsertados.pdf');
     }
 </script>
