@@ -3555,7 +3555,7 @@ namespace TryTestWeb.Controllers
             }
             else if (flibros.Filtro == false)
             {
-                ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
+                ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year + " " + "Y Mes: " + ParseExtensions.obtenerNombreMes(DateTime.Now.Month);
             }
 
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
@@ -4224,7 +4224,6 @@ namespace TryTestWeb.Controllers
 
         public ActionResult IEstadoResultadoPartial(string FechaInicio = "", string FechaFin = "", string Anio = "", string Mes = "")
         {
-            
             bool ConversionFechaInicioExitosa = false;
             DateTime dtFechaInicio = new DateTime();
             bool ConversionFechaFinExitosa = false;

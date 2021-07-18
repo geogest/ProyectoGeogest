@@ -239,7 +239,6 @@
     <Compile Include="Controllers\ContabilidadConciliacionBancariaController.cs" />
     <Compile Include="Controllers\ContabilidadController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
-    <Compile Include="Models\FiltrosParaLibros.cs" />
     <Compile Include="Controllers\FMSendController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
