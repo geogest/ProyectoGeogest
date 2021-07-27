@@ -77,7 +77,12 @@
                                         <td>@CentroCosto.contador</td>
                                         <td>@CentroCosto.Nombre</td>
                                         <td>
-                                            <a id="EditButton" onclick="getCentroCostoEdit(@CentroCosto.CentroCostoModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Editar Centro de Costo!" data-original-title="Editar Centro de Costo!"><i class="ion-edit"></i></a>
+                                            @*<a id="EditButton" onclick="getCentroCostoEdit(@CentroCosto.CentroCostoModelID);" 
+                                               class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" 
+                                               data-placement="bottom" title="Editar Centro de Costo!" 
+                                               data-original-title="Editar Centro de Costo!"><i class="ion-edit"></i></a>*@  
+
+                                            @Html.BtnEditar("EditButton","","btn-icon","", "getCentroCostoEdit("+ @CentroCosto.CentroCostoModelID + ");", "Centro de costo")
                                         </td>
                                     </tr>
                                 }

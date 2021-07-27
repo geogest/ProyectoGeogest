@@ -239,16 +239,17 @@
     <Compile Include="Controllers\ContabilidadConciliacionBancariaController.cs" />
     <Compile Include="Controllers\ContabilidadController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
-    <Compile Include="Models\FiltrosParaLibros.cs" />
     <Compile Include="Controllers\FMSendController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\PartialHelpersController.cs" />
     <Compile Include="DAL\FacturaContext.cs" />
     <Compile Include="DAL\FacturaInitializer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Botones.cs" />
     <Compile Include="Helpers\CaptchaValidatorAttribute.cs" />
     <Compile Include="Helpers\CodigosErrorUpload.cs" />
     <Compile Include="Helpers\ContabilidadHelper.cs" />
@@ -356,6 +357,10 @@
     <Compile Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.Designer.cs">
       <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107162157135_TablaMonitoreoSesion.cs" />
+    <Compile Include="Migrations\202107162157135_TablaMonitoreoSesion.Designer.cs">
+      <DependentUpon>202107162157135_TablaMonitoreoSesion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminMonitoreo\ErrorMensajeMonitoreo.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
@@ -416,6 +421,8 @@
     <Compile Include="Models\ModelsFactura\QuickReceptorModel.cs" />
     <Compile Include="Models\ModulosHabilitados.cs" />
     <Compile Include="Models\ModuloSistemaModel.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoSesion.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoSesionViewModel\MonitoreoSesionViewModel.cs" />
     <Compile Include="Models\PaginadorGenerico\BasePaginadorModel.cs" />
     <Compile Include="Models\PaginadorGenerico\PaginadorModel.cs" />
     <Compile Include="Models\PosesionUsuarios.cs" />
@@ -1015,6 +1022,7 @@
     <Content Include="Views\Contabilidad\EstadoResultado.cshtml" />
     <Content Include="Views\PartialHelpers\DatosClienteParaPDFPArtial.cshtml" />
     <Content Include="Views\Contabilidad\testkim.cshtml" />
+    <Content Include="Views\Monitoreo\ControlarEstadoSesion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />
@@ -1094,6 +1102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.resx">
       <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107162157135_TablaMonitoreoSesion.resx">
+      <DependentUpon>202107162157135_TablaMonitoreoSesion.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

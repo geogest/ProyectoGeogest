@@ -14,6 +14,7 @@ using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Data.Entity.Migrations;
 using System.Text;
+using TryTestWeb.Models.Monitoreo;
 
 namespace TryTestWeb.Controllers
 {
@@ -85,6 +86,8 @@ namespace TryTestWeb.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberMe, shouldLockout: false);
+
+
             switch (result)
             {
                 case SignInStatus.Success:
@@ -1261,6 +1264,9 @@ namespace TryTestWeb.Controllers
         [HttpPost]       
         public ActionResult LogOff()
         {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            bool resultado = MonitoreoSesion.ControlarEstadoSesion(db, UserID, false);
             Session.Clear();
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");

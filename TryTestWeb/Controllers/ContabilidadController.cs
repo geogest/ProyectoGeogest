@@ -3493,13 +3493,12 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
-            bool Filtro = false;
 
             if (flibros.Anio > 0 || !string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                Filtro = true;
+                flibros.Filtro = true;
             }
-            else if (Filtro == false)
+            else if (flibros.Filtro == false)
             {
                 ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
             }
@@ -3783,38 +3782,106 @@ namespace TryTestWeb.Controllers
 
         [Authorize]
         [ModuloHandler]
-        public ActionResult ListaVouchersBaja(int pagina = 1)
+        public ActionResult ListaVouchersBaja(int cantidadRegistrosPorPagina = 25,
+                                                              int pagina = 1,
+                                                              int Mes = 0,
+                                                              int Anio = 0,
+                                                              string FechaInicio = "",
+                                                              string FechaFin = "",
+                                                              string Glosa = "",
+                                                              int voucherID = 0,
+                                                              int? TipoOrigenVoucher = null)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
 
-            List<VoucherModel> LstVoucher;
-            PaginadorGenerico<VoucherModel> paginadorGen;
-            int _RegistrosPorPagina = 50;
-            int _TotalRegistros = 0;
+            bool ConversionFechaInicioExitosa = false;
+            DateTime dtFechaInicio = new DateTime();
+            bool ConversionFechaFinExitosa = false;
+            DateTime dtFechaFin = new DateTime();
 
-            _TotalRegistros = objCliente.ListVoucher.Where(r => r.DadoDeBaja == true).Count();
-
-           LstVoucher = objCliente.ListVoucher.Where(r => r.DadoDeBaja == true)
-                                               .OrderByDescending(x => x.VoucherModelID)
-                                               .Skip((pagina - 1) * _RegistrosPorPagina)
-                                               .Take(_RegistrosPorPagina)
-                                               .ToList();
-
-            var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-
-            paginadorGen = new PaginadorGenerico<VoucherModel>()
+            if (string.IsNullOrWhiteSpace(FechaInicio) == false && string.IsNullOrWhiteSpace(FechaFin) == false)
             {
-                RegistrosPorPagina = _RegistrosPorPagina,
-                TotalRegistros = _TotalRegistros,
-                TotalPaginas = _TotalPaginas,
-                PaginaActual = pagina,
-                Resultado = LstVoucher
-            };
+                ConversionFechaInicioExitosa = DateTime.TryParseExact(FechaInicio, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaInicio);
+                ConversionFechaFinExitosa = DateTime.TryParseExact(FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
+            }
+            //List<LibrosContablesModel> LaLista = LibrosContablesModel.RescatarLibroCentralizacion(objCliente, TipoCentralizacion.Venta, db, FechaInicio, FechaFin, Anio, Mes);
 
-            return View(paginadorGen);
+            List<VoucherModel> LstVoucher;
+
+            ViewBag.NombreCliente = objCliente.RazonSocial;
+
+            //Predicado Base
+            IQueryable<VoucherModel> Predicado = db.DBVoucher.Where(r => r.DadoDeBaja == true && r.ClientesContablesModelID == objCliente.ClientesContablesModelID);
+
+
+            // Filtros
+            if (Anio != 0)
+                Predicado = Predicado.Where(r => r.FechaEmision.Year == Anio);
+
+            if (Mes != 0)
+                Predicado = Predicado.Where(r => r.FechaEmision.Month == Mes);
+
+            if (!string.IsNullOrWhiteSpace(Glosa))
+                Predicado = Predicado.Where(r => r.Glosa.Contains(Glosa));
+
+            if (voucherID != 0)
+                Predicado = Predicado.Where(r => r.NumeroVoucher == voucherID);
+
+            if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
+                Predicado = Predicado.Where(r => r.FechaEmision >= dtFechaInicio && r.FechaEmision <= dtFechaFin);
+
+            if (TipoOrigenVoucher != null)
+            {
+                TipoOrigen TipoVoucherOrigen = (TipoOrigen)TipoOrigenVoucher;
+                Predicado = Predicado.Where(r => r.TipoOrigenVoucher == (TipoOrigen)TipoOrigenVoucher || r.TipoOrigen == TipoVoucherOrigen.ToString());
+            }
+
+            LstVoucher = Predicado
+                        .OrderByDescending(x => x.NumeroVoucher)
+                        .Skip((pagina - 1) * cantidadRegistrosPorPagina)
+                        .Take(cantidadRegistrosPorPagina)
+                        .ToList();
+
+            var totalDeRegistros = Predicado.Count();
+
+            // Pasamos los datos necesarios para que funcione el paginador generico.
+            var Paginador = new PaginadorModel();
+            Paginador.VoucherList = LstVoucher;
+            Paginador.PaginaActual = pagina;
+            Paginador.TotalDeRegistros = totalDeRegistros;
+            Paginador.RegistrosPorPagina = cantidadRegistrosPorPagina;
+            Paginador.ValoresQueryString = new RouteValueDictionary();
+            //Mandar estos parametros por ajax.
+            //En la vista
+            // Parametros de busqueda llamados por GET.
+            if (cantidadRegistrosPorPagina != 25)
+                Paginador.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
+
+            if (Anio != 0)
+                Paginador.ValoresQueryString["Anio"] = Anio;
+
+            if (Mes != 0)
+                Paginador.ValoresQueryString["Mes"] = Mes;
+
+            if (!string.IsNullOrWhiteSpace(Glosa))
+                Paginador.ValoresQueryString["Glosa"] = Glosa;
+
+            if (voucherID != 0)
+                Paginador.ValoresQueryString["VoucherID"] = voucherID;
+
+            if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
+            {
+                Paginador.ValoresQueryString["FechaInicio"] = FechaInicio;
+                Paginador.ValoresQueryString["FechaFin"] = FechaFin;
+            }
+            if (TipoOrigenVoucher != null)
+                Paginador.ValoresQueryString["TipoOrigenVoucher"] = TipoOrigenVoucher;
+
+
+            return View(Paginador);
         }
 
         [Authorize]

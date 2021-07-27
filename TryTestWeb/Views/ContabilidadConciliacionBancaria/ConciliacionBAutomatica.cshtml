@@ -58,7 +58,8 @@
                     </select>
                 </div>
                 <div class="form-group ">
-                    <button onclick="GuardarUltimaBusqueda();" class="btn-sm btn-success boton-centrado">Buscar</button>
+                    @*<button onclick="GuardarUltimaBusqueda();" class="btn-sm btn-success boton-centrado">Buscar</button>*@
+                    @Html.BtnBuscar("","","btn-sm boton-centrado", "GuardarUltimaBusqueda();")
                 </div>
             </div>
         </div>

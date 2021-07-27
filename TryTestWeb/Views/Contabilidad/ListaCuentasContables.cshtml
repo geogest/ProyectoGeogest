@@ -9,9 +9,10 @@
 
             <div class="btn-group pull-right m-t-30">
                 <div class="button-list">
-                    <a onclick="javascript:NuevaCtaContable();" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a" id="AddEgreso">
+                    @*<a onclick="javascript:NuevaCtaContable();" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a" id="AddEgreso">
                         <span class="btn-label"><i class="ion-android-add"></i></span>Agregar
-                    </a>
+                    </a>*@
+                    @Html.BtnAgregar("", "javascript:NuevaCtaContable();")
                 </div>
         
                     <div class="button-list">
@@ -126,7 +127,11 @@
                                     <td>@Cuenta.SubClasificacion.NombreInterno</td>
                                     <td>@Cuenta.SubSubClasificacion.NombreInterno</td>
                                     <td>
-                                        <a id="EditButton" onclick="getCtaContableEdit(@Cuenta.CuentaContableModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Editar Cuenta Contable!" data-original-title="Editar Cuenta Contable!"><i class="ion-edit"></i></a>
+                                        @*<a id="EditButton" onclick="getCtaContableEdit(@Cuenta.CuentaContableModelID);" class="btn btn-icon waves-effect waves-light btn-primary" 
+                                           data-toggle="tooltip" data-placement="bottom" title="Editar Cuenta Contable!" data-original-title="Editar Cuenta Contable!">
+                                        <i class="ion-edit"></i></a>*@
+
+                                        @Html.BtnEditar("EditButton", "", "btn-icon", "", "getCtaContableEdit("+ @Cuenta.CuentaContableModelID + ")", "Cuenta Contable")
                                     </td>
                                 </tr>
                             }

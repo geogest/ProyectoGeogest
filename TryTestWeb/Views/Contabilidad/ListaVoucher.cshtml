@@ -114,7 +114,8 @@
                                         @*<input class="form-control" type="text" name="FechaFin" id="FechaFin" value="" autocomplete="off" />*@
                                     </div>
                                     <div class="col-md-2 form-group">
-                                        <button type="submit" id="Guardar" name="Guardar" class="btn btn-success centrar">Buscar</button>
+                                        @*<button type="submit" id="Guardar" name="Guardar" class="btn btn-success centrar">Buscar</button>*@
+                                        @Html.BtnBuscar("Guardar", "Guardar", "centrar", "")
                                     </div>
                                 </div>
                             </div>
@@ -190,9 +191,9 @@
                                             @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EditarVoucher"))
                                             {
                                                 <td>
-                                                    <a class="btn btn-primary btn-sm redondo btnPress" href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = Voucher.VoucherModelID })">
-                                                        <span class="glyphicon glyphicon-edit"></span>
-                                                    </a>
+                                                   
+                                                    @Html.BtnEditar("","","btn-sm redondo btnPress", Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = Voucher.VoucherModelID }),"","Lista Voucher")
+                                                
                                                 </td>
                                             }
                                             else
@@ -202,9 +203,12 @@
                                             @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BorrarBajaVoucher"))
                                             {
                                                 <td>
-                                                    <a href="javascript:TryDeleteVoucher('@Voucher.VoucherModelID');" class="btn btn-danger btn-sm redondo btnPress">
+                                                    @*<a href="javascript:TryDeleteVoucher('@Voucher.VoucherModelID');" 
+                                                       class="btn btn-danger btn-sm redondo btnPress">
                                                         <span class="glyphicon glyphicon-trash"></span>
-                                                    </a>
+                                                    </a>*@
+
+                                                    @Html.BtnBorrar("","", "javascript:TryDeleteVoucher("+ @Voucher.VoucherModelID + ");", "","btn-sm redondo btnPress")
                                                 </td>
                                             }
                                             else
@@ -737,5 +741,3 @@
         }
     }
 </script>
-
-

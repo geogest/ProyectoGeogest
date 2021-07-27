@@ -16,16 +16,13 @@
         <div class="btn-group pull-right m-t-40">
             <form role="form">
                 <div class="button-list">
-                    <button @(Model == null || Model.Count == 0 ? "disabled" : string.Empty) class="btn btn-primary waves-effect waves-light pull-right" type="submit" name="Exportar" data-animation="fadein" data-plugin="custommodal"
-                            data-overlaySpeed="200" data-overlayColor="#36404a">
-                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                    </button>
-                    <a href="#" onclick="NuevaPersona()" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal"
-                       data-overlaySpeed="200" data-overlayColor="#36404a">
-                        <span class="btn-label"><i class="ion-android-add"></i></span>
-                        Agregar
-                    </a>
+                    
+                    @Html.BtnExportar((Model == null || Model.Count == 0 ? "disabled" : string.Empty), "Exportar")
+
+                    @Html.BtnAgregar("","NuevaPersona()")
+                    
                 </div>
+            </form>
         </div>
         <div class="page-header-2">
             <h2 class="page-header">Personas </h2>

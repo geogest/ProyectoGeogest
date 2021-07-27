@@ -6,12 +6,12 @@
     <div class="col-sm-12">
         <div class="btn-group pull-right m-t-40">
             <div class="button-list">
-                <a onclick="NuevoProveedor()" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal"
-                   data-overlaySpeed="200" data-overlayColor="#36404a">
-                    <span class="btn-label"><i class="ion-android-add"></i></span>
-                    Agregar
-                </a>
+                
+                @Html.BtnAgregar("", "NuevoProveedor()")
+
             </div>
+           
+            
         </div>
         <div class="page-header-2">
             <h2 class="page-header">Prestadores Honorarios </h2>
@@ -87,9 +87,9 @@
                                         @Html.Raw(ViewBag.HtmlStr)
                                     }
                                 </select>
-
-                                <button id="GuardarCC_@cont" name="GuardarCC" class="btn-sm btn-success" onclick="GuardarRelacionCC(@ReceptorHonor.QuickReceptorModelID)">Guardar</button>
-
+                                
+                                @Html.BtnGuardar("GuardarCC_"+ @cont + "", "GuardarCC", "btn-sm", "GuardarRelacionCC("+ @ReceptorHonor.QuickReceptorModelID + ")")
+                               
                                 <div class="alert alert-success" id="Correcto_@ReceptorHonor.QuickReceptorModelID" name="Correcto" style="display:none;">
                                     Relación establecida con éxito.
                                 </div>
@@ -110,19 +110,25 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2">
-                                <div class="table-detail">
-                                    <a id="EditButton" onclick="getPhonorarioEdit(@ReceptorHonor.QuickReceptorModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Editar Prestador" data-original-title="Editar Prestador"><i class="ion-edit"></i></a>
-                                    <a href="#" id="ReceptorID" name="ReceptorID" onclick="AdvertenciaDarDeBaja(@ReceptorHonor.QuickReceptorModelID)" class="btn btn-danger btn-sm redondo btnPress">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                </div>
+                            <div class="col-lg-1">
+                               
+                                @Html.BtnEditar("EditButton","","btn-sm redondo btnPress","", 
+                               "getPhonorarioEdit("+ @ReceptorHonor.QuickReceptorModelID + ")", "Prestador")
+
+                            </div>
+                            <div class="col-lg-1">
+
+                                @Html.BtnBorrar("ReceptorID", "ReceptorID","", "AdvertenciaDarDeBaja("+ @ReceptorHonor.QuickReceptorModelID + ")", "btn-sm redondo btnPress")
+
+                            </div>
+                                    
+                                
                             </div>
 
                         </div>
                     </div>
                 </div>
-            </div>
+            
                                         }
     </div>
 </div>

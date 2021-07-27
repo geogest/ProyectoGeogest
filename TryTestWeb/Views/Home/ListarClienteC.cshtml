@@ -18,16 +18,12 @@
         <div class="btn-group pull-right m-t-40">
             <form role="form">
                 <div class="button-list">
-                    <button @(Model == null || Model.Count == 0 ? "disabled" : string.Empty) class="btn btn-primary waves-effect waves-light pull-right" type="submit" name="Exportar" data-animation="fadein" data-plugin="custommodal"
-                            data-overlaySpeed="200" data-overlayColor="#36404a">
-                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                    </button>
-                    <a href="@Url.Action("NuevoClienteC","Home")" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal"
-                       data-overlaySpeed="200" data-overlayColor="#36404a">
-                        <span class="btn-label"><i class="ion-android-add"></i></span>
-                        Agregar
-                    </a>
+                    
+                    @Html.BtnExportar((Model == null || Model.Count == 0 ? "disabled" : string.Empty),"Exportar")
+                    
+                    @Html.BtnAgregar(Url.Action("NuevoClienteC", "Home"),"")
                 </div>
+            </form>
         </div>
         <div class="page-header-2">
             <h2 class="page-header">Clientes </h2>
@@ -165,7 +161,8 @@
 
                                     </select>
                                
-                                <button id="GuardarCC_@cont" name="GuardarCC" class="btn-sm btn-success" onclick="GuardarRelacionCC(@Cliente.QuickReceptorModelID)">Guardar</button>
+                              
+                              @Html.BtnGuardar("GuardarCC_"+ @cont + "","GuardarCC","btn-sm", "GuardarRelacionCC("+ @Cliente.QuickReceptorModelID + ")")
 
                                 <div class="alert alert-success" id="Correcto_@Cliente.QuickReceptorModelID" name="Correcto" style="display:none;">
                                     Relación establecida con éxito.
@@ -186,19 +183,17 @@
                             </div>
 
                             <div class="col-lg-1">
-                                <div class="table-detail">
-                                    <a class="btn btn-primary btn-sm redondo btnPress" href="@Url.Action("EditarClienteC", "Home",  new { id_receptor = Cliente.QuickReceptorModelID })">
-                                        <span class="glyphicon glyphicon-edit"></span>
-                                    </a>
-                                </div>
+                                
+                                @*@Html.BtnEditar("","", "btn-sm redondo btnPress",
+                               ""+Url.Action("EditarClienteC", "Home", new { id_receptor = Cliente.QuickReceptorModelID }) + "")*@
+
+                                @Html.BtnEditar("","","btn-sm redondo btnPress",
+                               Url.Action("EditarClienteC", "Home", new { id_receptor = Cliente.QuickReceptorModelID }),"","Cliente")
                             </div>
 
                             <div class="col-lg-1">
-                                <div class="table-detail">
-                                    <a href="#" id="ReceptorID" name="ReceptorID" onclick="AdvertenciaDarDeBaja(@Cliente.QuickReceptorModelID)" class="btn btn-danger btn-sm redondo btnPress">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                </div>
+                                
+                                @Html.BtnBorrar("ReceptorID","ReceptorID","", "AdvertenciaDarDeBaja("+ @Cliente.QuickReceptorModelID + ")", "btn-sm redondo btnPress")
                             </div>
 
 

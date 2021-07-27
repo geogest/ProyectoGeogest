@@ -22,9 +22,12 @@
                     {
                         <div>
                             <br />
-                            <button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
+                            @*<button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" 
+                                    type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" 
+                                    data-overlayColor="#36404a">
                                 <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                            </button>
+                            </button>*@
+                            @Html.BtnExportar("","Save")
                             <br />
                         </div>
                         <br />
@@ -129,7 +132,9 @@
                         @*<input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" />*@
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>
+                        @*<button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>*@
+
+                        @Html.BtnBuscar("Guardar","Guardar","centrar","")
                     </div>
                 </div>
             }

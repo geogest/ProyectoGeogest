@@ -1,5 +1,5 @@
-﻿<!-- Page-Title -->
-@model PaginadorGenerico<VoucherModel>
+﻿@model PaginadorModel
+<!-- Page-Title -->
 <div class="row">
     <div class="col-sm-12">
         <div class="page-header-2">
@@ -16,34 +16,172 @@
     </div>
 </div>
 
-@using (Html.BeginForm("VouchersBaja", "Contabilidad", FormMethod.Post, new { id = "TablaVoucher" }))
+@using (Html.BeginForm("ListaVouchersBaja", "Contabilidad", FormMethod.Post, new { id = "TablaVoucher" }))
 {
-    <div class="form-group">
-        <br />
-        <div class="row">
-            <table width="100%" class="table table-striped table-bordered table-hover compact" id="tabla">
-                <thead>
-                    <tr>
-                        <th>Numero</th>
-                        <th>Tipo</th>
-                        <th>Tipo Origen</th>
-                        <th>Fecha Emisión</th>
-                        <th>Glosa</th>
-                        <th>Ver Detalle</th>
-                        <th>Centro Costo</th>
-                        <th>Restablecer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null)
-                    {
-                        foreach (var Voucher in Model.Resultado)
+    Session["Url"] = HttpContext.Current.Request.Url.AbsoluteUri;
 
+
+    <div class="form-group">
+        <div class="row">
+            <div class="card-box">
+                <div class="row form-group">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label class="control-label">Cantidad de Registros</label>
+                                <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label class="control-label">Tipo Origen</label>
+                                <select class="form-control" name="TipoOrigenVoucher" id="TipoOrigenVoucher">
+                                    <option>Selecciona</option>
+                                    <option value="0">Otros</option>
+                                    <option value="1">Compra</option>
+                                    <option value="2">Venta</option>
+                                    <option value="3">Honorario</option>
+                                    <option value="4">HonorarioTercero</option>
+                                    <option value="5">Remuneraciones</option>
+
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label class="control-label">Año</label>
+                                <input type="text" class="form-control" name="Anio" id="Anio" value="" />
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label for="" class="control-label">Mes</label>
+                                <select name="Mes" id="Mes" class="form-control">
+                                    <option value="">Todos</option>
+                                    <option value="1">Enero</option>
+                                    <option value="2">Febrero</option>
+                                    <option value="3">Marzo</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Mayo</option>
+                                    <option value="6">Junio</option>
+                                    <option value="7">Julio</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Glosa</label>
+                                <input type="text" class="form-control" id="Glosa" name="Glosa" />
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Num Voucher</label>
+                                <input type="text" class="form-control" id="voucherID" name="voucherID" />
+                            </div>
+                            <div class="col-lg-2 form-group" style="display:none;">
+                                <label class="control-label">Rut Inicio</label>
+                                <input type="text" class="form-control" name="rutinicio" id="rutinicio" />
+                            </div>
+                            <div class="col-lg-2 form-group" style="display:none;">
+                                <label class="control-label">Rut Fin</label>
+                                <input type="text" class="form-control" name="rutfin" id="rutfin" />
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Fecha Inicio</label>
+                                <div class='input-group date'>
+                                    <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <label class="control-label">Fecha Fin</label>
+                                <div class='input-group date'>
+                                    <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @*<button type="submit" id="Guardar" name="Guardar" class="btn btn-success centrar">Buscar</button>*@
+                                @Html.BtnBuscar("Guardar","Guardar","centrar","")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ModalConfirmacion" class="modal fade" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Confirmar</h4>
+                            </div>
+                            <div id="ModyBodyConfirm" class="modal-body text-center form-group">
+                                ¿Esta seguro de querer RESTABLECER este voucher?
+                                <br>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <button type="button" id="confirmYES" class="btn btn-default form-control btn-ok" data-dismiss="modal">Si</button>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <button type="button" id="confirmNO" class="btn btn-default redondo btnPress form-control" data-dismiss="modal">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                @if (Model.VoucherList.Count() == 0)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        No se encontraron registros.
+                    </div>
+                }
+                @if (Model.VoucherList.Count() != 0)
+                {
+            <div class="table-responsive">
+                <table width="100%" class="table table-striped table-bordered table-hover compact" id="tabla">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th class="text-center">Numero</th>
+                            <th class="text-center">Tipo</th>
+                            <th class="text-center">Tipo Origen</th>
+                            <th class="text-center">Fecha Contabilización</th>
+                            <th class="text-center">Glosa</th>
+                            <th class="text-center">Ver Detalle</th>
+                            <th class="text-center">Centro Costo</th>
+                            <th class="text-center">Restablecer</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var Voucher in Model.VoucherList)
                         {
                             <tr>
+                                <td><input type="checkbox" name="CheckVoucher" class="marca" id="CheckVoucher" value="@Voucher.VoucherModelID" /></td>
                                 <td>@Voucher.NumeroVoucher</td>
                                 <td>@Voucher.Tipo</td>
-                                <td>@Voucher.TipoOrigen</td>
+                                @if (!string.IsNullOrWhiteSpace(Voucher.TipoOrigen))
+                                {
+                                    <td>@Voucher.TipoOrigen</td>
+                                }
+                                else
+                                {
+                                    <td>@Voucher.TipoOrigenVoucher.ToString()</td>
+                                }
                                 <td>@Voucher.FechaEmision.ToString("dd-MM-yyyy")</td>
                                 <td>@Voucher.Glosa</td>
                                 <td><a href="javascript:GetDetalleVoucher('@Voucher.VoucherModelID');">ver detalle</a></td>
@@ -55,174 +193,82 @@
                                 </td>
                             </tr>
                         }
-                    }
-                </tbody>
-            </table>
 
-            <div id="myModal" class="modal fade" role="dialog">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Detalles Voucher</h4>
-                        </div>
-                        <div id="ModyBody" class="modal-body text-center form-group">
-                            <div class="row">
-                                <div class="col-lg-1"></div>
-                                <div class="col-lg-6 text-left">
-                                    <div class="row">
-                                        <span><b>Empresa:</b></span>
-                                        <span id="rutEmpresa" name="rutEmpresa"></span> /
-                                        <span id="RazonSocial" name="RazonSocial"></span>
-                                    </div>
-                                    <div class="row">
-                                        <span><b>Fecha:</b></span>
-                                        <span id="fecha" name="fecha"></span>
-                                    </div>
-                                    <div class="row">
-                                        <span><b>Glosa:</b></span>
-                                        <span id="glosa" name="glosa"></span>
-                                    </div>
-                                    <div class="row">
-                                        <span><b>Centro de Costo:</b></span>
-                                        <span id="CentroCosto" name="CentroCosto"></span>
-                                    </div>
-                                </div>
+                    </tbody>
+                </table>
+                @{Html.RenderPartial("_paginador", Model);}
+
+
+                <div id="myModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Detalles Voucher</h4>
                             </div>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Codigo Interno</th>
-                                        <th>Cuenta Contable</th>
-                                        <th>Glosa</th>
-                                        <th>Monto Debe</th>
-                                        <th>Monto Haber</th>
-                                        <th>Auxiliar</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="datosTabla"></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td><b>TOTAL</b></td>
-                                        <td id="totalDEBE" style="font-weight:700;"></td>
-                                        <td id="totalHABER" style="font-weight:700;"></td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade auxiliar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="TheModal">
-                <div class="modal-dialog modal-lg" role="document" id="modalParcialShow">
-                </div>
-            </div>
-
-            <div id="ModalConfirmacion" class="modal fade" role="dialog">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Confirmar</h4>
-                        </div>
-                        <div id="ModyBodyConfirm" class="modal-body text-center form-group">
-                            ¿Esta seguro de querer RESTABLECER este voucher?
-                            <br>
-                            <br>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <button type="button" id="confirmYES" class="btn btn-default form-control btn-ok" data-dismiss="modal">Si</button>
+                            <div id="ModyBody" class="modal-body text-center form-group">
+                                <div class="row">
+                                    <div class="col-lg-1"></div>
+                                    <div class="col-lg-6 text-left">
+                                        <div class="row">
+                                            <span><b>Empresa:</b></span>
+                                            <span id="rutEmpresa" name="rutEmpresa"></span> /
+                                            <span id="RazonSocial" name="RazonSocial"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span><b>Fecha:</b></span>
+                                            <span id="fecha" name="fecha"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span><b>Glosa:</b></span>
+                                            <span id="glosa" name="glosa"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span><b>Centro de Costo:</b></span>
+                                            <span id="CentroCosto" name="CentroCosto"></span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <button type="button" id="confirmNO" class="btn btn-default redondo btnPress form-control" data-dismiss="modal">No</button>
-                                </div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Codigo Interno</th>
+                                            <th>Cuenta Contable</th>
+                                            <th>Glosa</th>
+                                            <th>Monto Debe</th>
+                                            <th>Monto Haber</th>
+                                            <th>Auxiliar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="datosTabla"></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td><b>TOTAL</b></td>
+                                            <td id="totalDEBE" style="font-weight:700;"></td>
+                                            <td id="totalHABER" style="font-weight:700;"></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="modal fade auxiliar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="TheModal">
+                    <div class="modal-dialog modal-lg" role="document" id="modalParcialShow">
+                    </div>
+                </div>
             </div>
 
+                }
+            </div>
         </div>
     </div>
+    
 
-}
-
-@if (Model.Resultado.Count() > 0)
-{
-    <span>
-        <strong>@Model.TotalRegistros</strong> registros encontrados
-    </span>
-        <span>&nbsp;|&nbsp;</span>
-            <span>
-                Página <strong>@(Model.PaginaActual)</strong> de
-                <strong>@Model.TotalPaginas</strong>
-            </span>
-            <span>&nbsp;|&nbsp;</span>
-}
-else
-{
-    <span>No hay resultados para esta búsqueda</span>
-        <span>&nbsp;|&nbsp;</span>
-}
-
-@if (Model.PaginaActual > 1)
-{
-    @Html.ActionLink("<<", "ListaVouchersBaja", new { pagina = 1 },
-                    new { @class = "btn btn-sm btn-default" })
-    <span></span>
-        @Html.ActionLink("Anterior", "ListaVouchersBaja", new { pagina = Model.PaginaActual - 1 },
-                    new { @class = "btn btn-sm btn-default" })
-}
-else
-{
-    @Html.ActionLink("<<", "ListaVouchersBaja", new { pagina = 1 },
-                    new { @class = "btn btn-sm btn-default disabled" })
-    <span></span>
-        @Html.ActionLink("Anterior", "ListaVoucher", new { pagina = 1 },
-                    new { @class = "btn btn-sm btn-default disabled" })
-}
-
-@for (int i = 1; i <= Model.TotalPaginas; i++)
-{
-
-    string count = Convert.ToString(i);
-
-    if (Model.PaginaActual == i)
-
-
-    {
-        @Html.ActionLink(count, "ListaVouchersBaja", new { pagina = i },
-                      new { @class = "btn btn-sm btn-default disabled margin" })
-    }
-    else
-    {
-        @Html.ActionLink(count, "ListaVouchersBaja", new { pagina = i },
-                      new { @class = "btn btn-sm btn-default margin" })
-    }
-}
-<span></span>
-@if (Model.PaginaActual < Model.TotalPaginas)
-{
-    @Html.ActionLink("Siguiente", "ListaVouchersBaja", new { pagina = Model.PaginaActual + 1 },
-                    new { @class = "btn btn-sm btn-default" })
-    <span></span>
-            @Html.ActionLink(">>", "ListaVouchersBaja", new { pagina = Model.TotalPaginas },
-                    new { @class = "btn btn-sm btn-default" })
-}
-else
-{
-    @Html.ActionLink("Siguiente", "ListaVouchersBaja", new { pagina = Model.TotalPaginas - 1 },
-                    new { @class = "btn btn-sm btn-default disabled" })
-    <span></span>
-            @Html.ActionLink(">>", "ListaVouchersBaja", new { pagina = Model.TotalPaginas },
-                    new { @class = "btn btn-sm btn-default disabled" })
 }
 
 
@@ -230,8 +276,27 @@ else
     .modal-lg {
         width: 80%;
     }
+
+    .margin {
+        margin: 1px;
+    }
+
+    td {
+        text-align: center;
+    }
+
+    .centrar {
+        margin-top: 25px;
+    }
+
+    .Esconder {
+        display: none;
+    }
 </style>
 
+<script src="~/Content/js/jspdf.debug.js"></script>
+<script src="~/Content/js/html2pdf.js"></script>
+<script src="~/Content/js/html2canvas.js"></script>
 
 <script>
 
@@ -243,7 +308,52 @@ else
             , change: function (event, ui) { CSGetClientInfo($("#rut").val()); }
 
         });
+        $(function () {
+
+            $("a.sbmt").click(function (e) {
+
+                e.preventDefault();  // prevent default form submit behaviour since we are doing ajax
+                var _f = $(this).closest("form");
+
+                $.post(_f.attr("action"), _f.serialize(), function (res) {
+                    //do something with the response coming back from your Save action method.
+                    if (res.status === "success") {
+                        // If you want to reload the page, you can do this
+
+
+                    }
+                });
+
+            });
+
+        });
+
+        ObtenerInputs();
+        GuardarSeleccionado();
+        ObtenerSeleccionado();
+        CondicionesParaLimpiar();
     });
+
+    var formatNumber = {
+        separador: ".", // separador para los miles
+        sepDecimal: ',', // separador para los decimales
+        formatear: function (num) {
+            num += '';
+            var splitStr = num.split('.');
+            var splitLeft = splitStr[0];
+            var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+            var regx = /(\d+)(\d{3})/;
+            while (regx.test(splitLeft)) {
+                splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+            }
+            return this.simbol + splitLeft + splitRight;
+
+        },
+        new: function (num, simbol) {
+            this.simbol = simbol || '';
+            return this.formatear(num);
+        }
+    }
 
     function CSGetClientInfo(value) {
         var url = '@Url.Action("GetClientByRUT")';
@@ -285,8 +395,8 @@ else
                         }
                         output.append(primaryString);
                     }
-                    $("#totalDEBE").text("$" + data.totaldeb);
-                    $("#totalHABER").text("$" + data.totalhab);
+                    $("#totalDEBE").text("$" + formatNumber.new(data.totaldeb));
+                    $("#totalHABER").text("$" + formatNumber.new(data.totalhab));
 
                 }
             });
@@ -337,7 +447,106 @@ else
     });
 
 
+    function CondicionesParaLimpiar() {
+        //Eliminamos la memoria de los Storage solo si se recarga la página sin realizar ninguna busqueda.
+        var Click = false;
+        $('#Guardar').on("click", function () {
+            Click = true;
+        });
+        $('#Paginador li').on("click", function () {
+            Click = true;
+        });
+        $(window).on("beforeunload", function () {
+            if (Click == false) {
+                localStorage.removeItem("MesAguardar");
+                localStorage.removeItem("CantidadDeRegistros");
+                localStorage.removeItem("GlosaAGuardar");
+                localStorage.removeItem("AnioAGuardar");
+                localStorage.removeItem("FechaInicioAGuardar");
+                localStorage.removeItem("FechaFinAGuardar");
+                localStorage.removeItem("NumVoucherAGuardar");
+            }
+        });
+    }
 
 
+    function GuardarSeleccionado() {
+        var MesSeleccionado = $("#Mes option:selected").text();
+        $('#Mes').on('change', function () {
+            MesSeleccionado = $("#Mes option:selected").text();
+            $('#Guardar').on('click', function () {
+                localStorage.setItem("MesAguardar", MesSeleccionado);
+            });
+        });
 
+        var CantRegistrosSelect = $('#cantidadRegistrosPorPagina option:selected').text();
+        $('#cantidadRegistrosPorPagina').on('change', function () {
+            CantRegistrosSelect = $('#cantidadRegistrosPorPagina option:selected').text();
+            $('#Guardar').on('click', function () {
+                localStorage.setItem("CantidadDeRegistros", CantRegistrosSelect);
+            });
+        });
+    }
+
+    function ObtenerSeleccionado() {
+        $('#Mes option').each(function () {
+            let valorSeleccionado = $(this).text();
+            var ObtenerMesSeleccionado = localStorage.getItem("MesAguardar");
+
+            if (ObtenerMesSeleccionado == valorSeleccionado) {
+                let AñadirAtributo = $(this).attr("selected", "selected");
+            }
+        });
+
+        $('#cantidadRegistrosPorPagina option').each(function () {
+            let valorSeleccionado = $(this).text();
+            var ObtenerCantidadRegistros = localStorage.getItem("CantidadDeRegistros");
+
+            if (ObtenerCantidadRegistros == valorSeleccionado) {
+                let AñadirAtributo = $(this).attr("selected", "selected");
+            }
+        });
+
+    }
+
+    function ObtenerInputs() {
+
+        var Glosa = document.getElementById("Glosa");
+        var Anio = document.getElementById("Anio");
+        var FechaInicio = document.getElementById("FechaInicio");
+        var FechaFin = document.getElementById("FechaFin");
+        var NumVoucher = document.getElementById("voucherID");
+
+
+        $('#Guardar').on('click', function () {
+            localStorage.setItem("AnioAGuardar", Anio.value);
+            localStorage.setItem("GlosaAGuardar", Glosa.value);
+            localStorage.setItem("FechaInicioAGuardar", FechaInicio.value);
+            localStorage.setItem("FechaFinAGuardar", FechaFin.value);
+            localStorage.setItem("NumVoucherAGuardar", NumVoucher.value);
+
+        });
+
+        var ObtenerAnio = localStorage.getItem("AnioAGuardar");
+        var ObtenerGlosa = localStorage.getItem("GlosaAGuardar");
+        var ObtenerFechaInicio = localStorage.getItem("FechaInicioAGuardar");
+        var ObtenerFechaFin = localStorage.getItem("FechaFinAGuardar");
+        var ObtenerNumVoucher = localStorage.getItem("NumVoucherAGuardar");
+
+
+        if (ObtenerAnio != null) {
+            Anio.value = ObtenerAnio;
+        }
+        if (ObtenerGlosa != null) {
+            Glosa.value = ObtenerGlosa;
+        }
+
+        if (ObtenerFechaInicio != null && ObtenerFechaFin != null) {
+            FechaInicio.value = ObtenerFechaInicio;
+            FechaFin.value = ObtenerFechaFin;
+        }
+        if (ObtenerNumVoucher != null) {
+            NumVoucher.value = ObtenerNumVoucher;
+        }
+    }
 </script>

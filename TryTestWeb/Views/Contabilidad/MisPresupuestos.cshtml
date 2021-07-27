@@ -81,11 +81,16 @@
                             </div>
 
                             <div class="col-lg-1">
-                                <div class="table-detail">
-                                    <a href="#" id="PresupuestoID" name="PresupuestoID" onclick="AdvertenciaBajaPresupuesto(@ElementoPresupuesto.PresupuestoModelID)" class="btn btn-danger btn-sm redondo btnPress">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                </div>
+                                <!--<div class="table-detail">-->
+                                @*<a href="#" id="PresupuestoID" name="PresupuestoID"
+           onclick="AdvertenciaBajaPresupuesto(@ElementoPresupuesto.PresupuestoModelID)"
+           class="btn btn-danger btn-sm redondo btnPress">
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>*@
+
+                                <!--</div>-->
+
+                                @Html.BtnBorrar("PresupuestoID", "PresupuestoID", "", "AdvertenciaBajaPresupuesto(" + @ElementoPresupuesto.PresupuestoModelID + ")", "btn-sm redondo btnPress")
                             </div>
 
                         </div>

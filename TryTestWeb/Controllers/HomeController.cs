@@ -18,6 +18,7 @@ using PagedList;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Data.Entity.Validation;
+using TryTestWeb.Models.Monitoreo;
 
 namespace TryTestWeb.Controllers
 {
@@ -622,6 +623,10 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             List<QuickEmisorModel> objEmisoresEnabled = new List<QuickEmisorModel>();
             ModuloHelper.GetEmisoresHabilitados(UserID, out objEmisoresEnabled, db);
+            bool resultado = MonitoreoSesion.ControlarEstadoSesion(db, UserID, true);
+
+
+
             return View(objEmisoresEnabled);
         }
 

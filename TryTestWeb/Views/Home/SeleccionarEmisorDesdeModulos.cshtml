@@ -27,18 +27,21 @@
 
                                 {
                                     
-                                    <div class="card col-xs-12 col-sm-3 col-md-2" id="tablaCliente"> 
-                                        <a href="javascript:SelecCliente('@Emisor.QuickEmisorModelID');">
-                                            <img src="~/Content/images/icono empresa.png" alt="empresa" class="tamañoImagen" />
-                                            <div class="container" id="@Emisor.QuickEmisorModelID">
-                                                <h4 class="colorletra"><b>@Emisor.RazonSocial</b></h4>
-                                                <p class="colorletra">@Emisor.RUTEmpresa</p>
-                                            </div>
-                                        </a>
+                                <div class="card col-xs-12 col-sm-3 col-md-2" id="tablaCliente">
+                                    <a href="javascript:SelecCliente('@Emisor.QuickEmisorModelID');">
+                                        <img src="~/Content/images/icono empresa.png" alt="empresa" class="tamañoImagen" />
+                                        <div class="container" id="@Emisor.QuickEmisorModelID">
+                                            <h4 class="colorletra"><b>@Emisor.RazonSocial</b></h4>
+                                            <p class="colorletra">@Emisor.RUTEmpresa</p>
+                                        </div>
+                                    </a>
 
-                                        <button class="btn boton"><a href="javascript:SelecCliente('@Emisor.QuickEmisorModelID');"><span style="color:white">Seleccionar</span></a></button>
+                                    @Html.BtnSeleccionar("","","boton", "javascript:SelecCliente("+ @Emisor.QuickEmisorModelID + ");")
+                                    @*<button class="btn boton">
+                                        <a href="javascript:SelecCliente('@Emisor.QuickEmisorModelID');"><span style="color:white">Seleccionar</span></a>
+                                    </button>*@
 
-                                    </div>
+                                </div>
                                 }
                             }
                         </div>

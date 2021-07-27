@@ -77,10 +77,16 @@
 
     <div class="form-group">
         <div class="col-md-6">
-            <button class="btn btn-success waves-effect waves-light" value="Ingresar Parametros" name="Save" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+            @*<button class="btn btn-success waves-effect waves-light" value="Ingresar Parametros" name="Save" type="submit">
+            <span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>*@
+
+            @Html.BtnGuardar("","Save","","")
         </div>
         <div class="col-md-6">
-            <a href="@Url.Action("ListarCliente", "Home")" class="btn btn-success waves-effect waves-light"><span class="btn-label"><i class="ion-android-arrow-back"></i></span>Volver</a><br>
+            @*<a href="@Url.Action("ListarCliente", "Home")" class="btn btn-success waves-effect waves-light">
+            <span class="btn-label"><i class="ion-android-arrow-back"></i></span>Volver</a><br>*@
+
+            @Html.BtnVolver(Url.Action("ListarCliente", "Home"))
         </div>
     </div>
 }
