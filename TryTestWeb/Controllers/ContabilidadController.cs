@@ -3888,12 +3888,6 @@ namespace TryTestWeb.Controllers
                         .Take(cantidadRegistrosPorPagina)
                         .ToList();
 
-           LstVoucher = objCliente.ListVoucher.Where(r => r.DadoDeBaja == true)
-                                               .OrderByDescending(x => x.VoucherModelID)
-                                               .Skip((pagina - 1) * _RegistrosPorPagina)
-                                               .Take(_RegistrosPorPagina)
-                                               .ToList();
-
             var totalDeRegistros = Predicado.Count();
 
             // Pasamos los datos necesarios para que funcione el paginador generico.
