@@ -5,6 +5,8 @@ using System.Data.Entity.Migrations.History;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
+using TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas;
+
 using TryTestWeb.Models.Monitoreo;
 
 public class FacturaContext : DbContext
@@ -82,6 +84,7 @@ public class FacturaContext : DbContext
     public DbSet<CartolaBancariaModel> DBCartolaBancaria { get; set; }
     public DbSet<CartolaBancariaMacroModel> DBCartolaBMacro { get; set; }
     public DbSet<ErrorMensajeMonitoreo> DBErrores { get; set; }
+    public DbSet<BoletasCoVModel> DBBoletasImportadas { get; set; }
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -172,6 +175,7 @@ public class FacturaProduccionContext : DbContext
     public DbSet<CartolaBancariaModel> DBCartolaBancaria { get; set; }
     public DbSet<CartolaBancariaMacroModel> DBCartolaBMacro { get; set; }
     public DbSet<ErrorMensajeMonitoreo> DBErrores { get; set; }
+    public DbSet<BoletasCoVModel> DBBoletasImportadas { get; set; }
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
     //Base de datos Sistema de remuneraciones
@@ -260,6 +264,7 @@ public class FacturaPoliContext : DbContext
     public DbSet<CartolaBancariaModel> DBCartolaBancaria { get; set; }
     public DbSet<CartolaBancariaMacroModel> DBCartolaBMacro { get; set; }
     public DbSet<ErrorMensajeMonitoreo> DBErrores { get; set; }
+    public DbSet<BoletasCoVModel> DBBoletasImportadas { get; set; }
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }

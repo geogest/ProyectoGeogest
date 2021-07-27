@@ -285,10 +285,12 @@
         const fechaInicio = UltimaBusquedaOdefault.FechaInicio;
         const fechaFin = UltimaBusquedaOdefault.FechaFin;
 
+        //cantidadRegistrosPorPagina
+
         $.ajax({
             type:"POST",
             url:"@Url.Action("LibroMayorDesdeBalance", "Contabilidad")",
-            data: { Anio: anio, Mes: mes, fechaInicio: fechaInicio, fechaFin: fechaFin, CuentaContableID: ctaContId },
+            data: { Anio: anio, Mes: mes, fechaInicio: fechaInicio, fechaFin: fechaFin, CuentaContableID: ctaContId, cantidadRegistrosPorPagina: 0 },
             success: function (result) {
                 $('#detalleCta').modal("show");
 

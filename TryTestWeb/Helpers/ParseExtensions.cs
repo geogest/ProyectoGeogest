@@ -73,6 +73,22 @@ public static class ParseExtensions
         }
     }
 
+    public static DateTime CreaFechaLiteral(string fecha)
+    {
+        string[] ArrayFecha = new string[3];
+        
+        if (fecha.Contains("-"))
+            ArrayFecha = fecha.Split('-');
+
+        int Dia = Int32.Parse(ArrayFecha[0].Trim());
+        int Mes = Int32.Parse(ArrayFecha[1].Trim());
+        var Anio = Int32.Parse(ArrayFecha[2].Trim());
+
+        DateTime FechaValida = new DateTime(Anio, Mes, Dia);
+
+        return FechaValida;
+    }
+
     public static DateTime ToDD_MM_AAAA_Multi(string dtObj)
     {
         if (string.IsNullOrEmpty(dtObj))

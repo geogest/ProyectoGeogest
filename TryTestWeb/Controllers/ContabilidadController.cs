@@ -1545,6 +1545,34 @@ namespace TryTestWeb.Controllers
            return View(Paginador);
         }
 
+
+        [Authorize]
+        public JsonResult ValidarAuxiliar(List<string> IdsCtasContSeleccionadas)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            bool result = false;
+            string Mensaje = "";
+
+            if (objCliente == null)
+                Mensaje = "Termino la sesión vuelve a iniciar.";
+
+            List<int> lstCtasCont = IdsCtasContSeleccionadas.Select(x => Convert.ToInt32(x)).ToList();
+
+            bool ExisteCuentaContConAuxiliar = objCliente.CtaContable.Where(x => lstCtasCont.Contains(x.CuentaContableModelID))
+                                                                        .Where(x => x.TieneAuxiliar == 1)
+                                                                           .Any();
+
+            if (Session["sessionAuxiliares"] == null && ExisteCuentaContConAuxiliar) 
+                Mensaje = "Debes rellenar los auxiliares";
+            else
+                result = true;
+
+            return Json(new {ok = result, Mensaje = Mensaje });
+        }
+
         [Authorize]
         public JsonResult BorrarMultiplesVouchers(List<string> VouchersID)
         {
@@ -1629,6 +1657,18 @@ namespace TryTestWeb.Controllers
 
             //Numero de Voucher que sera utilizado en la insercion/actualizacion
             int NewNumeroVoucher = 0;
+
+            List<int> lstIdsCtasContables = Request.Form.GetValues("ctacont").Select(x => Convert.ToInt32(x)).ToList();
+            bool HayCuentaConAuxiliar = objCliente.CtaContable.Where(x => lstIdsCtasContables.Contains(x.CuentaContableModelID))
+                                                               .Where(x => x.TieneAuxiliar == 1)
+                                                                .Any();
+
+            if(Session["sessionAuxiliares"] == null && HayCuentaConAuxiliar)
+            {
+                TempData["Error"] = "Debes rellenar los auxiliares.";
+                return RedirectToAction("IngresoVoucher","Contabilidad");
+            }
+            
 
             //Intentar obtener y convertir valor NumVoucher para revisiones en ambos flujos
             int? numVoucherDesdeFormulario = null;
@@ -1868,6 +1908,8 @@ namespace TryTestWeb.Controllers
                             brandNewAuxDetail.TipoDocumento = auxSession.TipoDocumento;
                             brandNewAuxDetail.ValorLiquido = auxSession.ValorLiquido;
                             brandNewAuxDetail.ValorRetencion = auxSession.ValorRetencion;
+                            brandNewAuxDetail.MontoTotalLinea = auxSession.ValorLiquido;
+                            brandNewAuxDetail.MontoBrutoLinea = auxSession.MontoBrutoLinea;
                         }
                         else if(brandNewAuxiliarObject.objCtaContable.TipoAuxiliarQueUtiliza == TipoAuxiliar.ProveedorDeudor)
                         {
@@ -1927,7 +1969,9 @@ namespace TryTestWeb.Controllers
                                     db.SaveChanges();
                             }   
                         }
-                        brandNewAuxDetail.MontoTotalLinea = auxSession.MontoTotalLinea; //Auxiliar de remuneraciones solo necesita este dato & el folio.
+                        if(brandNewAuxiliarObject.objCtaContable.TipoAuxiliarQueUtiliza != TipoAuxiliar.Honorarios)
+                            brandNewAuxDetail.MontoTotalLinea = auxSession.MontoTotalLinea;
+
                         if(auxSession.SeVaParaVenta == true || auxSession.SeVaParaCompra == true) { 
                         ObjLibroCompraOVenta.MontoTotal = auxSession.MontoTotalLinea;
                         }
@@ -2025,12 +2069,22 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult ProcesarExcelBoleta(HttpPostedFile Excel)
+        public ActionResult ProcesarExcelBoleta(HttpPostedFileBase Excel)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
-            var ReturnValues = new BoletasExcelModel();
+            List<BoletasExcelModel> ReturnValues = BoletasExcelModel.DeExcelAObjetoBoleta(Excel);
+
+            //Procesar las boletas con su contra cuenta ¿Tiene contracuenta?
+            //
+
+            return View(ReturnValues);
+        }
+
+        [Authorize]
+        public ActionResult VistaPrevisaProcesoInsercionBoletas()
+        {
 
 
             return View();
@@ -2396,10 +2450,12 @@ namespace TryTestWeb.Controllers
                     objAuxiliarDetalle.Individuo2 = QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutPrestadorAuxiliar, NombrePrestadorAuxiliar, objCliente, db, TipoPrestadorAuxiliar);
                     if (TipoDeAux == TipoAuxiliar.Honorarios)
                     {
-                        objAuxiliarDetalle.TipoDocumento = TipoDte.Liquidacion_FacturaElectronica;
+                        //Modificar aquí
+                        objAuxiliarDetalle.TipoDocumento = TipoDte.FacturaElectronica;
+                        objAuxiliarDetalle.MontoBrutoLinea = ParseExtensions.ParseDecimal(Request.Form.GetValues("AuxTotal")[i]);
                         objAuxiliarDetalle.ValorLiquido = ParseExtensions.ParseDecimal(Request.Form.GetValues("AuxValorLiquido")[i]);
                         objAuxiliarDetalle.ValorRetencion = ParseExtensions.ParseDecimal(Request.Form.GetValues("AuxValorRetencion")[i]);
-                        objAuxiliarDetalle.MontoTotalLinea = ParseExtensions.ParseDecimal(Request.Form.GetValues("AuxTotal")[i]);
+                        objAuxiliarDetalle.MontoTotalLinea = ParseExtensions.ParseDecimal(Request.Form.GetValues("AuxValorLiquido")[i]);
                     }
                     else if (TipoDeAux == TipoAuxiliar.ProveedorDeudor)
                     {
@@ -3493,6 +3549,12 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
+            bool Filtro = false;
+
+
+
+
+
 
             if (flibros.Anio > 0 || !string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
@@ -3500,7 +3562,7 @@ namespace TryTestWeb.Controllers
             }
             else if (flibros.Filtro == false)
             {
-                ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
+                ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year + " " + "Y Mes: " + ParseExtensions.obtenerNombreMes(DateTime.Now.Month);
             }
 
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
@@ -3581,18 +3643,7 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
-            bool Filtro = true;
-
-            //if (Anio > 0 || !string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
-            //{
-            //    Filtro = true;
-            //}
-            //else if (Filtro == false)
-            //{
-            //    ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
-            //}
-
-            //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
+            flibros.Filtro = true;
 
             if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
@@ -3622,13 +3673,11 @@ namespace TryTestWeb.Controllers
 
             PaginadorModel ReturnValues = new PaginadorModel();
 
-            bool Filtro = false;
-
             if (flibros.Anio > 0 || !string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
-                Filtro = true;
+                flibros.Filtro = true;
             }
-            else if (Filtro == false)
+            else if (flibros.Filtro == false)
             {
                 ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year;
             }
@@ -3833,17 +3882,17 @@ namespace TryTestWeb.Controllers
             if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
                 Predicado = Predicado.Where(r => r.FechaEmision >= dtFechaInicio && r.FechaEmision <= dtFechaFin);
 
-            if (TipoOrigenVoucher != null)
-            {
-                TipoOrigen TipoVoucherOrigen = (TipoOrigen)TipoOrigenVoucher;
-                Predicado = Predicado.Where(r => r.TipoOrigenVoucher == (TipoOrigen)TipoOrigenVoucher || r.TipoOrigen == TipoVoucherOrigen.ToString());
-            }
-
             LstVoucher = Predicado
                         .OrderByDescending(x => x.NumeroVoucher)
                         .Skip((pagina - 1) * cantidadRegistrosPorPagina)
                         .Take(cantidadRegistrosPorPagina)
                         .ToList();
+
+           LstVoucher = objCliente.ListVoucher.Where(r => r.DadoDeBaja == true)
+                                               .OrderByDescending(x => x.VoucherModelID)
+                                               .Skip((pagina - 1) * _RegistrosPorPagina)
+                                               .Take(_RegistrosPorPagina)
+                                               .ToList();
 
             var totalDeRegistros = Predicado.Count();
 
@@ -4249,7 +4298,6 @@ namespace TryTestWeb.Controllers
 
         public ActionResult IEstadoResultadoPartial(string FechaInicio = "", string FechaFin = "", string Anio = "", string Mes = "")
         {
-            
             bool ConversionFechaInicioExitosa = false;
             DateTime dtFechaInicio = new DateTime();
             bool ConversionFechaFinExitosa = false;
@@ -5633,6 +5681,8 @@ namespace TryTestWeb.Controllers
                 TablaHonorStrings[7] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorRetencion);
                 TablaHonorStrings[8] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.MontoTotalLinea);
 
+
+  
                 Bruto += itemHonor.ValorLiquido;
                 Retencion += itemHonor.ValorRetencion;
                 Neto += itemHonor.MontoTotalLinea;
@@ -5679,6 +5729,105 @@ namespace TryTestWeb.Controllers
 
             return View(Paginacion);
         }
+
+        [Authorize]
+        public ActionResult LibroDeHonorariosTwo(int pagina = 1, int cantidadRegistrosPorPagina = 25, int Mes = 0, int Anio = 0, string RazonSocial = "", string Rut = "", string FechaInicio = "", string FechaFin = "", int Folio = 0)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+            QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+
+            ViewBag.ObjClienteContable = objCliente;
+
+            List<string[]> ReturnValues = new List<string[]>();
+            //Definir filtros
+
+            string TipoReceptor = "H";
+
+            IQueryable<AuxiliaresDetalleModel> LibroHonorario = LibrosContablesModel.ObtenerLibrosPrestadores(objCliente, db, TipoReceptor, Mes, Anio, RazonSocial, Rut, FechaInicio, FechaFin, Folio);
+
+            int TotalRegistros = LibroHonorario.Count();
+
+            if (cantidadRegistrosPorPagina != 0)
+            {
+                LibroHonorario = LibroHonorario.OrderBy(x => x.FechaContabilizacion)
+                                         .Skip((pagina - 1) * cantidadRegistrosPorPagina)
+                                         .Take(cantidadRegistrosPorPagina);
+            }
+            else if (cantidadRegistrosPorPagina == 0)
+            {
+                LibroHonorario = LibroHonorario.OrderBy(x => x.FechaContabilizacion);
+            }
+
+            int Correlativo = 1;
+
+            decimal Bruto = 0;
+            decimal Retencion = 0;
+            decimal Neto = 0;
+
+            foreach (AuxiliaresDetalleModel itemHonor in LibroHonorario.ToList())
+            {
+                string[] TablaHonorStrings = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-" };
+
+                TablaHonorStrings[0] = Correlativo.ToString();
+                TablaHonorStrings[1] = itemHonor.Folio.ToString();
+                TablaHonorStrings[2] = itemHonor.FechaContabilizacion.ToString("dd-MM-yyyy");
+                TablaHonorStrings[3] = itemHonor.Fecha.ToString("dd-MM-yyyy");
+                TablaHonorStrings[4] = itemHonor.Individuo2.RUT;
+                TablaHonorStrings[5] = itemHonor.Individuo2.RazonSocial;
+                TablaHonorStrings[6] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.MontoBrutoLinea);
+                TablaHonorStrings[7] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorRetencion);
+                TablaHonorStrings[8] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.MontoTotalLinea);
+
+                Bruto += itemHonor.MontoBrutoLinea;
+                Retencion += itemHonor.ValorRetencion;
+                Neto += itemHonor.MontoTotalLinea;
+
+                Correlativo++;
+
+                ReturnValues.Add(TablaHonorStrings);
+            }
+
+            string[] Totales = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-" };
+            Totales[5] = "TOTAL: ";
+            Totales[6] = ParseExtensions.NumeroConPuntosDeMiles(Bruto);
+            Totales[7] = ParseExtensions.NumeroConPuntosDeMiles(Retencion);
+            Totales[8] = ParseExtensions.NumeroConPuntosDeMiles(Neto);
+
+            ReturnValues.Add(Totales);
+
+            var Paginacion = new PaginadorModel();
+            Paginacion.ResultStringArray = ReturnValues;
+            Paginacion.PaginaActual = pagina;
+            Paginacion.TotalDeRegistros = TotalRegistros;
+            Paginacion.RegistrosPorPagina = cantidadRegistrosPorPagina;
+            Paginacion.ValoresQueryString = new RouteValueDictionary();
+
+            if (cantidadRegistrosPorPagina != 25)
+                Paginacion.ValoresQueryString["cantidadRegistrosPorPagina"] = cantidadRegistrosPorPagina;
+            if (Mes != 0)
+                Paginacion.ValoresQueryString["Mes"] = Mes;
+            if (Anio != 0)
+                Paginacion.ValoresQueryString["Anio"] = Anio;
+            if (!string.IsNullOrWhiteSpace(RazonSocial))
+                Paginacion.ValoresQueryString["RazonSocial"] = RazonSocial;
+            if (!string.IsNullOrWhiteSpace(Rut))
+                Paginacion.ValoresQueryString["Rut"] = Rut;
+            if (!string.IsNullOrWhiteSpace(FechaInicio) && !string.IsNullOrWhiteSpace(FechaFin))
+            {
+                Paginacion.ValoresQueryString["FechaInicio"] = FechaInicio;
+                Paginacion.ValoresQueryString["FechaFin"] = FechaFin;
+            }
+
+            Session["LibroDeHonorarios"] = ReturnValues;
+            var FechasExcel = SessionParaExcel.ObtenerObjetoExcel(Anio.ToString(), Mes.ToString(), FechaInicio, FechaFin, string.Empty);
+            Session["FechasExcel"] = FechasExcel;
+
+            return View(Paginacion);
+        }
+
+
 
         [Authorize]
         public ActionResult GetExcelLibroDeHonorarios()

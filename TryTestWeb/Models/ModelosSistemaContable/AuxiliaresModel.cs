@@ -42,6 +42,7 @@ public class AuxiliaresDetalleModel
     public int Folio { get; set; }
     public int FolioHasta { get; set; }
     //Utilizado por TipoAuxiliar = 1 / ProveedoresDeudores
+    public decimal MontoBrutoLinea { get; set; }
     public decimal MontoNetoLinea { get; set; }
     public decimal MontoExentoLinea { get; set; }
     public decimal MontoIVALinea { get; set; }
@@ -208,9 +209,11 @@ public class AuxiliaresDetalleModel
             if(tipoLibroCentralizacion == TipoCentralizacion.Compra)
             {
                 //H a M
+                workSheet.Columns("A", "M").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 workSheet.Columns("H:M").Style.NumberFormat.Format = "#,##0 ;-#,##0";
             }else if(tipoLibroCentralizacion == TipoCentralizacion.Venta)
             {
+                workSheet.Columns("A", "K").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 workSheet.Columns("H:K").Style.NumberFormat.Format = "#,##0 ;-#,##0";
             }
 
@@ -221,21 +224,8 @@ public class AuxiliaresDetalleModel
 
             ConversionFechaInicioExitosa = DateTime.TryParse(FechaInicio, out dtFechaInicio);
             ConversionFechaFinExitosa = DateTime.TryParse(FechaFin, out dtFechaFin);
-
-          //  IEnumerable<LibrosContablesModel> bagDetalleLibros = objCliente.ListLibros.Where(r => r.TipoLibro == tipoLibroCentralizacion);
-
-         
-
-          /*  if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)
-            {
-                bagDetalleLibros = bagDetalleLibros.Where(r => r.FechaDoc >= dtFechaInicio && r.FechaDoc <= dtFechaFin);
-            }
-            else
-            {
-                bagDetalleLibros = bagDetalleLibros.Where(r => r.FechaDoc.Year == Anio);
-                if (Mes != 0)
-                    bagDetalleLibros = bagDetalleLibros.Where(r => r.FechaDoc.Month == Mes);
-            }*/
+            
+            workSheet.Columns("B", "C").Style.DateFormat.Format = "dd-MM-yyyy";
 
             int NumeroFilaExcel = 15;
             int NumeroCorrelativoDummy = 1;
@@ -274,11 +264,21 @@ public class AuxiliaresDetalleModel
                 //TOTAL
                 valuesForExcel.Add(tableRow[12]);
 
-   
                 string[] theRow = valuesForExcel.ToArray();
                 for (int i = 0; i < theRow.Length; i++)
                 {
-                    workSheet.Cell(NumeroFilaExcel, i + 1).Value = theRow[i]; //.Value = theRow[i];
+                    if (theRow[i] != "-" && !string.IsNullOrWhiteSpace(theRow[i]))
+                    {
+                        if (i == 1 || i == 2)
+                        {
+                            DateTime Fecha = ParseExtensions.CreaFechaLiteral(theRow[i]);
+                            workSheet.Cell(NumeroFilaExcel, i + 1).Value = Fecha;
+                        }
+                        else
+                        {
+                            workSheet.Cell(NumeroFilaExcel, i + 1).Value = theRow[i]; //.Value = theRow[i];
+                        }
+                    }
                 }
                 if(tipoLibroCentralizacion == TipoCentralizacion.Compra) { 
                 workSheet.Range("A" + NumeroFilaExcel + ":M" + NumeroFilaExcel).Rows().Style.Border.OutsideBorder = XLBorderStyleValues.Thin; // Se establece el rango que cubrirá el borde del excel 

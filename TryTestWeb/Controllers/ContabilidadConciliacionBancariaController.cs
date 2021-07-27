@@ -125,48 +125,63 @@ namespace TryTestWeb.Controllers
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
             Session["CartolaImportada"] = null;
 
-            if (DataCartola.files != null && DataCartola.files.ContentLength > 0)
+            using (var dbContextTransaction = db.Database.BeginTransaction())
             {
-                string fileExtension = Path.GetExtension(DataCartola.files.FileName);
-
-                if (fileExtension == ".xlsx" || fileExtension == ".xls")
+                try
                 {
-                    List<string[]> MayorConsultado = Session["LibroMayorTwo"] as List<string[]>;
-                    List<LibroMayorConciliacion> MayorConsultadoLista = CartolaBancariaModel.getListaLibroMayor(MayorConsultado);
-
-                    string NombreCtaCont = MayorConsultado[0][9];
-                    ViewBag.NombreCuentaContable = NombreCtaCont;
-
-                    int CuentaConsultadaID = (int)Session["ObjetoCuentaContableConsultada"];
-                    CuentaContableModel CuentaConsultada = UtilesContabilidad.CuentaContableDesdeID(CuentaConsultadaID, objCliente);
-                    //DeExcelAObjetoCartolaYVoucher
-                    
-                    var ObjCartolaCompleto = CartolaBancariaMacroModel.ConvertirAObjetoCartola(DataCartola.files /*NombreCtaCont*/);
-                    var ResultadoInsercion = CartolaBancariaMacroModel.ConvertirAVoucher(ObjCartolaCompleto, objCliente, db, CuentaConsultada, DataCartola.FechaCartola, DataCartola.NumeroCartola);
-
-                    //Usar para el reporte de conciliacion bancaria
-                    var CartolaCompleta = ResultadoInsercion.Item2;
-                    Session["ReporteConciliacionCartola"] = CartolaCompleta;
-                    Session["ReporteConciliacionMayor"] = MayorConsultadoLista;
-
-
-                    //Queda pendiente reporte del resultado de la conciliación
-                    //Queda pendiente Corregir lo de la plantilla que se debe llenar para conciliar -> revisar que tanto va a cambiar el flujo algoritmico.
-                    if (ResultadoInsercion.Item1 == false)
+                    if (DataCartola.files != null && DataCartola.files.ContentLength > 0)
                     {
-                        TempData["Error"] = "Esta cartola ya existe.";
+                        string fileExtension = Path.GetExtension(DataCartola.files.FileName);
+
+                        if (fileExtension == ".xlsx" || fileExtension == ".xls")
+                        {
+                            List<string[]> MayorConsultado = Session["LibroMayorTwo"] as List<string[]>;
+                            List<LibroMayorConciliacion> MayorConsultadoLista = CartolaBancariaModel.getListaLibroMayor(MayorConsultado);
+
+                            string NombreCtaCont = MayorConsultado[0][9];
+                            ViewBag.NombreCuentaContable = NombreCtaCont;
+
+                            int CuentaConsultadaID = (int)Session["ObjetoCuentaContableConsultada"];
+                            CuentaContableModel CuentaConsultada = UtilesContabilidad.CuentaContableDesdeID(CuentaConsultadaID, objCliente);
+                            //DeExcelAObjetoCartolaYVoucher
+
+                            var ObjCartolaCompleto = CartolaBancariaMacroModel.ConvertirAObjetoCartola(DataCartola.files /*NombreCtaCont*/);
+                            var ResultadoInsercion = CartolaBancariaMacroModel.ConvertirAVoucher(ObjCartolaCompleto, objCliente, db, CuentaConsultada, DataCartola.FechaCartola, DataCartola.NumeroCartola);
+
+                            //Usar para el reporte de conciliacion bancaria
+                            var NoInsertados = ResultadoInsercion.Item2;
+                     
+                            Session["ReporteNoInsertados"] = NoInsertados;
+
+                            if (ResultadoInsercion.Item1 == false)
+                            {
+                                TempData["Error"] = "Esta cartola ya existe.";
+                                return RedirectToAction("ConciliacionBAutomatica", "ContabilidadConciliacionBancaria");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        TempData["Error"] = "No existen registros en el fichero.";
                         return RedirectToAction("ConciliacionBAutomatica", "ContabilidadConciliacionBancaria");
                     }
+
+                    dbContextTransaction.Commit();
+
+                    TempData["Correcto"] = "Cartola y Vouchers creados con éxito.";
+                    return RedirectToAction("ResultadoConciliacion", "ContabilidadConciliacionBancaria");
+                }
+                catch (Exception ex)
+                {
+                    dbContextTransaction.Rollback();
+                    TempData["Error"] = $"Error al realizar esta acción. Mensaje de error: {ex.Message}. En caso de necesitarlo informar este error.";
+                    db.DBErrores.Add(new ErrorMensajeMonitoreo { Mensaje = ex.Message });
+                    db.SaveChanges();
+                    return RedirectToAction("ConciliacionBAutomatica", "ContabilidadConciliacionBancaria");
                 }
             }
-            else
-            {
-                TempData["Correcto"] = "No existen registros en el fichero.";
-                return RedirectToAction("ConciliacionBAutomatica", "ContabilidadConciliacionBancaria");
-            }
 
-            TempData["Correcto"] = "Cartola y Vouchers creados con éxito.";
-            return RedirectToAction("ResultadoConciliacion", "ContabilidadConciliacionBancaria");
+
         }
         public FileResult PlantillaExcel()
         {
@@ -243,14 +258,12 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
+            var lstNoInsertados = Session["ReporteNoInsertados"] as List<ObjCartolaYVouchers>;
 
-            var CartolaCompleta = Session["ReporteConciliacionCartola"] as List<CartolaBancariaModel>;
-            var LibroMayorConsultado = Session["ReporteConciliacionMayor"] as List<LibroMayorConciliacion>;
+            if(lstNoInsertados.Any())
+                ViewBag.NoInsertados = lstNoInsertados;
 
-            //Queda pendiente proveer el descargar el resultado de la conciliación en PDF
-            var DatosResultadoConciliacion = CartolaBancariaModel.CalcularReporteConciliacion(CartolaCompleta, LibroMayorConsultado, db, objCliente);
-
-            return View(DatosResultadoConciliacion);
+            return View();
         }
     }
 }

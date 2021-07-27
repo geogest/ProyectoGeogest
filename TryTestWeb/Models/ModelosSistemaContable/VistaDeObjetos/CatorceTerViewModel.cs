@@ -235,8 +235,10 @@ public class CatorceTerViewModel
                 {
                     workSheet.Cell("F8").Value = "Informe 14 Ter" + "  " + Fechas.Anio;
                 }
-
+            workSheet.Column("B").Style.DateFormat.Format = "dd-MM-yyyy";
             workSheet.Columns("G:H").Style.NumberFormat.Format = "#,##0 ;-#,##0";
+            workSheet.Columns("A","K").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+
 
             int NumeroFilaExcel = 13;
                 int Correlativo = 1;

@@ -73,52 +73,62 @@ else
             <label class="control-label">Fecha Contabilización</label>
             @if (ViewBag.FechaEmisionEdit != null)
             {
-                <input type="text" class="form-control" name="fecha" id="fecha" value="@(ViewBag.FechaEmisionEdit)" required />
+                <div class='input-group date '>
+                    <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ViewBag.FechaEmisionEdit)" required />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
             }
             else
             {
-                <input type="text" class="form-control" name="fecha" id="fecha" value="@(ParseExtensions.ToDD_MM_AAAA(DateTime.Now))" required />
+                <div class='input-group date '>
+                    <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ParseExtensions.ToDD_MM_AAAA(DateTime.Now))" required />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
             }
 
-            
-        </div>
 
-   
-        <div class="col-lg-2 form-group">
-            <label class="control-label">Tipo de Voucher</label>
-            <select class="form-control" name="tipo" id="tipo">
-                @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
-            </select>
-        </div>
-        <div class="col-md-2 form-group">
-            <label>Tipo Origen</label>
-            @if (ViewBag.vbVoucherModel != null)
-            {
-                <select class="form-control" name="TipoOrigen" id="TipoOrigen">
-                    @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
-                </select>
-            }
-            else
-            {
-                @Html.DropDownList("TipoOrigen", (List<SelectListItem>)ViewBag.TipoOrigenVoucher, new { @class = "form-control" })
-            }
-        </div>
-        <div class="col-lg-3 form-group">
-            <label class="control-label">Glosa</label>
-            <input type="text" class="form-control" name="glosa" id="glosa" value="@(ViewBag.GlosaVoucherEdit)" required />
-        </div>
-        <div class="col-lg-1  form-group">
-            <!--<label>Duplicar Glosa</label><br/>--><br/>
-           <a class="btn btn-default" id="duplica" name="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa" ><i class="fa fa-copy"></i></a>
-            <!--<div class="checkbox">
+                </div>
+
+
+                <div class="col-lg-2 form-group">
+                    <label class="control-label">Tipo de Voucher</label>
+                    <select class="form-control" name="tipo" id="tipo">
+                        @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
+                    </select>
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Tipo Origen</label>
+                    @if (ViewBag.vbVoucherModel != null)
+                    {
+                        <select class="form-control" name="TipoOrigen" id="TipoOrigen">
+                            @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
+                        </select>
+                    }
+                    else
+                    {
+                        @Html.DropDownList("TipoOrigen", (List<SelectListItem>)ViewBag.TipoOrigenVoucher, new { @class = "form-control" })
+                    }
+                </div>
+                <div class="col-lg-3 form-group">
+                    <label class="control-label">Glosa</label>
+                    <input type="text" class="form-control" name="glosa" id="glosa" value="@(ViewBag.GlosaVoucherEdit)" required />
+                </div>
+                <div class="col-lg-1  form-group">
+                    <!--<label>Duplicar Glosa</label><br/>--><br />
+                    <a class="btn btn-default" id="duplica" name="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa"><i class="fa fa-copy"></i></a>
+                    <!--<div class="checkbox">
                 <label><input type="checkbox" id="duplica" name="duplica" onchange="DuplicaGlosa(this)"> Duplicar Glosa </label>
             </div>-->
-        </div>
-        <div class="col-lg-2  form-group"></div>
-        
+                </div>
+                <div class="col-lg-2  form-group"></div>
 
-      
-     </div>
+
+
+            </div>
     <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">

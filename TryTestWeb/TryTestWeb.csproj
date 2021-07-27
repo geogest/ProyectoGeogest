@@ -357,6 +357,14 @@
     <Compile Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.Designer.cs">
       <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202106210015581_SeAgregaValorBruto.cs" />
+    <Compile Include="Migrations\202106210015581_SeAgregaValorBruto.Designer.cs">
+      <DependentUpon>202106210015581_SeAgregaValorBruto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202106220223163_SeAgregaTablaBoletas.cs" />
+    <Compile Include="Migrations\202106220223163_SeAgregaTablaBoletas.Designer.cs">
+      <DependentUpon>202106220223163_SeAgregaTablaBoletas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202107162157135_TablaMonitoreoSesion.cs" />
     <Compile Include="Migrations\202107162157135_TablaMonitoreoSesion.Designer.cs">
       <DependentUpon>202107162157135_TablaMonitoreoSesion.cs</DependentUpon>
@@ -383,6 +391,7 @@
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\FiltrosEstadoCtasCorrientes.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\UsoComunAux.cs" />
+    <Compile Include="Models\ModelosSistemaContable\ContabilidadBoletas\BoletasCoVModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadBoletas\BoletasExcelModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaMacroModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadConciliacion\CartolaBancariaModel.cs" />
@@ -1022,6 +1031,7 @@
     <Content Include="Views\Contabilidad\EstadoResultado.cshtml" />
     <Content Include="Views\PartialHelpers\DatosClienteParaPDFPArtial.cshtml" />
     <Content Include="Views\Contabilidad\testkim.cshtml" />
+    <Content Include="Views\Contabilidad\LibroDeHonorariosTwo.cshtml" />
     <Content Include="Views\Monitoreo\ControlarEstadoSesion.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -1102,6 +1112,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.resx">
       <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106210015581_SeAgregaValorBruto.resx">
+      <DependentUpon>202106210015581_SeAgregaValorBruto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106220223163_SeAgregaTablaBoletas.resx">
+      <DependentUpon>202106220223163_SeAgregaTablaBoletas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107162157135_TablaMonitoreoSesion.resx">
       <DependentUpon>202107162157135_TablaMonitoreoSesion.cs</DependentUpon>

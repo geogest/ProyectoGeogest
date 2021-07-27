@@ -279,14 +279,29 @@ public class VoucherModel
                 workSheet.Cell("C9").Value = string.Empty;
             }
 
+            workSheet.Column("A").Style.DateFormat.Format = "dd-MM-yyyy";
             workSheet.Columns("D:E").Style.NumberFormat.Format = "#,##0 ;-#,##0";
+            workSheet.Columns("A","H").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
 
             int NumeroFilaExcel = 12;
             foreach (string[] tableRow in newStrList)
             {
                 for (int i = 0; i < tableRow.Length; i++)
                 {
-                    workSheet.Cell(NumeroFilaExcel, i + 1).Value = tableRow[i];
+                    if(tableRow[i] != "-" && !string.IsNullOrWhiteSpace(tableRow[i]))
+                    {
+                        if(i == 0)
+                        {
+                            DateTime FechaContabilizacion = ParseExtensions.CreaFechaLiteral(tableRow[i]);
+                            workSheet.Cell(NumeroFilaExcel, i + 1).Value = FechaContabilizacion;
+                        }
+                        else
+                        {
+                            workSheet.Cell(NumeroFilaExcel, i + 1).Value = tableRow[i];
+                        }
+                        
+                    }
+                    
                 }
                 workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
                 ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -361,6 +376,7 @@ public class VoucherModel
 
             workSheet.Column("A").Style.DateFormat.Format = "dd-MM-yyyy";
             workSheet.Columns("F:H").Style.NumberFormat.Format = "#,##0 ;-#,##0";
+            workSheet.Columns("A","H").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
 
             DateTime ObjFechaUtil = new DateTime();
             int NumeroFilaExcel = 13;
@@ -403,7 +419,7 @@ public class VoucherModel
                         {
                             if(ItemMayor[j] == ItemMayor[0] && ItemMayor[j] != "-")
                             {
-                                ObjFechaUtil = ParseExtensions.ToDD_MM_AAAA_Multi(ItemMayor[j]);
+                                ObjFechaUtil = ParseExtensions.CreaFechaLiteral(ItemMayor[j]);
                             }
                             if(j == 5 && ItemMayor[j] != "0")
                             {
@@ -413,7 +429,14 @@ public class VoucherModel
                             {
                                 Haber += Convert.ToDecimal(ItemMayor[j]);
                             }
-                            workSheet.Cell(NumeroFilaExcel, j + 1).Value = ItemMayor[j];
+                            if (ItemMayor[j] != ItemMayor[0])
+                            {
+                                workSheet.Cell(NumeroFilaExcel, j + 1).Value = ItemMayor[j];
+                            }
+                            else
+                            {
+                                workSheet.Cell(NumeroFilaExcel, j + 1).Value = ObjFechaUtil;
+                            }
                             
                         }
                         workSheet.Range("A" + NumeroFilaExcel + ":H" + NumeroFilaExcel).Rows
@@ -521,21 +544,25 @@ public class VoucherModel
 
             workSheet.Columns("D:E").Style.DateFormat.Format = "dd-MM-yyyy";
             workSheet.Columns("H:J").Style.NumberFormat.Format = "#,##0 ;-#,##0";
+            workSheet.Columns("B","J").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
 
             int NumeroFilaExcel = 13;
             foreach (string[] tableRow in newStrList)
             {
                 for (int i = 0; i < tableRow.Length; i++)
                 {
-                    if (tableRow[i] == tableRow[2] || tableRow[i] == tableRow[3])
+                    if (tableRow[i] != "-" && !string.IsNullOrWhiteSpace(tableRow[i]))
                     {
-                        if (tableRow[i] != "-") { 
-                            DateTime FechaTramp = new DateTime();
-                            FechaTramp = ParseExtensions.ToDD_MM_AAAA_Multi(tableRow[i]);
-                            tableRow[i] = FechaTramp.ToString();
+                        if(i == 2 || i == 3)
+                        {
+                            DateTime Fecha = ParseExtensions.CreaFechaLiteral(tableRow[i]);
+                            workSheet.Cell(NumeroFilaExcel, i + 2).Value = Fecha;
+                        }
+                        else
+                        {
+                            workSheet.Cell(NumeroFilaExcel, i + 2).Value = tableRow[i];
                         }
                     }
-                    workSheet.Cell(NumeroFilaExcel, i + 2).Value = tableRow[i];
                 }
                 workSheet.Range("B" + NumeroFilaExcel + ":J" + NumeroFilaExcel).Rows
                 ().Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -808,8 +835,6 @@ public class VoucherModel
             ConversionFechaFinExitosa = DateTime.TryParseExact(flibros.FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
         }
 
-
-
         //Si me robo un auto Tesla, se transforma en un auto Edison?
         var LibroMayorCompleto = (from detalleVoucher in db.DBDetalleVoucher
                                   join Voucher in db.DBVoucher on detalleVoucher.VoucherModelID equals Voucher.VoucherModelID into vouchGroup
@@ -850,7 +875,7 @@ public class VoucherModel
 
         if (flibros.Filtro == false)
         {
-            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == DateTime.Now.Year);
+            LibroMayorCompleto = LibroMayorCompleto.Where(r => r.FechaContabilizacion.Year == DateTime.Now.Year && r.FechaContabilizacion.Month == DateTime.Now.Month);
         }
 
         if (flibros.Mes != 0)
@@ -892,9 +917,6 @@ public class VoucherModel
         {
             LibroMayorCompleto = LibroMayorCompleto.Where(x => x.EstaConciliado == false);
         }
-
-
-
 
         int TotalRegistros = LibroMayorCompleto.Count();
 
@@ -1330,6 +1352,8 @@ public class VoucherModel
                 workSheet.Cell("A6").Value = string.Empty;
                 workSheet.Cell("A7").Value = string.Empty;
             }
+
+            workSheet.Columns("A","J").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
 
             int NumeroFilaExcel = 13;
             foreach (string[] tableRow in lstBalanceGeneral)
