@@ -1303,6 +1303,8 @@ namespace TryTestWeb.Controllers
                 //   ViewBag.HtmlStr = ParseExtensions.ListAsHTML_Input_Select<CuentaContableModel>(objCliente.CtaContable, "CodInterno", new List<string> { "CodInterno", "nombre" }, new List<string> { "510101" });
                 ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(objCliente, "510101");
 
+                ViewBag.CentroDeCostos = ParseExtensions.ObtenerCentrosDeCostosDropdownAsString(objCliente,0);
+
               //  ViewBag.HtmlStr = ParseExtensions.ObtenerCuentaContableDropdownAsString(objCliente);
                 if (existeCompra == 1)
                 { // Compra
@@ -1345,25 +1347,7 @@ namespace TryTestWeb.Controllers
                     ViewBag.ObjClienteToView = objCliente;
                 } 
 
-                
-
-
-                // List<String> CuentaContableIVA = new List<String> { "520103", "520104", "520105" };
-                // List<CuentaContableModel> cuentas = db.DBCuentaContable.Where(r => CuentaContableIVA.Contains(r.CodInterno) && r.ClientesContablesModelID == objCliente.ClientesContablesModelID).ToList();
-
-
-
-                /*  var lstCodCuentaContableSelected = (from t1 in db.DBCuentaContable
-
-                                              where CuentaContableIVA.Contains(t1.CodInterno)
-
-                                              select new { Codigo = t1.CodInterno }).Select(r => r.Codigo).ToList();*/
-
-
-
-                // ViewBag.HtmlStr2 = ParseExtensions.ListAsHTML_Input_Select<CuentaContableModel>(cuentas, "CodInterno", new List<string> { "CodInterno", "nombre" });
-                // ViewBag.HtmlStr2 = ParseExtensions.ObtenerCuentaContableDropdownAsString();
-                //Session["InfoImportada"] = null;
+              
 
                 if (TempData["ErrorMensaje"] != null)
                     ViewBag.ErrorMensaje = "Por favor asignar una cuenta contable para todos los elementos";
@@ -1408,9 +1392,9 @@ namespace TryTestWeb.Controllers
                     {
                         totalCompra++;
                     }
-
                 }
                 string[] valuesCuentaContable = Request.Form.GetValues("cuenta");
+                string[] valuiesCentroDeCosto = Request.Form.GetValues("CentroCosto");
 
                 if (valuesCuentaContable == null || valuesCuentaContable.Length == 0 || valuesCuentaContable.Length != model.Count() || valuesCuentaContable.Any(r => String.IsNullOrWhiteSpace(r)))
                 {
@@ -1418,6 +1402,7 @@ namespace TryTestWeb.Controllers
                     return RedirectToAction("InfoImportada", "Contabilidad");
                 }
 
+                List<int> IdsCentroDeCostos = valuiesCentroDeCosto.Select(x => Convert.ToInt32(x)).ToList();
 
                 List<CuentaContableModel> lstCuentaContable = new List<CuentaContableModel>();
                 foreach (string strCuentaContable in valuesCuentaContable)
@@ -1426,7 +1411,7 @@ namespace TryTestWeb.Controllers
                     CuentaContableModel objCuentaContable = db.DBCuentaContable.Find(keyCuentaContable);
                     lstCuentaContable.Add(objCuentaContable);
                 }
-                string ResultadoProceso = LibrosContablesModel.ProcesarLibrosContablesAVoucher(lstProperLibros, objCliente, db, lstCuentaContable);
+                string ResultadoProceso = LibrosContablesModel.ProcesarLibrosContablesAVoucher(lstProperLibros, objCliente, db, lstCuentaContable, IdsCentroDeCostos);
                 if (ResultadoProceso.Contains("Error"))
                 {
                     TempData["Error"] = ResultadoProceso;
@@ -5135,7 +5120,8 @@ namespace TryTestWeb.Controllers
                 List<LibrosContablesModel> lstDocs = new List<LibrosContablesModel>();
                 lstDocs.Add(objDoc);
                 db.SaveChanges();
-                LibrosContablesModel.ProcesarLibrosContablesAVoucher(lstDocs, objCliente, db, lstCuentaCont);
+                List<int> centrodecostos = new List<int>();
+                LibrosContablesModel.ProcesarLibrosContablesAVoucher(lstDocs, objCliente, db, lstCuentaCont, centrodecostos);
                 TempData["Correcto"] = "Documento de venta ya se encuentra registrado";
             }
             catch (DbEntityValidationException e)

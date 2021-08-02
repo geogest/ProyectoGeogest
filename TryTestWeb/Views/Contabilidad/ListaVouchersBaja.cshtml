@@ -385,7 +385,7 @@
                     for (var i = 0; i < data.detalleVoucher.length ; i++) {
                         var voucherDataThing = data.detalleVoucher[i];
                         var primaryString = "<tr><td>" + voucherDataThing.ObjCuentaContable.CodInterno + "</td><td>" +
-                        voucherDataThing.ObjCuentaContable.nombre + "</td><td>" + voucherDataThing.GlosaDetalle + "</td><td>" + "$" + voucherDataThing.MontoDebe + "</td><td>" + "$" + voucherDataThing.MontoHaber +
+                            voucherDataThing.ObjCuentaContable.nombre + "</td><td>" + voucherDataThing.GlosaDetalle + "</td><td>" + "$" + formatNumber.new(voucherDataThing.MontoDebe) + "</td><td>" + "$" + formatNumber.new(voucherDataThing.MontoHaber) +
                         "</td>";
                         if (voucherDataThing.Auxiliar == null || voucherDataThing.Auxiliar === undefined) {
                             primaryString = primaryString.concat("<td></td></tr>");
