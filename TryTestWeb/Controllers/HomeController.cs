@@ -2276,6 +2276,18 @@ namespace TryTestWeb.Controllers
             }
         }
 
+        public ActionResult UpdateEmisor(QuickEmisorModel model)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+
+            db.Emisores.AddOrUpdate(model);
+            db.SaveChanges();
+            TempData["Correcto"] = "Se actualizó correctamente.";
+            
+            return RedirectToAction("DatosEmpresa", "Home"); 
+
+        }
 
         //[PrivilegiosHandler(PrivilegioMinimoRequerido = Privilegios.Informador)]
         [Authorize]

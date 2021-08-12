@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="~/Content/css/bootstrap-select.min.css">
 
     @using (Html.BeginForm("UpdateEmisor", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "datosUsuario" }))
+
+
     {
-       
+        @Html.HiddenFor(x => x.QuickEmisorModelID)
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">Datos Tributarios de Empresa</h1>
@@ -25,7 +27,7 @@
                     <div id="dialog" title="Revise los datos"></div>
                     <div class="col-md-2">
                         <label class="control-label" for="rut">RUT Empresa</label> @Html.ValidationMessageFor(m => m.RUTEmpresa, "", new { @class = "text-danger" })
-                        @Html.EditorFor(model => model.RUTEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" , @style= "text-transform:uppercase;", @rutValidator = "true"} })
+                        @Html.EditorFor(model => model.RUTEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", @style = "text-transform:uppercase;", @rutValidator = "true" } })
                     </div>
                     <div class="col-md-7">
                         <label class="control-label" for="razon">Razon Social</label> @Html.ValidationMessageFor(m => m.RazonSocial, "", new { @class = "text-danger" })
@@ -33,7 +35,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="rutUsuario">RUT Usuario Sistema</label> @Html.ValidationMessageFor(m => m.RUTUsuario, "", new { @class = "text-danger" })
-                        @Html.EditorFor(model => model.RUTUsuario, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" , @style = "text-transform:uppercase;", @rutValidator = "true" } })
+                        @Html.EditorFor(model => model.RUTUsuario, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", @style = "text-transform:uppercase;", @rutValidator = "true" } })
                     </div>
                 </div>
                 <div class="row form-group">
@@ -43,7 +45,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="rutRepresentante">RUT Representante</label> @Html.ValidationMessageFor(m => m.RUTRepresentante, "", new { @class = "text-danger" })
-                        @Html.EditorFor(model => model.RUTRepresentante, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" , @style = "text-transform:uppercase;", @rutValidator = "true" } })
+                        @Html.EditorFor(model => model.RUTRepresentante, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", @style = "text-transform:uppercase;", @rutValidator = "true" } })
                     </div>
 
                 </div>
@@ -80,18 +82,20 @@
                         <label class="control-label" for="giro">Giro</label> @Html.ValidationMessageFor(m => m.Giro, "", new { @class = "text-danger" })
                         @Html.EditorFor(model => model.Giro, new { htmlAttributes = new { @class = "form-control", @maxlength = "80" } })
                     </div>
-                   @if(ViewBag.TipoUsuario != null) { 
-                       if(ViewBag.TipoUsuario == "SuperAdmin") { 
-                        <div class="col-md-3">
-                            <label class="control-label" for="maxUsuariosParaEstaEmpresa">Usuarios Maximos Empresa</label> @Html.ValidationMessageFor(m => m.maxUsuariosParaEstaEmpresa, "", new { @class = "text-danger" })
-                            @Html.EditorFor(model => model.maxUsuariosParaEstaEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "80", @type= "number", @min="0"} })
-                        </div>
-                        <div class="col-md-3">
-                            <label class="control-label" for="maxClientesContablesParaEstaEmpresa">Clientes Contables Maximos Empresa</label> @Html.ValidationMessageFor(m => m.maxClientesContablesParaEstaEmpresa, "", new { @class = "text-danger" })
-                            @Html.EditorFor(model => model.maxClientesContablesParaEstaEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "80", @type = "number", @min = "0" } })
-                        </div>
-                       }
-                   }
+                    @if (ViewBag.TipoUsuario != null)
+                    {
+                        if (ViewBag.TipoUsuario == "SuperAdmin")
+                        {
+                            <div class="col-md-3">
+                                <label class="control-label" for="maxUsuariosParaEstaEmpresa">Usuarios Maximos Empresa</label> @Html.ValidationMessageFor(m => m.maxUsuariosParaEstaEmpresa, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.maxUsuariosParaEstaEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "80", @type = "number", @min = "0" } })
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label" for="maxClientesContablesParaEstaEmpresa">Clientes Contables Maximos Empresa</label> @Html.ValidationMessageFor(m => m.maxClientesContablesParaEstaEmpresa, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.maxClientesContablesParaEstaEmpresa, new { htmlAttributes = new { @class = "form-control", @maxlength = "80", @type = "number", @min = "0" } })
+                            </div>
+                        }
+                    }
 
 
                 </div>
@@ -103,14 +107,14 @@
                             @Html.Raw(ViewBag.HtmlStr)
                         </select>
                         @*<label class="control-label" for="acteco">Actividad Economica</label> @Html.ValidationMessageFor(m => m.ActEcono, "", new { @class = "text-danger" })
-                        @Html.EditorFor(model => model.ActEcono, new { htmlAttributes = new { @class = "form-control", @maxlength = "6" } })*@
+                            @Html.EditorFor(model => model.ActEcono, new { htmlAttributes = new { @class = "form-control", @maxlength = "6" } })*@
                     </div>
                 </div>
 
                 <div class="row form-group">
                     <div class="col-md-4">
                         <label class="control-label" for="acteco">Fecha Resolucion SII</label> @Html.ValidationMessageFor(m => m.FechaResolucion, "", new { @class = "text-danger" })
-                        <input class ="form-control" type="text" name="FechaResolucion" id="FechaResolucion" value="@ParseExtensions.ToDD_MM_AAAA(Model.FechaResolucion)" />
+                        <input class="form-control" type="text" name="FechaResolucion" id="FechaResolucion" value="@ParseExtensions.ToDD_MM_AAAA(Model.FechaResolucion)" />
                     </div>
                     <div class="col-md-4">
                         <label class="control-label" for="acteco">Numero de Resolucion SII</label> @Html.ValidationMessageFor(m => m.NumeroResolucion, "", new { @class = "text-danger" })
@@ -148,9 +152,9 @@
                 </div>
 
 
-                
 
-            </div>         
+
+            </div>
         </div>
         <div style="text-align: center;">
             <input class="btn btn-1" value="Guardar Datos" name="Save" type="submit">
@@ -197,8 +201,8 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
     }
 
 
@@ -214,7 +218,7 @@
         }
 
         .darkinput {
-            color: 222f3f;
+            color: #222f3f;
             background-color: #dde3ef;
         }
 
@@ -269,8 +273,8 @@
     </style>
     <script>
 
-        $( document ).ready( function () {
-            
+        $(document).ready(function () {
+
             $.datepicker.regional['es'] = {
                 closeText: 'Cerrar',
                 prevText: '<Ant',
@@ -314,7 +318,7 @@
 
             $("#datosUsuario").validate({
                 rules: {
-                    RUTEmpresa: { required: true},
+                    RUTEmpresa: { required: true },
                     RazonSocial: "required",
                     RUTUsuario: "required",
                     Representante: "required",
@@ -341,18 +345,21 @@
 
             $.getScript("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js");
             $('.selectpicker').selectpicker();
-        } );
+        });
 
 
     </script>
     <style>
-        .ui-dialog-titlebar { color:white;}
+        .ui-dialog-titlebar {
+            color: white;
+        }
 
-.ui-draggable-handle {background:#ff4d4d;} 
+        .ui-draggable-handle {
+            background: #ff4d4d;
+        }
 
-.ui-dialog 
-{
-position:fixed;
-}
+        .ui-dialog {
+            position: fixed;
+        }
     </style>
 </body>
