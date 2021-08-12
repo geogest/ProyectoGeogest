@@ -711,6 +711,27 @@ public static class ParseExtensions
         }
         return sb.ToString();
     }
+
+    public static string ObtenerCentrosDeCostosDropdownAsString(ClientesContablesModel ObjCliente, int SelectedId)
+    {
+        var LstCentroDeCostos = ObjCliente.ListCentroDeCostos.Select(x => new { x.CentroCostoModelID, x.Nombre }).ToList();
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<option value="+0+">Selecciona</option>");
+
+        if (LstCentroDeCostos.Any())
+        {
+            LstCentroDeCostos.Where(x => x.CentroCostoModelID != SelectedId)
+                             .ForEach(x => sb.Append("<option value="+x.CentroCostoModelID+">" + x.Nombre + "</option>"));
+
+            if (LstCentroDeCostos.Where(x => x.CentroCostoModelID == SelectedId).Any())
+            {
+                LstCentroDeCostos.Where(x => x.CentroCostoModelID == SelectedId)
+                    .ForEach(x => sb.Append("<option value="+x.CentroCostoModelID+" selected>" + x.Nombre + "</option>"));
+            }
+        }
+     
+        return sb.ToString();
+    }
     public static string ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(ClientesContablesModel ObjCliente, string IDOfSelected)
     {
         List<CuentaContableModel> ListaCuentas = ObjCliente.CtaContable.ToList();

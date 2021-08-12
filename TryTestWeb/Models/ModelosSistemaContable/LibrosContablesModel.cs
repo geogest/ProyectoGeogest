@@ -116,7 +116,7 @@ public class LibrosContablesModel
     public virtual QuickReceptorModel individuo { get; set; }
     public bool EsUnRegistroManual { get; set; } = false;
      
-    public static string ProcesarLibrosContablesAVoucher(List<LibrosContablesModel> lstEntradasLibro, ClientesContablesModel objCliente, FacturaPoliContext db, List<CuentaContableModel> lstCuentaContable)
+    public static string ProcesarLibrosContablesAVoucher(List<LibrosContablesModel> lstEntradasLibro, ClientesContablesModel objCliente, FacturaPoliContext db, List<CuentaContableModel> lstCuentaContable, List<int> IdsCentroDeCostos)
     {
 
         using(var dbContextTransaction = db.Database.BeginTransaction())
@@ -206,6 +206,7 @@ public class LibrosContablesModel
                         detalleGastoNeto.GlosaDetalle = "Costo Neto " + FullDescripcionDocOriginal;
 
                         detalleGastoNeto.ObjCuentaContable = lstCuentaContable[contadorAnexo];
+                        detalleGastoNeto.CentroCostoID = IdsCentroDeCostos[contadorAnexo];
 
                         DetalleVoucher.Add(detalleGastoNeto);
 
@@ -295,6 +296,7 @@ public class LibrosContablesModel
                         detalleGastoNeto.GlosaDetalle = "Costo Neto " + FullDescripcionDocOriginal;
 
                         detalleGastoNeto.ObjCuentaContable = lstCuentaContable[contadorAnexo];
+                        detalleGastoNeto.CentroCostoID = IdsCentroDeCostos[contadorAnexo];
 
                         DetalleVoucher.Add(detalleGastoNeto);
 

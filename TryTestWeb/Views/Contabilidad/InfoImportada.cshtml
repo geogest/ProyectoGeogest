@@ -27,6 +27,9 @@ else
                         Cuenta Contable
                     </th>
 
+                    <th>
+                        Centro Costo(opcional)
+                    </th>
 
                     <th>
                         Tipo Documento
@@ -105,6 +108,14 @@ else
                                         @Html.Raw(ViewBag.HtmlStr)
                                     }
 
+                                </select>
+                            </td>
+                            <td>
+                                <select id="CentroCosto@(rowCount)" name="CentroCosto" class="form-control" style="width:260px">
+                                    @if(ViewBag.CentroDeCostos != null)
+                                    {
+                                        @Html.Raw(ViewBag.CentroDeCostos)
+                                    }
                                 </select>
                             </td>
 
