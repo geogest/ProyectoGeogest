@@ -72,7 +72,7 @@ namespace TryTestWeb.Helpers
 
                 html = "<div class='table-detail' name ='" + name + "' id='" + Id + "'>" +
                    "<a class = 'btn btn-primary " + clase + "' onclick='"+onclick+"' data-toggle='tooltip' data-placement='bottom' " +
-                   "href='" + href + "' title='Editar " + nombre + " ' data-original-title='Editar " + nombre + "'>" +
+                   "title='Editar " + nombre + " ' data-original-title='Editar " + nombre + "'>" +
                    "<span class='glyphicon glyphicon-edit'></span></a></div>";
 
             }

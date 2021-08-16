@@ -128,11 +128,11 @@
                                     <td>@Cuenta.SubClasificacion.NombreInterno</td>
                                     <td>@Cuenta.SubSubClasificacion.NombreInterno</td>
                                     <td>
-                                        @*<a id="EditButton" onclick="getCtaContableEdit(@Cuenta.CuentaContableModelID);" class="btn btn-icon waves-effect waves-light btn-primary" 
-                                           data-toggle="tooltip" data-placement="bottom" title="Editar Cuenta Contable!" data-original-title="Editar Cuenta Contable!">
-                                        <i class="ion-edit"></i></a>*@
-
-                                        @Html.BtnEditar("EditButton", "", "btn-icon", "", "getCtaContableEdit("+ @Cuenta.CuentaContableModelID + ")", "Cuenta Contable")
+                                        @*<a id="EditButton" onclick="getCtaContableEdit(@Cuenta.CuentaContableModelID);" class="btn btn-icon waves-effect waves-light btn-primary"
+                                          data-toggle="tooltip" data-placement="bottom" title="Editar Cuenta Contable!" data-original-title="Editar Cuenta Contable!">
+                                          <i class="ion-edit"></i></a>*@
+                                        
+                                             @Html.BtnEditar("EditButton", "", "btn-icon", "", "getCtaContableEdit("+ @Cuenta.CuentaContableModelID + ")", "Cuenta Contable")
                                     </td>
                                 </tr>
                             }

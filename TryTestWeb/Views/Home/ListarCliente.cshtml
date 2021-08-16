@@ -185,7 +185,13 @@
                                         @Cliente.TelefonoContacto
                                     </div>
                                     <div id="Col13_@cont">
-                                        <a href="@Url.Action("EditarCliente", "Home",  new { id_receptor = Cliente.QuickReceptorModelID })" )" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip"  data-placement="bottom" title="Editar Cliente!" data-original-title="Editar Cliente!"><i class="ion-edit"></i></a>
+                                        @*<a href="@Url.Action("EditarCliente", "Home",  new { id_receptor = Cliente.QuickReceptorModelID })" )" 
+                                           class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip"  
+                                           data-placement="bottom" title="Editar Cliente!" 
+                                           data-original-title="Editar Cliente!"><i class="ion-edit"></i></a>*@
+
+                                            @Html.BtnEditar("","","btn-icon", @Url.Action("EditarCliente", "Home", new { id_receptor = Cliente.QuickReceptorModelID }), "","Cliente")
+
                                     </div>
                                 </div>
                             </div>

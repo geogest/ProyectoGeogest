@@ -6,7 +6,8 @@
         <div class="col-sm-12">
             <div class="btn-group pull-right m-t-30">
                 <div class="button-list">
-                    <a onclick="javascript:NuevoItem();" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a" id="AddEgreso">
+                    <a onclick="javascript:NuevoItem();" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" 
+                       data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a" id="AddEgreso">
                         <span class="btn-label"><i class="ion-android-add"></i></span>Item
                     </a>
                 </div>
@@ -77,7 +78,11 @@
                                         <td>@Item.contador</td>
                                         <td>@Item.NombreItem</td>
                                         <td>
-                                            <a id="EditButton" onclick="getItemEdit(@Item.ItemModelID);" class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom" title="Editar Item!" data-original-title="Editar Item!"><i class="ion-edit"></i></a>
+                                            @*<a id="EditButton" onclick="getItemEdit(@Item.ItemModelID);"
+                                               class="btn btn-icon waves-effect waves-light btn-primary" data-toggle="tooltip" data-placement="bottom"
+                                               title="Editar Item!" data-original-title="Editar Item!"><i class="ion-edit"></i></a>*@
+
+                                            @Html.BtnEditar("EditButton", "", "", "", "getItemEdit("+@Item.ItemModelID+");", "Item")
                                         </td>
                                     </tr>
                                 }
