@@ -49,7 +49,6 @@ public class ClientesContablesModel
 
     public string RUTRepresentante { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
     [Display(Name = "Nombre Representante")]
     public string Representante { get; set; }
 

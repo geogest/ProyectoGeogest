@@ -2281,12 +2281,18 @@ namespace TryTestWeb.Controllers
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
 
-            db.Emisores.AddOrUpdate(model);
-            db.SaveChanges();
-            TempData["Correcto"] = "Se actualizó correctamente.";
-            
-            return RedirectToAction("DatosEmpresa", "Home"); 
+            if(model != null)
+            {
+                db.Emisores.AddOrUpdate(model);
+                db.SaveChanges();
+                TempData["Correcto"] = "Se actualizó correctamente.";
+            }
+            else
+            {
+                TempData["Error"] = "Es necesario enviar datos para actualizar";
+            }
 
+            return RedirectToAction("DatosEmpresa", "Home"); 
         }
 
         //[PrivilegiosHandler(PrivilegioMinimoRequerido = Privilegios.Informador)]
