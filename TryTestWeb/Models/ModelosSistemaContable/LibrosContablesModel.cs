@@ -769,6 +769,8 @@ public class LibrosContablesModel
         bool ConversionFechaFinExitosa = false;
         DateTime dtFechaFin = new DateTime();
 
+        List<LibrosContablesModel> lstlibroData = new List<LibrosContablesModel>();
+
         if (string.IsNullOrWhiteSpace(FechaInicio) == false && string.IsNullOrWhiteSpace(FechaFin) == false)
         {
             ConversionFechaInicioExitosa = DateTime.TryParseExact(FechaInicio, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaInicio);
@@ -806,13 +808,13 @@ public class LibrosContablesModel
 
         int totalDeRegistros = lstlibro.Count();
         if (cantidadRegistrosPorPagina != 0) {
-            lstlibro = lstlibro.OrderBy(r => r.FechaContabilizacion)
-                               .Skip((pagina - 1) * cantidadRegistrosPorPagina)
-                               .Take(cantidadRegistrosPorPagina);
+           lstlibroData = lstlibro.OrderBy(r => r.FechaContabilizacion)
+                                .Skip((pagina - 1) * cantidadRegistrosPorPagina)
+                                .Take(cantidadRegistrosPorPagina).ToList();
 
         } else if (cantidadRegistrosPorPagina == 0)
         {
-            lstlibro = lstlibro.OrderBy(r => r.FechaContabilizacion);
+            lstlibroData = lstlibro.OrderBy(r => r.FechaContabilizacion).ToList();
         }
 
         List<string[]> ReturnValues = new List<string[]>();
@@ -824,9 +826,22 @@ public class LibrosContablesModel
         decimal TotalIvaUsocomun = 0;
         decimal TotalMontoTotal = 0;
 
+        //Son necesarios los totales de las notas de credito ya que actuaran restando a los totales
+        var TotalesNotasDeCredito = (from lstLibro in lstlibroData.Where(x => x.TipoDocumento.EsUnaNotaCredito())
+                                     group lstLibro by 1 into g
+                                     select new
+                                     {
+                                         TotalMontoExento = g.Sum(x => x.MontoExento),
+                                         TotalMontoIva = g.Sum(x => x.MontoIva),
+                                         TotalMontoNeto = g.Sum(x => x.MontoNeto),
+                                         TotalMontoIvaNoRecuperable = g.Sum(x => x.MontoIvaNoRecuperable),
+                                         TotalMontoIvaUsocomun = g.Sum(x => x.MontoIvaUsocomun),
+                                         TotalMontoTotal = g.Sum(x => x.MontoTotal)
+                                     }).FirstOrDefault();
 
+     
         int NumeroRow = 1;
-        foreach (LibrosContablesModel Item in lstlibro.ToList())
+        foreach (LibrosContablesModel Item in lstlibroData)
         {
 
                 string[] BalanceRow = new string[] { "-", "-", "-", "-", "-", "-", "-", "0", "0", "0", "0", "0", "0", "False" };
@@ -856,6 +871,7 @@ public class LibrosContablesModel
                 }
 
                 BalanceRow[7] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoExento);
+               
                 TotalExento += Item.MontoExento;
                 BalanceRow[8] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoNeto);
                 TotalNeto += Item.MontoNeto;
@@ -867,6 +883,7 @@ public class LibrosContablesModel
                 TotalIvaUsocomun += Item.MontoIvaUsocomun;
                 BalanceRow[12] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoTotal);
                 TotalMontoTotal += Item.MontoTotal;
+               
                 BalanceRow[13] = "True";
 
                 if (Item.TipoDocumento.EsUnaNotaCredito() == false)
@@ -880,16 +897,35 @@ public class LibrosContablesModel
             
         }
 
-        string[] Totales = new string[] { "-", "-", "-", "-", "-", "-", "-", "0", "0", "0", "0", "0", "0", "False" };
-        Totales[6] = "TOTAL: ";
-        Totales[7] = ParseExtensions.NumeroConPuntosDeMiles(TotalExento);
-        Totales[8] = ParseExtensions.NumeroConPuntosDeMiles(TotalNeto);
-        Totales[9] = ParseExtensions.NumeroConPuntosDeMiles(TotalIva);
-        Totales[10] = ParseExtensions.NumeroConPuntosDeMiles(TotalIvaNoRecuperable);
-        Totales[11] = ParseExtensions.NumeroConPuntosDeMiles(TotalIvaUsocomun);
-        Totales[12] = ParseExtensions.NumeroConPuntosDeMiles(TotalMontoTotal);
+        if(TotalesNotasDeCredito != null)
+        {
+            string[] Totales = new string[] { "-", "-", "-", "-", "-", "-", "-", "0", "0", "0", "0", "0", "0", "False" };
+            Totales[6] = "TOTAL: ";
+            Totales[7] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalExento) - Math.Abs(TotalesNotasDeCredito.TotalMontoExento));
+            Totales[8] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalNeto) - Math.Abs(TotalesNotasDeCredito.TotalMontoNeto));
+            Totales[9] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalIva) - Math.Abs(TotalesNotasDeCredito.TotalMontoIva));
+            Totales[10] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalIvaNoRecuperable) - Math.Abs(TotalesNotasDeCredito.TotalMontoIvaNoRecuperable));
+            Totales[11] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalIvaUsocomun) - Math.Abs(TotalesNotasDeCredito.TotalMontoIvaUsocomun));
+            Totales[12] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalMontoTotal) - Math.Abs(TotalesNotasDeCredito.TotalMontoTotal));
 
-        ReturnValues.Add(Totales);
+            ReturnValues.Add(Totales);
+        }
+        else
+        {
+
+            string[] Totales = new string[] { "-", "-", "-", "-", "-", "-", "-", "0", "0", "0", "0", "0", "0", "False" };
+            Totales[6] = "TOTAL: ";
+            Totales[7] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalExento));
+            Totales[8] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalNeto));
+            Totales[9] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalIva));
+            Totales[10] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalIvaNoRecuperable));
+            Totales[11] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalIvaUsocomun));
+            Totales[12] = ParseExtensions.NumeroConPuntosDeMiles(Math.Abs(TotalMontoTotal));
+
+            ReturnValues.Add(Totales);
+        }
+
+
 
 
 
