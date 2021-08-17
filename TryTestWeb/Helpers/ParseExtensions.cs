@@ -1941,18 +1941,26 @@ public static class ParseExtensions
 
     public static string FormatoRutMembrete(string val)
     {
-        string RutGuionYnumero = val.Substring(val.Length - 2);
-        string RutSolonumero = val.Substring(0, val.Length - 2);
+        if (val.Contains("-"))
+        {
+            string RutGuionYnumero = val.Substring(val.Length - 2);
+            string RutSolonumero = val.Substring(0, val.Length - 2);
 
-        int Val = ParseInt(RutSolonumero);
+            int Val = ParseInt(RutSolonumero);
 
-        nfi.NumberGroupSeparator = ".";
-        string ReturnVAl = Val.ToString("#,0", nfi);
+            nfi.NumberGroupSeparator = ".";
+            string ReturnVAl = Val.ToString("#,0", nfi);
 
-        if (ReturnVAl.Contains("."))
-            return ReturnVAl + RutGuionYnumero;
+            if (ReturnVAl.Contains("."))
+                return ReturnVAl + RutGuionYnumero;
+            else
+                return val;
+        }
         else
-            return val;
+        {
+            return string.Empty;
+        }
+
     }
 
 
