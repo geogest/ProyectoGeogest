@@ -86,9 +86,20 @@ namespace TryTestWeb.Helpers
 
             string html;
 
-            html = "<div class='table-detail'>" +
-                "<a href='"+href+"' id='"+Id+"' name='"+name+"' onclick='"+onclick+
-                "' class='btn btn-danger "+clases+"'><span class='glyphicon glyphicon-trash'></span></a></div>";
+            if (onclick == "")
+            {
+                html = "<div class='table-detail'>" +
+                "<a href='" + href + "' id='" + Id + "' name='" + name + "' class='btn btn-danger " + clases + "'>" +
+                "<span class='glyphicon glyphicon-trash'></span></a></div>";
+            }
+            else 
+            {
+                html = "<div class='table-detail'>" +
+                "<a onclick='" + onclick + "' id='" + Id + "' name='" + name + "' class='btn btn-danger " + clases + "'>" +
+                "<span class='glyphicon glyphicon-trash'></span></a></div>";
+            }
+
+            
             
 
             return new MvcHtmlString(html);
