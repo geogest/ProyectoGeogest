@@ -1,21 +1,14 @@
-﻿body {
-}
-
+﻿
 .tamanoContenido 
 {
     display: flex;
     margin-top: 18px;
 }
 
-.panel-heading 
+.panel-heading
 {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     margin-bottom: 10px;
-}
-
-#barralateral 
-{
-    display: none;
 }
 
 .letras 
@@ -27,7 +20,7 @@
     font-size: 12px;
 }
 
-.icono 
+/*.icono 
 {
     float: left;
     color: white;
@@ -37,7 +30,7 @@
     text-align: center;
     width: 20px;
     height: 20px;
-}
+}*/
 
 .card 
 {
@@ -57,14 +50,14 @@
     background: #495562;
 }
 
-.usuarioimg 
+.usuarioimg
 {
     width: 50px;
     height: 50px;
     float: left;
 }
 
-.botonesDetalle 
+.botonesDetalle
 {
     margin-left: 45%;
     background-color: #5d9cec;
@@ -72,8 +65,5 @@
 @media (max-width: 768px) {
     .division {
         font-size: 14px;
-    }
-    .padingtop {
-        padding-top:12px;
     }
 }

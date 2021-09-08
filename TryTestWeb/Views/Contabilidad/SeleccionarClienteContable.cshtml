@@ -46,10 +46,10 @@
             <div class="row">
                 @using (Html.BeginForm("SeleccionarClienteContable", "Contabilidad", FormMethod.Post))
                 {
-                    <div class="col-md-10 col-xs-9">
+                    <div class="col-md-10 col-xs-8">
                         <input class="form-control" type="text" name="ClienteContable" value="" placeholder="Buscar cliente Contable" />
                     </div>
-                    <div class="col-md-2 col-xs-3">
+                    <div class="col-md-2 col-xs-4">
                         @Html.BtnBuscar("","","","")
                     </div>
                 }
@@ -71,7 +71,7 @@
                                 <p class="letras text-center">@ClienteContable.RazonSocial</p>
                                 <p class="letras text-center">@ClienteContable.RUTEmpresa</p>
                                 
-                                @Html.BtnSeleccionar("", "", "btn-xs botonesDetalle", "javascript:SelecCliente('" + @ClienteContable.ClientesContablesModelID + "');")
+                                @Html.BtnSeleccionar("", "", "btn-xs botonesDetalle", "javascript:SelecCliente(" + @ClienteContable.ClientesContablesModelID + ");")
                             </div>
                         </a>
                     </div>
