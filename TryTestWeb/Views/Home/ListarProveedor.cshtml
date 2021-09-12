@@ -8,12 +8,12 @@
 
 @using Microsoft.AspNet.Identity;
 
-
+<link href="~/Content/css/Home/ListarProveedor.css" rel="stylesheet" />
 
 <!-- Page-Title -->
 <div class="row">
     <div class="col-sm-12">
-        <div class="btn-group pull-right m-t-40">
+        <div class="btn-group pull-right margen">
             <form role="form">
                 <div class="button-list">
 
@@ -70,7 +70,7 @@
                     <div class="card-box m-b-10">
                         <div class="table-box opport-box">
 
-                            <div class="col-lg-1">
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
                                 <div class="table-detail checkbx-detail">
                                     <div class="checkbox checkbox-success m-r-15">
                                         <input id="checkbox_@cont" onclick="javascript: seleccionaDetalle(@cont, this);" type="checkbox">
@@ -78,16 +78,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <!--<div class="col-lg-1">
-                <div class="table-detail checkbx-detail">
-                    <h5 class="m-t-0"><b>@(cont + 1)</b></h5>
-                    <div class="member-info">
-                        <p class="text-dark m-t-0">Nº</p>
-                    </div>
-                </div>
-            </div>-->
                             <input id="Receptor" value="@Cliente.QuickReceptorModelID" style="display:none;" />
-                            <div class="col-lg-2">
+                            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-5">
                                 <div class="table-detail">
                                     <h5 class="m-t-0"><b>RUT @Cliente.RUT</b></h5>
                                     <div class="member-info">
@@ -106,12 +98,12 @@
                                                 }
                                             }
                                         }
-                                        @*<p class="text-dark m-b-0"><span class="text-muted">@Cliente.Contacto</span></p>*@
                                         <p class="text-dark m-b-0"><span class="text-muted">@Cliente.Contacto</span></p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3">
+
+                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-7">
                                 <div class="table-detail">
                                     @{
                                         String razon = Cliente.RazonSocial;
@@ -130,13 +122,12 @@
                                             {
                                                 Giro = Cliente.Giro.Substring(0, limite1 - 1) + "...";
                                             } }
-                                        @*<p class="text-dark m-b-0"><span class="text-muted">@Cliente.Giro</span></p>*@
                                         <p class="text-dark m-b-0"><span class="text-muted">@Giro</span></p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
 
                                 <h5 class="m-t-0"><b>Relación CC</b></h5>
                                 <select class="selectpicker show-tick  form-control" id="CuentaContableID_@Cliente.QuickReceptorModelID" name="CuentaContableID" data-live-search="true">
@@ -165,7 +156,7 @@
 
                                
 
-                                @Html.BtnGuardar("GuardarCC_"+@cont+"","GuardarCC","btn-sm", "GuardarRelacionCC("+ @Cliente.QuickReceptorModelID + ")")
+                                @Html.BtnGuardar("GuardarCC_"+@cont+"","GuardarCC","btn-sm mg", "GuardarRelacionCC("+ @Cliente.QuickReceptorModelID + ")")
 
                                 <div class="alert alert-success" id="Correcto_@Cliente.QuickReceptorModelID" name="Correcto" style="display:none;">
                                     Relación establecida con éxito.
@@ -175,28 +166,24 @@
                                 </div>
                             </div>
 
-
-
-
-
-                            <div class="col-lg-1">
+                            <div class="col-lg-1 col-md-1 col-sm-8 col-xs-12">
                                 <div class="table-detail">
-                                    <h5 class="m-t-0"><b>Estado</b></h5>
-                                    <div class="member-info">
-                                        <p class="text-dark m-b-0"><span class="label label-success">Activo</span></p>
+                                    <h5 class="mt0 col-xs-5 col-md-12 col-lg-12"><b>Estado</b></h5>
+                                    <div class="member-info col-xs-7 col-md-12 col-lg-12">
+                                        <p class="text-dark m-b-0 mgp"><span class="label label-success">Activo</span></p>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <div class="col-lg-1">
+                            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2 col-lg-offset-0 col-md-offset-0 col-xs-offset-8">
                                
                                 @Html.BtnEditar("","","btn-sm redondo btnPress", 
                                Url.Action("EditarProveedor", "Home", new { id_receptor = Cliente.QuickReceptorModelID }),"","Proveedor")
                             
                             </div>
 
-                            <div class="col-lg-1">
+                            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
 
                                 @Html.BtnBorrar("ReceptorID","ReceptorID","", "AdvertenciaDarDeBaja("+ @Cliente.QuickReceptorModelID + ")", "btn-sm redondo btnPress")
 
