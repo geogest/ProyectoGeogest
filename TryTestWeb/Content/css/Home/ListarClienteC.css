@@ -1,28 +1,16 @@
-﻿body {
+﻿html {
+    font-size:100%; /*16px*/
 }
 
 .margen {
-    padding-top: 40px;
+    padding-top: 2.5rem;
 }
 .mt0 {
     margin-top:0px;
 }
 @media (max-width: 768px) {
 
-    .margen {
-        padding-top: 68px;
-    }
-
-    .mg {
-        margin-top: 10px;
-    }
-
-    .mgp {
-        margin-top: 6px;
-    }
-
-    .mt0 {
-        margin-bottom: 0px;
-        margin-top:9px;
+    html {
+     font-size: 1.5rem;
     }
 }
