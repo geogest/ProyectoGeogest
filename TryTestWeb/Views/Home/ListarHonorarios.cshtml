@@ -1,17 +1,15 @@
 ﻿@model List<QuickReceptorModel>
 
-
+<link href="~/Content/css/Home/ListarHonorarios.css" rel="stylesheet" />
 <!-- Page-Title -->
 <div class="row">
     <div class="col-sm-12">
-        <div class="btn-group pull-right m-t-40">
+        <div class="btn-group pull-right margen">
             <div class="button-list">
                 
                 @Html.BtnAgregar("", "NuevoProveedor()")
 
             </div>
-           
-            
         </div>
         <div class="page-header-2">
             <h2 class="page-header">Prestadores Honorarios </h2>
@@ -42,13 +40,13 @@
                     <div class="card-box m-b-10">
                         <div class="table-box opport-box">
 
-                            <div class="col-md-3">
+                            <div class="col-lg-2 col-md-2 col-xs-5">
                                 <div class="table-detail">
                                     <h5 class="m-t-0">RUT @ReceptorHonor.RUT </h5>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-lg-3 col-md-3 col-xs-7">
                                 <div class="table-detail">
                                     @{
                                         string Nombre = ReceptorHonor.RazonSocial;
@@ -62,7 +60,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-lg-4 col-md-4 col-xs-12 mg">
 
                                 <h5 class="m-t-0"><b>Relación CC</b></h5>
                                 <select id="CuentaContableID_@ReceptorHonor.QuickReceptorModelID" name="CuentaContableID" class="selectpicker show-tick form-control" data-live-search="true">
@@ -88,7 +86,7 @@
                                     }
                                 </select>
                                 
-                                @Html.BtnGuardar("GuardarCC_"+ @cont + "", "GuardarCC", "btn-sm", "GuardarRelacionCC("+ @ReceptorHonor.QuickReceptorModelID + ")")
+                                @Html.BtnGuardar("GuardarCC_"+ @cont + "", "GuardarCC", "btn-sm mg", "GuardarRelacionCC("+ @ReceptorHonor.QuickReceptorModelID + ")")
                                
                                 <div class="alert alert-success" id="Correcto_@ReceptorHonor.QuickReceptorModelID" name="Correcto" style="display:none;">
                                     Relación establecida con éxito.
@@ -98,38 +96,34 @@
                                 </div>
                             </div>
 
-
-
-                            <div class="col-md-1 col-lg-1">
+                            <div class="col-lg-1 col-md-1 col-xs-8 col-lg-1">
                                 <div class="table-detail">
-                                    <h5 class="m-t-0"><b>Estado</b></h5>
-                                    <div class="member-info">
-                                        <p class="text-dark m-b-0"><span class="label label-success">Activo</span></p>
+                                    <h5 class="mt0 col-xs-5 col-md-12 col-lg-12"><b>Estado</b></h5>
+                                    <div class="member-info col-xs-7 col-md-12 col-lg-12">
+                                        <p class="text-dark m-b-0 mg7"><span class="label label-success">Activo</span></p>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <div class="col-lg-1">
+                            <div class="col-lg-1 col-md-1 col-xs-2 mg7">
                                
                                 @Html.BtnEditar("EditButton","","btn-sm redondo btnPress","", 
                                "getPhonorarioEdit("+ @ReceptorHonor.QuickReceptorModelID + ")", "Prestador")
 
                             </div>
-                            <div class="col-lg-1">
+
+                            <div class="col-lg-1 col-md-1 col-xs-2 mg7">
 
                                 @Html.BtnBorrar("ReceptorID", "ReceptorID","", "AdvertenciaDarDeBaja("+ @ReceptorHonor.QuickReceptorModelID + ")", "btn-sm redondo btnPress")
 
                             </div>
-                                    
-                                
-                            </div>
-
+                                 
                         </div>
                     </div>
                 </div>
-            
-                                        }
+            </div>
+         }
     </div>
 </div>
 
