@@ -41,42 +41,38 @@
                                     @Html.ValidationMessageFor(m => m.RazonSocial, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+
                             <div class="row form-group">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <label class="control-label" for="RUTEmpresa">RUT Empresa*</label>
                                     @Html.EditorFor(model => model.RUTEmpresa, new { htmlAttributes = new { @class = "form-control", @id = "rutEmp", @style = "text-transform:uppercase;" , @onblur = "rutFormant('rutEmp');"} })
                                     @Html.ValidationMessageFor(m => m.RUTEmpresa, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="col-md-8">
-                                    <label class="control-label" for="giro">Despcrición Giro*</label>
+                                <div class="col-md-7">
+                                    <label class="control-label" for="giro">Descripción Giro*</label>
                                     @Html.EditorFor(model => model.Giro, new { htmlAttributes = new { @class = "form-control" } })
                                     @Html.ValidationMessageFor(m => m.Giro, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="row form-group">
 
+                            <div class="row form-group">
                                 <div class="col-md-12">
-                                    <label class="control-label">Actividad Economica</label>
+                                    <label class="control-label">Actividad Económica</label>
                                     <select id="idActividad" name="idActividad" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" multiple required>
                                         @Html.Raw(ViewBag.HtmlStr)
                                     </select>
-                                  
                                 </div>
-                               
                             </div>
+
                             <div class="row form-group">
                                 <div class="col-lg-12 form-group">
                                     <label class="control-label">Dirección</label>
                                     @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control" } })
                                 </div>
                             </div>
+
                             <div class="row form-group">
-
-
-
-
                                 <div class="col-md-6">
-
                                     <label class="control-label" for="ciudad">Región*</label>@Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger" })
                                     <select name="idRegion" id="idRegion" onchange="javascript:cambiaComuna();" class="form-control">
                                         <option name="" value="">Seleccionar</option>
@@ -94,18 +90,11 @@
 
 
                                         }
-
-
                                     </select>
                                     @Html.ValidationMessageFor(m => m.idRegion, "", new { @class = "text-danger" })
-
-
-
-
-
                                 </div>
-                                <div class="col-md-6">
 
+                                <div class="col-md-6">
                                     <label class="control-label" for="comuna">Comuna*</label>@Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger" })
                                     <select class="form-control custom-select" id="idComuna" name="idComuna">
 
@@ -131,10 +120,6 @@
                                      @Html.ValidationMessageFor(m => m.idComuna, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-
-
-
-
                      </div>
                 </div>
 
@@ -158,7 +143,7 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-12">
-                                    <label class="control-label" for="Telefono">Telefono Representante Legal</label>
+                                    <label class="control-label" for="Telefono">Teléfono Representante Legal</label>
                                     @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control" } })
                                     @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
                                 </div>
@@ -166,27 +151,19 @@
                         </div>
                     </div>
                 </div> <!--Row-->
+
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-6">
-                                @*<a href = "@Url.Action("ListarCliente", "Home")" class="btn btn-success waves-effect waves-light">
-                                <span class="btn-label"><i class="ion-android-arrow-back"></i></span>Volver</a><br>*@
+                    <div class="container">
+                            <div class="col-lg-4 col-md-3 col-xs-7 col-lg-offset-2 col-md-offset-2">
+
                                 @Html.BtnVolver(Url.Action("ListarCliente", "Home"))
+
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-6">
-                                @*<button class="btn btn-success waves-effect waves-light" value="Crear cliente Contable" name="Save" 
-                                        type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>*@
+                            <div class="col-lg-4 col-md-3 col-xs-4 col-lg-offset-2 col-md-offset-3 col-xs-offset-1">
 
                                 @Html.BtnGuardar("","Save","","")
+
                             </div>
-                        </div>
                     </div>
                 </div><br />
             </div> <!--panel-->

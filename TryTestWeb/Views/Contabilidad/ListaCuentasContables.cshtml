@@ -1,5 +1,6 @@
 ﻿@model IList<CuentaContableModel>
 
+<link href="~/Content/css/Contabilidad/ListaCuentasContables.css" rel="stylesheet" />
 <div class="clearfix"></div>
 <form>
     <!-- Page-Title -->
@@ -7,23 +8,18 @@
 
         <div class="col-sm-12">
 
-            <div class="btn-group pull-right m-t-30">
-                <div class="button-list">
-                    @*<a onclick="javascript:NuevaCtaContable();" class="btn btn-success waves-effect waves-light pull-right" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a" id="AddEgreso">
-                        <span class="btn-label"><i class="ion-android-add"></i></span>Agregar
-                    </a>*@
-                    @Html.BtnAgregar("", "javascript:NuevaCtaContable();")
-                </div>
-        
+            <div class="btn-group pull-right margen">
                     <div class="button-list">
-                        <br />
-                        @*<button class="btn btn-default" onclick="ExportarPDF()">
-                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                        </button>*@
-                        @Html.BtnExportarPDF("ExportarPDF()")
-                        <br />
-                        <br />
+                        <div>
+                            @Html.BtnExportarPDF("ExportarPDF()")
+                        </div>
+                        <div>
+                            @Html.BtnAgregar("", "javascript:NuevaCtaContable();")
+                        </div>
+
+                       
                     </div>
+                
    
             </div>
             <div class="page-header-2">

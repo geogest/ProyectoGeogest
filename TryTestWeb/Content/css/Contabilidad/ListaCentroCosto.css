@@ -1,0 +1,15 @@
+﻿/*cambiar nombre a ListaCentroCosto*/
+
+body {
+}
+
+.margen {
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+
+    .margen {
+        margin-top: 55px;
+    }
+}
