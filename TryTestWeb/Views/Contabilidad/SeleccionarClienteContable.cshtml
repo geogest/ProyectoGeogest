@@ -9,11 +9,11 @@
 
 <div class="row">
     <div class="panel panel-default">
-        <div class="col-md-12 panel-heading tamanoContenido">
-            <div class="col-md-6 col-xs-9">
+        <div class="col-md-12 col-xs-12 col-lg-12 panel-heading tamanoContenido">
+            <div class="col-md-7 col-xs-7 col-xs-offset-3 col-md-offset-0">
                 <h1 class="division">Selecciona tu Cliente Contable</h1>
             </div>
-            <div class="col-md-6 col-xs-3">
+            <div class="col-md-5 col-xs-3 col-xs-offset-9 col-md-offset-0">
                 @if (Model.Count() > 0)
                 {
                     <a href="@Url.Action("NuevoClienteContable","Contabilidad")" class="btn btn-success btn-small pull-right waves-effect waves-light tamanoContenido division" data-overlaySpeed="200" data-overlayColor="#36404a">
@@ -46,11 +46,11 @@
             <div class="row">
                 @using (Html.BeginForm("SeleccionarClienteContable", "Contabilidad", FormMethod.Post))
                 {
-                    <div class="col-md-10 col-xs-8">
+                    <div class="col-lg-10 col-md-10 col-xs-12">
                         <input class="form-control" type="text" name="ClienteContable" value="" placeholder="Buscar cliente Contable" />
                     </div>
-                    <div class="col-md-2 col-xs-4">
-                        @Html.BtnBuscar("","","","")
+                    <div class="col-lg-2 col-md-2 col-xs-1 col-xs-offset-8 col-md-offset-0 col-lg-offset-0">
+                        @Html.BtnBuscar("","","mgt","")
                     </div>
                 }
 

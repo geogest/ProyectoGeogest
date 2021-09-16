@@ -1,4 +1,8 @@
-﻿.label-primary:hover {
+﻿html {
+    font-size:100%;/*16px*/
+}
+
+.label-primary:hover {
     background-color: #00ffff;
 }
 
@@ -9,7 +13,7 @@
 .efectos {
     border: 1px solid #ccc;
     box-shadow: 7px 7px 7px #737373;
-    width: 50%;
+    width: 450px;
     margin: auto;
 }
 
@@ -67,4 +71,7 @@
     .boton {
     margin-top:15px;
     }
-}
+    .efectos {
+       width:100%;
+    }
+    }

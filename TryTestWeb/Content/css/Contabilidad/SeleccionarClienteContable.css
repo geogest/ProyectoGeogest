@@ -1,7 +1,6 @@
 ﻿
 .tamanoContenido 
 {
-    display: flex;
     margin-top: 18px;
 }
 
@@ -65,5 +64,8 @@
 @media (max-width: 768px) {
     .division {
         font-size: 14px;
+    }
+    .mgt {
+        margin-top:10px;
     }
 }
