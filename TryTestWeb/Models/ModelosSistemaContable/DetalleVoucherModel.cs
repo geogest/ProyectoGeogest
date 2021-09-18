@@ -50,6 +50,19 @@ public class DetalleVoucherModel
         return Result;
     }
 }
+
+public class DetalleVoucherModelDTO
+{
+    public int DetalleVoucherModelID { get; set; }
+    public int VoucherModelID { get; set; }
+    public decimal MontoDebe { get; set; }
+    public decimal MontoHaber { get; set; }
+    public string GlosaDetalle { get; set; }
+    public DateTime FechaDoc { get; set; }
+    public int AuxiliaresModelID { get; set; }
+    public int CuentaContableModelID { get; set; }
+    public int CentroCostoID { get; set; }
+}
 public enum Pagado
 {
     NoPagado = 0,

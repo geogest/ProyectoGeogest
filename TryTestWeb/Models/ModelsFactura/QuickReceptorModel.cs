@@ -7,6 +7,17 @@ using System.Web;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
 
+public enum TipoReceptor
+{
+    [Display(Name = "Cliente")]
+    CL,
+    [Display(Name = "Proveedor")]
+    PR,
+    [Display(Name = "Honorario")]
+    H,
+    [Display(Name = "P")]
+    P
+}
 public class QuickReceptorModel
 {
     public int QuickReceptorModelID { get; set; }
@@ -164,6 +175,104 @@ public class QuickReceptorModel
             if (clientesContablesEmisor == null)
             {
                 ClientesContablesEmisorModel  clienteEmisor = new ClientesContablesEmisorModel();
+                clienteEmisor.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                clienteEmisor.QuickReceptorModelID = objCliente.QuickEmisorModelID;
+                db.DBClientesContablesEmisor.Add(clienteEmisor);
+                db.SaveChanges();
+
+            }
+
+            if (objPrestadores.RazonSocial == NombrePrestador)
+            {
+                return objPrestadores;
+            }
+            else
+            {
+                objPrestadores.RazonSocial = NombrePrestador;
+                db.Receptores.AddOrUpdate(objPrestadores);
+                db.SaveChanges();
+                return objPrestadores;
+            }
+        }
+    }
+
+    public static QuickReceptorModel CrearOActualizarPrestadorPorRut(string RUTPrestador, string NombrePrestador, ClientesContablesModel objCliente, String tipoReceptor)
+    {
+
+        FacturaProduccionContext db = new FacturaProduccionContext();
+        int existe = db.Receptores.Where(r => r.RUT == RUTPrestador && r.QuickEmisorModelID == objCliente.QuickEmisorModelID && r.tipoReceptor == tipoReceptor && r.ClientesContablesModelID == objCliente.ClientesContablesModelID).Count();
+
+        if (existe < 1)
+        {
+            QuickReceptorModel objPrestadores = new QuickReceptorModel();
+            try
+            {
+                objPrestadores.QuickEmisorModelID = objCliente.QuickEmisorModelID;
+                objPrestadores.RUT = RUTPrestador;
+                objPrestadores.RazonSocial = NombrePrestador;
+                objPrestadores.tipoReceptor = tipoReceptor;
+                objPrestadores.Direccion = "1";
+                objPrestadores.Giro = "1";
+                objPrestadores.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+
+
+                db.Receptores.Add(objPrestadores);
+
+                db.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+
+
+            //agrego filtro para saber que clientes tiene el cliente contable
+            //int  clienteEmisor = db.DBClientesContablesEmisor.Where(r => objCliente.QuickEmisorModelID == r.QuickReceptorModelID && r.ClientesContablesModelID == objCliente.ParametrosCliente.ClientesContablesModelID).Count();
+            //ClientesContablesEmisorModel clientesContablesEmisor = ((from t1 in db.DBClientesContablesEmisor
+            //                                                         where t1.QuickReceptorModelID == objCliente.QuickEmisorModelID && t1.ClientesContablesModelID == objCliente.ClientesContablesModelID
+
+            //                                                         select t1
+            //                   ).FirstOrDefault());
+
+            ClientesContablesEmisorModel clientesContablesEmisor = db.DBClientesContablesEmisor.Where(x => x.QuickReceptorModelID == objCliente.QuickEmisorModelID && x.ClientesContablesModelID == objCliente.ClientesContablesModelID).FirstOrDefault();
+
+            if (clientesContablesEmisor == null)
+            {
+                ClientesContablesEmisorModel clienteEmisor2 = new ClientesContablesEmisorModel();
+                clienteEmisor2.ClientesContablesModelID = objCliente.ClientesContablesModelID;
+                clienteEmisor2.QuickReceptorModelID = objCliente.QuickEmisorModelID;
+                db.DBClientesContablesEmisor.Add(clienteEmisor2);
+
+
+            }
+
+            db.SaveChanges();
+            return objPrestadores;
+        }
+        else
+        {
+            QuickReceptorModel objPrestadores = db.Receptores.Where(r => r.RUT == RUTPrestador && r.QuickEmisorModelID == objCliente.QuickEmisorModelID && r.tipoReceptor == tipoReceptor).First();
+
+            ClientesContablesEmisorModel clientesContablesEmisor = db.DBClientesContablesEmisor.Where(t1 => t1.QuickReceptorModelID == objCliente.QuickEmisorModelID && t1.ClientesContablesModelID == objCliente.ClientesContablesModelID).FirstOrDefault();
+
+
+
+
+            // db.DBClientesContablesEmisor.Where(r => objCliente.QuickEmisorModelID == r.QuickReceptorModelID && r.ClientesContablesModelID == objCliente.ParametrosCliente.ClientesContablesModelID).Count();
+
+            if (clientesContablesEmisor == null)
+            {
+                ClientesContablesEmisorModel clienteEmisor = new ClientesContablesEmisorModel();
                 clienteEmisor.ClientesContablesModelID = objCliente.ClientesContablesModelID;
                 clienteEmisor.QuickReceptorModelID = objCliente.QuickEmisorModelID;
                 db.DBClientesContablesEmisor.Add(clienteEmisor);

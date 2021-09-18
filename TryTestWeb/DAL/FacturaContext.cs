@@ -87,6 +87,7 @@ public class FacturaContext : DbContext
     public DbSet<BoletasCoVModel> DBBoletasImportadas { get; set; }
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
+    public DbSet<BoletasCoVPadreModel> DBBoletasCoVPadre { get; set; }
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
         
@@ -178,6 +179,7 @@ public class FacturaProduccionContext : DbContext
     public DbSet<BoletasCoVModel> DBBoletasImportadas { get; set; }
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
+    public DbSet<BoletasCoVPadreModel> DBBoletasCoVPadre { get; set; }
     //Base de datos Sistema de remuneraciones
 
 
@@ -267,6 +269,7 @@ public class FacturaPoliContext : DbContext
     public DbSet<BoletasCoVModel> DBBoletasImportadas { get; set; }
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
+    public DbSet<BoletasCoVPadreModel> DBBoletasCoVPadre { get; set; }
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }
 
 
