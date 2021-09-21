@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                          
-                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-7">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                 <div class="table-detail">
                                     <h5 class="m-t-0"><b class="tamano">RUT @Cliente.RUT</b></h5>
                                     <div class="member-info">
@@ -103,7 +103,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12 mg">
                                 <div class="table-detail">
                                     @{
                                         String razon = Cliente.RazonSocial;
@@ -163,7 +163,7 @@
                                 </div>
                             </div>
                           
-                            <div class="col-lg-1 col-md-1 col-sm-8 col-xs-12">
+                            <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
                                 <div class="table-detail">
                                     <h5 class="mt0 col-xs-5 col-md-12 col-lg-12"><b>Estado</b></h5>
                                     <div class="member-info col-xs-7 col-md-12 col-lg-12">
@@ -173,13 +173,13 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-1 col-md-1 col-md-offset-0 col-xs-offset-8 col-sm-2 col-xs-2 col-lg-offset-0">
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 col-lg-offset-0 col-md-offset-0 col-sm-offset-10 col-xs-offset-5">
                                 
                                 @Html.BtnEditar("","","btn-sm redondo btnPress",
                                Url.Action("EditarClienteC", "Home", new { id_receptor = Cliente.QuickReceptorModelID }),"","Cliente")
                             </div>
 
-                            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
                                 @Html.BtnBorrar("ReceptorID","ReceptorID","", "AdvertenciaDarDeBaja("+ @Cliente.QuickReceptorModelID + ")", "btn-sm redondo btnPress")
                             </div>
 

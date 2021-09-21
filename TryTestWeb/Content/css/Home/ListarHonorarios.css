@@ -13,7 +13,7 @@
         font-size:1.5rem; /*24px*/
     }
     .margen {
-        padding-top:2.3rem;
+        padding-top:1.2rem;
     }
     .mg {
         margin-top: 0.5rem;
@@ -24,5 +24,10 @@
     .mt0 {
         margin-top:0.4rem;
         margin-bottom:0px;
+    }
+}
+@media (max-width: 425px) {
+    .margen {
+        padding-top: 2.3rem;
     }
 }

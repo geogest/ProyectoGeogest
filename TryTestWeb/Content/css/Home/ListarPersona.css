@@ -3,35 +3,33 @@
 }
 
 .margen {
-    padding-top: 2.5rem;
+padding-top:2.5rem;
 }
 .mt0 {
     margin-top:0px;
 }
 
 @media (max-width: 768px) {
-    .margen {
-        padding-top:1.8rem;
-    }
-    .mg {
-        margin-top:0px;
-    }
-}
-@media (max-width: 425px) {
 
     html {
-        font-size: 1.5rem;
+        font-size: 1.5rem; /*24px*/
     }
-
     .margen {
-        padding-top: 3rem;
+        padding-top: 1.8rem;
     }
-
-    .mt0, .mg {
+    .mt0 {
         margin-top: 0.6rem;
-    }
+        padding-left:0px;
 
+    }
     .mgp {
         margin-top: 0.4rem;
     }
+}
+
+@media (max-width: 425px) {
+    .margen {
+        padding-top: 2.8rem;
+    }
+
 }
