@@ -63,7 +63,7 @@ namespace TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas
                     AnioPeriodoTributario = AnioPeriodoTributario,
                     NumeroFinalBoleta = NumeroFinalBoleta
                 };
-
+                row++;
                 ReturnValues.Add(ObjBoleta);
 
             }

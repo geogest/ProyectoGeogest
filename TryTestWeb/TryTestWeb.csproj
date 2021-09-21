@@ -1044,6 +1044,7 @@
     <Content Include="Views\Contabilidad\LibroDeHonorariosTwo.cshtml" />
     <Content Include="Views\Monitoreo\ControlarEstadoSesion.cshtml" />
     <Content Include="Views\Contabilidad\ProcesarExcelBoleta.cshtml" />
+    <Content Include="Views\Contabilidad\ImportarBoletas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />

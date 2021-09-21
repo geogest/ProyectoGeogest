@@ -15,4 +15,12 @@ public class ParametrosClienteModel
     public virtual CuentaContableModel CuentaVentas { get; set; }
     public virtual CuentaContableModel CuentaCompras { get; set; }
 
+    public static int GetCuentaContableIvaAUsar(ClientesContablesModel objCliente)
+    {
+        FacturaProduccionContext db = new FacturaProduccionContext();
+        int cuentaContableId = db.DBCuentaContable.SingleOrDefault(x => x.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaCompras.CuentaContableModelID && x.ClientesContablesModelID == objCliente.ClientesContablesModelID).CuentaContableModelID;
+
+        return cuentaContableId;
+    }
+
 }

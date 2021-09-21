@@ -50,16 +50,19 @@ namespace TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas
 
                     TipoReceptor tipoReceptor = new TipoReceptor();
 
+                   
                     if (Tipo == TipoCentralizacion.Compra) tipoReceptor = TipoReceptor.PR;
                     if (Tipo == TipoCentralizacion.Venta) tipoReceptor = TipoReceptor.CL;
 
                     //esto debe ser insertado al final.
 
-                    string QueryObtenerIdTablaPadre = $"SELECT MAX(BoletasCoVPadreModelID) FROM BoletasCoVPadreModel WHERE ClienteContableModelID_ClientesContablesModelID = {ObjCliente.ClientesContablesModelID}";
-                    int idTablaPadre = db.Query<int>(QueryObtenerIdTablaPadre).FirstOrDefault();
+
                     // HASTA AQUÍ ESTAMOS BIEN
 
                     //QuickReceptorModel.CrearOActualizarPrestadorPorRut(RutDupleDuple, RazonSocialDuple, objCliente, db, tipoReceptor);
+
+                    int CuentaContableIDIvaAUsar = ParametrosClienteModel.GetCuentaContableIvaAUsar(ObjCliente);
+                    //Son 3 detalles, este pertenece a la que contenga el iva
 
                     foreach (BoletasExcelModel ItemBoleta in BoletasItems)
                     {
@@ -69,11 +72,15 @@ namespace TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas
 
                         int CuentaContableSeleccionada = 0;
 
-                        string QueryCuentaContableAuxiliar = $"SELECT CuentaContableModelID FROM CuentaContableModel WHERE ClientesContablesModelID = {ObjCliente.ClientesContablesModelID} AND CodInterno ={ItemBoleta.CuentaAuxiliar}";
-                        int IdCuentaContableAuxiliar = db.Query<int>(QueryCuentaContableAuxiliar).FirstOrDefault();
 
+
+                        string QueryCuentaContableAuxiliar = $"SELECT CuentaContableModelID FROM CuentaContableModel WHERE ClientesContablesModelID = {ObjCliente.ClientesContablesModelID} AND CodInterno ={ItemBoleta.CuentaAuxiliar}";
+                        int IdCuentaContableAuxiliar = db.Query<int>(QueryCuentaContableAuxiliar).FirstOrDefault(); //esta es la cuenta que lleva la suma del Iva y del Neto
+                        
+
+                        //Crear query de conseguir la cuenta asociada de IVA 
                         string QueryGetCuentaContable = $"SELECT CuentaContableModelID FROM CuentaContableModel WHERE ClientesContablesModelID = {ObjCliente.ClientesContablesModelID} AND CodInterno ={ItemBoleta.CuentaContable}";
-                        var IdCuentaContable = db.Query<int>(QueryGetCuentaContable).FirstOrDefault();
+                        var IdCuentaContable = db.Query<int>(QueryGetCuentaContable).FirstOrDefault(); // Esta es la cuenta del neto
 
                         //Recuerda se insertan 2 detallevoucher ya que uno pertenece al neto y el otro al iva
                         string QueryInsertVoucher = "INSERT INTO VoucherModel (ClientesContablesModelID,Glosa,FechaEmision,Tipo,NumeroVoucher,DadoDeBaja,CentroDeCosto_CentroCostoModelID,TipoOrigen,TipoOrigenVoucher)" +
@@ -211,7 +218,8 @@ namespace TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas
                         }
 
 
-
+                        string QueryObtenerIdTablaPadre = $"SELECT MAX(BoletasCoVPadreModelID) FROM BoletasCoVPadreModel WHERE ClienteContableModelID_ClientesContablesModelID = {ObjCliente.ClientesContablesModelID}";
+                        int idTablaPadre = db.Query<int>(QueryObtenerIdTablaPadre).FirstOrDefault();
 
 
                         string queryReceptorDummy = "SELECT * FROM QuickReceptorModel LIMIT 1";

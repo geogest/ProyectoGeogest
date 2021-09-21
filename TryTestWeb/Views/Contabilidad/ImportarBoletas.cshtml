@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "ImportarBoletas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2>ImportarBoletas</h2>
+
+
+    @using (Html.BeginForm("ProcesarExcelBoleta", "Contabilidad", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Fecha de contabilización</label>
+                <div class="input-group">
+                    <input type="text" name="FechaContabilizacion" id="FechaContabilizacion" value="" class="form-control anotherSelector" autocomplete="off" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Cargar XLS</label>
+                <input type="file" name="BoletasExcel" value="" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Tipo Boletas</label>
+                <select class="form-control" name="TipoCentralizacion">
+                    <option value="0">Selecciona</option>
+                    <option value="">Boletas tipo Compra</option>
+                    <option value="CL">Boletas tipo Venta</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <div>
+                    <button class="btn btn-success" type="submit">Importar</button>
+                </div>
+            </div>
+        </div>
+    }
