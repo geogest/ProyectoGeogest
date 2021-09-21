@@ -2054,17 +2054,20 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult ProcesarExcelBoleta(HttpPostedFileBase Excel)
+        public ActionResult ProcesarExcelBoleta()
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
-            List<BoletasExcelModel> ReturnValues = BoletasExcelModel.DeExcelAObjetoBoleta(Excel);
+            //List<BoletasExcelModel> ReturnValues = BoletasExcelModel.DeExcelAObjetoBoleta(Excel);
+
+            List<BoletasExcelModel> adsfg = new List<BoletasExcelModel>();
+            var asdf = BoletasCoVModel.InsertBoletasCoV(objCliente, adsfg);
 
             //Procesar las boletas con su contra cuenta ¿Tiene contracuenta?
             //
 
-            return View(ReturnValues);
+            return View(asdf);
         }
 
         [Authorize]
