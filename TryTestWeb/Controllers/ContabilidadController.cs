@@ -2054,20 +2054,44 @@ namespace TryTestWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult ProcesarExcelBoleta()
+        public ActionResult ProcesarExcelBoleta(HttpPostedFileBase BoletasExcel, string FechaContabilizacion, string TipoCentralizacion)
         {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
-            //List<BoletasExcelModel> ReturnValues = BoletasExcelModel.DeExcelAObjetoBoleta(Excel);
+
+
+            //var DteInfo = ParseExtensions.GetKeyAndValueEnum();
+            //if(DteInfo != null)
+            //{
+            //    List<string> tipoDteInfoToExcel = new List<string>();
+            //    foreach (KeyValuePair<int,string> item in DteInfo)
+            //    {
+            //        tipoDteInfoToExcel.Add(item.Key.ToString()+": "+ item.Value);
+            //    }
+
+            //    string values = string.Join(",", tipoDteInfoToExcel);
+            //}
+
+            string ExtensionBoleta = Path.GetExtension(BoletasExcel.FileName);
+            if(ExtensionBoleta == ".xls" || ExtensionBoleta == ".xlsx")
+            {
+                List<BoletasExcelModel> BoletasInfo = BoletasExcelModel.DeExcelAObjetoBoleta(BoletasExcel);
+                bool result = BoletasCoVModel.InsertBoletasCoV(objCliente, BoletasInfo, global::TipoCentralizacion.Compra);
+            }
+            else
+            {
+                TempData["Error"] = "La extension de la boleta no es valida. Las extensiones validas son XLS y XLSX";
+            }
+            
 
             List<BoletasExcelModel> adsfg = new List<BoletasExcelModel>();
-            var asdf = BoletasCoVModel.InsertBoletasCoV(objCliente, adsfg);
+            //var asdf = BoletasCoVModel.InsertBoletasCoV(objCliente, );
 
             //Procesar las boletas con su contra cuenta ¿Tiene contracuenta?
             //
 
-            return View(asdf);
+            return View();
         }
 
         [Authorize]

@@ -800,6 +800,38 @@ public static class ParseExtensions
         return sb.ToString();
     }
 
+
+    public static Dictionary<int, string> GetKeyAndValueEnum()
+    {
+        Dictionary<int, string> KeyAndValueTipoDte = Enum.GetValues(typeof(TipoDte))
+                                                .Cast<TipoDte>()
+                                                .Select(v => new { value = (int)v, name = v.ToString() })
+                                                .ToDictionary(x => x.value, x => x.name);
+
+        return KeyAndValueTipoDte;
+    }
+
+    public static DateTime? GetFechaDependiendoDelTipoDeDato(string Fecha, DateTime FechaDt)
+    {
+        DateTime? FechaOriginStr = null;
+        DateTime? FechaOriginDt = null;
+        if (!string.IsNullOrWhiteSpace(Fecha))
+        {
+            FechaOriginStr = CreaFechaLiteral(Fecha);
+        }
+        if (FechaDt != null)
+        {
+            FechaOriginStr = FechaDt;
+        }
+
+        if (FechaOriginDt != null)
+            return FechaOriginDt.Value;
+        if (FechaOriginStr != null)
+            return FechaOriginStr.Value;
+
+        return null;
+    }
+
     public static string ObtenerCuentaContableDropdownAsString(ClientesContablesModel ObjCliente, string StringABuscar = "")
     {
         List<CuentaContableModel> ListaCuentas = ObjCliente.CtaContable.ToList();
