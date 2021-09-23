@@ -7,15 +7,13 @@
 
 @media (max-width: 768px) {
 
+}
+@media (max-width: 425px) {
     html {
-        font-size:1.2rem;
+        font-size: 1.2rem;
     }
+
     .margen {
         padding-top: 1rem;
     }
-}/*
-@media (max-width: 750px) {
-    .margen{
-        padding-top:25px;
-    }
-}*/
+}
