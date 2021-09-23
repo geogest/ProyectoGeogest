@@ -6,7 +6,9 @@
 }
 
 @media (max-width: 768px) {
-
+    .margen {
+        margin-top:2rem;
+    }
 }
 @media (max-width: 425px) {
     html {
