@@ -3,25 +3,18 @@
     ViewBag.Title = "EstadoResultado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<br />
-
+<link href="~/Content/css/Contabilidad/EstadoResultado.css" rel="stylesheet" />
 <div class="row">
     <div class="col-sm-12">
-        <div class="page-header-2">
-            <div class="row container">
-                <div class="col-md-8"></div>
-                <div class="col-md-2">
-                    <div class="pull-right">
-                        <br />
-                        <button class="btn btn-default" onclick="ExportarPDF()">
-                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                        </button>
-                        <br />
-                        <br />
-                    </div>
+        <div class="btn-group pull-right margen">
+            <form role="form">
+                <div class="pull-right">
+                    @Html.BtnExportarPDF("ExportarPDF()")
                 </div>
+            </form>
 
-            </div>
+        </div>
+        <div class="page-header-2">
             <h2 class="page-header">Estado de Resultado</h2>
             <ol class="breadcrumb">
                 <li>
@@ -44,11 +37,11 @@
             <div class="row">
                 @using (Html.BeginForm("EstadoResultado", "Contabilidad", FormMethod.Post))
                 {
-                    <div class="col-lg-2 form-group">
+                    <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-12">
                         <label class="control-label">Año</label>
                         <input type="number" class="form-control" name="Anio" id="Anio" value="@DateTime.Now.Year" />
                     </div>
-                    <div class="col-md-2 form-group">
+                    <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-12">
                         <label for="" class="control-label">Mes:</label>
                         <select name="Mes" id="Mes" class="form-control">
                             <option value="">Todos</option>
@@ -66,7 +59,7 @@
                             <option value="12">Diciembre</option>
                         </select>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-12">
                         <label class="control-label">Fecha Inicio</label>
                         <div class='input-group date '>
                             <input type='text' name="FechaDesde" id="FechaDesde" class="form-control anotherSelector" autocomplete="off" />
@@ -74,9 +67,8 @@
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
-                        @*<input type="text" class="form-control date" name="FechaDesde" id="FechaDesde" />*@
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-12">
                         <label class="control-label">Fecha Fin</label>
                         <div class='input-group date '>
                             <input type='text' name="FechaDesde" id="FechaDesde" class="form-control anotherSelector" autocomplete="off" />
@@ -84,28 +76,15 @@
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
-                        @*<input type="text" class="form-control date" name="FechaHasta" id="FechaHasta" />*@
                     </div>
-                    @*<div class="col-lg-2 form-group">
-                    <label>Centro de Costos</label>
-                    <select class="form-control" id="CentroDeCostoID" name="CentroDeCostoID">
-                        <option>Selecciona</option>
-                        @foreach (var itemCC in ViewBag.lstCentroDeCostos)
-                        {
-                            <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
-                        }
-                    </select>
-                </div>*@
-                    @*<div class="col-lg-2 form-group">
-                        <button type="submit" class="btn btn-success centrar" id="Buscar">Buscar</button>
-                    </div>*@
-                    @Html.BtnBuscar("Buscar","","centrar","")
+                    <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                        @Html.BtnBuscar("Buscar", "", "centrar", "")
+                    </div>
+                    
                 }
             </div>
-
-
         </div>
-        <div class="table table-reponsive">
+        <div class="table-reponsive">
             <table class="table table-striped table-bordered table-hover" id="tbEstadoResultado">
                 <thead> 
                     <tr>

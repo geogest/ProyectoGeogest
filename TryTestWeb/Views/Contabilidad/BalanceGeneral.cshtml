@@ -1,46 +1,27 @@
 ﻿@model IList<string[]>
 
-
-
-<br />
-
+<link href="~/Content/css/Contabilidad/BalanceGeneral.css" rel="stylesheet" />
 <!-- Page-Title -->
 <div class="row">
-
     <div class="col-sm-12">
-        <div class="page-header-2">
-            <div class="row container">
-                <div class="col-md-8"></div>
-                <div class="col-md-2">
-                    <div class="pull-right">
-                        <br />
-                        <button class="btn btn-default" onclick="ExportarPDF()">
-                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                        </button>
-                        <br />
-                        <br />
+        <div class="btn-group pull-right margen">
+            <form role="form">
+                <div class="button-list col-lg-12">
+                    <div class="col-lg-6">
+                        @Html.BtnExportarPDF("ExportarPDF()")
                     </div>
+                    <div class="col-lg-6">
+                        @using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
+                        {
+
+                            @Html.BtnExportar("", "Save")
+                        }
+                    </div> 
                 </div>
+            </form>
+        </div>
 
-                <div class="col-md-2">
-                    @using (Html.BeginForm("GetExcelBalanceGeneral", "Contabilidad", FormMethod.Post))
-                    {
-                        <div>
-                            <br />
-                            @*<button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" 
-                                    name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" 
-                                    data-overlaySpeed="200" data-overlayColor="#36404a">
-                                <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                            </button>*@
-
-                            @Html.BtnExportar("","Save")
-                            <br />
-                        </div>
-                        <br />
-                    }
-                </div>
-
-            </div>
+        <div class="page-header-2">
             <h2 class="page-header">Balance General</h2>
             <ol class="breadcrumb">
                 <li>
@@ -96,7 +77,6 @@
                             </div>
                         </div>
 
-                        @*<input type="text" class="form-control date" name="fechainicio" id="fechainicio" />*@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label class="control-label">Fecha Fin</label>
@@ -108,7 +88,6 @@
                                 </span>
                             </div>
                         </div>
-                        @*<input type="text" class="form-control date" name="fechafin" id="fechafin" />*@
                     </div>
                     <div class="col-lg-2 form-group">
                         <label>Centro de Costos</label>
@@ -126,7 +105,7 @@
                 </div>
             </div>
 
-            <div id="detalleCta" class="modal fade" tabindex="-1" role="dialog">
+            <div id="detalleCta" class="modal fade table-responsive" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -178,33 +157,21 @@
                 else
                 {
                     @Html.Partial("~/Views/PartialHelpers/DatosClienteParaPDFPArtial.cshtml")
-                    <table id="BalanceGeneralTitle" class="table esconder">
-                        <thead>
-                            <tr>
-                                <th colspan="13">Balance general</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    @Html.Partial("BalanceGeneralPartial", Model)
+                       
+                            <table id="BalanceGeneralTitle" class="table esconder">
+                                <thead>
+                                    <tr>
+                                        <th colspan="13">Balance general</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            @Html.Partial("BalanceGeneralPartial", Model)
+                    
                 }
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .centrar {
-        margin-top: 25px;
-    }
-
-    .letra-pequenia {
-        font-size: 1.2rem;
-    }
-
-    .esconder {
-        display: none;
-    }
-</style>
 
 <script src="~/Content/js/jspdf.debug.js"></script>
 <script src="~/Content/js/html2pdf.js"></script>
