@@ -1,0 +1,22 @@
+﻿hrml {
+    font-size:100%;
+}
+.margen {
+    margin-top: 3rem;
+}
+@media (max-width: 768px) {
+    .margen {
+        margin-top: 3rem;
+    }
+    .mtop {
+        margin-top: 1rem;
+    }
+}
+@media (max-width: 425px) {
+    .margen {
+        margin-top: 5.2rem;
+    }
+    .mtop {
+        margin-top: 0.32rem;
+    }
+}
