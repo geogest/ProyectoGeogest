@@ -1,57 +1,39 @@
 ﻿@model PaginadorModel
 
+<link href="~/Content/css/Contabilidad/LibroCompra.css" rel="stylesheet" />
 <div class="row">
-    <div class="panel-heading">
-        <div class="col-sm-12">
-
-            <div class="row container">
-                <div class="col-md-8"></div>
-                <div class="col-md-2">
-                    <div class="pull-right">
-                        <br />
-                        @*<button class="btn btn-default" onclick="ExportarPDF()">
-                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                        </button>*@
+    <div class="col-sm-12">
+        <div class="btn-group pull-right margen">
+            <form role="form">
+                <div class="pull-right">
+                    <div class="col-lg-6">
                         @Html.BtnExportarPDF("ExportarPDF()")
-                        <br />
-                        <br />
+                    </div>
+                    <div class="col-lg-6 mtop">
+                        @using (Html.BeginForm("GetExcelLibroCompra", "Contabilidad", FormMethod.Post))
+                        {
+                                @Html.BtnExportar("", "Save")
+                        }
                     </div>
                 </div>
-
-                <div class="col-md-2">
-                    @using (Html.BeginForm("GetExcelLibroCompra", "Contabilidad", FormMethod.Post))
-                    {
-                        <div>
-                            <br />
-                            @*<button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                                <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                            </button>*@
-
-                            @Html.BtnExportar("","Save")
-                            <br />
-                        </div>
-                        <br />
-                    }
-                </div>
-
+            </form>
+        </div>
+            <div class="page-header-2">
+                <h2 class="page-header">Libro de Compra</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Contabilidad Reportes</a>
+                    </li>
+                    <li>
+                        <a href="#">-</a>
+                    </li>
+                    <li class="active">
+                        Libro de Compra
+                    </li>
+                </ol>
             </div>
-
-            <h2 class="page-header">Libro de Compra</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="#">Contabilidad Reportes</a>
-                </li>
-                <li>
-                    <a href="#">-</a>
-                </li>
-                <li class="active">
-                    Libro de Compra
-                </li>
-            </ol>
         </div>
     </div>
-</div>
-<br />
 
 
 <div class="form-group">
@@ -60,7 +42,7 @@
             @using (Html.BeginForm("LibroCompra", "Contabilidad", FormMethod.Post))
             {
                 <div class="row form-group">
-                    <div class="col-md-2">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label>Cantidad de Registros</label>
                         <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
                             <option value="25">25</option>
@@ -69,11 +51,11 @@
                             <option value="0">Todos</option>
                         </select>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-2 form-group">
                         <label class="control-label">Año</label>
                         <input type="text" class="form-control" name="Anio" id="Anio" value="" />
                     </div>
-                    <div class="col-md-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-3 form-group">
                         <label for="" class="control-label">Mes</label>
                         <select name="Mes" id="Mes" class="form-control">
                             <option value="0">Todos</option>
@@ -92,11 +74,11 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-3 form-group">
                         <label class="control-label">Rut</label>
                         <input type="text" class="form-control" id="Rut" name="Rut" maxlength="10" />
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
                         <label class="control-label">Razon Social</label>
                         <input type="text" class="form-control" id="RazonSocial" name="RazonSocial" />
                     </div>
@@ -108,12 +90,12 @@
                         <label class="control-label">Rut Fin</label>
                         <input type="text" class="form-control" name="rutfin" id="rutfin" />
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
                         <label class="control-label">Folio</label>
                         <input class="form-control" type="number" name="Folio" id="Folio" value="" />
                     </div>
 
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                         <label class="control-label">Fecha Inicio</label>
                         <div class='input-group date '>
                             <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
@@ -121,9 +103,8 @@
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
-                        @*<input type="text" class="form-control date" name="FechaInicio" id="FechaInicio" autocomplete="off" />*@
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                         <label class="control-label">Fecha Fin</label>
                         <div class='input-group date '>
                             <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
@@ -131,11 +112,9 @@
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
-                        @*<input type="text" class="form-control date" name="FechaFin" id="FechaFin" autocomplete="off" />*@
-                    </div>
-                    <div class="col-md-2">
-                        @*<button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>*@
-                        @Html.BtnBuscar("Guardar","Guardar","centrar","")
+                       </div>
+                    <div class="col-lg-2 col-md-4 col-sm-4 form-group">
+                       @Html.BtnBuscar("Guardar","Guardar","centrar","")
                     </div>
                 </div>
             }
@@ -160,47 +139,49 @@
                 }
                 @if (Model.ResultStringArray.Count() > 0)
                 {
-                    <table class="table table-responsive table-striped table-bordered table-hover compact" id="dataTables">
-                        <thead>
-                            <tr>
-                                <th class="FontSize text-center"></th>
-                                <th class="FontSize text-center">Fecha</th>
-                                <th class="FontSize text-center">Fecha Contabilización</th>
-                                <th class="FontSize text-center">Tipo Documento</th>
-                                <th class="FontSize text-center">Folio Documento</th>
-                                <th class="FontSize text-center">Cliente</th>
-                                <th class="FontSize text-center">Rut</th>
-                                <th class="FontSize text-center">Monto Exento</th>
-                                <th class="FontSize text-center">Monto Afecto</th>
-                                <th class="FontSize text-center">Iva Recuperable</th>
-                                <th class="FontSize text-center">Iva No Recuperable</th>
-                                <th class="FontSize text-center">Iva Uso Común</th>
-                                <th class="FontSize text-center">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
+            <div class="table-responsive">
+                <table class="table table-responsive table-striped table-bordered table-hover compact" id="dataTables">
+                    <thead>
+                        <tr>
+                            <th class="FontSize text-center"></th>
+                            <th class="FontSize text-center">Fecha</th>
+                            <th class="FontSize text-center">Fecha Contabilización</th>
+                            <th class="FontSize text-center">Tipo Documento</th>
+                            <th class="FontSize text-center">Folio Documento</th>
+                            <th class="FontSize text-center">Cliente</th>
+                            <th class="FontSize text-center">Rut</th>
+                            <th class="FontSize text-center">Monto Exento</th>
+                            <th class="FontSize text-center">Monto Afecto</th>
+                            <th class="FontSize text-center">Iva Recuperable</th>
+                            <th class="FontSize text-center">Iva No Recuperable</th>
+                            <th class="FontSize text-center">Iva Uso Común</th>
+                            <th class="FontSize text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+
+                            foreach (string[] rowThingie in Model.ResultStringArray)
                             {
 
-                                foreach (string[] rowThingie in Model.ResultStringArray)
-                                {
-
-                                    <tr class="odd gradeX">
-                                        @for (int i = 0; i < rowThingie.Length - 1; i++)
+                                <tr class="odd gradeX">
+                                    @for (int i = 0; i < rowThingie.Length - 1; i++)
+                                    {
+                                        string classAlign = "text-right";
+                                        if (i == 0)
                                         {
-                                            string classAlign = "text-right";
-                                            if (i == 0)
-                                            {
-                                                classAlign = "text-left";
-                                            }
-                                            <td class="@classAlign" @*style="white-space: nowrap;"*@>@rowThingie[i]</td>
+                                            classAlign = "text-left";
                                         }
-                                    </tr>
-                                }
+                                        <td class="@classAlign" @*style="white-space: nowrap;"*@>@rowThingie[i]</td>
+                                    }
+                                </tr>
                             }
+                        }
 
-                        </tbody>
-                    </table>
+                    </tbody>
+                </table>
+            </div>
                 }
                 @{Html.RenderPartial("_paginador", Model); }
             </div>
@@ -208,16 +189,9 @@
     </div>
 </div>
 
-<style>
-
-    .centrar {
-        margin-top: 25px;
-    }
-</style>
 
 <link rel="stylesheet" type="text/css" href="~/Content/css/Contabilidad/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="~/Content/js/Contabilidad/jquery.dataTables.js"></script>
-
 <script src="~/Content/js/jspdf.debug.js"></script>
 <script src="~/Content/js/html2pdf.js"></script>
 <script src="~/Content/js/html2canvas.js"></script>

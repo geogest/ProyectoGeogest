@@ -1,57 +1,38 @@
 ﻿@model PaginadorModel
 
 <div class="row">
-    <div class="panel-heading">
-        <div class="col-sm-12">
-            <div class="row container">
-                <div class="col-md-8"></div>
-                <div class="col-md-2">
+    <div class="col-sm-12">
+            <div class="btn-group pull-right margen">
+                <form role="form">
                     <div class="pull-right">
-                        <br />
-                        @*<button class="btn btn-default" onclick="ExportarPDF();">
-                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                        </button>*@
-                        @Html.BtnExportarPDF("ExportarPDF()")
-                        <br />
-                        <br />
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    @using (Html.BeginForm("GetExcelLibroMayorTwo", "Contabilidad", FormMethod.Post))
-                    {
-                        <div>
-                            <br />
-                            @*<button class="btn btn-success waves-effect waves-light pull-right" 
-                                    value="Exportar" name="Save" type="submit" data-animation="fadein" 
-                                    data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                                <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                            </button>*@
-                            @Html.BtnExportar("","Save")
-                            <br />
+                        <div class="col-lg-6">
+                            @Html.BtnExportarPDF("ExportarPDF()")
                         </div>
-                        <br />
-                    }
-                </div>
-
+                        <div class="col-lg-6 mtop">
+                            @using (Html.BeginForm("GetExcelLibroMayorTwo", "Contabilidad", FormMethod.Post))
+                            {
+                                @Html.BtnExportar("", "Save")
+                            }
+                        </div>
+                    </div>
+                </form>
             </div>
-
-            <h2 class="page-header">Libro Mayor</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="#">Contabilidad Reportes</a>
-                </li>
-                <li>
-                    <a href="#">-</a>
-                </li>
-                <li class="active">
-                    Informe Contabilidad
-                </li>
-            </ol>
-        </div>
+            <div class="page-header-2">
+                <h2 class="page-header">Libro Mayor</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">Contabilidad Reportes</a>
+                    </li>
+                    <li>
+                        <a href="#">-</a>
+                    </li>
+                    <li class="active">
+                        Informe Contabilidad
+                    </li>
+                </ol>
+            </div>
     </div>
 </div>
-<br />
 
 @using (Html.BeginForm("LibroMayorTwo", "Contabilidad", FormMethod.Post))
 {
@@ -64,80 +45,74 @@
         }
         <div class="row form-group">
 
-            <div class="col-md-2">
-                <label>Cantidad de Registros</label>
-                <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="0">Todos</option>
-                </select>
-            </div>
-
-            <div class="col-md-2">
-                <label>Año</label>
-                <input type="number" name="Anio" id="Anio" value="" class="form-control" />
-            </div>
-            <div class="col-md-2">
-                <label>Mes</label>
-                <select id="Mes" name="Mes" class="form-control">
-                    <option value="0">Todos</option>
-                    <option value="1">Enero</option>
-                    <option value="2">Febrero</option>
-                    <option value="3">Marzo</option>
-                    <option value="4">Abril</option>
-                    <option value="5">Mayo</option>
-                    <option value="6">Junio</option>
-                    <option value="7">Julio</option>
-                    <option value="8">Agosto</option>
-                    <option value="9">Septiembre</option>
-                    <option value="10">Octubre</option>
-                    <option value="11">Noviembre</option>
-                    <option value="12">Diciembre</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="control-label">Cuenta Contable</label>
-                <select id="CuentaContableID" name="CuentaContableID" class="selectpicker show-tick form-control" data-live-search="true" data-size="10">
-                    @Html.Raw(ViewBag.HtmlStr)
-                </select>
-            </div>
-            <div class="col-md-2 Unidos">
-                <label>Fecha Inicio</label>
-                <div class="form-group">
-                    <div class='input-group date '>
-                        <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <label>Cantidad de Registros</label>
+                        <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="0">Todos</option>
+                        </select>
                     </div>
-                </div>
-                
-                @*<input type="text" name="FechaInicio" id="FechaInicio" value="" class="form-control date" autocomplete="off" />*@
-            </div>
-            <div class="col-md-2 Unidos">
-                <label>Fecha Fin</label>
-                <div class="form-group">
-                    <div class='input-group date '>
-                        <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
+                    <div class="col-lg-1 col-md-2 col-sm-4">
+                        <label>Año</label>
+                        <input type="number" name="Anio" id="Anio" value="" class="form-control" />
                     </div>
-                </div>
-                @*<input type="text" name="FechaFin" id="FechaFin" value="" class="form-control date" autocomplete="off" />*@
-            </div>
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-lg-1 col-md-2 col-sm-4">
+                        <label>Mes</label>
+                        <select id="Mes" name="Mes" class="form-control">
+                            <option value="0">Todos</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-5 col-sm-4">
+                        <label class="control-label">Cuenta Contable</label>
+                        <select id="CuentaContableID" name="CuentaContableID" class="selectpicker show-tick form-control" data-live-search="true" data-size="10">
+                            @Html.Raw(ViewBag.HtmlStr)
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-4 Unidos">
+                        <label>Fecha Inicio</label>
+                        <div class="form-group">
+                            <div class='input-group date '>
+                                <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-4 Unidos">
+                        <label>Fecha Fin</label>
+                        <div class="form-group">
+                            <div class='input-group date '>
+                                <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-4">
                         <label>Glosa</label>
                         <input class="form-control" type="text" name="Glosa" id="Glosa" value="" />
                     </div>
-                    <div class="col-md-2 ">
+                    <div class="col-lg-2 col-md-4 col-sm-4">
                         <label>Rut</label>
                         <input class="form-control" type="text" name="Rut" id="Rut" value="" maxlength="10" />
                     </div>
-                    <div class="col-md-2 Unidos">
+                    <div class="col-lg-2 col-md-4 col-sm-4 Unidos">
                         <label>Tipo Prestador</label>
                         <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()">
                             <option value="">Selecciona</option>
@@ -146,21 +121,19 @@
                             <option value="P">Persona</option>
                         </select>
                     </div>
-                    <div class="col-md-2 Unidos">
+                    <div class="col-lg-3 col-md-4 col-sm-4 Unidos">
                         <label>Razon Social Prestador</label>
                         <select class="form-control" id="RazonPrestador" name="RazonPrestador"></select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-lg-3 col-md-4 col-sm-4">
                         <label>Num Voucher</label>
                         <input type="Number" class="form-control" name="NumVoucher" id="NumVoucher" value="" />
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-lg-2 col-md-4 col-sm-4">
                         @Html.BtnBuscar("Guardar","Guardar","centrar","")
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
 }
 
@@ -188,105 +161,92 @@
             {
                 for (int i = 0; i < rowThingie1.Length; i++)
                 {
-                    <table name="tbMayor" class="table table-responsive table-striped table-bordered table-hover" id="dataTables-example">
-                        <thead>
-                            <tr>
-                                <th colspan="9">@rowThingie1[i]</th>
-                            </tr>
-                            <tr>
-                                <th class="FontSize text-center">#</th>
-                                <th class="FontSize text-center">FECHA CONTABILIZACIÓN</th>
-                                <th class="FontSize text-center">COMPROBANTE</th>
-                                <th class="FontSize text-center">GLOSA</th>
-                                <th class="FontSize text-center">RAZON SOCIAL</th>
-                                <th class="FontSize text-center">RUT</th>
-                                <th class="FontSize text-center">DEBE</th>
-                                <th class="FontSize text-center">HABER</th>
-                                <th class="FontSize text-center">SALDO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div class="table-responsive">
+                        <table name="tbMayor" class="table table-responsive table-striped table-bordered table-hover" id="dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th colspan="9">@rowThingie1[i]</th>
+                                </tr>
+                                <tr>
+                                    <th class="FontSize text-center">#</th>
+                                    <th class="FontSize text-center">FECHA CONTABILIZACIÓN</th>
+                                    <th class="FontSize text-center">COMPROBANTE</th>
+                                    <th class="FontSize text-center">GLOSA</th>
+                                    <th class="FontSize text-center">RAZON SOCIAL</th>
+                                    <th class="FontSize text-center">RUT</th>
+                                    <th class="FontSize text-center">DEBE</th>
+                                    <th class="FontSize text-center">HABER</th>
+                                    <th class="FontSize text-center">SALDO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                            @{int totalHaber = 0;}
-                            @{int totalDebe = 0;}
+                                @{int totalHaber = 0;}
+                                @{int totalDebe = 0;}
 
-                            @foreach (string[] ListaLibMayor in Model.ResultStringArray)
-                            {
-                                if (ListaLibMayor[9] == rowThingie1[i])
+                                @foreach (string[] ListaLibMayor in Model.ResultStringArray)
                                 {
-                                    string classAlign = "text-right";
+                                    if (ListaLibMayor[9] == rowThingie1[i])
+                                    {
+                                        string classAlign = "text-right";
 
-                                    <tr class="odd gradeX">
-                                        @for (int k = 0; k < ListaLibMayor.Length - 4; k++)
-                                        {
-                                            if (k == 1)
+                                        <tr class="odd gradeX">
+                                            @for (int k = 0; k < ListaLibMayor.Length - 4; k++)
                                             {
-                                                classAlign = "text-left nowrappls";
-                                            }
-
-                                            if (k == 6 || k == 7 || k == 8)
-                                            {
-                                                classAlign = "text-left nowrappls monto"; //con el fin de hacer el separador de miles con javascript
-                                            }
-
-                                            if (k == 6)
-                                            {
-                                                if (ListaLibMayor[k] != "-")
+                                                if (k == 1)
                                                 {
-                                                    totalDebe = totalDebe + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".", ""));//Int32.Parse(ListaLibMayor[k].Replace(".", ""));
+                                                    classAlign = "text-left nowrappls";
+                                                }
+
+                                                if (k == 6 || k == 7 || k == 8)
+                                                {
+                                                    classAlign = "text-left nowrappls monto"; //con el fin de hacer el separador de miles con javascript
+                                                }
+
+                                                if (k == 6)
+                                                {
+                                                    if (ListaLibMayor[k] != "-")
+                                                    {
+                                                        totalDebe = totalDebe + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".", ""));//Int32.Parse(ListaLibMayor[k].Replace(".", ""));
+                                                    }
+                                                }
+
+                                                if (k == 7)
+                                                {
+                                                    if (ListaLibMayor[k] != "-")
+                                                    {
+                                                        totalHaber = totalHaber + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".", ""));//.Replace(".", ""));
+                                                    }
+                                                }
+                                                if (k == 2)
+                                                {
+                                                    <td><a href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = ListaLibMayor[11] })" class="label label-table label-primary" target="_blank">@ListaLibMayor[k]</a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="@classAlign">@ListaLibMayor[k]</td>
                                                 }
                                             }
-
-                                            if (k == 7)
-                                            {
-                                                if (ListaLibMayor[k] != "-")
-                                                {
-                                                    totalHaber = totalHaber + ParseExtensions.ParseInt(ListaLibMayor[k].Replace(".", ""));//.Replace(".", ""));
-                                                }
-                                            }
-                                            if (k == 2)
-                                            {
-                                                <td><a href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = ListaLibMayor[11] })" class="label label-table label-primary" target="_blank">@ListaLibMayor[k]</a></td>
-                                            }
-                                            else
-                                            {
-                                                <td class="@classAlign">@ListaLibMayor[k]</td>
-                                            }
-                                        }
-                                    </tr>
+                                        </tr>
+                                    }
                                 }
-                            }
-                            <tr>
-                                <th class="FontSize text-center" colspan="5"></th>
-                                <th class="FontSize text-right">TOTAL</th>
-                                <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(totalDebe)</th>
-                                <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(totalHaber)</th>
-                                @{int total = totalHaber - totalDebe;}
-                                <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(Math.Abs(total))</th>
+                                <tr>
+                                    <th class="FontSize text-center" colspan="5"></th>
+                                    <th class="FontSize text-right">TOTAL</th>
+                                    <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(totalDebe)</th>
+                                    <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(totalHaber)</th>
+                                    @{int total = totalHaber - totalDebe;}
+                                    <th class="FontSize text-right">@ParseExtensions.NumberWithDots_para_BalanceGeneral(Math.Abs(total))</th>
 
-                            </tr>
-                        </tbody>
+                                </tr>
+                            </tbody>
 
-                    </table>
+                        </table>
+                    </div>
                 }
             }
 
         @:  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         @:<table class="table table-responsive table-bordered table-hover" id="tbTotales">
             <thead>
@@ -317,50 +277,18 @@
             </tbody>
 
         @:</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @: </div>
     //Paginador
     Html.RenderPartial("_paginador", Model);
 
         }
 
-        </>
-
-        <style>
-            #parshial {
-                background-color: #fff;
-            }
-
-            .panel-heading {
-                background-color: #fff;
-            }
-
-            .centrar {
-                margin-top: 25px;
-            }
-
-        </style>
 
         <script src="~/Content/js/jspdf.debug.js"></script>
         <script src="~/Content/js/html2pdf.js"></script>
         <script src="~/Content/js/html2canvas.js"></script>
         <script src="~/Content/js/Contabilidad/jspdf.plugin.autotable.js"></script>
-
+        <link href="~/Content/css/Contabilidad/LibroMayorTwo.css" rel="stylesheet" />
         <link href="~/Content/css/Contabilidad/select2.min.css" rel="stylesheet" />
         <script src="~/Content/js/Contabilidad/select2.min.js"></script>
 
