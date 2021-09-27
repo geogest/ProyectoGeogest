@@ -44,11 +44,11 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-2 col-sm-3 form-group">
                         <label class="control-label">Año</label>
                         <input type="text" class="form-control" name="AnioBalance" id="AnioBalance" value="@DateTime.Now.Year.ToString()" />
                     </div>
-                    <div class="col-md-2 form-group">
+                    <div class="col-lg-2 col-md-2 col-sm-3 form-group">
                         <label for="" class="control-label">Mes:</label>
                         <select name="MesBalance" id="MesBalance" class="form-control">
                             <option value="">Todos</option>
@@ -66,7 +66,7 @@
                             <option value="12">Diciembre</option>
                         </select>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-3 form-group">
                         <label class="control-label">Fecha Inicio</label>
                         <div class="form-group">
                             <div class="input-group">
@@ -78,7 +78,7 @@
                         </div>
 
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-3 form-group">
                         <label class="control-label">Fecha Fin</label>
                         <div class="form-group">
                             <div class="input-group">
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label>Centro de Costos</label>
                         <select class="form-control" id="CentroDeCostoID" name="CentroDeCostoID">
                             <option>Selecciona</option>
@@ -99,7 +99,7 @@
                             }
                         </select>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-1 col-sm-1 form-group">
                         @Html.BtnBuscar("Buscar","","centrar","")
                     </div>
                 </div>

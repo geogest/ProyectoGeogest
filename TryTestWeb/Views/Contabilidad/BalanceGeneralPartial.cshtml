@@ -8,49 +8,51 @@
 
 
 
-
-<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-    <thead>
-        <tr>
-            <th colspan="2" class="FontSize text-center">CUENTAS</th>
-            <th colspan="2" class="FontSize text-center">SUMAS</th>
-            <th colspan="2" class="FontSize text-center">SALDOS</th>
-            <th colspan="2" class="FontSize text-center">INVENTARIO</th>
-            <th colspan="2" class="FontSize text-center">RESULTADO</th>
-        </tr>
-        <tr>
-            <th class="FontSize text-center">CÓDIGO</th>
-            <th class="FontSize text-center">NOMBRE</th>
-            <th class="FontSize text-center">DEBITOS</th>
-            <th class="FontSize text-center">CREDITOS</th>
-            <th class="FontSize text-center">DEUDOR</th>
-            <th class="FontSize text-center">ACREEDOR</th>
-            <th class="FontSize text-center">ACTIVO</th>
-            <th class="FontSize text-center">PASIVO</th>
-            <th class="FontSize text-center">PERDIDAS</th>
-            <th class="FontSize text-center">GANANCIAS</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (string[] rowThingie in Model)
-        {
-            @:<tr class="odd gradeX">
-                for (int i = 0; i < rowThingie.Length - 1; i++)
-                {
-                    string classAlign = "text-right";
-                    if (i == 0)
+<div class="table-responsive">
+    <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+        <thead>
+            <tr>
+                <th colspan="2" class="FontSize text-center">CUENTAS</th>
+                <th colspan="2" class="FontSize text-center">SUMAS</th>
+                <th colspan="2" class="FontSize text-center">SALDOS</th>
+                <th colspan="2" class="FontSize text-center">INVENTARIO</th>
+                <th colspan="2" class="FontSize text-center">RESULTADO</th>
+            </tr>
+            <tr>
+                <th class="FontSize text-center">CÓDIGO</th>
+                <th class="FontSize text-center">NOMBRE</th>
+                <th class="FontSize text-center">DEBITOS</th>
+                <th class="FontSize text-center">CREDITOS</th>
+                <th class="FontSize text-center">DEUDOR</th>
+                <th class="FontSize text-center">ACREEDOR</th>
+                <th class="FontSize text-center">ACTIVO</th>
+                <th class="FontSize text-center">PASIVO</th>
+                <th class="FontSize text-center">PERDIDAS</th>
+                <th class="FontSize text-center">GANANCIAS</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (string[] rowThingie in Model)
+            {
+                @:<tr class="odd gradeX">
+                    for (int i = 0; i < rowThingie.Length - 1; i++)
                     {
-                        classAlign = "text-left";
-                        <td><a href="javascript:void(0);" onclick="GenerarBusquedaLibroMayor(@rowThingie[10]);" class="label label-table label-primary">@rowThingie[i]</a></td>
+                        string classAlign = "text-right";
+                        if (i == 0)
+                        {
+                            classAlign = "text-left";
+                            <td><a href="javascript:void(0);" onclick="GenerarBusquedaLibroMayor(@rowThingie[10]);" class="label label-table label-primary">@rowThingie[i]</a></td>
 
+                        }
+                        else
+                        {
+                            <td class="@classAlign">@rowThingie[i]</td>
+                        }
                     }
-                    else
-                    {
-                        <td class="@classAlign">@rowThingie[i]</td>
-                    }
-                }
-            @:</tr>
-        }
-    </tbody>
-</table>
+                @:</tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
