@@ -1,7 +1,7 @@
 using System;
 using System.Data.Entity.Migrations;
 
-public partial class reset : DbMigration
+public partial class Reset : DbMigration
 {
     public override void Up()
     {
@@ -210,7 +210,7 @@ public partial class reset : DbMigration
         //            Telefono = c.String(nullable: false, unicode: false),
         //            Giro = c.String(nullable: false, unicode: false),
         //            RUTRepresentante = c.String(nullable: false, maxLength: 10, storeType: "nvarchar"),
-        //            Representante = c.String(nullable: false, unicode: false),
+        //            Representante = c.String(unicode: false),
         //            Email = c.String(unicode: false),
         //            idRegion = c.Int(nullable: false),
         //            idComuna = c.Int(nullable: false),
@@ -277,6 +277,7 @@ public partial class reset : DbMigration
         //            TipoLibro = c.Int(nullable: false),
         //            TipoDocumento = c.Int(nullable: false),
         //            Folio = c.Int(nullable: false),
+        //            FolioHasta = c.Int(nullable: false),
         //            FechaDoc = c.DateTime(nullable: false, precision: 0),
         //            FechaRecep = c.DateTime(nullable: false, precision: 0),
         //            FechaContabilizacion = c.DateTime(nullable: false, precision: 0),
@@ -291,6 +292,7 @@ public partial class reset : DbMigration
         //            MontoIvaUsocomun = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            MontoIvaActivoFijo = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            estado = c.Boolean(nullable: false),
+        //            EsUnRegistroManual = c.Boolean(nullable: false),
         //            individuo_QuickReceptorModelID = c.Int(),
         //            Prestador_AuxiliaresPrestadoresModelID = c.Int(),
         //        })
@@ -323,6 +325,7 @@ public partial class reset : DbMigration
         //            FechaEmision = c.DateTime(nullable: false, precision: 0),
         //            Tipo = c.Int(nullable: false),
         //            TipoOrigen = c.String(unicode: false),
+        //            TipoOrigenVoucher = c.Int(nullable: false),
         //            NumeroVoucher = c.Int(nullable: false),
         //            DadoDeBaja = c.Boolean(nullable: false),
         //            ClientesProveedoresModelID = c.Int(nullable: false),
@@ -342,6 +345,8 @@ public partial class reset : DbMigration
         //            VoucherModelID = c.Int(nullable: false),
         //            MontoDebe = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            MontoHaber = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            Conciliado = c.Boolean(nullable: false),
+        //            ConciliadoCtasCtes = c.Boolean(nullable: false),
         //            GlosaDetalle = c.String(unicode: false),
         //            FechaDoc = c.DateTime(nullable: false, precision: 0),
         //            RUTDoc = c.String(unicode: false),
@@ -392,6 +397,8 @@ public partial class reset : DbMigration
         //            FechaContabilizacion = c.DateTime(nullable: false, precision: 0),
         //            TipoDocumento = c.Int(nullable: false),
         //            Folio = c.Int(nullable: false),
+        //            FolioHasta = c.Int(nullable: false),
+        //            MontoBrutoLinea = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            MontoNetoLinea = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            MontoExentoLinea = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            MontoIVALinea = c.Decimal(nullable: false, precision: 18, scale: 2),
@@ -402,6 +409,8 @@ public partial class reset : DbMigration
         //            ValorRetencion = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            MontoTotalLinea = c.Decimal(nullable: false, precision: 18, scale: 2),
         //            FechaVencimiento = c.DateTime(nullable: false, precision: 0),
+        //            SeVaParaVenta = c.Boolean(nullable: false),
+        //            SeVaParaCompra = c.Boolean(nullable: false),
         //            Individuo_AuxiliaresPrestadoresModelID = c.Int(),
         //            Individuo2_QuickReceptorModelID = c.Int(),
         //        })
@@ -462,6 +471,95 @@ public partial class reset : DbMigration
         //            ClienteContableModelID = c.Int(nullable: false),
         //        })
         //    .PrimaryKey(t => t.ActividadEconomicaModelCuentaContableModelID)            ;
+        
+        //CreateTable(
+        //    "BoletasCoVPadreModel",
+        //    c => new
+        //        {
+        //            BoletasCoVPadreModelID = c.Int(nullable: false, identity: true),
+        //            FechaBoletas = c.DateTime(nullable: false, precision: 0),
+        //            FechaCreacion = c.DateTime(nullable: false, precision: 0),
+        //            tipoCentralizacion = c.Int(nullable: false),
+        //            TotalNeto = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            TotalIva = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            ClienteContableModelID_ClientesContablesModelID = c.Int(),
+        //        })
+        //    .PrimaryKey(t => t.BoletasCoVPadreModelID)            
+        //    .ForeignKey("ClientesContablesModel", t => t.ClienteContableModelID_ClientesContablesModelID)
+        //    .Index(t => t.ClienteContableModelID_ClientesContablesModelID);
+        
+        //CreateTable(
+        //    "BoletasCoVModel",
+        //    c => new
+        //        {
+        //            BoletasCoVModelID = c.Int(nullable: false, identity: true),
+        //            CuentaAuxiliar = c.String(unicode: false),
+        //            VoucherModelID = c.Int(nullable: false),
+        //            HaSidoConvertidoAVoucher = c.Int(nullable: false),
+        //            FechaInsercion = c.DateTime(nullable: false, precision: 0),
+        //            Fecha = c.DateTime(nullable: false, precision: 0),
+        //            NumeroDeDocumento = c.Int(nullable: false),
+        //            TipoDocumento = c.Int(nullable: false),
+        //            FechaVencimiento = c.DateTime(nullable: false, precision: 0),
+        //            CuentaContable = c.String(unicode: false),
+        //            Neto = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            Iva = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            CentroDeCostos = c.Int(nullable: false),
+        //            FechaPeriodoTributario = c.DateTime(nullable: false, precision: 0),
+        //            BoletaCoVPadre_BoletasCoVPadreModelID = c.Int(),
+        //            ClienteContable_ClientesContablesModelID = c.Int(),
+        //            Prestador_QuickReceptorModelID = c.Int(),
+        //        })
+        //    .PrimaryKey(t => t.BoletasCoVModelID)            
+        //    .ForeignKey("BoletasCoVPadreModel", t => t.BoletaCoVPadre_BoletasCoVPadreModelID)
+        //    .ForeignKey("ClientesContablesModel", t => t.ClienteContable_ClientesContablesModelID)
+        //    .ForeignKey("QuickReceptorModel", t => t.Prestador_QuickReceptorModelID)
+        //    .Index(t => t.BoletaCoVPadre_BoletasCoVPadreModelID)
+        //    .Index(t => t.ClienteContable_ClientesContablesModelID)
+        //    .Index(t => t.Prestador_QuickReceptorModelID);
+        
+        //CreateTable(
+        //    "CartolaBancariaModel",
+        //    c => new
+        //        {
+        //            CartolaBancariaModelId = c.Int(nullable: false, identity: true),
+        //            VoucherModelID = c.Int(nullable: false),
+        //            Fecha = c.DateTime(nullable: false, precision: 0),
+        //            Folio = c.Int(nullable: false),
+        //            Detalle = c.String(unicode: false),
+        //            Oficina = c.String(unicode: false),
+        //            Debe = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            Haber = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            Saldo = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            EstaConciliado = c.Boolean(nullable: false),
+        //            CartolaBancariaMacroModelID_CartolaBancariaMacroModelID = c.Int(),
+        //            ClientesContablesModelID_ClientesContablesModelID = c.Int(),
+        //            CuentaContableModelID_CuentaContableModelID = c.Int(),
+        //        })
+        //    .PrimaryKey(t => t.CartolaBancariaModelId)            
+        //    .ForeignKey("CartolaBancariaMacroModel", t => t.CartolaBancariaMacroModelID_CartolaBancariaMacroModelID)
+        //    .ForeignKey("ClientesContablesModel", t => t.ClientesContablesModelID_ClientesContablesModelID)
+        //    .ForeignKey("CuentaContableModel", t => t.CuentaContableModelID_CuentaContableModelID)
+        //    .Index(t => t.CartolaBancariaMacroModelID_CartolaBancariaMacroModelID)
+        //    .Index(t => t.ClientesContablesModelID_ClientesContablesModelID)
+        //    .Index(t => t.CuentaContableModelID_CuentaContableModelID);
+        
+        //CreateTable(
+        //    "CartolaBancariaMacroModel",
+        //    c => new
+        //        {
+        //            CartolaBancariaMacroModelID = c.Int(nullable: false, identity: true),
+        //            FechaCartola = c.DateTime(nullable: false, precision: 0),
+        //            NumeroCartola = c.Int(nullable: false),
+        //            TotalCartola = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            ClientesContablesModelID_ClientesContablesModelID = c.Int(),
+        //            CuentaContableModelID_CuentaContableModelID = c.Int(),
+        //        })
+        //    .PrimaryKey(t => t.CartolaBancariaMacroModelID)            
+        //    .ForeignKey("ClientesContablesModel", t => t.ClientesContablesModelID_ClientesContablesModelID)
+        //    .ForeignKey("CuentaContableModel", t => t.CuentaContableModelID_CuentaContableModelID)
+        //    .Index(t => t.ClientesContablesModelID_ClientesContablesModelID)
+        //    .Index(t => t.CuentaContableModelID_CuentaContableModelID);
         
         //CreateTable(
         //    "CtasContablesPresupuestoModel",
@@ -525,6 +623,15 @@ public partial class reset : DbMigration
         //    .PrimaryKey(t => t.EmisoresHabilitadosID)            
         //    .ForeignKey("UsuarioModel", t => t.UsuarioModelID, cascadeDelete: true)
         //    .Index(t => t.UsuarioModelID);
+        
+        //CreateTable(
+        //    "ErrorMensajeMonitoreo",
+        //    c => new
+        //        {
+        //            ErrorMensajeMonitoreoID = c.Int(nullable: false, identity: true),
+        //            Mensaje = c.String(unicode: false),
+        //        })
+        //    .PrimaryKey(t => t.ErrorMensajeMonitoreoID)            ;
         
         //CreateTable(
         //    "FuncionesModel",
@@ -601,6 +708,40 @@ public partial class reset : DbMigration
         //    .Index(t => t.Prestador_QuickReceptorModelID);
         
         //CreateTable(
+        //    "LibroHonorariosDeTerceros",
+        //    c => new
+        //        {
+        //            LibroHonorariosDeTercerosID = c.Int(nullable: false, identity: true),
+        //            NumOFolio = c.Int(nullable: false),
+        //            Estado = c.String(unicode: false),
+        //            FechaInicial = c.DateTime(nullable: false, precision: 0),
+        //            RutEmpresa = c.String(unicode: false),
+        //            NombreEmpresa = c.String(unicode: false),
+        //            FechaFinal = c.DateTime(nullable: false, precision: 0),
+        //            FechaContabilizacion = c.DateTime(nullable: false, precision: 0),
+        //            RutReceptor = c.String(unicode: false),
+        //            NombreReceptor = c.String(unicode: false),
+        //            Brutos = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            Retenidos = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            Pagado = c.Decimal(nullable: false, precision: 18, scale: 2),
+        //            TipoLibro = c.Int(nullable: false),
+        //            TipoV = c.Int(nullable: false),
+        //            TipoO = c.Int(nullable: false),
+        //            HaSidoConvertidoAVoucher = c.Boolean(nullable: false),
+        //            FechaDeCreacion = c.DateTime(nullable: false, precision: 0),
+        //            ClienteContable_ClientesContablesModelID = c.Int(),
+        //            Receptor_QuickReceptorModelID = c.Int(),
+        //            VoucherModel_VoucherModelID = c.Int(),
+        //        })
+        //    .PrimaryKey(t => t.LibroHonorariosDeTercerosID)            
+        //    .ForeignKey("ClientesContablesModel", t => t.ClienteContable_ClientesContablesModelID)
+        //    .ForeignKey("QuickReceptorModel", t => t.Receptor_QuickReceptorModelID)
+        //    .ForeignKey("VoucherModel", t => t.VoucherModel_VoucherModelID)
+        //    .Index(t => t.ClienteContable_ClientesContablesModelID)
+        //    .Index(t => t.Receptor_QuickReceptorModelID)
+        //    .Index(t => t.VoucherModel_VoucherModelID);
+        
+        //CreateTable(
         //    "ModulosHabilitados",
         //    c => new
         //        {
@@ -627,7 +768,7 @@ public partial class reset : DbMigration
         //            AccionNombre = c.String(unicode: false),
         //            CompaniaSeleccionadaNombre = c.String(unicode: false),
         //            ClienteSeleccionadoNombre = c.String(unicode: false),
-        //            Tiempo_de_ejecucion = c.Time(nullable: false, precision: 0, fixedLength: true),
+        //            Tiempo_de_ejecucion = c.Time(nullable: false, precision: 0),
         //            Hora_Ejecucion = c.DateTime(nullable: false, precision: 0),
         //            Cliente_ClientesContablesModelID = c.Int(),
         //            Compania_QuickEmisorModelID = c.Int(),
@@ -654,6 +795,7 @@ public partial class reset : DbMigration
         //            DatabaseContextToUse = c.Int(nullable: false),
         //            PerfilUsuarioModelID = c.Int(nullable: false),
         //            HeredaDeUsuario = c.Int(nullable: false),
+        //            EstaDadoDeBaja = c.Boolean(nullable: false),
         //        })
         //    .PrimaryKey(t => t.UsuarioModelID)            ;
         
@@ -668,6 +810,16 @@ public partial class reset : DbMigration
         //    .PrimaryKey(t => t.PosesionUsuariosID)            
         //    .ForeignKey("UsuarioModel", t => t.UsuarioModelID, cascadeDelete: true)
         //    .Index(t => t.UsuarioModelID);
+        
+        //CreateTable(
+        //    "MonitoreoSesion",
+        //    c => new
+        //        {
+        //            MonitoreoSesionID = c.Int(nullable: false, identity: true),
+        //            UsuarioID = c.Int(nullable: false),
+        //            EstaActivo = c.Boolean(nullable: false),
+        //        })
+        //    .PrimaryKey(t => t.MonitoreoSesionID)            ;
         
         //CreateTable(
         //    "PerfilUsuarioModel",
@@ -687,6 +839,7 @@ public partial class reset : DbMigration
         //            FechaInicio = c.DateTime(nullable: false, precision: 0),
         //            FechaVencimiento = c.DateTime(nullable: false, precision: 0),
         //            EstaVencido = c.Boolean(nullable: false),
+        //            DadoDeBaja = c.Boolean(nullable: false),
         //            Cliente_ClientesContablesModelID = c.Int(),
         //        })
         //    .PrimaryKey(t => t.PresupuestoModelID)            
@@ -765,8 +918,20 @@ public partial class reset : DbMigration
         DropForeignKey("MonitoreoModel", "Compania_QuickEmisorModelID", "QuickEmisorModel");
         DropForeignKey("MonitoreoModel", "Cliente_ClientesContablesModelID", "ClientesContablesModel");
         DropForeignKey("ModulosHabilitados", "Funcion_FuncionesModelID", "FuncionesModel");
+        DropForeignKey("LibroHonorariosDeTerceros", "VoucherModel_VoucherModelID", "VoucherModel");
+        DropForeignKey("LibroHonorariosDeTerceros", "Receptor_QuickReceptorModelID", "QuickReceptorModel");
+        DropForeignKey("LibroHonorariosDeTerceros", "ClienteContable_ClientesContablesModelID", "ClientesContablesModel");
         DropForeignKey("LibroDeHonorariosModel", "Prestador_QuickReceptorModelID", "QuickReceptorModel");
         DropForeignKey("FuncionesModel", "ModuloSistema_ModuloSistemaModelID", "ModuloSistemaModel");
+        DropForeignKey("CartolaBancariaModel", "CuentaContableModelID_CuentaContableModelID", "CuentaContableModel");
+        DropForeignKey("CartolaBancariaModel", "ClientesContablesModelID_ClientesContablesModelID", "ClientesContablesModel");
+        DropForeignKey("CartolaBancariaMacroModel", "CuentaContableModelID_CuentaContableModelID", "CuentaContableModel");
+        DropForeignKey("CartolaBancariaMacroModel", "ClientesContablesModelID_ClientesContablesModelID", "ClientesContablesModel");
+        DropForeignKey("CartolaBancariaModel", "CartolaBancariaMacroModelID_CartolaBancariaMacroModelID", "CartolaBancariaMacroModel");
+        DropForeignKey("BoletasCoVPadreModel", "ClienteContableModelID_ClientesContablesModelID", "ClientesContablesModel");
+        DropForeignKey("BoletasCoVModel", "Prestador_QuickReceptorModelID", "QuickReceptorModel");
+        DropForeignKey("BoletasCoVModel", "ClienteContable_ClientesContablesModelID", "ClientesContablesModel");
+        DropForeignKey("BoletasCoVModel", "BoletaCoVPadre_BoletasCoVPadreModelID", "BoletasCoVPadreModel");
         DropForeignKey("CertificadosModels", "QuickEmisorModelID", "QuickEmisorModel");
         DropForeignKey("ReportesImpagosLog", "QuickEmisorModelID", "QuickEmisorModel");
         DropForeignKey("ClientesContablesModel", "QuickEmisorModelID", "QuickEmisorModel");
@@ -810,9 +975,21 @@ public partial class reset : DbMigration
         DropIndex("MonitoreoModel", new[] { "Compania_QuickEmisorModelID" });
         DropIndex("MonitoreoModel", new[] { "Cliente_ClientesContablesModelID" });
         DropIndex("ModulosHabilitados", new[] { "Funcion_FuncionesModelID" });
+        DropIndex("LibroHonorariosDeTerceros", new[] { "VoucherModel_VoucherModelID" });
+        DropIndex("LibroHonorariosDeTerceros", new[] { "Receptor_QuickReceptorModelID" });
+        DropIndex("LibroHonorariosDeTerceros", new[] { "ClienteContable_ClientesContablesModelID" });
         DropIndex("LibroDeHonorariosModel", new[] { "Prestador_QuickReceptorModelID" });
         DropIndex("FuncionesModel", new[] { "ModuloSistema_ModuloSistemaModelID" });
         DropIndex("EmisoresHabilitados", new[] { "UsuarioModelID" });
+        DropIndex("CartolaBancariaMacroModel", new[] { "CuentaContableModelID_CuentaContableModelID" });
+        DropIndex("CartolaBancariaMacroModel", new[] { "ClientesContablesModelID_ClientesContablesModelID" });
+        DropIndex("CartolaBancariaModel", new[] { "CuentaContableModelID_CuentaContableModelID" });
+        DropIndex("CartolaBancariaModel", new[] { "ClientesContablesModelID_ClientesContablesModelID" });
+        DropIndex("CartolaBancariaModel", new[] { "CartolaBancariaMacroModelID_CartolaBancariaMacroModelID" });
+        DropIndex("BoletasCoVModel", new[] { "Prestador_QuickReceptorModelID" });
+        DropIndex("BoletasCoVModel", new[] { "ClienteContable_ClientesContablesModelID" });
+        DropIndex("BoletasCoVModel", new[] { "BoletaCoVPadre_BoletasCoVPadreModelID" });
+        DropIndex("BoletasCoVPadreModel", new[] { "ClienteContableModelID_ClientesContablesModelID" });
         DropIndex("ReportesImpagosLog", new[] { "QuickEmisorModelID" });
         DropIndex("ParametrosClienteModel", new[] { "CuentaVentas_CuentaContableModelID" });
         DropIndex("ParametrosClienteModel", new[] { "CuentaRetencionHonorarios_CuentaContableModelID" });
@@ -854,20 +1031,27 @@ public partial class reset : DbMigration
         DropTable("RegionModels");
         DropTable("PresupuestoModel");
         DropTable("PerfilUsuarioModel");
+        DropTable("MonitoreoSesion");
         DropTable("PosesionUsuarios");
         DropTable("UsuarioModel");
         DropTable("MonitoreoModel");
         DropTable("ModulosHabilitados");
+        DropTable("LibroHonorariosDeTerceros");
         DropTable("LibroDeHonorariosModel");
         DropTable("ImpuestosAdRelacionModel");
         DropTable("ImpuestosAdicionalesModel");
         DropTable("ModuloSistemaModel");
         DropTable("FuncionesModel");
+        DropTable("ErrorMensajeMonitoreo");
         DropTable("EmisoresHabilitados");
         DropTable("ClientesProveedoresModel");
         DropTable("ClientesContablesEmisorModel");
         DropTable("CentroCostoPresupuestoModels");
         DropTable("CtasContablesPresupuestoModel");
+        DropTable("CartolaBancariaMacroModel");
+        DropTable("CartolaBancariaModel");
+        DropTable("BoletasCoVModel");
+        DropTable("BoletasCoVPadreModel");
         DropTable("ActividadEconomicaModelCuentaContableModel");
         DropTable("ReportesImpagosLog");
         DropTable("ParametrosClienteModel");

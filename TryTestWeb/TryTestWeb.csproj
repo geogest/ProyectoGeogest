@@ -281,101 +281,9 @@
     <Compile Include="Helpers\TipoDte.cs" />
     <Compile Include="Helpers\XMLHelper.cs" />
     <Compile Include="Impl\BoletasRepositoryImpl.cs" />
-    <Compile Include="Migrations\202003090814025_reset.cs" />
-    <Compile Include="Migrations\202003090814025_reset.Designer.cs">
-      <DependentUpon>202003090814025_reset.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202003121617169_SeAgregaColumnaPresupuesto.cs" />
-    <Compile Include="Migrations\202003121617169_SeAgregaColumnaPresupuesto.Designer.cs">
-      <DependentUpon>202003121617169_SeAgregaColumnaPresupuesto.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004042025176_ConfigBoletasVentas.cs" />
-    <Compile Include="Migrations\202004042025176_ConfigBoletasVentas.Designer.cs">
-      <DependentUpon>202004042025176_ConfigBoletasVentas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004111808101_SeAgregaDarDeBajaUser.cs" />
-    <Compile Include="Migrations\202004111808101_SeAgregaDarDeBajaUser.Designer.cs">
-      <DependentUpon>202004111808101_SeAgregaDarDeBajaUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004172035172_VouchersPorOrigen.cs" />
-    <Compile Include="Migrations\202004172035172_VouchersPorOrigen.Designer.cs">
-      <DependentUpon>202004172035172_VouchersPorOrigen.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004220824337_SeCreaLibroHonorTerceros.cs" />
-    <Compile Include="Migrations\202004220824337_SeCreaLibroHonorTerceros.Designer.cs">
-      <DependentUpon>202004220824337_SeCreaLibroHonorTerceros.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004220937397_SeBorraColumna.cs" />
-    <Compile Include="Migrations\202004220937397_SeBorraColumna.Designer.cs">
-      <DependentUpon>202004220937397_SeBorraColumna.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004300721261_CorreccionMigration.cs" />
-    <Compile Include="Migrations\202004300721261_CorreccionMigration.Designer.cs">
-      <DependentUpon>202004300721261_CorreccionMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004302240056_OpcionElegirContabilizarLibros.cs" />
-    <Compile Include="Migrations\202004302240056_OpcionElegirContabilizarLibros.Designer.cs">
-      <DependentUpon>202004302240056_OpcionElegirContabilizarLibros.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.cs" />
-    <Compile Include="Migrations\202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.Designer.cs">
-      <DependentUpon>202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs" />
-    <Compile Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.Designer.cs">
-      <DependentUpon>202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202011260540197_CreandotablasCartola.cs" />
-    <Compile Include="Migrations\202011260540197_CreandotablasCartola.Designer.cs">
-      <DependentUpon>202011260540197_CreandotablasCartola.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202011261635291_addctacontableintablecartola.cs" />
-    <Compile Include="Migrations\202011261635291_addctacontableintablecartola.Designer.cs">
-      <DependentUpon>202011261635291_addctacontableintablecartola.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202012040146493_SeModicaTablaCartolaBancariaMacro.cs" />
-    <Compile Include="Migrations\202012040146493_SeModicaTablaCartolaBancariaMacro.Designer.cs">
-      <DependentUpon>202012040146493_SeModicaTablaCartolaBancariaMacro.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202012040156197_SeAgregaCampoNecesario.cs" />
-    <Compile Include="Migrations\202012040156197_SeAgregaCampoNecesario.Designer.cs">
-      <DependentUpon>202012040156197_SeAgregaCampoNecesario.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202012040245497_SeEliminaColumnaCartola.cs" />
-    <Compile Include="Migrations\202012040245497_SeEliminaColumnaCartola.Designer.cs">
-      <DependentUpon>202012040245497_SeEliminaColumnaCartola.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs" />
-    <Compile Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.Designer.cs">
-      <DependentUpon>202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202012192055402_CampoConciliacionEstaCtasCtes.cs" />
-    <Compile Include="Migrations\202012192055402_CampoConciliacionEstaCtasCtes.Designer.cs">
-      <DependentUpon>202012192055402_CampoConciliacionEstaCtasCtes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.cs" />
-    <Compile Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.Designer.cs">
-      <DependentUpon>202101071752500_SeAgregaTotalCartolaACartolaMacro.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.cs" />
-    <Compile Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.Designer.cs">
-      <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202106210015581_SeAgregaValorBruto.cs" />
-    <Compile Include="Migrations\202106210015581_SeAgregaValorBruto.Designer.cs">
-      <DependentUpon>202106210015581_SeAgregaValorBruto.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202106220223163_SeAgregaTablaBoletas.cs" />
-    <Compile Include="Migrations\202106220223163_SeAgregaTablaBoletas.Designer.cs">
-      <DependentUpon>202106220223163_SeAgregaTablaBoletas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202107162157135_TablaMonitoreoSesion.cs" />
-    <Compile Include="Migrations\202107162157135_TablaMonitoreoSesion.Designer.cs">
-      <DependentUpon>202107162157135_TablaMonitoreoSesion.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202109130602137_seAgregaRelacionPadre.cs" />
-    <Compile Include="Migrations\202109130602137_seAgregaRelacionPadre.Designer.cs">
-      <DependentUpon>202109130602137_seAgregaRelacionPadre.cs</DependentUpon>
+    <Compile Include="Migrations\202109270211174_Reset.cs" />
+    <Compile Include="Migrations\202109270211174_Reset.Designer.cs">
+      <DependentUpon>202109270211174_Reset.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminMonitoreo\ErrorMensajeMonitoreo.cs" />
@@ -1065,77 +973,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202003090814025_reset.resx">
-      <DependentUpon>202003090814025_reset.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202003121617169_SeAgregaColumnaPresupuesto.resx">
-      <DependentUpon>202003121617169_SeAgregaColumnaPresupuesto.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004042025176_ConfigBoletasVentas.resx">
-      <DependentUpon>202004042025176_ConfigBoletasVentas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004111808101_SeAgregaDarDeBajaUser.resx">
-      <DependentUpon>202004111808101_SeAgregaDarDeBajaUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004172035172_VouchersPorOrigen.resx">
-      <DependentUpon>202004172035172_VouchersPorOrigen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004220824337_SeCreaLibroHonorTerceros.resx">
-      <DependentUpon>202004220824337_SeCreaLibroHonorTerceros.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004220937397_SeBorraColumna.resx">
-      <DependentUpon>202004220937397_SeBorraColumna.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004300721261_CorreccionMigration.resx">
-      <DependentUpon>202004300721261_CorreccionMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004302240056_OpcionElegirContabilizarLibros.resx">
-      <DependentUpon>202004302240056_OpcionElegirContabilizarLibros.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.resx">
-      <DependentUpon>202005011354138_SeAgregaOpcionParaElegirSiVaaCompraoVenta.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.resx">
-      <DependentUpon>202005011512101_ImplementacionControlVoucherALibroDeCompraVentaPt2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202011260540197_CreandotablasCartola.resx">
-      <DependentUpon>202011260540197_CreandotablasCartola.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202011261635291_addctacontableintablecartola.resx">
-      <DependentUpon>202011261635291_addctacontableintablecartola.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202012040146493_SeModicaTablaCartolaBancariaMacro.resx">
-      <DependentUpon>202012040146493_SeModicaTablaCartolaBancariaMacro.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202012040156197_SeAgregaCampoNecesario.resx">
-      <DependentUpon>202012040156197_SeAgregaCampoNecesario.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202012040245497_SeEliminaColumnaCartola.resx">
-      <DependentUpon>202012040245497_SeEliminaColumnaCartola.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202012040647266_CampoDeConciliacionBancariaDetalleVoucher.resx">
-      <DependentUpon>202012040647266_CampoDeConciliacionBancariaDetalleVoucher.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202012192055402_CampoConciliacionEstaCtasCtes.resx">
-      <DependentUpon>202012192055402_CampoConciliacionEstaCtasCtes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202101071752500_SeAgregaTotalCartolaACartolaMacro.resx">
-      <DependentUpon>202101071752500_SeAgregaTotalCartolaACartolaMacro.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202105280457584_SeAgregaTablaErrorMensaje.resx">
-      <DependentUpon>202105280457584_SeAgregaTablaErrorMensaje.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202106210015581_SeAgregaValorBruto.resx">
-      <DependentUpon>202106210015581_SeAgregaValorBruto.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202106220223163_SeAgregaTablaBoletas.resx">
-      <DependentUpon>202106220223163_SeAgregaTablaBoletas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107162157135_TablaMonitoreoSesion.resx">
-      <DependentUpon>202107162157135_TablaMonitoreoSesion.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202109130602137_seAgregaRelacionPadre.resx">
-      <DependentUpon>202109130602137_seAgregaRelacionPadre.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202109270211174_Reset.resx">
+      <DependentUpon>202109270211174_Reset.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
