@@ -1,0 +1,18 @@
+﻿html {
+    font-size:100%;
+}
+#parshial {
+    background-color: #fff;
+}
+
+.panel-heading {
+    background-color: #fff;
+}
+.margen {
+    margin-top:1.8rem;
+}
+@media (max-width:425px) {
+    .margen {
+        margin-top:3.5rem;
+    }
+}

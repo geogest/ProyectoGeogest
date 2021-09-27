@@ -3,146 +3,153 @@
     ViewBag.Title = "EstadoResultadoComparativo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="stylesheet" href="~/Content/css/bootstrap-select.min.css">
 
-
-
-
-    @using (Html.BeginForm("GetExcelEstadoResultadoComparativo", "Contabilidad", FormMethod.Post))
-    { 
-        <br />
-        <div class="pull-right">
-            <br />
-            @*<button class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" 
-                    type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-            </button>*@
-
-            @Html.BtnExportar("","Save")
-            <br />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn-group pull-right margen">
+            <form role="form">
+                <div class="button-list col-lg-12">
+                    <div class="col-lg-12">
+                        @using (Html.BeginForm("GetExcelEstadoResultadoComparativo", "Contabilidad", FormMethod.Post))
+                        {
+                            @Html.BtnExportar("", "Save")
+                        }
+                    </div>
+                </div>
+            </form>
         </div>
-                <br />
-    }
-<div class="col-md-12">
-    <br />
-    <h2>Estado Resultado Comparativo</h2>
 
-    <div class="row">
-        <div class="form-group col-md-2">
-            <button id="FiltrosPorMes" class="btn btn-primary">Analizar por Mes</button>
-        </div>
-        <div class="form-group col-md-2">
-            <button id="FiltrosPorAnio" class="btn btn-primary">Analizar por Año</button>
+        <div class="page-header-2">
+            <h2 class="page-header">Estado Resultado Comparativo</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Estado Resultado Comparativo</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Estado Resultado Comparativo
+                </li>
+            </ol>
         </div>
     </div>
+</div>
+   
+<div class="panel-heading">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-6">
+                    <button id="FiltrosPorMes" class="btn btn-primary">Analizar por Mes</button>
+                </div>
+                <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-6">
+                    <button id="FiltrosPorAnio" class="btn btn-primary">Analizar por Año</button>
+                </div>
+            </div>
 
-    <div id="myModal" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <input type="hidden" id="editFlag" name="editFlag" value="0">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Configura tu busqueda</h4>
-                </div>
-                <div id="ModyBody" class="modal-body">
-                    <div class="row m-t-5">
-                        <p>Rango de años permitido de (2010 a 2030)</p>
-                    </div>
-                        <div class="row m-t-10">
-                            <div class="col-md-4">
-                                <label>Año</label>
-                                <input type="number" name="Anio" id="Anio" value="" class="form-control" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Selecciona</label>
-                                @Html.DropDownList("Meses", (List<SelectListItem>)ViewBag.Meses, new { @class = "form-control selectpicker show-tick" })
-                            </div>
-                            <div class="col-md-4">
-                                <label>Centro de Costo<span>(Opcional)</span></label>
-                                <select class="form-control" id="CCID" name="CCID">
-                                    <option>Selecciona</option>
-                                    @foreach (var itemCC in ViewBag.lstCentroDeCostos)
-                                    {
-                                        <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
-                                    }
-                                </select>
-                            </div>
+            <div id="myModal" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <input type="hidden" id="editFlag" name="editFlag" value="0">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title">Configura tu busqueda</h4>
                         </div>
-                        <br />
-                        <br />
-                
+                        <div id="ModyBody" class="modal-body">
+                            <div class="row m-t-5">
+                                <p>Rango de años permitido de (2010 a 2030)</p>
+                            </div>
+                            <div class="row m-t-10">
+                                <div class="col-md-4">
+                                    <label>Año</label>
+                                    <input type="number" name="Anio" id="Anio" value="" class="form-control" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Selecciona</label>
+                                    @Html.DropDownList("Meses", (List<SelectListItem>)ViewBag.Meses, new { @class = "form-control selectpicker show-tick" })
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Centro de Costo<span>(Opcional)</span></label>
+                                    <select class="form-control" id="CCID" name="CCID">
+                                        <option>Selecciona</option>
+                                        @foreach (var itemCC in ViewBag.lstCentroDeCostos)
+                                        {
+                                            <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="Buscar" name="Buscar" class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-search"></i></span>Buscar</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="Buscar" name="Buscar" class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-search"></i></span>Buscar</button>
+            </div>
+
+            <div id="myModalYear" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <input type="hidden" id="editFlag" name="editFlag" value="0">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title">Configura tu busqueda</h4>
+                        </div>
+                        <div id="ModyBody" class="modal-body">
+
+                            <div class="row m-t-5">
+                                <p>Rango de años permitido de (2010 a 2030)</p>
+                            </div>
+
+                            <div class="row m-t-10">
+                                <div class="col-md-4">
+                                    <label>Desde Año:</label>
+                                    <input type="number" name="AnioDesde" id="AnioDesde" value="" class="form-control" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Hasta Año:</label>
+                                    <input type="number" name="AnioHasta" id="AnioHasta" value="" class="form-control" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Centro de Costo<span>(Opcional)</span></label>
+                                    <select class="form-control" id="CentroDeCostoID" name="CentroDeCostoID">
+                                        <option>Selecciona</option>
+                                        @foreach (var itemCC in ViewBag.lstCentroDeCostos)
+                                        {
+                                            <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="BuscarAnios" name="BuscarAnios" class="btn btn-primary waves-effect waves-light"><span class="btn-label"><i class="ion-android-search"></i></span>Buscar</button>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
+
+
+            <div id="parshial">
+                <div class="alert alert-danger Esconder">
+                    No se encontraron registros.
+                </div>
+                @Html.Partial("EstadoResultadoComparativoPartial", Model);
             </div>
         </div>
     </div>
+</div>
 
-    <div id="myModalYear" class="modal fade in" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <input type="hidden" id="editFlag" name="editFlag" value="0">
-        <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title">Configura tu busqueda</h4>
-                    </div>
-                    <div id="ModyBody" class="modal-body">
-
-                        <div class="row m-t-5">
-                            <p>Rango de años permitido de (2010 a 2030)</p>
-                        </div>
-
-                        <div class="row m-t-10">
-                            <div class="col-md-4">
-                                <label>Desde Año:</label>
-                                <input type="number" name="AnioDesde" id="AnioDesde" value="" class="form-control" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Hasta Año:</label>
-                                <input type="number" name="AnioHasta" id="AnioHasta" value="" class="form-control" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Centro de Costo<span>(Opcional)</span></label>
-                                <select class="form-control" id="CentroDeCostoID" name="CentroDeCostoID">
-                                    <option>Selecciona</option>
-                                    @foreach (var itemCC in ViewBag.lstCentroDeCostos)
-                                    {
-                                        <option value="@itemCC.CentroCostoModelID">@itemCC.Nombre</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <br />
-                        <br />
-
-                    </div>
-                    <div class="modal-footer">
-                        <button id="BuscarAnios" name="BuscarAnios" class="btn btn-primary waves-effect waves-light"><span class="btn-label"><i class="ion-android-search"></i></span>Buscar</button>
-                    </div>
-                </div>
-          
-        </div>
-    </div>
-    
-
-    <div id="parshial">
-        <div class="alert alert-danger Esconder">
-            No se encontraron registros.
-        </div>
-        @Html.Partial("EstadoResultadoComparativoPartial", Model);
-    </div>
-
-    </div>
-
-<style>
-    .centrar{
-        margin-top:25px;
-    }
-    .Esconder{
-        display:none;
-    }
-</style>
+<link rel="stylesheet" href="~/Content/css/bootstrap-select.min.css">
+<link href="~/Content/css/Contabilidad/EstadoResultadoComparativo.css" rel="stylesheet" />
 
 <script>
 
