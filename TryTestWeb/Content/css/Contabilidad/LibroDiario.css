@@ -7,6 +7,11 @@
 .centrar {
     margin-top: 1.57rem;/*1.6*/
 }
+@media (max-width: 1024px) {
+    .mtop {
+        margin-top:1rem;
+    }
+}
 @media (max-width: 768px) {
     .margen {
         margin-top: 1.8rem;

@@ -40,7 +40,7 @@
             @using (Html.BeginForm("LibroDeHonorarios", "Contabilidad", FormMethod.Post))
             {
                 <div class="row form-group">
-                    <div class="col-lg-2 col-md-3 col-sm-5 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label>Cantidad de Registros</label>
                         <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
                             <option value="25">25</option>
@@ -50,12 +50,12 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2 col-md-2 col-sm-3 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-2 form-group">
                         <label class="control-label">Año</label>
                         <input type="text" class="form-control" name="Anio" id="Anio" value="" />
                     </div>
 
-                    <div class="col-lg-2 col-md-2 col-sm-4 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-3 form-group">
                         <label for="" class="control-label">Mes</label>
                         <select name="Mes" id="Mes" class="form-control">
                             <option value="0">Todos</option>
@@ -74,12 +74,12 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2 col-md-2 col-sm-4 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-3 form-group">
                         <label class="control-label">Rut</label>
                         <input type="text" class="form-control" id="Rut" name="Rut" maxlength="10" />
                     </div>
 
-                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
+                    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
                         <label class="control-label">Razon Social</label>
                         <input type="text" class="form-control" id="RazonSocial" name="RazonSocial" />
                     </div>
@@ -94,12 +94,12 @@
                         <input type="text" class="form-control" name="rutfin" id="rutfin" />
                     </div>
 
-                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
+                    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
                         <label class="control-label">Folio</label>
                         <input class="form-control" type="number" name="Folio" id="Folio" value="" />
                     </div>
 
-                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                         <label class="control-label">Fecha Inicio</label>
                         <div class='input-group date '>
                             <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
@@ -109,7 +109,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                         <label class="control-label">Fecha Fin</label>
                         <div class='input-group date '>
                             <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
@@ -119,7 +119,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                         @Html.BtnBuscar("Guardar","Guardar","centrar","")
                     </div>
                 </div>
