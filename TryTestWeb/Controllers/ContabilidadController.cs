@@ -1465,16 +1465,16 @@ namespace TryTestWeb.Controllers
 
 
             // Filtros
-            if(Anio != 0)
+            if(Anio > 0)
                 Predicado = Predicado.Where(r => r.FechaEmision.Year == Anio);
             
-            if(Mes != 0)
+            if(Mes > 0)
                 Predicado = Predicado.Where(r => r.FechaEmision.Month == Mes);
             
             if (!string.IsNullOrWhiteSpace(Glosa))
                 Predicado = Predicado.Where(r => r.Glosa.Contains(Glosa));
             
-            if(voucherID != 0)
+            if(voucherID > 0)
                 Predicado = Predicado.Where(r => r.NumeroVoucher == voucherID);
 
             if (ConversionFechaInicioExitosa && ConversionFechaFinExitosa)

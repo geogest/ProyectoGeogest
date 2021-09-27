@@ -930,6 +930,68 @@ public static class ParseExtensions
             return "?";
     }
 
+    public static int? GetNumVoucher(ClientesContablesModel objClienteContable, FacturaPoliContext db, int Mes, int Anio)
+    {
+        int? ReturnValues = 0;
+
+        try
+        {
+            if (objClienteContable == null) throw new Exception("La sesión del cliente contable no existe.");
+            if (Mes <= 0 || Anio <= 0) throw new Exception("Mes y anio no pueden ser 0 o vacio");
+
+            IQueryable<int> lstNumVouchersEstecliente = db.DBVoucher.Where(x => x.ClientesContablesModelID == objClienteContable.ClientesContablesModelID &&
+                                                                                x.FechaEmision.Month == Mes &&
+                                                                                x.FechaEmision.Year == Anio)
+                                                                        .Select(x => x.NumeroVoucher);
+
+            if (lstNumVouchersEstecliente.Count() == 0) return 1;
+
+            ReturnValues = lstNumVouchersEstecliente.MaxObject(numVoucher => numVoucher);
+            ReturnValues++;
+
+            return ReturnValues;
+
+        }
+        catch(Exception ex)
+        {
+            throw new Exception("Error al crear numero voucher: " + ex.Message);
+        }
+    }
+
+    public static string GetNumVoucherToView(int NumVoucher, int Mes, int Anio)
+    {
+        return NumVoucher > 0 && Mes > 0 && Anio > 0 ? $"{Mes.ToString()}{Anio.ToString()}{"-"}{NumVoucher.ToString()}" : throw new Exception("No se pudo obtener el NumeroVoucher");
+    }
+
+    public static int CleanSearchNumVoucher(string numVoucherToClean, int Mes)
+    {
+        //Aplicar logica para limpiar el mes y el año para poder buscar en la base de datos
+
+        try
+        {
+            int ReturnValues = 0;
+
+            if (Mes <= 0 || string.IsNullOrWhiteSpace(numVoucherToClean)) throw new Exception("Error alguno de los parametros viene vacio.");
+            if (Mes > 9) ReturnValues = Convert.ToInt32(numVoucherToClean.Substring(0, 7));
+            if (Mes <= 9) ReturnValues = Convert.ToInt32(numVoucherToClean.Substring(0, 6));
+
+            return ReturnValues;
+        }
+        catch(Exception ex)
+        {
+            throw new Exception("Error al limpiar el numero voucher. ERROR : " + ex.Message);
+        }
+       
+    }
+
+    public static int DetectedBrokenNumVoucherCorrelative()
+    {
+        return 0;
+    }
+
+    //queda un caso pendiente que es cuando se borra un voucher. Es necesario detectar que está roto el correlativo y el proximo voucher a crear tendrá que crearse en el espacio que estaba roto.
+    //Ejemplo tenemos los numeros voucher 1,2,3,4 se borra el 3 y queda: 1,2,4 -> el proximo numero voucher a crear tiene que ser el numero 3.
+
     [Authorize]
     public static int? ObtenerNumeroProximoVoucherINT(ClientesContablesModel objCliente, FacturaPoliContext db)
     {
