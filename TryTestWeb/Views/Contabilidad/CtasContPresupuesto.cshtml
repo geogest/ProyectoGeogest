@@ -31,20 +31,20 @@
     @using (Html.BeginForm("CtasContPresupuesto", "Contabilidad", FormMethod.Post))
     {
         <div class="row">
-            <div class="col-lg-2 form-group">
+            <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                 <label class="control-label">Código:</label>
                 <input type="number" class="form-control" name="codigo" id="codigo" value="@ViewBag.codigo" />
             </div>
 
 
 
-            <div class="col-lg-2 form-group">
+            <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                 <label class="control-label">Nombre:</label>
                 <input type="text" class="form-control" name="nombre" id="nombre" value="@ViewBag.nombre" />
             </div>
 
 
-            <div class="col-md-2" form-group>
+            <div class="col-lg-2 col-md-2 col-sm-3 form-group">
                 <div style="text-align: center;">
                     <label class="control-label" style="color:transparent;"> _</label>
                     <button class="btn btn-1 btnPress form-control" type="submit"><i class="fa fa-search"></i> &nbsp; Buscar</button>
@@ -52,33 +52,6 @@
             </div>
         </div>
     }
-
-
-
-    <!-- Filtros -->
-
-    <div class="row m-t-15">
-        <div class="col-md-12">
-
-            <div class="form-group">
-                <div class="col-md-2">
-
-                </div>
-
-                <div class="col-md-4">
-
-                </div>
-
-                <div class="col-md-2">
-
-                </div>
-
-                <div class="col-md-4">
-
-                </div>
-            </div>
-        </div>
-    </div>
 </form>
 <!-- Fin Filtros -->
 
@@ -95,8 +68,8 @@
 
                 <div class="row" id="Presupuesto">
                     <div class="form-group">
-                        <div class="col-md-3">
-                            <label>FechaInicio Presupuesto</label>
+                        <div class="col-lg-3 col-md-4 col-sm-12">
+                            <label>Fecha Inicio Presupuesto</label>
                             <div class='input-group date '>
                                 <input type="text" id="FechaInicio" name="FechaInicio" class="form-control anotherSelector" autocomplete="off" required />
                                 <span class="input-group-addon">
@@ -105,8 +78,8 @@
                             </div>
                             
                         </div>
-                        <div class="col-md-3">
-                            <label>Fecha Vencimineto Presupuesto</label>
+                        <div class="col-lg-3 col-md-5 col-sm-12">
+                            <label>Fecha Vencimiento Presupuesto</label>
                             <div class='input-group date '>
                                 <input type="text" id="FechaVencimiento" name="FechaVencimiento" class="form-control anotherSelector" autocomplete="off" required />
                                 <span class="input-group-addon">
@@ -115,11 +88,11 @@
                             </div>
                             
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-md-3 col-sm-6">
                             <label>Nombre Presupuesto</label>
                             <input type="text" class="form-control" id="NombrePresupuesto" name="NombrePresupuesto" required />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-lg-3 col-md-3 col-sm-6">
                             <button type="submit" class="btn btn-success pull-left Guardar centrar">Guardar Cambios</button>
                         </div>
                     </div>

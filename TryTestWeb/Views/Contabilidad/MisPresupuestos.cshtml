@@ -5,8 +5,6 @@
 }
 
 @{ int Correlativo = 0;}
-<br />
-<br />
 <div class="row">
     <div class="col-sm-12">
         <div class="page-header-2">
@@ -40,13 +38,13 @@
                     <div class="card-box m-b-10">
                         <div class="table-box opport-box">
 
-                            <div class="col-md-2">
+                            <div class="col-lg-3 col-md-2 col-sm-3 col-xs-12">
                                 <div class="table-detail">
                                     <h5 class="m-t-0"><b>@ElementoPresupuesto.NombrePresupuesto</b></h5>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 m10">
                                 <div class="table-detail">
                                     <h5 class="m-t-0"><b>Fecha Inicio</b></h5>
                                     <div class="member-info">
@@ -55,7 +53,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 m10">
                                 <div class="table-detail">
                                     <h5 class="m-t-0"><b>Fecha Vencimiento</b></h5>
                                     <div class="member-info">
@@ -64,32 +62,23 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2 col-lg-2">
+                            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-6 mat10">
                                 <div class="table-detail">
-                                    <h5 class="m-t-0"><b>Estado</b></h5>
-                                    <div class="member-info">
+                                    <h5 class="m-t-0 col-lg-12 col-md-12 col-sm-12 col-xs-5"><b>Estado</b></h5>
+                                    <div class="member-info col-lg-12 col-md-12 col-sm-12 col-xs-7">
                                         <p class="text-dark m-b-0"><span class="label label-success">Activo</span></p>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <div class="col-md-1">
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 col-lg-offset-0 col-md-offset-0 col-sm-offset-10 col-xs-offset-2">
                                 <div class="table-detail">
-                                    <a id="EditButton" class="btn btn-icon waves-effect waves-light btn-primary" href="@Url.Action("ComparacionCtaPresu", "Contabilidad",  new { PresupuestoID = ElementoPresupuesto.PresupuestoModelID })" data-toggle="tooltip" data-placement="bottom" title="Ver detalle presupuesto" data-original-title="Ver detalle presupuesto"><i class="ion-eye"></i></a>
+                                    <a id="EditButton" class="btn btn-sm btn-icon waves-effect waves-light btn-primary" href="@Url.Action("ComparacionCtaPresu", "Contabilidad",  new { PresupuestoID = ElementoPresupuesto.PresupuestoModelID })" data-toggle="tooltip" data-placement="bottom" title="Ver detalle presupuesto" data-original-title="Ver detalle presupuesto"><i class="ion-eye"></i></a>
                                 </div>
                             </div>
 
-                            <div class="col-lg-1">
-                                <!--<div class="table-detail">-->
-                                @*<a href="#" id="PresupuestoID" name="PresupuestoID"
-           onclick="AdvertenciaBajaPresupuesto(@ElementoPresupuesto.PresupuestoModelID)"
-           class="btn btn-danger btn-sm redondo btnPress">
-            <span class="glyphicon glyphicon-trash"></span>
-        </a>*@
-
-                                <!--</div>-->
-
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                                 @Html.BtnBorrar("PresupuestoID", "PresupuestoID", "", "AdvertenciaBajaPresupuesto(" + @ElementoPresupuesto.PresupuestoModelID + ")", "btn-sm redondo btnPress")
                             </div>
 
@@ -119,11 +108,7 @@
     </div>
 </div>
 
-<style>
-    .Esconder{
-        display:none;
-    }
-</style>
+<link href="~/Content/css/Contabilidad/MisPresupuestos.css" rel="stylesheet" />
 
 
 <script>
