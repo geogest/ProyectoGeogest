@@ -3,41 +3,25 @@
     ViewBag.Title = "TestGroup";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<br />
-<br />
 <div class="row">
-    <div class="panel-heading">
-        <div class="col-sm-12 col-md-12">
-            @using (Html.BeginForm("getExcelEstadoCuentasCorrientes", "ContabilidadAuxiliares", FormMethod.Post))
-            {
-                <div class="col-md-2 pull-right">
-
-                    <br />
-                    <!--<button--> @*@(Model == null || Model.Count == 0 ? "disabled" : string.Empty)*@ <!--
-                    class="btn btn-success waves-effect waves-light pull-right" value="Exportar" name="Save" type="submit" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">
-                        <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>Exportar
-                    </button>-->
-                    @Html.BtnExportar("","Save")
-                    <br />
-
-                    <br />
+    <div class="col-sm-12">
+        <div class="btn-group pull-right margen">
+            <form role="form">
+                <div class="button-list col-lg-12">
+                    <div class="col-lg-6">
+                        @Html.BtnExportarPDF("ExportarPDF()")
+                    </div>
+                    <div class="col-lg-6">
+                        @using (Html.BeginForm("getExcelEstadoCuentasCorrientes", "ContabilidadAuxiliares", FormMethod.Post))
+                        {
+                            @Html.BtnExportar("", "Save")
+                        }
+                    </div>
                 </div>
-            }
-            <div class="col-md-2 pull-right">
-
-                <br />
-                @*<button class="btn btn-default" onclick="ExportarPDF()">
-                    <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>Exportar PDF
-                </button>*@
-                @Html.BtnExportarPDF("ExportarPDF()")
-                <br />
-
-                <br />
-            </div>
+            </form>
         </div>
 
-
-
+        <div class="page-header-2">
             <h2 class="page-header">Estado de Cuentas Corrientes</h2>
             <ol class="breadcrumb">
                 <li>
@@ -53,7 +37,6 @@
         </div>
     </div>
 </div>
-<br />
 
 <div class="form-group">
     <div class="row">
@@ -61,7 +44,7 @@
             @using (Html.BeginForm("EstCtasCtesConciliado", "ContabilidadAuxiliares", FormMethod.Post))
             {
                 <div class="row form-group">
-                    <div class="col-md-2">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label>Selecciona Lista</label>
                         <select class="form-control" id="TipoListaAmostrar" name="TipoListaAmostrar">
                             <option>Selecciona</option>
@@ -70,7 +53,7 @@
                             <option value="2">Lista No Conciliada</option>
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label>Cuenta Contable</label>
                         <select class="form-control" id="CuentaAuxiliar" name="CuentaAuxiliar">
                             <option>Selecciona</option>
@@ -81,29 +64,27 @@
                             }
                         </select>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label class="control-label">Año</label>
                         <input type="number" class="form-control" name="Anio" id="Anio" value="" />
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label>Todos los años?</label>
                         <input type="checkbox" class="form-control CheckB-style" name="TodosLosAnios" id="TodosLosAnios" />
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-4 col-sm-4 form-group">
                         <label class="control-label">Rut</label>
                         <input type="text" class="form-control" id="Rut" name="Rut" maxlength="10" />
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label class="control-label">Razon Social</label>
                         <input type="text" class="form-control" id="RazonSocial" name="RazonSocial" />
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         <label class="control-label">Folio</label>
                         <input class="form-control" type="number" name="Folio" id="Folio" value="" />
                     </div>
-                    <div class="col-md-2">
-                        @*<button type="submit" class="btn btn-success centrar" id="Guardar" name="Guardar">Buscar</button>*@
-
+                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                         @Html.BtnBuscar("Guardar","Guardar","centrar","")
                     </div>
                 </div>
@@ -315,29 +296,7 @@
     </div>
 </div>
 
-
-<style>
-    .centrar {
-        margin-top: 25px;
-    }
-
-    .Esconder {
-        display: none;
-    }
-
-    .CheckB-style {
-        width: 20px;
-        height: 20px;
-        margin: 0px auto;
-    }
-    .bg-green{
-        background-color:green;
-    }
-    a{
-        position: relative;
-    }
-</style>
-
+<link href="~/Content/css/ContabilidadAuxiliares/EstCtasCtesConciliado.css" rel="stylesheet" />
 <script src="~/Content/js/jspdf.debug.js"></script>
 <script src="~/Content/js/html2pdf.js"></script>
 <script src="~/Content/js/html2canvas.js"></script>

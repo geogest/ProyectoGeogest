@@ -15,7 +15,7 @@
                 <h2 class="page-header">Editar Voucher</h2>
                 <ol class="breadcrumb">
                     <li>
-                        <a href="#">Contabildad</a>
+                        <a href="#">Contabilidad</a>
                     </li>
                     <li>
                         <a href="#">-</a>
@@ -37,7 +37,7 @@ else
                 <h2 class="page-header">Agregar Voucher</h2>
                 <ol class="breadcrumb">
                     <li>
-                        <a href="#">Contabildad</a>
+                        <a href="#">Contabilidad</a>
                     </li>
                     <li>
                         <a href="#">-</a>
@@ -61,79 +61,66 @@ else
     {
         <input type="hidden" name="editFlag" value="@(((VoucherModel)ViewBag.vbVoucherModel).VoucherModelID)">
     }
-    <br />
     <div class="row">
 
-        <div class="col-lg-2">
-            <label class="control-label">Numero Voucher</label>
-            <input type="number" readonly class="form-control" name="numVoucher" id="numVoucher" value="@(ViewBag.NumVoucher)" required />
-        </div>
-
-        <div class="col-lg-2 form-group">
-            <label class="control-label">Fecha Contabilización</label>
-            @if (ViewBag.FechaEmisionEdit != null)
-            {
-                <div class='input-group date '>
-                    <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ViewBag.FechaEmisionEdit)" required />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-            }
-            else
-            {
-                <div class='input-group date '>
-                    <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ParseExtensions.ToDD_MM_AAAA(DateTime.Now))" required />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-            }
-
-
-                </div>
-
-
-                <div class="col-lg-2 form-group">
-                    <label class="control-label">Tipo de Voucher</label>
-                    <select class="form-control" name="tipo" id="tipo">
-                        @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
-                    </select>
-                </div>
-                <div class="col-md-2 form-group">
-                    <label>Tipo Origen</label>
-                    @if (ViewBag.vbVoucherModel != null)
-                    {
-                        <select class="form-control" name="TipoOrigen" id="TipoOrigen">
-                            @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
-                        </select>
-                    }
-                    else
-                    {
-                        @Html.DropDownList("TipoOrigen", (List<SelectListItem>)ViewBag.TipoOrigenVoucher, new { @class = "form-control" })
-                    }
-                </div>
-                <div class="col-lg-3 form-group">
-                    <label class="control-label">Glosa</label>
-                    <input type="text" class="form-control" name="glosa" id="glosa" value="@(ViewBag.GlosaVoucherEdit)" required />
-                </div>
-                <div class="col-lg-1  form-group">
-                    <!--<label>Duplicar Glosa</label><br/>--><br />
-                    <a class="btn btn-default" id="duplica" name="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa"><i class="fa fa-copy"></i></a>
-                    <!--<div class="checkbox">
-                <label><input type="checkbox" id="duplica" name="duplica" onchange="DuplicaGlosa(this)"> Duplicar Glosa </label>
-            </div>-->
-                </div>
-                <div class="col-lg-2  form-group"></div>
-
-
-
+            <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+                <label class="control-label">Numero Voucher</label>
+                <input type="number" readonly class="form-control" name="numVoucher" id="numVoucher" value="@(ViewBag.NumVoucher)" required />
             </div>
+
+            <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+                <label class="control-label">Fecha Contabilización</label>
+                @if (ViewBag.FechaEmisionEdit != null)
+                {
+             <div class='input-group date '>
+                 <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ViewBag.FechaEmisionEdit)" required />
+                 <span class="input-group-addon">
+                     <span class="glyphicon glyphicon-calendar"></span>
+                 </span>
+             </div>
+             }
+             else
+             {
+                 <div class='input-group date '>
+                     <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ParseExtensions.ToDD_MM_AAAA(DateTime.Now))" required />
+                     <span class="input-group-addon">
+                         <span class="glyphicon glyphicon-calendar"></span>
+                     </span>
+                 </div>
+             }
+         </div>
+         <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+             <label class="control-label">Tipo de Voucher</label>
+             <select class="form-control" name="tipo" id="tipo">
+                 @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
+             </select>
+         </div>
+         <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+             <label>Tipo Origen</label>
+           @if (ViewBag.vbVoucherModel != null)
+           {
+               <select class="form-control" name="TipoOrigen" id="TipoOrigen">
+                   @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
+               </select>
+           }
+           else
+           {
+               @Html.DropDownList("TipoOrigen", (List<SelectListItem>)ViewBag.TipoOrigenVoucher, new { @class = "form-control" })
+           }
+         </div>
+         <div class="col-lg-3 col-md-3 col-sm-5 form-group">
+             <label class="control-label">Glosa</label>
+             <input type="text" class="form-control" name="glosa" id="glosa" value="@(ViewBag.GlosaVoucherEdit)" required />
+         </div>
+         <div class="col-lg-1 col-md-1 col-sm-1 form-group mtop">
+             <a class="btn btn-default" id="duplica" name="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa"><i class="fa fa-copy"></i></a>
+         </div>
+    </div>
     <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-8 col-md-8 col-sm-7">
                         Items de Voucher
                     </div>
                         
@@ -145,7 +132,7 @@ else
                                 @Html.Raw(ViewBag.HtmlStr)
                             </select>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-lg-4 col-md-4 col-sm-5">
                             <a id="btn_agregar_fila" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
                         </div> 
 
@@ -156,14 +143,10 @@ else
                             <a id="btn_agregar_fila" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
                         </div> 
                     }
-
-
-
-
                 </div>
             </div>
-            <div class="panel-body" id="detalle">
-                <table id="tablaWord" width="100%" class="table table-responsive">
+            <div class="panel-body table-responsive" id="detalle">
+                <table id="tablaWord" width="100%" class="table">
                     <thead>
                         <tr>
                             <th></th>
@@ -223,35 +206,6 @@ else
                                     </select>
                                   
                                 </td> 
-
-                                @*<td class="form-group" style="display:none;">
-
-                                    <select data-seleccion="@detalleImportacion[6]" class="form-control custom-select" id="idItem_@i" name="idItem">
-
-                                        <option value="-1"> Seleccionar </option>
-                                        @foreach (var item in ViewBag.items)
-                                        {
-
-                                            if (ParseExtensions.ParseInt(detalleImportacion[6]) == item.ItemModelID)
-                                            {
-                                                <option selected value="@item.ItemModelID"> @item.NombreItem</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@item.ItemModelID"> @item.NombreItem</option>
-                                            }
-
-
-                                        }
-                                    </select>*@
-
-
-
-                                @*</td>*@
-
-                                
-
-                           
                                 <td class="form-group">
                                     <input type="number" class="form-control" name="debe" id="debe" onchange="Totales()" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" value="@detalleImportacion[3]" required />
                                  
@@ -303,29 +257,6 @@ else
                                
 
                             </td>
-
-                            @*<td class="form-group">
-                                
-                                <select  class="form-control custom-select" id="idItem" name="idItem">
-
-                                    <option value="-1"> Seleccionar </option>
-                                    @foreach (var item in ViewBag.items)
-                                    {   
-                                        <option value="@item.ItemModelID"  > @item.NombreItem</option>
-
-                                      
-
-                                    }
-                                </select>
-
-
-
-                            </td>*@
-                            
-                         
-
-
-                            
                             <td class="form-group">
                                 <input type="number" class="form-control" name="debe" id="debe" onchange="Totales()" min="0" value="0" onfocus="EliminarCero(this)" onfocusout="SinVacios(this)" required />
                             </td>
@@ -338,33 +269,26 @@ else
                         </tr>
                     }
                 </table>
-                @*<input class="btn-info btn pull-right" onclick="removeLastRow()" value="Borrar Ultima Linea" type="button">*@
             </div>
             <div class="panel-footer text-center">
-                <div class="row ">
-                    <div class="col-lg-8 form-group">
-
-                    </div>
-                    <div class="col-lg-2 form-group ">
+                <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 col-lg-offset-8 col-md-offset-8 col-sm-offset-7 form-group">
                         <span><strong>TOTAL DEBE</strong></span>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6 form-group">
                         <span><strong>TOTAL HABER</strong></span>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-8 form-group">
-
-                    </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 col-lg-offset-8 col-md-offset-8 col-sm-offset-7 form-group ">
                         <span>$<span id="TotDebe"></span></span>
                     </div>
-                    <div class="col-lg-2 form-group">
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6 form-group">
                         <span>$<span id="TotHaber"></span></span>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-5 form-group pull-right">
+                    <div class="col-lg-5 col-md-5 col-sm-5 col-lg-offset-7 col-md-offset-7 col-sm-offset-7 form-group">
                         <div id="aviso"></div>
                     </div>
                 </div>
@@ -459,29 +383,12 @@ if (ViewBag.vbVoucherModel != null)
         <button id="submitButton" type="submit"  class="btn btn-primary pull-right redondo btnPress">Guardar Voucher</button>
     </div>
     <br />
-
-   @*<a href="@Session["Url"]"> <input type="button"  class="btn btn-primary pull-right" value="Seguir Editando" /></a>*@
-   
-
     }
 
 
 }
 
-
-<style>
-    .modal-xlg{
-        width:70%;
-    }
-    #cuentaCont{
-        width:220px;
-    }
-    #cuentaCont2{
-        width:220px !important;
-    }
-
-</style>
-
+<link href="~/Content/css/Contabilidad/IngresoVoucher.css" rel="stylesheet" />
 <link href="~/Content/css/Contabilidad/select2.min.css" rel="stylesheet" />
 <script src="~/Content/js/Contabilidad/select2.min.js"></script>
 <script>

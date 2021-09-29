@@ -1,0 +1,32 @@
+﻿html {
+    font-size:100%;/*16px*/
+}
+.centrar {
+    margin-top: 25px;
+}
+
+.Esconder {
+    display: none;
+}
+
+.CheckB-style {
+    width: 20px;
+    height: 20px;
+    margin: 0px auto;
+}
+
+.bg-green {
+    background-color: green;
+}
+
+a {
+    position: relative;
+}
+.margen {
+    margin-top: 1.9rem;
+}
+@media (max-width: 425px) {
+    .margen {
+        margin-top: 3.3rem;
+    }
+}

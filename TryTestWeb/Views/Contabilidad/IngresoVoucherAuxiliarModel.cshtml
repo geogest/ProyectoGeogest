@@ -20,9 +20,8 @@
 
             <div class="row">
                 <div class="form-group">
-                    <div class="col-lg-3"></div>
-                    <label class="col-lg-2 control-label">Cuenta Contable</label>
-                    <div class="col-lg-4">
+                    <label class="col-lg-2 col-md-3 col-sm-4 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 control-label">Cuenta Contable</label>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
                         <select id="AUXcuenta" name="AUXcuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" readonly>
                             @Html.Raw(ViewBag.HtmlStr)
                         </select>
@@ -31,18 +30,16 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <div class="col-lg-3"></div>
-                    <label class="col-lg-2 control-label">Número Línea</label>
-                    <div class="col-lg-4">
+                    <label class="col-lg-2 col-md-3 col-sm-4 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 control-label">Número Línea</label>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
                         <input type="number" id="AUXitem" name="AUXitem" class="form-control" value="@ViewBag.AUXlineaDetalle" readonly />
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <div class="col-lg-3"></div>
-                    <label class="col-lg-2 control-label">Valor Línea</label>
-                    <div class="col-lg-4">
+                    <label class="col-lg-2 col-md-3 col-sm-4 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 control-label">Valor Línea</label>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
                         <input type="number" id="AUXvaloritem" name="AUXvaloritem" class="form-control" value="@ParseExtensions.DecimalToStringForRazor(ViewBag.AUXmontoTotal)" readonly />
                     </div>
                 </div>
@@ -53,11 +50,11 @@
                 {
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="col-md-2">
+                        <div class="col-lg-2 col-md-2">
                             <label class="control-label">Fecha</label>
                             <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text"  value="" required/>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-lg-3 col-md-2">
                             <label class="control-label" >Tipo</label>
                             <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()" required>
                                 <option value="">Selecciona</option>
@@ -67,20 +64,19 @@
                                 <option value="H">Honorarios</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-lg-3 col-md-3">
                             <label class="control-label" >Razon Social</label>
                             <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()" required>
                             </select>
                         </div>
-                       <div class="col-md-2">
+                       <div class="col-lg-2 col-md-2">
                            <label class="control-label" >Rut</label>
                            <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly/>
                        </div>
 
                         @if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
-                        <div class="col-md-3 text-center">
+                        <div class="col-lg-2 col-md-3 text-center">
                             <label>¿Es una Boleta?</label>
-                            <br />
                             <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" onclick="EsBoletaDeVenta();" value="" />
                         </div>
                         }
@@ -92,12 +88,12 @@
                 <div class="row">
                     <div class="col-md-12">
                         @if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
-                            <div class="col-md-4 Esconder text-center" id="CajaContaCompra">
+                            <div class="col-lg-4 col-md-5 col-sm-12 text-center" id="CajaContaCompra">
                                 <label>¿Se Contabiliza en el libro de compras?</label>
                                 <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
                             </div>
 
-                            <div class="col-md-4 Esconder text-center" id="CajaContaVenta">
+                            <div class="col-lg-4 col-md-5 col-sm-12 text-center" id="CajaContaVenta">
                                 <label>¿Se Contabiliza en el libro de ventas?</label>
                                 <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" value="Venta" />
                             </div>  
@@ -122,11 +118,11 @@
                         }
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="col-md-2">
+                                <div class="col-lg-2 col-md-2 col-sm-6">
                                     <label class="control-label">Fecha</label>
                                     <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="@ParseExtensions.ToDD_MM_AAAA(lineaDetalleAux.Fecha)" required />
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-lg-3 col-md-2 col-sm-6">
                                     @{
                                         int eleccionTipo = 0;
                                         if (lineaDetalleAux.Individuo2.tipoReceptor == "CL")
@@ -155,7 +151,7 @@
                                         <option @(eleccionTipo == 4 ? "selected" : string.Empty) value="H">Honorarios</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-lg-3 col-md-3 col-sm-6">
                                     <label class="control-label">Razon Social</label>
                                     <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()"  required>
                                         <option value="@lineaDetalleAux.Individuo2.QuickReceptorModelID">@lineaDetalleAux.Individuo2.RazonSocial</option>
@@ -163,21 +159,21 @@
 
 
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-lg-2 col-md-2 col-sm-6">
                                     <label class="control-label">Rut</label>
                                     <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="@lineaDetalleAux.Individuo2.RUT" required readonly />
                                 </div>
 
 
                                 @if(lineaDetalleAux.FolioHasta > 0 && ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
-                                <div class="col-md-3 text-center">
+                                <div class="col-lg-2 col-md-3 col-sm-6 text-center">
                                     <label >¿Es una Boleta?</label>
                                     <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" onclick="EsBoletaDeVenta();" checked value="" />
                                 </div>
                                 }
                                 else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
                                 {
-                                    <div class="col-md-3 text-center">
+                                    <div class="col-lg-2 col-md-3 col-sm-6 text-center">
                                         <label>¿Es una Boleta?</label>
                                         <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" onclick="EsBoletaDeVenta();" value="" />
                                     </div>
@@ -225,284 +221,289 @@
                                         </div>
                                         }
                 <div class="row">
-                    <div class="col-md-11"></div>
-
-                    <div class="col-md-1">
+                    <div class="col-lg-1 col-lg-offset-11">
                         <a id="btn_agregar_fila_detalle" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
                     </div>
 
                 </div>
            <br />
            <br />
-                <div></div>
-                    <table width="75%" class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th id="Duplicar" class="Esconder">Duplicar</th>
-                                <th id="LabelFolioDesde" class="Esconder">Folio Desde</th>
-                                <th id="LabelFolio">Folio</th>
-                                <th id="LabelFolioHasta" class="Esconder">Folio Hasta</th>
-                                @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
-                                {
-                                    <th>Valor Bruto</th>
-                                    <th>Tipo Retención</th>
-                                    <th>Retención</th>
-                                    <th>Valor Líquido</th>
-                                    <th></th>
-                                }
-                                else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
-                                {
-                                    <th>Tipo DTE</th>
-                                    <th>Monto Neto</th>
-                                    <th>Monto Exento</th>
-                                    <th>Monto IVA</th>
-                                    <th>Monto Total</th>
-                                }
-                                else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
-                                {
-                                    <th>Sueldo Líquido</th>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model == null)
-                            {
+           <div class="table-responsive">
+               <table width="75%" class="table">
+                   <thead>
+                       <tr>
+                           <th id="Duplicar" class="Esconder">Duplicar</th>
+                           <th id="LabelFolioDesde" class="Esconder">Folio Desde</th>
+                           <th id="LabelFolio">Folio</th>
+                           <th id="LabelFolioHasta" class="Esconder">Folio Hasta</th>
+                           @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                           {
+                               <th>Valor Bruto</th>
+                               <th>Tipo Retención</th>
+                               <th>Retención</th>
+                               <th>Valor Líquido</th>
+                               <th></th>
+                           }
+                           else if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                           {
+                               <th>Tipo DTE</th>
+                               <th>Monto Neto</th>
+                               <th>Monto Exento</th>
+                               <th>Monto IVA</th>
+                               <th>Monto Total</th>
+                           }
+                           else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                           {
+                               <th>Sueldo Líquido</th>
+                           }
+                       </tr>
+                   </thead>
+                   <tbody>
+                       @if (Model == null)
+                       {
 
-                                <tr id="detalleAux">
-                                    <td class="form-group" width="11%" style="display:none;">
-                                        <input type="text" class="form-control " pull id="AUXfecha" name="AUXfecha" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                    </td>
-                                    <td style="display:none;">
-                                        <input class="form-control" type="text" name="tipoIndividuo" id="tipoIndividuo" value="" />
-                                    </td>
-                                    <td class="form-group" width="12%" style="display:none;">
-                                        <input type="text" class="form-control" id="AUXrut" onblur="CSGetPrestadorAuxiliar(this);" name="AUXrut" data-valRut="foo" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                    </td>
+                           <tr id="detalleAux">
+                               <td class="form-group" width="11%" style="display:none;">
+                                   <input type="text" class="form-control " pull id="AUXfecha" name="AUXfecha" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                               </td>
+                               <td style="display:none;">
+                                   <input class="form-control" type="text" name="tipoIndividuo" id="tipoIndividuo" value="" />
+                               </td>
+                               <td class="form-group" width="12%" style="display:none;">
+                                   <input type="text" class="form-control" id="AUXrut" onblur="CSGetPrestadorAuxiliar(this);" name="AUXrut" data-valRut="foo" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                               </td>
 
-                                    <td class="form-group" width="15%" style="display:none;">
-                                        <input class="form-control" type="text" id="AUXrazoncta" name="AUXrazoncta" value="" />
-                                    </td>
-                                    @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
-                                    {
-                                        <td class="form-group Esconder" name="tdDuplicaFolio">
-                                            <a href="#" class="btn btn-default" id="BotonDuplicaFolio" name="DuplicarFolio" onclick="DuplicaFolioDesdeYHasta();"><i class="fa fa-copy"></i></a>
-                                        </td>
-                                    }
+                               <td class="form-group" width="15%" style="display:none;">
+                                   <input class="form-control" type="text" id="AUXrazoncta" name="AUXrazoncta" value="" />
+                               </td>
+                               @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                               {
+                                   <td class="form-group Esconder" name="tdDuplicaFolio">
+                                       <a href="#" class="btn btn-default" id="BotonDuplicaFolio" name="DuplicarFolio" onclick="DuplicaFolioDesdeYHasta();"><i class="fa fa-copy"></i></a>
+                                   </td>
+                               }
 
-                                    @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
-                                    {
-                                        <td class="form-group">
-                                            <input type="number" class="form-control" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                    }
+                               @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                               {
+                                   <td class="form-group">
+                                       <input type="number" class="form-control" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                               }
 
-                                    @if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) { 
-                                    
-                                    <td class="form-group Esconder" name="tdFolioHasta">
-                                        <input type="number" name="FolioHasta" id="FolioHasta" class="form-control" value="" />
-                                    </td>
-                                    }
-                                    else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
-                                    {
-                                        <td class="form-group">
-                                            <input type="number" class="form-control Remuneracion" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                    }
+                               @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                               {
 
-                                    @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
-                                    {
+                                   <td class="form-group Esconder" name="tdFolioHasta">
+                                       <input type="number" name="FolioHasta" id="FolioHasta" class="form-control" value="" />
+                                   </td>
+                               }
+                               else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                               {
+                                   <td class="form-group">
+                                       <input type="number" class="form-control Remuneracion" min="1" step="1" id="AuxFolio" name="AuxFolio" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                               }
 
-                                        <td class="form-group">
-                                            <input type="number" class="form-control" name="AuxTotal" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                        <td class="form-group">
-                                            <select class="form-control" id="AUXtipoRetencion" name="AUXtipoRetencion" onclick="CuadrarValores(this)">
-                                                <option value="Selecciona">Selecciona</option>
-                                                <option value="Ret10">Retención 10%</option>
-                                                <option value="Ret1075">Retención 10.75%</option>
-                                                <option value="Ret1150">Retención 11.5%</option>
-                                                <option value="Ret20">Retención 20%</option>
-                                                <option value="RetNo">Sin Retención</option>
-                                            </select>
-                                        </td>
-                                        <td class="form-group">
-                                            <input readonly type="number" class="form-control" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty)  />
-                                        </td>
-                                        <td class="form-group">
-                                            <input readonly type="number" class="form-control" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty)  />
-                                        </td>
-                                    }
-                                    else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
-                                    {
-                                        <td class="form-group">
-                                            <select id="AuxTipoDTE" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
-                                                @Html.Raw(ViewBag.TiposDTE)
-                                            </select>
-                                        </td>
+                               @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                               {
 
-                                        <td class="form-group">
-                                            <input type="number" class="form-control" id="AUXNeto" name="AUXNeto" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                        <td class="form-group">
-                                            <input type="number" class="form-control" id="AUXExento" name="AUXExento" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                        <td class="form-group">
-                                            <input type="number" class="form-control" id="AUXIva" name="AUXIva" onfocusout="CuadrarIVAExplicito(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                        <td class="form-group">
-                                            <input type="number" class="form-control" id="AuxTotal" name="AuxTotal" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                    }else if(ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
-                                    {
-                                        <td class="form-group Remuneracion">
-                                            <input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal" required onfocusout="CuadrarValores(this)" value="" />
-                                        </td>
-                                    }
-                                    <td class="form-group">
-                                        <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux1)" tabstop="false">X</button>
-                                    </td>
-                                </tr>
+                                   <td class="form-group">
+                                       <input type="number" class="form-control" name="AuxTotal" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                                   <td class="form-group">
+                                       <select class="form-control" id="AUXtipoRetencion" name="AUXtipoRetencion" onclick="CuadrarValores(this)">
+                                           <option value="Selecciona">Selecciona</option>
+                                           <option value="Ret10">Retención 10%</option>
+                                           <option value="Ret1075">Retención 10.75%</option>
+                                           <option value="Ret1150">Retención 11.5%</option>
+                                           <option value="Ret20">Retención 20%</option>
+                                           <option value="RetNo">Sin Retención</option>
+                                       </select>
+                                   </td>
+                                   <td class="form-group">
+                                       <input readonly type="number" class="form-control" name="AUXValorRetencion" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                                   <td class="form-group">
+                                       <input readonly type="number" class="form-control" name="AUXValorLiquido" required onfocusout="CuadrarLiquido(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                               }
+                               else if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                               {
+                                   <td class="form-group">
+                                       <select id="AuxTipoDTE" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
+                                           @Html.Raw(ViewBag.TiposDTE)
+                                       </select>
+                                   </td>
 
-                                        }
-                                        else
-                                        {
-                                            contadorDatePicker = 1;
-                                    int contadorEncuentraFolioHasta = 0;
-                                    foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares)
-                                    {
+                                   <td class="form-group">
+                                       <input type="number" class="form-control" id="AUXNeto" name="AUXNeto" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                                   <td class="form-group">
+                                       <input type="number" class="form-control" id="AUXExento" name="AUXExento" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                                   <td class="form-group">
+                                       <input type="number" class="form-control" id="AUXIva" name="AUXIva" onfocusout="CuadrarIVAExplicito(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                                   <td class="form-group">
+                                       <input type="number" class="form-control" id="AuxTotal" name="AuxTotal" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                               }
+                               else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                               {
+                                   <td class="form-group Remuneracion">
+                                       <input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal" required onfocusout="CuadrarValores(this)" value="" />
+                                   </td>
+                               }
+                               <td class="form-group">
+                                   <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux1)" tabstop="false">X</button>
+                               </td>
+                           </tr>
 
-                                    <tr id="@Html.Raw("detalleAux" + pocketCounter)" >
-                                        <td class="form-group" width="11%" style="display:none;">
-                                            <input type="text" class="form-control " id="AUXfecha@(ViewBag.AUXlineaDetalle)_@(contadorDatePicker)" name="AUXfecha" value="@ParseExtensions.ToDD_MM_AAAA(lineaDetalleAux.Fecha)" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
+                       }
+                       else
+                       {
+                           contadorDatePicker = 1;
+                           int contadorEncuentraFolioHasta = 0;
+                           foreach (var lineaDetalleAux in Model.ListaDetalleAuxiliares)
+                           {
 
-                                        <td style="display:none;">
-                                            <input class="form-control" type="text" name="tipoIndividuo" id="tipoIndividuo" value="@lineaDetalleAux.Individuo2.tipoReceptor" />
-                                        </td>
-                                   
+                               <tr id="@Html.Raw("detalleAux" + pocketCounter)">
+                                   <td class="form-group" width="11%" style="display:none;">
+                                       <input type="text" class="form-control " id="AUXfecha@(ViewBag.AUXlineaDetalle)_@(contadorDatePicker)" name="AUXfecha" value="@ParseExtensions.ToDD_MM_AAAA(lineaDetalleAux.Fecha)" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
 
-                                        <td class="form-group" width="12%" style="display:none;">
-                                            <input type="text" class="form-control  hasDatepicker valid" id="AUXrut@(contadorDatePicker)" name="AUXrut" onblur="CSGetPrestadorAuxiliar(this);" data-valRut="foo" value="@lineaDetalleAux.Individuo2.RUT" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                        <td class="form-group" width="15%" style="display:none;">
-                                            <input type="text" class="form-control" id="AUXrazoncta@(contadorDatePicker)" name="AUXrazoncta" value="@lineaDetalleAux.Individuo2.RazonSocial" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
-                                        @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
-                                        {
-                                            if(lineaDetalleAux.FolioHasta > 0) {    
-                                                contadorEncuentraFolioHasta++;
-                                                if(contadorEncuentraFolioHasta == 1) {
-                                                        <td class="form-group" name="tdDuplicaFolio">
-                                                        <a href="#" class="btn btn-default" id="BotonDuplicaFolio" name="DuplicarFolio" onclick="DuplicaFolioDesdeYHastaEdit();"><i class="fa fa-copy"></i></a>
-                                                    </td>
-                                                }
-                                                else
-                                                {
-                                                    <td class="form-group" name="tdDuplicaFolio"></td>
-                                                }
-                                            }
+                                   <td style="display:none;">
+                                       <input class="form-control" type="text" name="tipoIndividuo" id="tipoIndividuo" value="@lineaDetalleAux.Individuo2.tipoReceptor" />
+                                   </td>
 
-                                        }
-                                        @if(ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor) {
-                                        <td class="form-group">
-                                            <input type="number" class="form-control" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                        </td>
 
-                                            if(lineaDetalleAux.FolioHasta > 0) { 
-                                                <td class="form-group" name="tdFolioHasta">
-                                                    <input type="number" class="form-control" id="FolioHasta" name="FolioHasta" value="@lineaDetalleAux.FolioHasta" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty)/>
-                                                </td>
-                                            }
-                                        }
+                                   <td class="form-group" width="12%" style="display:none;">
+                                       <input type="text" class="form-control  hasDatepicker valid" id="AUXrut@(contadorDatePicker)" name="AUXrut" onblur="CSGetPrestadorAuxiliar(this);" data-valRut="foo" value="@lineaDetalleAux.Individuo2.RUT" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                                   <td class="form-group" width="15%" style="display:none;">
+                                       <input type="text" class="form-control" id="AUXrazoncta@(contadorDatePicker)" name="AUXrazoncta" value="@lineaDetalleAux.Individuo2.RazonSocial" required @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                   </td>
+                                   @if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                   {
+                                       if (lineaDetalleAux.FolioHasta > 0)
+                                       {
+                                           contadorEncuentraFolioHasta++;
+                                           if (contadorEncuentraFolioHasta == 1)
+                                           {
+                                               <td class="form-group" name="tdDuplicaFolio">
+                                                   <a href="#" class="btn btn-default" id="BotonDuplicaFolio" name="DuplicarFolio" onclick="DuplicaFolioDesdeYHastaEdit();"><i class="fa fa-copy"></i></a>
+                                               </td>
+                                           }
+                                           else
+                                           {
+                                               <td class="form-group" name="tdDuplicaFolio"></td>
+                                           }
+                                       }
 
-                                        @if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
-                                          {
-                                            <td class="form-group">
-                                                <input type="number" class="form-control Remuneracion" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                            </td>
-                                        }
-                                        @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
-                                          {
+                                   }
+                                   @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios || ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                   {
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                       </td>
 
-                                            <td class="form-group">
-                                                <input type="number" class="form-control" id="AuxTotal@(contadorDatePicker)" name="AuxTotal" required value="@lineaDetalleAux.MontoBrutoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                            </td>
+                                       if (lineaDetalleAux.FolioHasta > 0)
+                                       {
+                                           <td class="form-group" name="tdFolioHasta">
+                                               <input type="number" class="form-control" id="FolioHasta" name="FolioHasta" value="@lineaDetalleAux.FolioHasta" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                           </td>
+                                       }
+                                   }
 
-                                            <td class="form-group">
-                                                <select class="form-control" id="AUXtipoRetencion@(contadorDatePicker)" name="AUXtipoRetencion" onclick="CuadrarValores(this)">
-                                                    <option value="Selecciona">Selecciona</option>
-                                                    <option value="Ret10">Retención 10%</option>
-                                                    <option value="Ret1075">Retención 10.75%</option>
-                                                    <option value="Ret1150">Retención 11.5%</option>
-                                                    <option value="Ret20">Retención 20%</option>
-                                                    <option value="RetNo">Sin Retención</option>
-                                                    
-                                                </select>
-                                            </td>
+                                   @if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                   {
+                                       <td class="form-group">
+                                           <input type="number" class="form-control Remuneracion" min="1" step="1" id="AuxFolio@(contadorDatePicker)" name="AuxFolio" required value="@lineaDetalleAux.Folio" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                       </td>
+                                   }
+                                   @if (ElTipoDeAuxiliar == TipoAuxiliar.Honorarios)
+                                   {
 
-                                            <td class="form-group">
-                                                <input type="number" class="form-control" id="AUXValorRetencion@(contadorDatePicker)" name="AUXValorRetencion" value="@lineaDetalleAux.ValorRetencion"  @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
-                                            </td>
-                                            <td class="form-group">
-                                                <input type="number" class="form-control" id="AUXValorLiquido@(contadorDatePicker)" name="AUXValorLiquido" required value="@lineaDetalleAux.ValorLiquido"  @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
-                                            </td>
-                                        }
-                                        else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
-                                        {
-                                            <td class="form-group">
-                                                <select id="AuxTipoDTE@(contadorDatePicker)" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
-                                                    @if (ViewBag.NOTOPERABLE == null)
-                            {
-                                @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsString((int)lineaDetalleAux.TipoDocumento))
-                                                    }
-                                                    else
-                                                    {
-                                                        @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsStringSpecific((int)lineaDetalleAux.TipoDocumento))
-                                                    }
-                                                </select>
-                                            </td>
-                                            <td class="form-group">
-                                                <input type="number" class="form-control" id="AUXNeto@(contadorDatePicker)" name="AUXNeto" value="@lineaDetalleAux.MontoNetoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                            </td>
-                                            <td class="form-group">
-                                                <input type="number" class="form-control" id="AUXExento@(contadorDatePicker)" name="AUXExento" value="@lineaDetalleAux.MontoExentoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                            </td>
-                                            <td class="form-group">
-                                                <input type="number" class="form-control" id="AUXIva@(contadorDatePicker)" name="AUXIva" value="@lineaDetalleAux.MontoIVALinea" onfocusout="CuadrarIVAExplicito(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                            </td>
-                                            <td class="form-group">
-                                                <input type="number" class="form-control" id="AUXTotal@(contadorDatePicker)" name="AuxTotal" value="@lineaDetalleAux.MontoTotalLinea" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
-                                            </td>
-                                        }
-                                        else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
-                                        {
-                                            <td class="form-group Remuneracion">
-                                                <input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal" required onfocusout="CuadrarValores(this)" value="@lineaDetalleAux.MontoTotalLinea" />
-                                            </td>
-                                        }
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" id="AuxTotal@(contadorDatePicker)" name="AuxTotal" required value="@lineaDetalleAux.MontoBrutoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                       </td>
 
-                                        @if (ViewBag.NOTOPERABLE == null)
-                            {
-                                            <td class="form-group">
-                                                <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux@(contadorDatePicker))" tabstop="false">X</button>
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td class="form-group"></td>
-                                        }
-                                    </tr>
+                                       <td class="form-group">
+                                           <select class="form-control" id="AUXtipoRetencion@(contadorDatePicker)" name="AUXtipoRetencion" onclick="CuadrarValores(this)">
+                                               <option value="Selecciona">Selecciona</option>
+                                               <option value="Ret10">Retención 10%</option>
+                                               <option value="Ret1075">Retención 10.75%</option>
+                                               <option value="Ret1150">Retención 11.5%</option>
+                                               <option value="Ret20">Retención 20%</option>
+                                               <option value="RetNo">Sin Retención</option>
 
-                                    <script type="text/javascript">
+                                           </select>
+                                       </td>
+
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" id="AUXValorRetencion@(contadorDatePicker)" name="AUXValorRetencion" value="@lineaDetalleAux.ValorRetencion" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
+                                       </td>
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" id="AUXValorLiquido@(contadorDatePicker)" name="AUXValorLiquido" required value="@lineaDetalleAux.ValorLiquido" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) readonly />
+                                       </td>
+                                   }
+                                   else if (ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
+                                   {
+                                       <td class="form-group">
+                                           <select id="AuxTipoDTE@(contadorDatePicker)" name="AuxTipoDTE" class="selectpicker show-tick form-control" data-width="110px" data-live-search="true" data-size="10" title="Ninguno" required>
+                                               @if (ViewBag.NOTOPERABLE == null)
+                                               {
+                                                   @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsString((int)lineaDetalleAux.TipoDocumento))
+                                               }
+                                               else
+                                               {
+                                                   @Html.Raw(ParseExtensions.ObtenerTipoDTEDropdownAsStringSpecific((int)lineaDetalleAux.TipoDocumento))
+                                               }
+                                           </select>
+                                       </td>
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" id="AUXNeto@(contadorDatePicker)" name="AUXNeto" value="@lineaDetalleAux.MontoNetoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                       </td>
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" id="AUXExento@(contadorDatePicker)" name="AUXExento" value="@lineaDetalleAux.MontoExentoLinea" onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                       </td>
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" id="AUXIva@(contadorDatePicker)" name="AUXIva" value="@lineaDetalleAux.MontoIVALinea" onfocusout="CuadrarIVAExplicito(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                       </td>
+                                       <td class="form-group">
+                                           <input type="number" class="form-control" id="AUXTotal@(contadorDatePicker)" name="AuxTotal" value="@lineaDetalleAux.MontoTotalLinea" required onfocusout="CuadrarValores(this)" @(ViewBag.NOTOPERABLE != null ? "readonly" : string.Empty) />
+                                       </td>
+                                   }
+                                   else if (ElTipoDeAuxiliar == TipoAuxiliar.Remuneracion)
+                                   {
+                                       <td class="form-group Remuneracion">
+                                           <input class="form-control Remuneracion" type="number" name="AuxTotal" id="AuxTotal" required onfocusout="CuadrarValores(this)" value="@lineaDetalleAux.MontoTotalLinea" />
+                                       </td>
+                                   }
+
+                                   @if (ViewBag.NOTOPERABLE == null)
+                                   {
+                                       <td class="form-group">
+                                           <button type="button" class="btn btn-danger btn-sm redondo btnPress" tabindex="-1" onclick="removeRow(detalleAux@(contadorDatePicker))" tabstop="false">X</button>
+                                       </td>
+                                   }
+                                   else
+                                   {
+                                       <td class="form-group"></td>
+                                   }
+                               </tr>
+
+                               <script type="text/javascript">
                                         $("#AUXfech@(ViewBag.AUXlineaDetalle)_@(contadorDatePicker)").datepicker();
-                                    </script>
+                               </script>
 
-                                                        pocketCounter++;
-                                                        contadorDatePicker++;
-                                                    }
-                                                }
-                        </tbody>
-                    </table>
+                               pocketCounter++;
+                               contadorDatePicker++;
+                           }
+                       }
+                   </tbody>
+               </table>
+           </div>
                 </div>
                 </div>
   
