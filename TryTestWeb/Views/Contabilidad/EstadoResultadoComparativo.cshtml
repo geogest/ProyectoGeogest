@@ -40,7 +40,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="row">
-                <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-6">
+                <div class="form-group col-lg-2 col-md-3 col-sm-4 col-xs-6">
                     <button id="FiltrosPorMes" class="btn btn-primary">Analizar por Mes</button>
                 </div>
                 <div class="form-group col-lg-2 col-md-3 col-sm-3 col-xs-6">
@@ -61,15 +61,15 @@
                                 <p>Rango de años permitido de (2010 a 2030)</p>
                             </div>
                             <div class="row m-t-10">
-                                <div class="col-md-4">
+                                <div class="col-lg-3 col-md-3">
                                     <label>Año</label>
                                     <input type="number" name="Anio" id="Anio" value="" class="form-control" required />
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-3 col-md-3">
                                     <label>Selecciona</label>
                                     @Html.DropDownList("Meses", (List<SelectListItem>)ViewBag.Meses, new { @class = "form-control selectpicker show-tick" })
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-6 col-md-6">
                                     <label>Centro de Costo<span>(Opcional)</span></label>
                                     <select class="form-control" id="CCID" name="CCID">
                                         <option>Selecciona</option>
@@ -106,15 +106,15 @@
                             </div>
 
                             <div class="row m-t-10">
-                                <div class="col-md-4">
+                                <div class="col-lg-3 col-md-3">
                                     <label>Desde Año:</label>
                                     <input type="number" name="AnioDesde" id="AnioDesde" value="" class="form-control" required />
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-3 col-md-3">
                                     <label>Hasta Año:</label>
                                     <input type="number" name="AnioHasta" id="AnioHasta" value="" class="form-control" required />
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-6 col-md-6">
                                     <label>Centro de Costo<span>(Opcional)</span></label>
                                     <select class="form-control" id="CentroDeCostoID" name="CentroDeCostoID">
                                         <option>Selecciona</option>
