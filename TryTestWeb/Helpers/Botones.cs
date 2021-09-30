@@ -47,11 +47,21 @@ namespace TryTestWeb.Helpers
         {
 
             string html;
-
-            html = "<button class = 'btn btn-primary waves-effect waves-light " + clase +
-                "' id = '" + Id + "' name = '" + name + "' onclick = '" + onclick +
-                "' type = 'submit'><span class='btn-label'><i class='glyphicon glyphicon-floppy-disk'>" +
+            if (onclick == "")
+            {
+                html = "<button class = 'btn btn-primary waves-effect waves-light " + clase +
+                "' id = '" + Id + "' name = '" + name + "' type = 'submit'><span class='btn-label'>" +
+                "<i class='glyphicon glyphicon-floppy-disk'>" +
                 "</i></span>Guardar</button>";
+            }
+            else {
+                html = "<button class = 'btn btn-primary waves-effect waves-light " + clase +
+                    "' id = '" + Id + "' name = '" + name + "' onclick = '" + onclick +
+                    "' type = 'submit'><span class='btn-label'><i class='glyphicon glyphicon-floppy-disk'>" +
+                    "</i></span>Guardar</button>";
+            }
+
+            
 
             return new MvcHtmlString(html);
         }
