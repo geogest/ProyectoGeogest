@@ -15,6 +15,7 @@ using ClosedXML.Excel;
 using System.Web.Routing;
 using System.Data.Entity;
 using TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas;
+using TryTestWeb.Models.ModelosSistemaContable.Common;
 
 namespace TryTestWeb.Controllers
 {
@@ -68,6 +69,8 @@ namespace TryTestWeb.Controllers
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
             ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            NovedadesModel.AgregaUpdateTransversal(clienteSeleccionado, db);
 
             var TotalesPorMes = ParseExtensions.TotalesGananciasYPerdidasDelMes(db, clienteSeleccionado);
  
@@ -1197,7 +1200,7 @@ namespace TryTestWeb.Controllers
                 }
 
                 Tuple<List<CentroCostoModel>, List<string[]>> tupleReturno = new Tuple<List<CentroCostoModel>, List<string[]>>(lstCentroCosto, lstDatosImportacionPrevia);
-                ViewBag.NumVoucher = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
+                ViewBag.NumVoucher = ParseExtensions.GetNumVoucher(objCliente, db, DateTime.Now.Month, DateTime.Now.Year);
                 return View(tupleReturno);
             }
             else
@@ -1626,7 +1629,22 @@ namespace TryTestWeb.Controllers
             return Json(Result, JsonRequestBehavior.AllowGet); 
         }
 
+        [HttpGet]
+        [Authorize]
+        public JsonResult GetNewNumVoucherJson(string FechaContabilizacion)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
+            if (string.IsNullOrWhiteSpace(FechaContabilizacion)) throw new Exception("La fecha de contabilización no debe estar vacia");
+
+            DateTime FechaContabilizacionDt = ParseExtensions.CreaFechaLiteral(FechaContabilizacion);
+
+            int newNumVoucher = ParseExtensions.GetNumVoucher(objCliente, db, FechaContabilizacionDt.Month, FechaContabilizacionDt.Year).Value;
+
+            return Json(new { ok = true, numVoucher = newNumVoucher }, JsonRequestBehavior.AllowGet);
+        }
 
         [Authorize]
         [ModuloHandler]
@@ -1665,6 +1683,9 @@ namespace TryTestWeb.Controllers
                     numVoucherDesdeFormulario = Math.Abs(numVoucherDesdeFormulario.Value);
             }
 
+            string fecha = Request.Form.GetValues("fecha")[0];
+            DateTime FechaValida = ParseExtensions.ToDD_MM_AAAA(fecha); 
+
             //Edit Voucher 
             // a) rompe la relacion del voucher con el centro de costos para hacerla otra vez
             // b) borra todo el detalle del voucher y lo construye otra vez
@@ -1686,14 +1707,14 @@ namespace TryTestWeb.Controllers
                 {
                     //verificar si el nuevo numero de voucher desde edicion no hace conflicto con algun
                     //numero de voucher ya existente para este cliente
-                    bool estaDisponible = ParseExtensions.EstaNumeroVoucherDisponible(numVoucherDesdeFormulario.Value, objCliente, db);
+                    bool estaDisponible = ParseExtensions.EstaNumeroVoucherDisponible(numVoucherDesdeFormulario.Value, objCliente, db, objVoucher.FechaEmision.Month, objVoucher.FechaEmision.Year);
                     if (estaDisponible) //si esta disponible lo asigna
                     {
                         NewNumeroVoucher = numVoucherDesdeFormulario.Value;
                     }
                     else // si no esta disponible le asigna uno disponible
                     {
-                        int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
+                        int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(objCliente, db, objVoucher.FechaEmision.Month, objVoucher.FechaEmision.Year);
                         if (nullableProxVoucherNumber.HasValue)
                             NewNumeroVoucher = nullableProxVoucherNumber.Value;
                     }
@@ -1707,24 +1728,25 @@ namespace TryTestWeb.Controllers
             //intentar obtener numero de voucher si es que viene, revisar si esta disponible y agregarle el que corresponde
             if (NewNumeroVoucher == 0)
             {
+                
                 //revisar si viene uno desde el formulario
                 if (numVoucherDesdeFormulario.HasValue)
                 {
-                    bool estaDisponible = ParseExtensions.EstaNumeroVoucherDisponible(numVoucherDesdeFormulario.Value, objCliente, db);
+                    bool estaDisponible = ParseExtensions.EstaNumeroVoucherDisponible(numVoucherDesdeFormulario.Value, objCliente, db, FechaValida.Month, FechaValida.Year);
                     if (estaDisponible) //si esta disponible lo asigna
                     {
                         NewNumeroVoucher = numVoucherDesdeFormulario.Value;
                     }
                     else // si no esta disponible le asigna uno disponible
                     {
-                        int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
+                        int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(objCliente, db, FechaValida.Month, FechaValida.Year);
                         if (nullableProxVoucherNumber.HasValue)
                             NewNumeroVoucher = nullableProxVoucherNumber.Value;
                     }
                 }
                 else
                 {
-                    int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
+                    int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(objCliente, db, FechaValida.Month, FechaValida.Year);
                     if (nullableProxVoucherNumber.HasValue)
                         NewNumeroVoucher = nullableProxVoucherNumber.Value;
                 }
@@ -1732,7 +1754,7 @@ namespace TryTestWeb.Controllers
 
             List<DetalleVoucherModel> ListaDetalle = new List<DetalleVoucherModel>();
             objVoucher.ClientesContablesModelID = objCliente.ClientesContablesModelID;
-            string fecha = Request.Form.GetValues("fecha")[0];
+            
             objVoucher.FechaEmision = ParseExtensions.ToDD_MM_AAAA(fecha);
             string glosa = Request.Form.GetValues("glosa")[0];
             objVoucher.Glosa = glosa;

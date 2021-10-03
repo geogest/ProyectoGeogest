@@ -938,12 +938,12 @@ public class VoucherModel
         {
             string[] ArrayLibroMayor = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
 
-            string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2.ToString() + "   " + itemLibroMayor.ComprobanteP3;
+            string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2 + "   " + itemLibroMayor.ComprobanteP3;
             //int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
             if (itemLibroMayor.Rut != "-")
             {
-                int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
-                if (EvitarRedundanciaPrestadores > 0)
+                bool EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Any();
+                if (EvitarRedundanciaPrestadores)
                     continue;
             }
 

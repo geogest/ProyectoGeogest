@@ -5,6 +5,7 @@ using System.Data.Entity.Migrations.History;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
+using TryTestWeb.Models.ModelosSistemaContable.Common;
 using TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas;
 
 using TryTestWeb.Models.Monitoreo;
@@ -88,6 +89,9 @@ public class FacturaContext : DbContext
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
     public DbSet<BoletasCoVPadreModel> DBBoletasCoVPadre { get; set; }
+    public DbSet<NovedadesRegistradasModel> DBNovedadesRegistradasModel { get; set; }
+    public DbSet<NovedadesModel> DBNovedadesModel { get; set; }
+    
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
         
@@ -180,6 +184,8 @@ public class FacturaProduccionContext : DbContext
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
     public DbSet<BoletasCoVPadreModel> DBBoletasCoVPadre { get; set; }
+    public DbSet<NovedadesRegistradasModel> DBNovedadesRegistradasModel { get; set; }
+    public DbSet<NovedadesModel> DBNovedadesModel { get; set; }
     //Base de datos Sistema de remuneraciones
 
 
@@ -270,6 +276,8 @@ public class FacturaPoliContext : DbContext
 
     public DbSet<MonitoreoSesion> DBMonitoreoSesion { get; set; }
     public DbSet<BoletasCoVPadreModel> DBBoletasCoVPadre { get; set; }
+    public DbSet<NovedadesRegistradasModel> DBNovedadesRegistradasModel { get; set; }
+    public DbSet<NovedadesModel> DBNovedadesModel { get; set; }
     // public DbSet<DatosBaseModel> DBDatosBase { get; set; }
 
 

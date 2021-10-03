@@ -73,7 +73,7 @@ else
             <label class="control-label">Fecha Contabilización</label>
             @if (ViewBag.FechaEmisionEdit != null)
             {
-                <div class='input-group date '>
+                <div class='input-group'>
                     <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ViewBag.FechaEmisionEdit)" required />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
@@ -268,7 +268,7 @@ else
                             <script type="text/javascript">
                                 $("[name=ctacont]").last().val(@detalleImportacion[1]);
                                 $("#fechadoc@(codeBehindRowCount)").datepicker();
-                                $("#fecha").datepicker();
+                   /*             $("#fecha").datepicker();*/
                             </script>
                             codeBehindRowCount++;
                         }
@@ -492,38 +492,40 @@ if (ViewBag.vbVoucherModel != null)
                 //console.log($(this).html());
                 cambiaCCI(document.getElementById("ctacont_"+i));
             //console.log(i)
-                i++;     
-                
+                i++;
+
         });
 
-        
+
 
         //$("#ctacont").val()
         cambiaCC(document.getElementById("ctacont"));
-        $.datepicker.regional['es'] = {
-            closeText: 'Cerrar',
-            prevText: '<Ant',
-            nextText: 'Sig>',
-            currentText: 'Hoy',
-            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-            weekHeader: 'Sm',
-            dateFormat: 'dd-mm-yy',
-            firstDay: 1,
-            isRTL: false,
-            showMonthAfterYear: false,
-            yearSuffix: ''
-        };
-        $.datepicker.setDefaults($.datepicker.regional['es']);
+        //$.datepicker.regional['es'] = {
+        //    closeText: 'Cerrar',
+        //    prevText: '<Ant',
+        //    nextText: 'Sig>',
+        //    currentText: 'Hoy',
+        //    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        //    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        //    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        //    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+        //    dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+        //    weekHeader: 'Sm',
+        //    dateFormat: 'dd-mm-yy',
+        //    firstDay: 1,
+        //    isRTL: false,
+        //    showMonthAfterYear: false,
+        //    yearSuffix: ''
+        //};
+        //$.datepicker.setDefaults($.datepicker.regional['es']);
 
         //$(function () {
-            $("#fecha").datepicker();
-            $("#fechadoc").datepicker();
-            $("#fechapago").datepicker();
-            
+/*        $("#fecha").datepicker();*/
+        $("#fechadoc").datepicker();
+        $("#fechapago").datepicker();
+
+
+
         //});
 
             //var fechaContabilizacion = document.getElementById('fecha').value;
@@ -539,7 +541,7 @@ if (ViewBag.vbVoucherModel != null)
             //});
         //-------------------------------------------------------------
 
-     
+
 
         $.validator.addMethod("validaItems",
         function(value, element) {
@@ -635,6 +637,22 @@ if (ViewBag.vbVoucherModel != null)
 
     }
 
+    document.getElementById('fecha').addEventListener('change', function () {
+        let numVoucher = document.getElementById('numVoucher');
+        $.ajax({
+            type: 'GET',
+            url: "@Url.Action("GetNewNumVoucherJson", "Contabilidad")",
+            data: { FechaContabilizacion: document.getElementById('fecha').value },
+            success: function (result) {
+                if (result.ok) {
+                    numVoucher.value = result.numVoucher;
+                } else {
+                    alert('No se logró obtener el numero de voucher');
+                }
+            }
+        })
+    });
+
     //Tab Mixed
     function SinVacios(esto){
         if( $(esto).val() == false )
@@ -706,7 +724,7 @@ if (ViewBag.vbVoucherModel != null)
             //  $('#tablaWord tbody').append(newRow);
         $(newRow).insertAfter($('#tablaWord tr:last').closest('tr'));
 
-    
+
 
             // $('.selectpicker').selectpicker();
             //$('#DatosVoucher').validator('update');
@@ -800,7 +818,7 @@ if (ViewBag.vbVoucherModel != null)
             // cambiaCC($('#tablaWord tr:last').closest('tr'));
             //$("#ctacont_"+idRowCount).select2();
             //$("#form-group"+idRowCount).hide();
-            
+
 
             $("#fechadoc"+idRowCount).datepicker();
 

@@ -28,7 +28,7 @@ using ClosedXML.Excel;
 using System.Web.Configuration;
 using System.Data.Entity.Validation;
 using Microsoft.Office.Interop.Excel;
-
+using TryTestWeb.Models.ModelosSistemaContable.Common;
 
 public static class ParseExtensions
 {
@@ -659,13 +659,16 @@ public static class ParseExtensions
     }
 
     [Authorize]
-    public static bool EstaNumeroVoucherDisponible(int numVoucherARevisar, ClientesContablesModel objCliente, FacturaPoliContext db)
+    public static bool EstaNumeroVoucherDisponible(int numVoucherARevisar, ClientesContablesModel objCliente, FacturaPoliContext db, int Mes, int Anio)
     {
         if (objCliente == null)
             return false;
         try
         {
-            IQueryable<VoucherModel> lstVoucherConEseFolio = db.DBVoucher.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID && r.NumeroVoucher == numVoucherARevisar);
+            IQueryable<VoucherModel> lstVoucherConEseFolio = db.DBVoucher.Where(r => r.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                     r.FechaEmision.Month == Mes &&
+                                                                                     r.FechaEmision.Year == Anio &&
+                                                                                     r.NumeroVoucher == numVoucherARevisar);
             if (lstVoucherConEseFolio.Count() > 0)
                 return false;
             else
@@ -933,7 +936,8 @@ public static class ParseExtensions
     public static int? GetNumVoucher(ClientesContablesModel objClienteContable, FacturaPoliContext db, int Mes, int Anio)
     {
         int? ReturnValues = 0;
-
+        //Queda pendiente crear función AJAX que detecte cuando se cambia de mes y al cambiar de mes volver a entrar a esta función y dar el proximo voucher disponible
+        //Para el mes correspondiente
         try
         {
             if (objClienteContable == null) throw new Exception("La sesión del cliente contable no existe.");
@@ -958,9 +962,36 @@ public static class ParseExtensions
         }
     }
 
-    public static string GetNumVoucherToView(int NumVoucher, int Mes, int Anio)
+    public static List<NovedadesModel> GetNovedadesEsteCliente(ClientesContablesModel objCliente, FacturaPoliContext db)
     {
-        return NumVoucher > 0 && Mes > 0 && Anio > 0 ? $"{Mes.ToString()}{Anio.ToString()}{"-"}{NumVoucher.ToString()}" : throw new Exception("No se pudo obtener el NumeroVoucher");
+        List<NovedadesModel> NovedadesEsteCliente = db.DBNovedadesModel.Where(x => x.ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID).ToList();
+
+        return NovedadesEsteCliente;
+    }
+
+    //Falta crear una forma de asociar  funcionalidades que dependen de otras funcionalidades por ejemplo getNumvoucherToview depende de GetNumVoucher
+    public static string GetNumVoucherToView(int NumVoucher, int Mes, int Anio,int dia, FacturaPoliContext db, ClientesContablesModel objCliente)
+    {
+        //Actualizar esto. Es demasiado especifico sujeto a errores y poco escalable
+        DateTime FechaEjecucionEstaFuncionalidad = GetNovedadesEsteCliente(objCliente, db)
+                                                    .Where(x => x.Novedad.NombreFuncionalidadAsociada.Contains("GetNumVoucher"))
+                                                        .FirstOrDefault().FechaEjecucionNovedadEstecliente;
+        if(Anio == FechaEjecucionEstaFuncionalidad.Year && dia == FechaEjecucionEstaFuncionalidad.Day && Mes == FechaEjecucionEstaFuncionalidad.Month) return NumVoucher > 0 && Mes > 0 && Anio > 0 ? $"{Mes.ToString()}{Anio.ToString()}{"-"}{NumVoucher.ToString()}" : throw new Exception("No se pudo obtener el NumeroVoucher");
+
+        return NumVoucher.ToString();
+    }
+
+    public static string GetNumVoucherToView(string NumVoucher, int Mes, int Anio, int dia, FacturaPoliContext db, ClientesContablesModel objCliente)
+    {
+        //Actualizar esto. Es demasiado especifico sujeto a errores y poco escalable
+
+        List<NovedadesModel> NovedadesEsteCliente = db.DBNovedadesModel.Where(x => x.ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID).ToList();
+        DateTime FechaEjecucionEstaFuncionalidad = NovedadesEsteCliente
+                                                    .Where(x => x.Novedad.NombreFuncionalidadAsociada.Contains("GetNumVoucher"))
+                                                        .FirstOrDefault().FechaEjecucionNovedadEstecliente;
+        if (Anio == FechaEjecucionEstaFuncionalidad.Year && dia == FechaEjecucionEstaFuncionalidad.Day && Mes == FechaEjecucionEstaFuncionalidad.Month) return Convert.ToInt32(NumVoucher) > 0 && Mes > 0 && Anio > 0 ? $"{Mes.ToString()}{Anio.ToString()}{"-"}{NumVoucher.ToString()}" : throw new Exception("No se pudo obtener el NumeroVoucher");
+
+        return NumVoucher;
     }
 
     public static int CleanSearchNumVoucher(string numVoucherToClean, int Mes)

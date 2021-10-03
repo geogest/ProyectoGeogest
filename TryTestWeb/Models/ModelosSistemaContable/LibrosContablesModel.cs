@@ -145,8 +145,6 @@ public class LibrosContablesModel
                 List<VoucherModel> lstNuevosVouchers = new List<VoucherModel>();
                 int contadorAnexo = 0;
 
-                int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db);
-                int baseNumberFolio = nullableProxVoucherNumber.Value;
                 CuentaContableModel cuentaPrincipal = new CuentaContableModel();
 
                 foreach (LibrosContablesModel entradaLibro in lstEntradasLibro)
@@ -173,7 +171,7 @@ public class LibrosContablesModel
 
                     nuevoVoucher.Glosa = FullDescripcionDocOriginal;
 
-                    nuevoVoucher.NumeroVoucher = baseNumberFolio;
+                    nuevoVoucher.NumeroVoucher = ParseExtensions.GetNumVoucher(objCliente, db, entradaLibro.FechaContabilizacion.Month, entradaLibro.FechaContabilizacion.Year).Value; 
 
                     //DEFINIR CUAL ES LA CUENTA DE VENTA O COMPRA DONDE VAN LAS VENTAS O COMPRAS
                     List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
@@ -460,7 +458,6 @@ public class LibrosContablesModel
                         }
                     }
                     contadorAnexo++;
-                    baseNumberFolio++;
                 }
 
                 if (lstNuevosVouchers != null && lstNuevosVouchers.Count > 0)
@@ -546,12 +543,7 @@ public class LibrosContablesModel
         List<VoucherModel> lstNuevosVouchers = new List<VoucherModel>();
         int contadorAnexo = 0;
 
-        int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(objCliente, db); //Contamos el prox voucher
-
-        int baseNumberFolio = nullableProxVoucherNumber.Value;
         CuentaContableModel cuentaPrincipal = new CuentaContableModel();
-
-
         foreach (LibroDeHonorariosModel itemLibroHonor in lstLibroHonorImport)
         {
             decimal MontoBruto = itemLibroHonor.Brutos; // Debe
@@ -570,7 +562,7 @@ public class LibrosContablesModel
             string FullDescripcionDocOriginal = lstCuentaContable[contadorAnexo].nombre + " / Folio: " + itemLibroHonor.NumIdenficiador + " / " + itemLibroHonor.Prestador.RazonSocial;
 
             nuevoVoucher.Glosa = FullDescripcionDocOriginal;
-            nuevoVoucher.NumeroVoucher = baseNumberFolio;
+            nuevoVoucher.NumeroVoucher = ParseExtensions.GetNumVoucher(objCliente, db, itemLibroHonor.FechaContabilizacion.Month, itemLibroHonor.FechaContabilizacion.Year).Value;
 
             List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
 
@@ -664,8 +656,6 @@ public class LibrosContablesModel
                 }
             }
             contadorAnexo++;
-            baseNumberFolio++;
-
         }
 
 

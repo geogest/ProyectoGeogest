@@ -382,7 +382,7 @@ public class CartolaBancariaMacroModel
 
                     if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null || CuentaAUsar.TieneAuxiliar == 0 && Prestador == null)
                     {
-                        int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(ObjCliente, db);
+                        int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(ObjCliente, db, itemCartola.Fecha.Month, itemCartola.Fecha.Year);
                         int baseNumberFolio = nullableProxVoucherNumber.Value;
 
                         VoucherModel CapaVoucher = new VoucherModel();

@@ -138,9 +138,6 @@ public class LibroHonorariosDeTerceros
         List<VoucherModel> lstNuevosVouchers = new List<VoucherModel>();
         int contadorAnexo = 0;
 
-        int? nullableProxVoucherNumber = ParseExtensions.ObtenerNumeroProximoVoucherINT(ObjCliente, db); //Contamos el prox voucher
-
-        int baseNumberFolio = nullableProxVoucherNumber.Value;
         CuentaContableModel cuentaPrincipal = new CuentaContableModel();
 
         foreach (LibroHonorariosDeTerceros itemLibroHonor in lstAConvertir)
@@ -161,7 +158,7 @@ public class LibroHonorariosDeTerceros
             string FullDescripcionDocOriginal = lstCuentaConbtale[contadorAnexo].nombre + " / Folio: " + itemLibroHonor.NumOFolio + " / " + itemLibroHonor.Receptor.RazonSocial;
 
             nuevoVoucher.Glosa = FullDescripcionDocOriginal;
-            nuevoVoucher.NumeroVoucher = baseNumberFolio;
+            nuevoVoucher.NumeroVoucher = ParseExtensions.GetNumVoucher(ObjCliente, db, itemLibroHonor.FechaContabilizacion.Month, itemLibroHonor.FechaContabilizacion.Year).Value;  //
 
             List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
 
@@ -258,7 +255,6 @@ public class LibroHonorariosDeTerceros
                 }
             }
             contadorAnexo++;
-            baseNumberFolio++;
         }
 
         if (lstNuevosVouchers != null && lstNuevosVouchers.Count > 0)

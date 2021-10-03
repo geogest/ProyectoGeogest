@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using TryTestWeb.Models.ModelosSistemaContable.Common;
 
 namespace TryTestWeb
 {
@@ -21,7 +22,7 @@ namespace TryTestWeb
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             FuncionesModel.CrearFuncionesBases();
-
+            NovedadesRegistradasModel.InsertNovedad();
             FacturaPoliContext dbCertificacion = new FacturaPoliContext();
             FacturaPoliContext dbProduccion = new FacturaPoliContext(true);//new FacturaProduccionContext();
             List<FacturaPoliContext> lstDataContext = new List<FacturaPoliContext> { dbCertificacion, dbProduccion };

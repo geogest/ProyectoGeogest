@@ -285,6 +285,10 @@
     <Compile Include="Migrations\202109270211174_Reset.Designer.cs">
       <DependentUpon>202109270211174_Reset.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109300621520_TablasParaControlarCambiosTransversales.cs" />
+    <Compile Include="Migrations\202109300621520_TablasParaControlarCambiosTransversales.Designer.cs">
+      <DependentUpon>202109300621520_TablasParaControlarCambiosTransversales.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminMonitoreo\ErrorMensajeMonitoreo.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
@@ -302,6 +306,7 @@
     <Compile Include="Models\ModelosSistemaContable\CentroCostoModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesContablesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ClientesProveedoresModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\Common\NovedadesModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\AuxPendientesViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstadoCuentasCorrientesViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
@@ -369,12 +374,30 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\bootstrap-select.min.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\Contabilidad\BalanceGeneral.css" />
+    <Content Include="Content\css\Contabilidad\CatorceTer.css" />
     <Content Include="Content\css\Contabilidad\Chart.min.css" />
+    <Content Include="Content\css\Contabilidad\EstadoResultado.css" />
+    <Content Include="Content\css\Contabilidad\EstadoResultadoComparativo.css" />
+    <Content Include="Content\css\Contabilidad\EstadoResultadoCtaBruto.css" />
+    <Content Include="Content\css\Contabilidad\EstadoResultadoEBIT.css" />
+    <Content Include="Content\css\Contabilidad\EstadoResultadoEBITDA.css" />
+    <Content Include="Content\css\Contabilidad\EstadoResultadoEBT.css" />
+    <Content Include="Content\css\Contabilidad\IEstadoResultado.css" />
     <Content Include="Content\css\Contabilidad\jquery.dataTables.css" />
+    <Content Include="Content\css\Contabilidad\LibroCompra.css" />
+    <Content Include="Content\css\Contabilidad\LibroDeHonorarios.css" />
+    <Content Include="Content\css\Contabilidad\LibroDiario.css" />
+    <Content Include="Content\css\Contabilidad\LibroMayorTwo.css" />
+    <Content Include="Content\css\Contabilidad\LibroVenta.css" />
+    <Content Include="Content\css\Contabilidad\ListaCentroCosto.css" />
+    <Content Include="Content\css\Contabilidad\ListaCuentasContables.css" />
+    <Content Include="Content\css\Contabilidad\MisPresupuestos.css" />
     <Content Include="Content\css\Contabilidad\select2.min.css" />
     <Content Include="Content\css\flatpickr.min.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\js\ContabilidadBoletas\ImportarBoletas.js" />
     <Content Include="Content\js\Contabilidad\Chart.min.js" />
     <Content Include="Content\js\Contabilidad\jquery.dataTables.js" />
     <Content Include="Content\js\Contabilidad\jspdf.plugin.autotable.js" />
@@ -975,6 +998,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202109270211174_Reset.resx">
       <DependentUpon>202109270211174_Reset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109300621520_TablasParaControlarCambiosTransversales.resx">
+      <DependentUpon>202109300621520_TablasParaControlarCambiosTransversales.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
