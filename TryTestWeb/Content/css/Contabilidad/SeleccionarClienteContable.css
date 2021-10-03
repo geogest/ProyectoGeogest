@@ -1,15 +1,18 @@
 ﻿body {
     font-weight:500;
 }
+html {
+    font-size:100%;/*16px*/
+}
 .tamanoContenido 
 {
-    margin-top: 18px;
+    margin-top: 1.13rem;
 }
 
 .panel-heading
 {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    margin-bottom: 10px;
+    margin-bottom: 0.65rem;
 }
 
 .letras 
@@ -18,21 +21,8 @@
     overflow: hidden;
     white-space: nowrap;
     color: white;
-    font-size: 12px;
+    font-size: 0.75rem;
 }
-
-/*.icono 
-{
-    float: left;
-    color: white;
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 5px;
-    text-align: center;
-    width: 20px;
-    height: 20px;
-}*/
-
 .card 
 {
     /* Add shadows to create the "card" effect */
@@ -63,11 +53,17 @@
     margin-left: 45%;
     background-color: #5d9cec;
 }
+
 @media (max-width: 768px) {
     .division {
-        font-size: 14px;
+        font-size: 1.7rem;
+    }
+}
+@media (max-width: 425px) {
+    .division {
+        font-size:1.6rem;
     }
     .mgt {
-        margin-top:10px;
+        margin-top:0.65rem;
     }
 }

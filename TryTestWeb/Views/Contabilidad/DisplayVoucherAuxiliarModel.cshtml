@@ -19,9 +19,8 @@
 
             <div class="row">
                 <div class="form-group">
-                    <div class="col-lg-3"></div>
-                    <label class="col-lg-2 control-label">Cuenta Contable</label>
-                    <div class="col-lg-4">
+                    <label class="col-lg-2 col-md-3 col-sm-3 col-lg-offset-3 col-md-offset-1 control-label">Cuenta Contable</label>
+                    <div class="col-lg-4 col-md-7 col-sm-9">
                         <select id="AUXcuenta" name="AUXcuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" readonly>
                             @Html.Raw(ViewBag.HtmlStr)
                         </select>
@@ -30,24 +29,22 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <div class="col-lg-3"></div>
-                    <label class="col-lg-2 control-label">Número Línea</label>
-                    <div class="col-lg-4">
+                    <label class="col-lg-2 col-md-3 col-sm-3 col-lg-offset-3 col-md-offset-1 control-label">Número Línea</label>
+                    <div class="col-lg-4 col-md-7 col-sm-9">
                         <input type="number" id="AUXitem" name="AUXitem" class="form-control" value="@ViewBag.AUXlineaDetalle" readonly />
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <div class="col-lg-3"></div>
-                    <label class="col-lg-2 control-label">Valor Línea</label>
-                    <div class="col-lg-4">
+                    <label class="col-lg-2 col-md-3 col-sm-3 col-lg-offset-3 col-md-offset-1 control-label">Valor Línea</label>
+                    <div class="col-lg-4 col-md-7 col-sm-9">
                         <input type="text" id="AUXvaloritem" name="AUXvaloritem" class="form-control" value="@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.AUXmontoTotal)" readonly />
                     </div>
                 </div>
             </div>
             <br />
-            <div id="ConjuntoDetallesAuxiliares">
+            <div id="ConjuntoDetallesAuxiliares" class="table-responsive">
                 <table  class="table table-responsive">
                     <thead>
                         <tr>

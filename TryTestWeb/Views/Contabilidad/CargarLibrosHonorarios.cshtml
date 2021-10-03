@@ -4,33 +4,32 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<br />
-
 <!-- Page-Title -->
-<br />
 <div class="row">
     <div class="col-sm-12">
-        <div class="page-header-2">
-            <div class="col-md-6">
-                <h2 class="page-header">Cargar Libros de Honorarios</h2>
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="#">Contabilidad</a>
-                    </li>
-                    <li>
-                        <a href="#">-</a>
-                    </li>
-                    <li class="active">
-                        Cargar Libros
-                    </li>
-                </ol>
-      
-            </div>
-            <div class="col-md-6">
-                <div class="pull-right">
-                    <a href="@Url.Action("CargarLibrosHonorTerceros","Contabilidad")" class="btn btn-warning">Cargar Honorarios de Terceros</a>
+        <div class="btn-group pull-right margen">
+            <form role="form">
+                <div class="button-list col-lg-12">
+                    <div class="col-md-6">
+                            <a href="@Url.Action("CargarLibrosHonorTerceros","Contabilidad")" class="btn btn-warning">Cargar Honorarios de Terceros</a>
+                    </div>
                 </div>
-            </div>
+            </form>
+        </div>
+
+        <div class="page-header-2">
+            <h2 class="page-header">Cargar Libros de Honorarios</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Cargar Libros
+                </li>
+            </ol>
         </div>
     </div>
 </div>
@@ -48,8 +47,6 @@
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
-                @*<input type="text" id="fecont" name="fecont" value="" placeholder="Ingresa una fecha de contabilización" class="form-control form_datetime" autocomplete="off" required />*@
-
             </div>
         </div>
     </div>
@@ -64,12 +61,12 @@
 
 
 
-                <div class="col-md-8">
+                <div class="col-lg-8 col-md-8 col-sm-8">
                     <label class="control-label" for="caf">Cargar .CSV o .XLS</label>
                     <input name="files" id="files" type="file">
                 </div>
      
-                <div class="col-md-4" style="text-align: center;">
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-9">
                     <input class="btn btn-success redondo btnPress" value="Leer" name="Save" type="submit" />
                 </div>
 
@@ -91,10 +88,6 @@
 
 
  <script>
-
-       
-
-
         $('#Ficheros').submit(function () {
             event.preventDefault();
             $.ajax({
@@ -178,3 +171,4 @@
     </script>
 
 
+ <link href="~/Content/css/Contabilidad/CargarLibrosHonorarios.css" rel="stylesheet" />

@@ -1,22 +1,17 @@
 ﻿html {
-    font-size:100% /*16px*/
+    font-size:100%;/*16px*/
 }
 .margen {
-    margin-top:1.9rem;
+    margin-top: 1.9rem;
 }
-.centrar {
-    margin-top: 25px;
-}
-
-.esconder {
-    display: none;
+td {
+    text-align: center;
 }
 @media (max-width: 768px) {
     .margen {
         margin-top: 1.8rem;
     }
 }
-
 @media (max-width: 425px) {
     .margen {
         margin-top: 3.3rem;

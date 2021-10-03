@@ -16,11 +16,7 @@
                         <div>
                             @Html.BtnAgregar("", "javascript:NuevaCtaContable();")
                         </div>
-
-                       
                     </div>
-                
-   
             </div>
             <div class="page-header-2">
                 <h2 class="page-header">Plan de Cuentas</h2>
@@ -123,13 +119,7 @@
                                     <td>@Cuenta.Clasificacion.ToString()</td>
                                     <td>@Cuenta.SubClasificacion.NombreInterno</td>
                                     <td>@Cuenta.SubSubClasificacion.NombreInterno</td>
-                                    <td>
-                                        @*<a id="EditButton" onclick="getCtaContableEdit(@Cuenta.CuentaContableModelID);" class="btn btn-icon waves-effect waves-light btn-primary"
-                                          data-toggle="tooltip" data-placement="bottom" title="Editar Cuenta Contable!" data-original-title="Editar Cuenta Contable!">
-                                          <i class="ion-edit"></i></a>*@
-                                        
-                                             @Html.BtnEditar("EditButton", "", "btn-icon", "", "getCtaContableEdit("+ @Cuenta.CuentaContableModelID + ")", "Cuenta Contable")
-                                    </td>
+                                    <td>@Html.BtnEditar("EditButton", "", "btn-icon", "", "getCtaContableEdit("+ @Cuenta.CuentaContableModelID + ")", "Cuenta Contable")</td>
                                 </tr>
                             }
                         </tbody>
@@ -154,18 +144,18 @@
                     <h4 class="modal-title">Cuenta Contable</h4>
                 </div>
                 <div id="ModyBody" class="modal-body form-group">
-                    <div class="row">
-                        <div class="col-lg-4 form-group">
+                    <div class="row form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Nombre </label>
                             <input type="text" class="form-control" name="nombrecta" id="nombrecta" required />
                         </div>
 
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Código Sugerido</label>
                             <input type="text" class="required form-control" name="codcta" id="codcta" readonly />
                         </div>
 
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Centro Costo:</label>
                             <select id="centroCosto" name="centroCosto" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -176,7 +166,7 @@
                     </div>
                     <div class="row form-group">
 
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Item:</label>
                             <select id="item" name="item" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -185,7 +175,7 @@
 
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Análisis:</label>
                             <select id="analisis" name="analisis" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -194,7 +184,7 @@
 
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Conciliación:</label>
                             <select id="concilacion" name="concilacion" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -205,7 +195,7 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Tiene Auxiliar :</label>
                             <select id="auxiliar" name="auxiliar" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -216,20 +206,20 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Clasificaciones:</label>
                             <select id="clasificacion" name="clasificacion" class="required form-control">
                                 <option value="0">Seleccionar</option>
                                 @Html.Raw(ViewBag.osCuentasContables)
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label" style="color:transparent;">___</label>
                             <select id="subclasificacion" name="subclasificacion" class="required show-tick form-control" data-live-search="true" data-size="10" title="SubClasificación">
                                 @Html.Raw(ViewBag.HtmlStr)
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label" style="color:transparent;">___</label>
                             <select id="subsubclasificacion" name="subsubclasificacion" class="required show-tick form-control" data-live-search="true" data-size="10" title="SubSubClasificación">
                                 @Html.Raw(ViewBag.HtmlStr)
@@ -239,7 +229,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                    @Html.BtnGuardar("", "", "", "")
                 </div>
             </div>
         </div>
@@ -260,25 +250,15 @@
                 </div>
                 <div id="ModyBody" class="modal-body form-group">
                     <div class="row">
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Nombre </label>
                             <input type="text" class="form-control" name="nombrectaedit" id="nombrectaedit" required />
                         </div>
-
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Código Sugerido</label>
                             <input type="text" class="required form-control" name="codctaedit" id="codctaedit" readonly />
                         </div>
-                        @*<div class="col-lg-4 form-group">
-                                <div class="checkbox">
-                                    <label><input type="checkbox" id="analisisedit" name="analisisedit"> Analisis </label>
-                                </div>
-                            </div>*@
-
-                    </div>
-                    <div class="row form-group">
-
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Item:</label>
                             <select id="itemE" name="itemE" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -286,7 +266,9 @@
                                 <option value="2">NO</option>
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Análisis:</label>
                             <select id="analisisE" name="analisisE" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -294,7 +276,7 @@
                                 <option value="2">NO</option>
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Conciliación:</label>
                             <select id="concilacionE" name="concilacionE" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -302,9 +284,7 @@
                                 <option value="2">NO</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Tiene Auxiliar :</label>
                             <select id="auxiliarE" name="auxiliarE" class="required form-control">
                                 <option value="0">Seleccionar</option>
@@ -313,10 +293,9 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="row form-group">
 
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Centro Costo:</label>
                             <select id="centroCostoE" name="centroCostoE" onchange="getCentroDeCostos();" class="form-control">
                                 <option value="0">Seleccionar</option>
@@ -328,22 +307,22 @@
                     </div>
 
                     <div class="row form-group">
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label">Clasificaciones:</label>
                             <input type="text" class="required form-control" name="clasificacionedit" id="clasificacionedit" readonly />
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label" style="color:transparent;">___</label>
                             <input type="text" class="required form-control" name="subclasificacionedit" id="subclasificacionedit" readonly />
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                             <label class="control-label" style="color:transparent;">___</label>
                             <input type="text" class="required form-control" name="subsubclasificacionedit" id="subsubclasificacionedit" readonly />
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary waves-effect waves-light" type="submit"><span class="btn-label"><i class="ion-android-add"></i></span>Guardar</button>
+                    @Html.BtnGuardar("", "", "", "")
                 </div>
             </div>
         </div>

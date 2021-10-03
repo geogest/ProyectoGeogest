@@ -33,7 +33,7 @@
                     <div class="row form-group">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="col-md-2">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label class="control-label">Cantidad de Registros</label>
                                         <select class="form-control" id="cantidadRegistrosPorPagina" name="cantidadRegistrosPorPagina">
                                             <option value="25">25</option>
@@ -41,7 +41,7 @@
                                             <option value="100">100</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-2 form-group">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label class="control-label">Tipo Origen</label>
                                         <select class="form-control" name="TipoOrigenVoucher" id="TipoOrigenVoucher">
                                             <option>Selecciona</option>
@@ -54,11 +54,11 @@
 
                                         </select>
                                     </div>
-                                    <div class="col-md-2 form-group">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label class="control-label">Año</label>
                                         <input type="text" class="form-control" name="Anio" id="Anio" value="" />
                                     </div>
-                                    <div class="col-md-2 form-group">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label for="" class="control-label">Mes</label>
                                         <select name="Mes" id="Mes" class="form-control">
                                             <option value="">Todos</option>
@@ -77,11 +77,11 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-lg-2 form-group">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label class="control-label">Glosa</label>
                                         <input type="text" class="form-control" id="Glosa" name="Glosa" />
                                     </div>
-                                    <div class="col-lg-2 form-group">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label class="control-label">Num Voucher</label>
                                         <input type="text" class="form-control" id="voucherID" name="voucherID" />
                                     </div>
@@ -93,7 +93,7 @@
                                         <label class="control-label">Rut Fin</label>
                                         <input type="text" class="form-control" name="rutfin" id="rutfin" />
                                     </div>
-                                    <div class="col-lg-2 form-group">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label class="control-label">Fecha Inicio</label>
                                         <div class='input-group date'>
                                             <input type='text' name="FechaInicio" id="FechaInicio" value="" class="form-control anotherSelector" autocomplete="off" />
@@ -101,9 +101,8 @@
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
                                         </div>
-                                        @*<input class="form-control" type="text" name="FechaInicio" id="FechaInicio" value="" autocomplete="off" />*@
                                     </div>
-                                    <div class="col-lg-2 form-group">
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         <label class="control-label">Fecha Fin</label>
                                         <div class='input-group date'>
                                             <input type='text' name="FechaFin" id="FechaFin" value="" class="form-control anotherSelector" autocomplete="off" />
@@ -111,10 +110,8 @@
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
                                         </div>
-                                        @*<input class="form-control" type="text" name="FechaFin" id="FechaFin" value="" autocomplete="off" />*@
                                     </div>
-                                    <div class="col-md-2 form-group">
-                                        @*<button type="submit" id="Guardar" name="Guardar" class="btn btn-success centrar">Buscar</button>*@
+                                    <div class="col-lg-2 col-md-3 col-sm-4 form-group">
                                         @Html.BtnBuscar("Guardar", "Guardar", "centrar", "")
                                     </div>
                                 </div>
@@ -153,6 +150,7 @@
                         }
                         @if (Model.VoucherList.Count() != 0)
                         {
+                    <div class="table-responsive">
                         <table width="100%" class="table table-striped table-bordered table-hover" id="tabla">
                             <thead>
                                 <tr>
@@ -170,66 +168,53 @@
                             </thead>
 
                             <tbody>
-                              
-                                    @foreach (var Voucher in Model.VoucherList)
-                                    {
-                                <tr>
-                                    <td><input type="checkbox" name="CheckVoucher" class="marca" id="CheckVoucher" value="@Voucher.VoucherModelID" /></td>
-                                    @if (Voucher.FechaEmision.Month <= 9)
-                                    {
-                                        string num = "0";
-                                        <td>@num@Voucher.FechaEmision.Month@Voucher.FechaEmision.Year-@Voucher.NumeroVoucher</td>
-                                    }
-                                    @if (Voucher.FechaEmision.Month > 9)
-                                    {
-                                        <td>@Voucher.FechaEmision.Month@Voucher.FechaEmision.Year-@Voucher.NumeroVoucher</td>
-                                    }
 
-                                    <td>@Voucher.Tipo</td>
-                                    @if (!string.IsNullOrWhiteSpace(Voucher.TipoOrigen))
-                                    {
-                                        <td>@Voucher.TipoOrigen</td>
-                                    }
-                                    else
-                                    {
-                                        <td>@Voucher.TipoOrigenVoucher.ToString()</td>
-                                    }
-                                    <td>@Voucher.FechaEmision.ToString("dd-MM-yyyy")</td>
-                                    <td>@Voucher.Glosa</td>
-                                    <td><a href="javascript:GetDetalleVoucher('@Voucher.VoucherModelID');">ver detalle</a></td>
-                                    <td>@(Voucher.CentroDeCosto != null ? Voucher.CentroDeCosto.Nombre : string.Empty)</td>
-                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EditarVoucher"))
-                                    {
-                                        <td>
+                                @foreach (var Voucher in Model.VoucherList)
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" name="CheckVoucher" class="marca" id="CheckVoucher" value="@Voucher.VoucherModelID" /></td>
+                                        <td>@Voucher.NumeroVoucher</td>
+                                        <td>@Voucher.Tipo</td>
+                                        @if (!string.IsNullOrWhiteSpace(Voucher.TipoOrigen))
+                                        {
+                                            <td>@Voucher.TipoOrigen</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@Voucher.TipoOrigenVoucher.ToString()</td>
+                                        }
+                                        <td>@Voucher.FechaEmision.ToString("dd-MM-yyyy")</td>
+                                        <td>@Voucher.Glosa</td>
+                                        <td><a href="javascript:GetDetalleVoucher('@Voucher.VoucherModelID');">ver detalle</a></td>
+                                        <td>@(Voucher.CentroDeCosto != null ? Voucher.CentroDeCosto.Nombre : string.Empty)</td>
+                                        @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EditarVoucher"))
+                                        {
+                                            <td>
 
-                                            @Html.BtnEditar("", "", "btn-sm redondo btnPress", Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = Voucher.VoucherModelID }), "", "Lista Voucher")
+                                                @Html.BtnEditar("", "", "btn-sm redondo btnPress", Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = Voucher.VoucherModelID }), "", "Lista Voucher")
 
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td></td>
-                                    }
-                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BorrarBajaVoucher"))
-                                    {
-                                        <td>
-                                            @*<a href="javascript:TryDeleteVoucher('@Voucher.VoucherModelID');"
-                   class="btn btn-danger btn-sm redondo btnPress">
-                    <span class="glyphicon glyphicon-trash"></span>
-                </a>*@
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BorrarBajaVoucher"))
+                                        {
+                                            <td>
+                                                @Html.BtnBorrar("", "", "javascript:TryDeleteVoucher(" + @Voucher.VoucherModelID + ");", "", "btn-sm redondo btnPress")
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                    </tr>
+                                }
 
-                                            @Html.BtnBorrar("", "", "javascript:TryDeleteVoucher(" + @Voucher.VoucherModelID + ");", "", "btn-sm redondo btnPress")
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td></td>
-                                    }
-                                </tr>
-                                    }
-                                
                             </tbody>
                         </table>
+                    </div>
                         }
                     </div>
                     @{Html.RenderPartial("_paginador", Model);}
@@ -250,8 +235,7 @@
                             </div>
                             <div id="ModyBody" class="modal-body text-center form-group">
                                 <div class="row">
-                                    <div class="col-lg-1"></div>
-                                    <div class="col-lg-6 text-left">
+                                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 text-left">
                                         <div class="row">
                                             <span><b>Empresa:</b></span>
                                             <span id="rutEmpresa" name="rutEmpresa"></span> /
@@ -270,32 +254,35 @@
                                             <span id="CentroCosto" name="CentroCosto"></span>
                                         </div>
                                     </div>
-                                    <div class="col-lg-1"><a onclick="generarPdf();" class="btn btn-info">Vista PDF</a></div>
-
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 col-lg-offset-4 col-md-offset-4 col-sm-offset-1 col-xs-offset-8">
+                                    <a onclick="generarPdf();" class="btn btn-info">Vista PDF</a>
+                                    </div>
                                 </div>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Codigo Interno</th>
-                                            <th>Cuenta Contable</th>
-                                            <th>Glosa</th>
-                                            <th>Monto Debe</th>
-                                            <th>Monto Haber</th>
-                                            <th>Auxiliar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="datosTabla"></tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td><b>TOTAL</b></td>
-                                            <td id="totalDEBE" style="font-weight:700;"></td>
-                                            <td id="totalHABER" style="font-weight:700;"></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                <div class="table-responsive m-t-20">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Codigo Interno</th>
+                                                <th>Cuenta Contable</th>
+                                                <th>Glosa</th>
+                                                <th>Monto Debe</th>
+                                                <th>Monto Haber</th>
+                                                <th>Auxiliar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="datosTabla"></tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td><b>TOTAL</b></td>
+                                                <td id="totalDEBE" style="font-weight:700;"></td>
+                                                <td id="totalHABER" style="font-weight:700;"></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
