@@ -41,6 +41,7 @@ namespace TryTestWeb.Models.ModelosSistemaContable.Common
         public DateTime FechaCreacionNovedad { get; set; }
         public string NombreFuncionalidadAsociada { get; set; }
 
+        //Si se quiere agregar más de una funcionalidad asociada por favor usar (,) el separador será la COMA 
         public static void InsertNovedad()
         {
             FacturaProduccionContext dbProduccion = new FacturaProduccionContext();
@@ -50,9 +51,9 @@ namespace TryTestWeb.Models.ModelosSistemaContable.Common
             {
                 NovedadesRegistradasModel nuevaNovedad = new NovedadesRegistradasModel()
                 {
-                    NombreNovedad = "Nueva forma de crear numeroVouchers",
+                    NombreNovedad = NovedadesEnumKeys.KeyNovedad.NewNumVoucherFormat.ToString(),
                     FechaCreacionNovedad = DateTime.Now,
-                    NombreFuncionalidadAsociada = "ParseExtensions.GetNumVoucher()"
+                    NombreFuncionalidadAsociada = NovedadesEnumKeys.KeyNovedadFuncionalidadAsociada.GetNumVoucher.ToString()
                 };
 
                 dbProduccion.DBNovedadesRegistradasModel.Add(nuevaNovedad);
@@ -63,14 +64,15 @@ namespace TryTestWeb.Models.ModelosSistemaContable.Common
             {
                 NovedadesRegistradasModel nuevaNovedad = new NovedadesRegistradasModel()
                 {
-                    NombreNovedad = "Nueva forma de crear numeroVouchers",
+                    NombreNovedad = NovedadesEnumKeys.KeyNovedad.NewNumVoucherFormat.ToString(),
                     FechaCreacionNovedad = DateTime.Now,
-                    NombreFuncionalidadAsociada = "ParseExtensions.GetNumVoucher()"
+                    NombreFuncionalidadAsociada = NovedadesEnumKeys.KeyNovedadFuncionalidadAsociada.GetNumVoucher.ToString()
                 };
 
                 dbTestContext.DBNovedadesRegistradasModel.Add(nuevaNovedad);
                 dbTestContext.SaveChanges();
-            }  
+            }
         }
+
     }
 }

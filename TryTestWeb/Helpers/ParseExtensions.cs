@@ -814,6 +814,32 @@ public static class ParseExtensions
         return KeyAndValueTipoDte;
     }
 
+
+    public static int GetVoucherIdWithActualizationNumVoucher(FacturaPoliContext db, ClientesContablesModel objCliente)
+    {
+        try
+        {
+            int ReturnValues = 0;
+            //Obtener la fecha ejecucion del update del cliente contable
+            int NovedadId = db.DBNovedadesRegistradasModel.Where(novedadR => novedadR.NombreFuncionalidadAsociada == NovedadesEnumKeys.KeyNovedad.NewNumVoucherFormat.ToString())
+                                                            .FirstOrDefault().NovedadesRegistradasModelID;
+
+            DateTime FechaEjecucion = db.DBNovedadesModel.Where(novedad => novedad.Novedad.NovedadesRegistradasModelID == NovedadId && novedad.ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID)
+                                                            .FirstOrDefault().FechaEjecucionNovedadEstecliente;
+
+            int UltimoVoucherId = db.DBVoucher.Where(voucher => voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID && voucher.FechaEmision > FechaEjecucion)
+                                                .FirstOrDefault().VoucherModelID;
+
+            ReturnValues = UltimoVoucherId;
+
+            return ReturnValues;
+        } 
+        catch(Exception ex)
+        {
+            throw new Exception("Error al obtener el ultimo voucherId de este cliente ERROR:" + ex.Message);
+        }
+    }
+
     public static DateTime? GetFechaDependiendoDelTipoDeDato(string Fecha, DateTime FechaDt)
     {
         DateTime? FechaOriginStr = null;
