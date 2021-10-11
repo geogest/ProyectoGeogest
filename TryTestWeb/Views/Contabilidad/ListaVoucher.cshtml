@@ -169,47 +169,49 @@
 
                             <tbody>
 
-                                @foreach (var Voucher in Model.VoucherList)
+                                @foreach (VoucherModel Voucher in Model.VoucherList)
                                 {
-                                    <tr>
-                                        <td><input type="checkbox" name="CheckVoucher" class="marca" id="CheckVoucher" value="@Voucher.VoucherModelID" /></td>
-                                        <td>@Voucher.NumeroVoucher</td>
-                                        <td>@Voucher.Tipo</td>
-                                        @if (!string.IsNullOrWhiteSpace(Voucher.TipoOrigen))
-                                        {
-                                            <td>@Voucher.TipoOrigen</td>
-                                        }
-                                        else
-                                        {
-                                            <td>@Voucher.TipoOrigenVoucher.ToString()</td>
-                                        }
-                                        <td>@Voucher.FechaEmision.ToString("dd-MM-yyyy")</td>
-                                        <td>@Voucher.Glosa</td>
-                                        <td><a href="javascript:GetDetalleVoucher('@Voucher.VoucherModelID');">ver detalle</a></td>
-                                        <td>@(Voucher.CentroDeCosto != null ? Voucher.CentroDeCosto.Nombre : string.Empty)</td>
-                                        @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EditarVoucher"))
-                                        {
-                                            <td>
+                                <tr>
+                                    <td><input type="checkbox" name="CheckVoucher" class="marca" id="CheckVoucher" value="@Voucher.VoucherModelID" /></td>
+                                     @if (!string.IsNullOrWhiteSpace(Voucher.NumVoucherWithDate))
+                                    {
+                                         <td>@Voucher.NumVoucherWithDate</td>
+                                    }
+                                    else
+                                    {
+                                         <td>@Voucher.NumeroVoucher</td>
+                                    }
 
-                                                @Html.BtnEditar("", "", "btn-sm redondo btnPress", Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = Voucher.VoucherModelID }), "", "Lista Voucher")
+                                    <td>@Voucher.Tipo</td>
+                                    @if (!string.IsNullOrWhiteSpace(Voucher.TipoOrigen))
+                                    {
+                                <td>@Voucher.TipoOrigen</td> }
+                                                        else
+                                                        {
+                                <td>@Voucher.TipoOrigenVoucher.ToString()</td>}
+                                    <td>@Voucher.FechaEmision.ToString("dd-MM-yyyy")</td>
+                                    <td>@Voucher.Glosa</td>
+                                    <td><a href="javascript:GetDetalleVoucher('@Voucher.VoucherModelID');">ver detalle</a></td>
+                                    <td>@(Voucher.CentroDeCosto != null ? Voucher.CentroDeCosto.Nombre : string.Empty)</td>
+                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "EditarVoucher"))
+                                    {
+                                <td>
 
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td></td>
-                                        }
-                                        @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BorrarBajaVoucher"))
-                                        {
-                                            <td>
-                                                @Html.BtnBorrar("", "", "javascript:TryDeleteVoucher(" + @Voucher.VoucherModelID + ");", "", "btn-sm redondo btnPress")
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td></td>
-                                        }
-                                    </tr>
+                                    @Html.BtnEditar("", "", "btn-sm redondo btnPress", Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = Voucher.VoucherModelID }), "", "Lista Voucher")
+
+                                </td> }
+                                                        else
+                                                        {
+                                <td></td>}
+                                    @if (ModuloHandler.FuncionRequerida(HttpContext.Current, "BorrarBajaVoucher"))
+                                    {
+                                <td>
+                                    @Html.BtnBorrar("", "", "javascript:TryDeleteVoucher(" + @Voucher.VoucherModelID + ");", "", "btn-sm redondo btnPress")
+                                </td> }
+                                                        else
+                                                        {
+                                <td></td>}
+                                </tr>
                                 }
 
                             </tbody>

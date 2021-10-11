@@ -5,13 +5,13 @@ using System.Data.Entity.Migrations.Infrastructure;
 using System.Resources;
 
 [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-public sealed partial class TablasParaControlarCambiosTransversales : IMigrationMetadata
+public sealed partial class SeAgregaFechaCreacionAVouchermodel : IMigrationMetadata
 {
-    private readonly ResourceManager Resources = new ResourceManager(typeof(TablasParaControlarCambiosTransversales));
+    private readonly ResourceManager Resources = new ResourceManager(typeof(SeAgregaFechaCreacionAVouchermodel));
     
     string IMigrationMetadata.Id
     {
-        get { return "202109300621520_TablasParaControlarCambiosTransversales"; }
+        get { return "202110050408260_SeAgregaFechaCreacionAVouchermodel"; }
     }
     
     string IMigrationMetadata.Source

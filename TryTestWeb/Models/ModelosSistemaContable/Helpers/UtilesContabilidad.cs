@@ -25,7 +25,7 @@ public class UtilesContabilidad
         CuentaContableModel ReturnValues = new CuentaContableModel();
         if (ObjCliente != null)
         {
-            ReturnValues = ObjCliente.CtaContable.SingleOrDefault(x => x.CodInterno == CodInterno);
+            ReturnValues = ObjCliente.CtaContable.FirstOrDefault(x => x.CodInterno == CodInterno);
         }
        
         return ReturnValues;

@@ -285,9 +285,13 @@
     <Compile Include="Migrations\202109270211174_Reset.Designer.cs">
       <DependentUpon>202109270211174_Reset.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202109300621520_TablasParaControlarCambiosTransversales.cs" />
-    <Compile Include="Migrations\202109300621520_TablasParaControlarCambiosTransversales.Designer.cs">
-      <DependentUpon>202109300621520_TablasParaControlarCambiosTransversales.cs</DependentUpon>
+    <Compile Include="Migrations\202110050358408_SeAgreganTablasParaControlarUpdates.cs" />
+    <Compile Include="Migrations\202110050358408_SeAgreganTablasParaControlarUpdates.Designer.cs">
+      <DependentUpon>202110050358408_SeAgreganTablasParaControlarUpdates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110050408260_SeAgregaFechaCreacionAVouchermodel.cs" />
+    <Compile Include="Migrations\202110050408260_SeAgregaFechaCreacionAVouchermodel.Designer.cs">
+      <DependentUpon>202110050408260_SeAgregaFechaCreacionAVouchermodel.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminMonitoreo\ErrorMensajeMonitoreo.cs" />
@@ -1000,8 +1004,11 @@
     <EmbeddedResource Include="Migrations\202109270211174_Reset.resx">
       <DependentUpon>202109270211174_Reset.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202109300621520_TablasParaControlarCambiosTransversales.resx">
-      <DependentUpon>202109300621520_TablasParaControlarCambiosTransversales.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202110050358408_SeAgreganTablasParaControlarUpdates.resx">
+      <DependentUpon>202110050358408_SeAgreganTablasParaControlarUpdates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110050408260_SeAgregaFechaCreacionAVouchermodel.resx">
+      <DependentUpon>202110050408260_SeAgregaFechaCreacionAVouchermodel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

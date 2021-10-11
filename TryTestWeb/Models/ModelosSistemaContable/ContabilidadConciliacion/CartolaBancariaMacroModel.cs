@@ -64,7 +64,7 @@ public class CartolaBancariaMacroModel
         foreach (CartolaBancariaModel itemCArtola in CartolaAactualizar.CartolaDetalle)
         {
             RelacionadosYConciliados RelacionCartolaYLibroMayor = new RelacionadosYConciliados();
-            RelacionCartolaYLibroMayor = DatosConciliacion.SingleOrDefault(x => x.IdCartolaDetalle == itemCArtola.CartolaBancariaModelId);
+            RelacionCartolaYLibroMayor = DatosConciliacion.FirstOrDefault(x => x.IdCartolaDetalle == itemCArtola.CartolaBancariaModelId);
 
             if(RelacionCartolaYLibroMayor != null) { 
                 itemCArtola.VoucherModelID = RelacionCartolaYLibroMayor.VoucherId;
@@ -348,14 +348,19 @@ public class CartolaBancariaMacroModel
 
         if (LstCartolaYVouchers.Count() > 0)
         {
-                DateTime FechaConvertida = ParseExtensions.ToDD_MM_AAAA_Multi(FechaCartola);
-                SiExisteReemplazala(FechaConvertida, NumeroCartola,db, ObjCliente);
-                List<CartolaBancariaModel> CartolaDetalle = new List<CartolaBancariaModel>();
-                foreach (var itemCartola in LosQueTienenInformacion)
+            DateTime FechaConvertida = ParseExtensions.ToDD_MM_AAAA_Multi(FechaCartola);
+            SiExisteReemplazala(FechaConvertida, NumeroCartola,db, ObjCliente);
+            List<CartolaBancariaModel> CartolaDetalle = new List<CartolaBancariaModel>();
+            //De todas formas viene el mes y el año independientemente de que el día sea diferente
+
+            DateTime Fecha = LosQueTienenInformacion.FirstOrDefault().Fecha;
+            int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(ObjCliente, db, Fecha.Month, Fecha.Year);
+            int baseNumberFolio = nullableProxVoucherNumber.Value;
+            foreach (ObjCartolaYVouchers itemCartola in LosQueTienenInformacion)
                 {
                     CuentaContableModel CuentaAUsar = UtilesContabilidad.CuentaContableDesdeCodInterno(itemCartola.CodigoInterno, ObjCliente);
-                    var Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
-                    var TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
+                    QuickReceptorModel Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
+                    TipoOrigen TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
 
                     if (CuentaAUsar == null)
                         throw new Exception($"La cuenta contable que intentas ingresar no está en el plan de cuentas O no está digitada en el excel CUENTA CONTABLE CON ERROR : {itemCartola.CodigoInterno}");
@@ -382,15 +387,14 @@ public class CartolaBancariaMacroModel
 
                     if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null || CuentaAUsar.TieneAuxiliar == 0 && Prestador == null)
                     {
-                        int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(ObjCliente, db, itemCartola.Fecha.Month, itemCartola.Fecha.Year);
-                        int baseNumberFolio = nullableProxVoucherNumber.Value;
-
+ 
                         VoucherModel CapaVoucher = new VoucherModel();
 
                         CapaVoucher.TipoOrigenVoucher = TipoPrestador;
 
                         CapaVoucher.FechaEmision = itemCartola.Fecha;
                         CapaVoucher.NumeroVoucher = baseNumberFolio;
+                        CapaVoucher.NumVoucherWithDate = ParseExtensions.BuildNewFormatNumVoucher(baseNumberFolio,Fecha);
                         CapaVoucher.ClientesContablesModelID = ObjCliente.ClientesContablesModelID;
                         CapaVoucher.Glosa = itemCartola.Glosa;
 
@@ -502,7 +506,7 @@ public class CartolaBancariaMacroModel
                 }
                 //Se inserta toda la cartola bancaria para tener respaldo.
                 CartolaCompleta = ObtenerCartolaParaResultadoConciliacion(LosQueNoEstanEnElMayor, CartolaDetalle);
-                var ResultadoInsercionCartolaBancaria = GuardarCartolaBancaria(CartolaDetalle, LosQueNoEstanEnElMayor, FechaCartola, NumeroCartola, CuentaConsultada, ObjCliente, db);
+                bool ResultadoInsercionCartolaBancaria = GuardarCartolaBancaria(CartolaDetalle, LosQueNoEstanEnElMayor, FechaCartola, NumeroCartola, CuentaConsultada, ObjCliente, db);
                 Result = true;
         }
         else
@@ -568,12 +572,12 @@ public class CartolaBancariaMacroModel
         //Numero de la cartola es igual a uno existente en la db.
         //Cuando pertenecen al mismo mes y año.
         bool Result = false;
-        var lstCartolaMacroModel = db.DBCartolaBMacro.Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+        bool lstCartolaMacroModel = db.DBCartolaBMacro.Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
                                                                  x.FechaCartola.Month == FechaCartola.Month &&
                                                                  x.FechaCartola.Year == FechaCartola.Year &&
-                                                                 x.NumeroCartola == NumeroCartola).ToList();
+                                                                 x.NumeroCartola == NumeroCartola).Any();
 
-        if(lstCartolaMacroModel.Count() > 0)
+        if(lstCartolaMacroModel)
         {
             Result = true;  
         }

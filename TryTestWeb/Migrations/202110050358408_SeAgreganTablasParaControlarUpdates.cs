@@ -1,7 +1,7 @@
 using System;
 using System.Data.Entity.Migrations;
 
-public partial class TablasParaControlarCambiosTransversales : DbMigration
+public partial class SeAgreganTablasParaControlarUpdates : DbMigration
 {
     public override void Up()
     {

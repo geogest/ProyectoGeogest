@@ -7,12 +7,12 @@ using System.Web;
     public class LibroMayor
     {
        public int NumVoucher { get; set; }
+       public string NumVoucherTwo { get; set; }
        public int VoucherId { get; set; }
        public int DetalleVoucherId { get; set; }
        public DateTime FechaContabilizacion { get; set; }
        public TipoVoucher Comprobante { get; set; }
        public string ComprobanteCadena { get; set; }
-       public string ComprobanteP2 { get; set; }
        public string ComprobanteP3 { get; set; }
        public string Glosa { get; set; }
        public string Rut { get; set; }
@@ -22,6 +22,7 @@ using System.Web;
        public decimal Saldo { get; set; }
        public string CtaContNombre { get; set; }
        public ClasificacionCtaContable CtaContableClasi { get; set; }
+       public DateTime? FechaCreacion { get; set; }
        public int CtaContablesID { get; set; }
        public string Nombre { get; set; }
        public string CodigoInterno { get; set; }

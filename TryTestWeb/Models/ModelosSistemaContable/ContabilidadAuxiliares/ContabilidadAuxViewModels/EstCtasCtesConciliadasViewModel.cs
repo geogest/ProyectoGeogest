@@ -17,6 +17,7 @@ public class EstCtasCtesConciliadasViewModel
     public string Comprobante { get; set; }
     public TipoDte Documento { get; set; }
     public DateTime Vencim { get; set; }
+    public DateTime? FechaCreacion { get; set; }
     public decimal MontoTotal { get; set; }
     public decimal Debe { get; set; }
     public decimal Haber { get; set; }
@@ -31,6 +32,8 @@ public class EstCtasCtesConciliadasViewModel
 
     public static IQueryable<EstCtasCtesConciliadasViewModel> GetlstCtasCtesConciliadas(FacturaPoliContext db, ClientesContablesModel objCliente)
     {
+
+        DateTime FechaEjecucion = ParseExtensions.ObtenerFechaActualizacionNumVoucher(objCliente);
         IQueryable<EstCtasCtesConciliadasViewModel> LstCtaCorriente = (from Detalle in db.DBDetalleVoucher
                                                                        join Voucher in db.DBVoucher on Detalle.VoucherModelID equals Voucher.VoucherModelID
                                                                        join Auxiliar in db.DBAuxiliares on Detalle.Auxiliar.AuxiliaresModelID equals Auxiliar.AuxiliaresModelID
@@ -45,7 +48,7 @@ public class EstCtasCtesConciliadasViewModel
                                                                            NombrePrestador = AuxiliaresDetalle.Individuo2.RazonSocial,
                                                                            Fecha = Detalle.FechaDoc,
                                                                            Folio = AuxiliaresDetalle.Folio,
-                                                                           Comprobante = Voucher.Tipo.ToString() + "   " + Voucher.NumeroVoucher.ToString() + "   " + Detalle.Auxiliar.LineaNumeroDetalle.ToString(),
+                                                                           Comprobante = FechaEjecucion <= Voucher.FechaCreacion ? Voucher.Tipo.ToString() + "   " + Voucher.NumeroVoucher.ToString() + "   " + Detalle.Auxiliar.LineaNumeroDetalle.ToString() : Voucher.Tipo.ToString()+ "   " + Voucher.FechaEmision.Month.ToString() + Voucher.FechaEmision.Year.ToString() +"-"+Voucher.NumeroVoucher.ToString() + "   " + Detalle.Auxiliar.LineaNumeroDetalle.ToString(),
                                                                            Documento = AuxiliaresDetalle.TipoDocumento,
                                                                            TipoAux = AuxiliaresDetalle.Individuo2.tipoReceptor,
                                                                            DebeAnalisis = Detalle.MontoDebe,
@@ -53,6 +56,7 @@ public class EstCtasCtesConciliadasViewModel
                                                                            CuentaContable = Detalle.ObjCuentaContable,
                                                                            MontoTotal = AuxiliaresDetalle.MontoTotalLinea,
                                                                            VoucherID = Voucher.VoucherModelID,
+                                                                           FechaCreacion = Voucher.FechaCreacion,
                                                                            DetalleVoucherID = Detalle.DetalleVoucherModelID
                                                                        });
 

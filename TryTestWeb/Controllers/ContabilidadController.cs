@@ -1466,9 +1466,9 @@ namespace TryTestWeb.Controllers
             //Predicado Base
             IQueryable<VoucherModel> Predicado = db.DBVoucher.Where(r => r.DadoDeBaja == false && r.ClientesContablesModelID == objCliente.ClientesContablesModelID);
 
-
+           
             // Filtros
-            if(Anio > 0)
+            if (Anio > 0)
                 Predicado = Predicado.Where(r => r.FechaEmision.Year == Anio);
             
             if(Mes > 0)
@@ -1498,7 +1498,7 @@ namespace TryTestWeb.Controllers
 
             // Pasamos los datos necesarios para que funcione el paginador generico.
             var Paginador = new PaginadorModel();
-            Paginador.VoucherList = LstVoucher;
+            Paginador.VoucherList = LstVoucher; //Queda pendiente cambiar esto a un DTO
             Paginador.PaginaActual = pagina;
             Paginador.TotalDeRegistros = totalDeRegistros;
             Paginador.RegistrosPorPagina = cantidadRegistrosPorPagina;
@@ -1529,8 +1529,10 @@ namespace TryTestWeb.Controllers
             if (TipoOrigenVoucher != null)
                 Paginador.ValoresQueryString["TipoOrigenVoucher"] = TipoOrigenVoucher;
 
-           
-           return View(Paginador);
+
+
+
+            return View(Paginador);
         }
 
 
@@ -1658,6 +1660,9 @@ namespace TryTestWeb.Controllers
 
             VoucherModel objVoucher = new VoucherModel();
 
+
+            string NumVoucherStr = "";
+
             //Numero de Voucher que sera utilizado en la insercion/actualizacion
             int NewNumeroVoucher = 0;
 
@@ -1711,12 +1716,16 @@ namespace TryTestWeb.Controllers
                     if (estaDisponible) //si esta disponible lo asigna
                     {
                         NewNumeroVoucher = numVoucherDesdeFormulario.Value;
+                        NumVoucherStr = ParseExtensions.BuildNewFormatNumVoucher(NewNumeroVoucher, objVoucher.FechaEmision);
                     }
                     else // si no esta disponible le asigna uno disponible
                     {
                         int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(objCliente, db, objVoucher.FechaEmision.Month, objVoucher.FechaEmision.Year);
                         if (nullableProxVoucherNumber.HasValue)
                             NewNumeroVoucher = nullableProxVoucherNumber.Value;
+
+
+                        NumVoucherStr = ParseExtensions.BuildNewFormatNumVoucher(nullableProxVoucherNumber.Value, objVoucher.FechaEmision);
                     }
                 }
 
@@ -1736,12 +1745,15 @@ namespace TryTestWeb.Controllers
                     if (estaDisponible) //si esta disponible lo asigna
                     {
                         NewNumeroVoucher = numVoucherDesdeFormulario.Value;
+                        NumVoucherStr = ParseExtensions.BuildNewFormatNumVoucher(NewNumeroVoucher, FechaValida);
                     }
                     else // si no esta disponible le asigna uno disponible
                     {
                         int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(objCliente, db, FechaValida.Month, FechaValida.Year);
                         if (nullableProxVoucherNumber.HasValue)
                             NewNumeroVoucher = nullableProxVoucherNumber.Value;
+
+                        NumVoucherStr = ParseExtensions.BuildNewFormatNumVoucher(nullableProxVoucherNumber.Value, FechaValida);
                     }
                 }
                 else
@@ -1749,6 +1761,8 @@ namespace TryTestWeb.Controllers
                     int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(objCliente, db, FechaValida.Month, FechaValida.Year);
                     if (nullableProxVoucherNumber.HasValue)
                         NewNumeroVoucher = nullableProxVoucherNumber.Value;
+
+                    NumVoucherStr = ParseExtensions.BuildNewFormatNumVoucher(nullableProxVoucherNumber.Value, FechaValida);
                 }
             }
 
@@ -1765,6 +1779,9 @@ namespace TryTestWeb.Controllers
 
             if (NewNumeroVoucher > 0)
                 objVoucher.NumeroVoucher = NewNumeroVoucher;
+
+            if (!string.IsNullOrWhiteSpace(NumVoucherStr))
+                objVoucher.NumVoucherWithDate = NumVoucherStr;
 
             if (Request.Form.GetValues("centrocost") != null && !string.IsNullOrEmpty(Request.Form.GetValues("centrocost")[0]))
             {
@@ -1873,6 +1890,7 @@ namespace TryTestWeb.Controllers
 
                     if (objVoucher.VoucherModelID > 0)
                     {
+                        //Mejorar este metodo
                         VoucherModel VerificaExistencia = db.DBVoucher.SingleOrDefault(x => x.VoucherModelID == objVoucher.VoucherModelID && x.ClientesContablesModelID == objCliente.ClientesContablesModelID);
                         if(VerificaExistencia != null) {
                             if(VerificaExistencia.DadoDeBaja == false) {  
@@ -3599,8 +3617,6 @@ namespace TryTestWeb.Controllers
                 ViewBag.AnioSinFiltro = "Registros del año" + " " + DateTime.Now.Year + " " + "Y Mes: " + ParseExtensions.obtenerNombreMes(DateTime.Now.Month);
             }
 
-            //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
-
             if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
                 ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
@@ -3652,6 +3668,8 @@ namespace TryTestWeb.Controllers
                     var FechasExcel = new SessionParaExcel();
                     FechasExcel = (SessionParaExcel)Session["FechasExcel"];
 
+
+
                     string NombreCuentacont = string.Empty;
                     if (!string.IsNullOrWhiteSpace(FechasExcel.CtaContId))
                          NombreCuentacont = UtilesContabilidad.ObtenerNombreCuentaContable(Convert.ToInt32(FechasExcel.CtaContId),objCliente);
@@ -3678,7 +3696,6 @@ namespace TryTestWeb.Controllers
             PaginadorModel ReturnValues = new PaginadorModel();
 
             flibros.Filtro = true;
-
             if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
                 ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
@@ -3717,7 +3734,6 @@ namespace TryTestWeb.Controllers
             }
 
             //Levar esta conversión al modelo y luego pasarle las fechas en formato String.
-
             if (!string.IsNullOrWhiteSpace(flibros.FechaInicio) && !string.IsNullOrWhiteSpace(flibros.FechaFin))
             {
                 ReturnValues = VoucherModel.GetLibroMayorTwo(flibros, objCliente, db);
@@ -3770,7 +3786,6 @@ namespace TryTestWeb.Controllers
                                              CtaContablesID = CtaContable.CuentaContableModelID,
                                              CtaContableClasi = CtaContable.Clasificacion,
                                              Comprobante = Voucher.Tipo,
-                                             ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
                                              ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString()
                                          };
             

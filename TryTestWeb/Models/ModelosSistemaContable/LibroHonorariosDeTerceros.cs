@@ -140,6 +140,10 @@ public class LibroHonorariosDeTerceros
 
         CuentaContableModel cuentaPrincipal = new CuentaContableModel();
 
+        DateTime FechaContabilizacion = lstAConvertir.FirstOrDefault().FechaContabilizacion;
+
+        int NumeroVoucherInicial = ParseExtensions.GetNumVoucher(ObjCliente, db, FechaContabilizacion.Month, FechaContabilizacion.Year).Value;
+
         foreach (LibroHonorariosDeTerceros itemLibroHonor in lstAConvertir)
         {
             decimal MontoBruto = itemLibroHonor.Brutos; // Debe
@@ -158,7 +162,8 @@ public class LibroHonorariosDeTerceros
             string FullDescripcionDocOriginal = lstCuentaConbtale[contadorAnexo].nombre + " / Folio: " + itemLibroHonor.NumOFolio + " / " + itemLibroHonor.Receptor.RazonSocial;
 
             nuevoVoucher.Glosa = FullDescripcionDocOriginal;
-            nuevoVoucher.NumeroVoucher = ParseExtensions.GetNumVoucher(ObjCliente, db, itemLibroHonor.FechaContabilizacion.Month, itemLibroHonor.FechaContabilizacion.Year).Value;  //
+            nuevoVoucher.NumeroVoucher = NumeroVoucherInicial;
+            nuevoVoucher.NumVoucherWithDate = ParseExtensions.BuildNewFormatNumVoucher(NumeroVoucherInicial, FechaContabilizacion);
 
             List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
 
@@ -255,6 +260,7 @@ public class LibroHonorariosDeTerceros
                 }
             }
             contadorAnexo++;
+            NumeroVoucherInicial++;
         }
 
         if (lstNuevosVouchers != null && lstNuevosVouchers.Count > 0)

@@ -35,10 +35,12 @@ public class VoucherModel
     public TipoOrigen TipoOrigenVoucher { get; set; }
 
     public int NumeroVoucher { get; set; }
+    public string NumVoucherWithDate { get; set; }
 
     public bool DadoDeBaja { get; set; } = false;
 
     public int ClientesProveedoresModelID { get; set; }
+    public DateTime? FechaCreacion { get; set; } = DateTime.Now;
 
     public static decimal GetTotalDebe(List<VoucherModel> lstVoucher)
     {
@@ -329,6 +331,8 @@ public class VoucherModel
         var UnicosEnLaLista = ParseExtensions.obtieneUnicosEnLista(lstLibroMayor);
 
         string RutaPlanillaLibroMayor = ParseExtensions.Get_AppData_Path("EXCELMAYOR.xlsx");
+
+        
 
         byte[] ExcelByteArray = null;
         using (XLWorkbook excelFile = new XLWorkbook(RutaPlanillaLibroMayor))
@@ -859,13 +863,14 @@ public class VoucherModel
                                       CtaContablesID = detalleVoucher.ObjCuentaContable.CuentaContableModelID,
                                       CtaContableClasi = detalleVoucher.ObjCuentaContable.Clasificacion,
                                       Comprobante = Voucher.Tipo,
-                                      ComprobanteP2 = Voucher.NumeroVoucher.ToString(),
                                       ComprobanteP3 = Auxiliar.LineaNumeroDetalle.ToString(),
+                                      NumVoucherTwo = Voucher.NumVoucherWithDate,
                                       NumVoucher = Voucher.NumeroVoucher,
                                       VoucherId = Voucher.VoucherModelID,
+                                      FechaCreacion = Voucher.FechaCreacion,
                                       DetalleVoucherId = detalleVoucher.DetalleVoucherModelID,
                                       EstaConciliado = detalleVoucher.Conciliado
-                                  });
+                                  }); 
 
 
         if (flibros.Anio != 0)
@@ -934,11 +939,18 @@ public class VoucherModel
 
         int NumLinea = 1;
 
+        
+
         foreach (var itemLibroMayor in LibroMayorCompleto)
         {
             string[] ArrayLibroMayor = new string[] { "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-" };
 
-            string Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.ComprobanteP2 + "   " + itemLibroMayor.ComprobanteP3;
+            string Comprobante = "";
+
+            if(!string.IsNullOrWhiteSpace(itemLibroMayor.NumVoucherTwo)) Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + ParseExtensions.BuildNewFormatNumVoucher(itemLibroMayor.NumVoucher, itemLibroMayor.FechaContabilizacion) + "   " + itemLibroMayor.ComprobanteP3;
+            if(string.IsNullOrWhiteSpace(itemLibroMayor.NumVoucherTwo)) Comprobante = ParseExtensions.TipoVoucherToShortName(itemLibroMayor.Comprobante) + " " + itemLibroMayor.NumVoucher.ToString() + "   " + itemLibroMayor.ComprobanteP3;
+            
+             
             //int EvitarRedundanciaPrestadores = ReturnValues.Where(x => x.Contains(itemLibroMayor.Rut) && x.Contains(Comprobante)).Count();
             if (itemLibroMayor.Rut != "-")
             {
@@ -1467,7 +1479,7 @@ public class VoucherModel
             if (
                 Cuenta.Clasificacion == ClasificacionCtaContable.ACTIVOS
                 && SubClasiCodigo == "11"
-                && SubSubClasiCodigo.Contains("110")
+                && SubSubClasiCodigo.StartsWith("110")
                )
             {
                 decimal SumasDebitosEstaCuenta = 0;
@@ -1537,7 +1549,7 @@ public class VoucherModel
             if (
                 Cuenta.Clasificacion == ClasificacionCtaContable.ACTIVOS
                 && SubClasiCodigo == "12"
-                && SubSubClasiCodigo.Contains("120")
+                && SubSubClasiCodigo.StartsWith("120")
                 )
             {
                 decimal SumasDebitosEstaCuenta = 0;
@@ -1614,7 +1626,7 @@ public class VoucherModel
             if (
                 Cuenta.Clasificacion == ClasificacionCtaContable.ACTIVOS
                 && SubClasiCodigo == "11"
-                && SubSubClasiCodigo.Contains("110")
+                && SubSubClasiCodigo.StartsWith("110")
                )
             {
                 decimal SumasDebitosEstaCuenta = 0;
@@ -1669,13 +1681,13 @@ public class VoucherModel
 
             string SubClasiCodigo = Cuenta.SubClasificacion.CodigoInterno;
             string SubClasiName = Cuenta.SubClasificacion.NombreInterno;
-            string SubSubClasiCodigo = Cuenta.SubSubClasificacion.CodigoInterno;
+            string SubSubClasiCodigo = Cuenta.SubSubClasificacion.CodigoInterno; 
             string SubSubClasiName = Cuenta.GetSubSubClasificacionName();
 
             if (
                 Cuenta.Clasificacion == ClasificacionCtaContable.ACTIVOS
                 && SubClasiCodigo == "12"
-                && SubSubClasiCodigo.Contains("120")
+                && SubSubClasiCodigo.StartsWith("120")
                 )
             {
                 decimal SumasDebitosEstaCuenta = 0;

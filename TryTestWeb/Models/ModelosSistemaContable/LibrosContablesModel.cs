@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Data.Entity.Migrations;
 using System.Web.Routing;
 using System.Globalization;
+using TryTestWeb.Helpers;
 
 public class LibrosContablesModel
 {
@@ -147,6 +148,12 @@ public class LibrosContablesModel
 
                 CuentaContableModel cuentaPrincipal = new CuentaContableModel();
 
+
+
+                DateTime FechaContabilizacion = lstEntradasLibro.FirstOrDefault().FechaContabilizacion;
+
+                int NumeroVoucherInicial = ParseExtensions.GetNumVoucher(objCliente, db, FechaContabilizacion.Month, FechaContabilizacion.Year).Value;
+
                 foreach (LibrosContablesModel entradaLibro in lstEntradasLibro)
                 {
                     //CuentaIVAAUsar = db.DBCuentaContable.SingleOrDefault(r => r.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaCompras.CuentaContableModelID && r.ClientesContablesModelID == objCliente.ClientesContablesModelID );
@@ -171,8 +178,10 @@ public class LibrosContablesModel
 
                     nuevoVoucher.Glosa = FullDescripcionDocOriginal;
 
-                    nuevoVoucher.NumeroVoucher = ParseExtensions.GetNumVoucher(objCliente, db, entradaLibro.FechaContabilizacion.Month, entradaLibro.FechaContabilizacion.Year).Value; 
 
+                    //nuevoVoucher.NumeroVoucher = ParseExtensions.GetNumVoucher(objCliente, db, entradaLibro.FechaContabilizacion.Month, entradaLibro.FechaContabilizacion.Year).Value;
+                    nuevoVoucher.NumeroVoucher = NumeroVoucherInicial;
+                    nuevoVoucher.NumVoucherWithDate = ParseExtensions.BuildNewFormatNumVoucher(NumeroVoucherInicial, FechaContabilizacion);
                     //DEFINIR CUAL ES LA CUENTA DE VENTA O COMPRA DONDE VAN LAS VENTAS O COMPRAS
                     List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
 
@@ -413,6 +422,7 @@ public class LibrosContablesModel
                     else
                     {
                         contadorAnexo++;
+                        NumeroVoucherInicial++;
                         continue; //Pensar en como reportar que hubo problemas importando la linea X del libro
                     }
 
@@ -458,6 +468,7 @@ public class LibrosContablesModel
                         }
                     }
                     contadorAnexo++;
+                    NumeroVoucherInicial++;
                 }
 
                 if (lstNuevosVouchers != null && lstNuevosVouchers.Count > 0)
@@ -543,6 +554,11 @@ public class LibrosContablesModel
         List<VoucherModel> lstNuevosVouchers = new List<VoucherModel>();
         int contadorAnexo = 0;
 
+
+        DateTime FechaContabilizacion = lstLibroHonorImport.FirstOrDefault().FechaContabilizacion;
+
+        int NumeroVoucherInicial = ParseExtensions.GetNumVoucher(objCliente, db, FechaContabilizacion.Month, FechaContabilizacion.Year).Value;
+
         CuentaContableModel cuentaPrincipal = new CuentaContableModel();
         foreach (LibroDeHonorariosModel itemLibroHonor in lstLibroHonorImport)
         {
@@ -562,7 +578,8 @@ public class LibrosContablesModel
             string FullDescripcionDocOriginal = lstCuentaContable[contadorAnexo].nombre + " / Folio: " + itemLibroHonor.NumIdenficiador + " / " + itemLibroHonor.Prestador.RazonSocial;
 
             nuevoVoucher.Glosa = FullDescripcionDocOriginal;
-            nuevoVoucher.NumeroVoucher = ParseExtensions.GetNumVoucher(objCliente, db, itemLibroHonor.FechaContabilizacion.Month, itemLibroHonor.FechaContabilizacion.Year).Value;
+            nuevoVoucher.NumeroVoucher = NumeroVoucherInicial;
+            nuevoVoucher.NumVoucherWithDate = ParseExtensions.BuildNewFormatNumVoucher(NumeroVoucherInicial, FechaContabilizacion);
 
             List<DetalleVoucherModel> DetalleVoucher = new List<DetalleVoucherModel>();
 
@@ -618,6 +635,7 @@ public class LibrosContablesModel
             else
             {
                 contadorAnexo++;
+                NumeroVoucherInicial++;
                 continue;
             }
 
@@ -656,6 +674,7 @@ public class LibrosContablesModel
                 }
             }
             contadorAnexo++;
+            NumeroVoucherInicial++;
         }
 
 

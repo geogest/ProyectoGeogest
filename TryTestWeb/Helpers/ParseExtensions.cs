@@ -814,25 +814,72 @@ public static class ParseExtensions
         return KeyAndValueTipoDte;
     }
 
-
-    public static int GetVoucherIdWithActualizationNumVoucher(FacturaPoliContext db, ClientesContablesModel objCliente)
+    public static bool AplicaNuevaFormaDeDibujarVoucher(FacturaPoliContext db, ClientesContablesModel objCliente)
     {
         try
         {
-            int ReturnValues = 0;
-            //Obtener la fecha ejecucion del update del cliente contable
-            int NovedadId = db.DBNovedadesRegistradasModel.Where(novedadR => novedadR.NombreFuncionalidadAsociada == NovedadesEnumKeys.KeyNovedad.NewNumVoucherFormat.ToString())
-                                                            .FirstOrDefault().NovedadesRegistradasModelID;
+            bool ActualizacionAplicada = db.DBVoucher.Where(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID && x.FechaCreacion != null).Any();
+            return ActualizacionAplicada;
+        }
+        catch(Exception ex)
+        {
+            throw new Exception("Error al ejecutar evaluacion [AplicaNuevaFormaDeDibujarVoucher] ERROR: " + ex.Message);
+        }
+    }
 
-            DateTime FechaEjecucion = db.DBNovedadesModel.Where(novedad => novedad.Novedad.NovedadesRegistradasModelID == NovedadId && novedad.ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID)
+
+    //public static ObtenerNovedadNewNumVoucher(FacturaPoliContext db, ClientesContablesModel objCliente)
+    //{
+    //    try
+    //    {
+    //        int NovedadId = db.DBNovedadesRegistradasModel.Where(novedadR => novedadR.NombreNovedad == NovedadesEnumKeys.KeyNovedad.NewNumVoucherFormat.ToString())
+    //                                                       .FirstOrDefault().NovedadesRegistradasModelID;
+
+    //        DateTime FechaEjecucion = db.DBNovedadesModel.Where(novedad => novedad.Novedad.NovedadesRegistradasModelID == NovedadId && novedad.ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID)
+    //                                                        .FirstOrDefault().FechaEjecucionNovedadEstecliente;
+
+    //    }
+    //    catch(Exception ex)
+    //    {
+    //        throw new Exception("No se pudo obtener la novedad ERROR: " + ex.Message);
+    //    }
+    //}
+
+    public static DateTime ObtenerFechaActualizacionNumVoucher(ClientesContablesModel objCliente)
+    {
+        try
+        {
+            using(var db = new FacturaProduccionContext())
+            {
+                int NovedadId = db.DBNovedadesRegistradasModel.Where(novedadR => novedadR.NombreNovedad == NovedadesEnumKeys.KeyNovedad.NewNumVoucherFormat.ToString())
+                                                               .FirstOrDefault().NovedadesRegistradasModelID;
+
+                DateTime FechaEjecucion = db.DBNovedadesModel.Where(novedad => novedad.Novedad.NovedadesRegistradasModelID == NovedadId && novedad.ClienteContable.ClientesContablesModelID == objCliente.ClientesContablesModelID)
                                                             .FirstOrDefault().FechaEjecucionNovedadEstecliente;
 
-            int UltimoVoucherId = db.DBVoucher.Where(voucher => voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID && voucher.FechaEmision > FechaEjecucion)
-                                                .FirstOrDefault().VoucherModelID;
+                return FechaEjecucion;
+            }
+        }
+        catch(Exception ex)
+        {
+            throw new Exception("No se pudo obtener la novedad Error:" + ex.Message);
+        }
+    }
+    public static bool CorreDibujoNumVoucherAntiguoONuevo(ClientesContablesModel objCliente, int VoucherId)
+    {
+        try
+        {
+            using(var db = new FacturaProduccionContext())
+            {
+                //Ver la posibilidad de obtener la fecha de la ejecución y comparar la fecha de creacion con  la fecha de ejecucion para así no tener que estar constantemente yendo a la base de datos a comprar siempre.
 
-            ReturnValues = UltimoVoucherId;
-
-            return ReturnValues;
+                //ejemplo FechaEjecucion = ParseExtensions.GetFechaEjecucionNovedadNumVoucher(); //La idea es obtener esto una sola vez
+                //foreach () -> fechaCreacion >= FechaEjecucion == true -> usar nuevoTipoDibujo  si es falso usar el dibujo antiguo
+                bool CorreActualizacion = db.DBVoucher.Where(voucher => voucher.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                            voucher.VoucherModelID == VoucherId &&
+                                                                                voucher.FechaCreacion != null).Any();
+                return CorreActualizacion;
+            }
         } 
         catch(Exception ex)
         {
@@ -985,6 +1032,36 @@ public static class ParseExtensions
         catch(Exception ex)
         {
             throw new Exception("Error al crear numero voucher: " + ex.Message);
+        }
+    }
+
+
+    public static string BuildNewFormatNumVoucher(int NumVoucher, DateTime Fecha)
+    {
+        try
+        {
+            //el lugar que invoque esta función tiene que ir controlado por un try and catch para evitar que salga la pantalla
+            //de errores y ejecutar el correcto tempdata["error"] para que salga el error al usuario
+            if (NumVoucher <= 0) throw new Exception("El numero de voucher no puede venir vacio [BuildNewFormatNumVoucher]");
+            if (Fecha == null) throw new Exception("La fecha no puede venir vacía [BuildNewFormatNumVoucher]");
+
+            string NumVoucherBuilder = "";
+            if (Fecha.Month > 9)
+            {
+                //Logica de los mese de 1 digito
+                NumVoucherBuilder = Fecha.Month.ToString() + Fecha.Year.ToString() + "-" + NumVoucher.ToString();
+            }
+            if(Fecha.Month <= 9)
+            {
+                //Logica de los meses de 2 digitos
+                NumVoucherBuilder = "0" + Fecha.Month.ToString() + Fecha.Year.ToString() + "-" + NumVoucher.ToString();
+            }
+
+            return NumVoucherBuilder;
+        }
+        catch(Exception ex)
+        {
+            throw new Exception("Error al dar formato al voucher [BuildNewFormatNumVoucher] ERROR: " + ex.Message);
         }
     }
 
@@ -2941,7 +3018,7 @@ public static class ParseExtensions
     public static CuentaContableModel ObtenerCuentaDesdeId(int IdCuenta, ClientesContablesModel ObjCliente)
     {
         CuentaContableModel ReturnValues = new CuentaContableModel();
-        ReturnValues = ObjCliente.CtaContable.SingleOrDefault(x => x.CuentaContableModelID == IdCuenta);
+        ReturnValues = ObjCliente.CtaContable.FirstOrDefault(x => x.CuentaContableModelID == IdCuenta);
 
         return ReturnValues;
     }
