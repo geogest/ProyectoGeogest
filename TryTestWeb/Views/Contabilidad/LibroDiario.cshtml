@@ -5,21 +5,18 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="btn-group pull-right margen">
-            <form role="form">
-                <div class="pull-right">
-                    <div class="col-lg-6">
-                        @Html.BtnExportarPDF("ExportarPDF()")
-                    </div>
-                    <div class="col-lg-6 mtop">
-                        @using (Html.BeginForm("GetExcelLibroDiario", "Contabilidad", FormMethod.Post))
-                        {
-                                @Html.BtnExportar("", "Save")
-                        }
-                    </div>
+            <div class="pull-right">
+                <div class="col-lg-6">
+                    @Html.BtnExportarPDF("ExportarPDF()")
                 </div>
-                
-        </form>
-    </div>
+                <div class="col-lg-6 mtop">
+                    @using (Html.BeginForm("GetExcelLibroDiario", "Contabilidad", FormMethod.Post))
+                    {
+                        @Html.BtnExportar("", "Save")
+                    }
+                </div>
+            </div>
+        </div>
         <div class="page-header-2">
             <h2 class="page-header">Libro Diario</h2>
             <ol class="breadcrumb">

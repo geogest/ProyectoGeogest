@@ -7,16 +7,14 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="btn-group pull-right margen">
-            <form role="form">
-                <div class="button-list col-lg-12">
-                    <div class="col-lg-12">
-                        @using (Html.BeginForm("GetExcelEstadoResultadoEBITDA", "Contabilidad", FormMethod.Post))
-                        {
-                            @Html.BtnExportar("", "Save")
-                        }
-                    </div>
+            <div class="button-list col-lg-12">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("GetExcelEstadoResultadoEBITDA", "Contabilidad", FormMethod.Post))
+                    {
+                        @Html.BtnExportar("", "Save")
+                    }
                 </div>
-            </form>
+            </div>
         </div>
         <div class="page-header-2">
             <h2 class="page-header">Informe Estado Resultados EBITDA</h2>
