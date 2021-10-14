@@ -435,7 +435,15 @@ public class EstadoCuentasCorrientesViewModel
                         workSheet.Cell(numeroFilaExcel, "C").Value = CapaDetalle.NombrePrestador;
                         workSheet.Cell(numeroFilaExcel, "D").Value = CapaDetalle.Fecha;
                         workSheet.Cell(numeroFilaExcel, "E").Value = CapaDetalle.Folio;
-                        workSheet.Cell(numeroFilaExcel, "F").Value = CapaDetalle.Comprobante;
+                        if (!string.IsNullOrWhiteSpace(CapaDetalle.Comprobante2))
+                        {
+                            workSheet.Cell(numeroFilaExcel, "F").Value = CapaDetalle.Comprobante2;
+                        }
+                        else
+                        {
+                            workSheet.Cell(numeroFilaExcel, "F").Value = CapaDetalle.Comprobante;
+                        }
+                        
                         if (CapaDetalle.Documento == 0)
                         {
                             workSheet.Cell(numeroFilaExcel, "G").Value = "Honorarios";

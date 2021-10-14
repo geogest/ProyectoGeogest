@@ -15,6 +15,7 @@ public class EstCtasCtesConciliadasViewModel
     public int VoucherID { get; set; }
     public int DetalleVoucherID { get; set; }
     public string Comprobante { get; set; }
+    public string Comprobante2 { get; set; }
     public TipoDte Documento { get; set; }
     public DateTime Vencim { get; set; }
     public DateTime? FechaCreacion { get; set; }
@@ -33,7 +34,6 @@ public class EstCtasCtesConciliadasViewModel
     public static IQueryable<EstCtasCtesConciliadasViewModel> GetlstCtasCtesConciliadas(FacturaPoliContext db, ClientesContablesModel objCliente)
     {
 
-        DateTime FechaEjecucion = ParseExtensions.ObtenerFechaActualizacionNumVoucher(objCliente);
         IQueryable<EstCtasCtesConciliadasViewModel> LstCtaCorriente = (from Detalle in db.DBDetalleVoucher
                                                                        join Voucher in db.DBVoucher on Detalle.VoucherModelID equals Voucher.VoucherModelID
                                                                        join Auxiliar in db.DBAuxiliares on Detalle.Auxiliar.AuxiliaresModelID equals Auxiliar.AuxiliaresModelID
@@ -48,7 +48,8 @@ public class EstCtasCtesConciliadasViewModel
                                                                            NombrePrestador = AuxiliaresDetalle.Individuo2.RazonSocial,
                                                                            Fecha = Detalle.FechaDoc,
                                                                            Folio = AuxiliaresDetalle.Folio,
-                                                                           Comprobante = FechaEjecucion <= Voucher.FechaCreacion ? Voucher.Tipo.ToString() + "   " + Voucher.NumeroVoucher.ToString() + "   " + Detalle.Auxiliar.LineaNumeroDetalle.ToString() : Voucher.Tipo.ToString()+ "   " + Voucher.FechaEmision.Month.ToString() + Voucher.FechaEmision.Year.ToString() +"-"+Voucher.NumeroVoucher.ToString() + "   " + Detalle.Auxiliar.LineaNumeroDetalle.ToString(),
+                                                                           Comprobante = Voucher.Tipo +"  "+ Voucher.NumeroVoucher.ToString() +"  "+ Detalle.Auxiliar.LineaNumeroDetalle.ToString(),
+                                                                           Comprobante2 = Voucher.NumVoucherWithDate != null && Voucher.NumVoucherWithDate != "" ? Voucher.Tipo +"  "+ Voucher.NumVoucherWithDate + "  "+ Detalle.Auxiliar.LineaNumeroDetalle.ToString() : null,
                                                                            Documento = AuxiliaresDetalle.TipoDocumento,
                                                                            TipoAux = AuxiliaresDetalle.Individuo2.tipoReceptor,
                                                                            DebeAnalisis = Detalle.MontoDebe,
@@ -270,7 +271,7 @@ public class EstCtasCtesConciliadasViewModel
                     string AuxHonorario = "H";
                     string AuxPersona = "P";
 
-                    foreach (var ItemAanalizar in lstCtasCorrientes)
+                    foreach (EstCtasCtesConciliadasViewModel ItemAanalizar in lstCtasCorrientes)
                     {
 
                         if(ItemAanalizar.TipoAux == AuxCompra)
@@ -311,10 +312,10 @@ public class EstCtasCtesConciliadasViewModel
 
                     foreach (var PosibleConciliado in AyudaParaAnalizar)
                     {
-                       var PosiblesAConciliar = lstCtasCorrientes.Where(busca => busca.Folio == PosibleConciliado.Folio &&
-                                                                        busca.RutPrestador == PosibleConciliado.RutPrestador &&
-                                                                        busca.Documento == PosibleConciliado.Documento &&
-                                                                        busca.CuentaContable.CuentaContableModelID == PosibleConciliado.CuentaContableModelID).ToList();
+                       List<EstCtasCtesConciliadasViewModel> PosiblesAConciliar = lstCtasCorrientes.Where(busca => busca.Folio == PosibleConciliado.Folio &&
+                                                                                                                        busca.RutPrestador == PosibleConciliado.RutPrestador &&
+                                                                                                                            busca.Documento == PosibleConciliado.Documento &&
+                                                                                                                                busca.CuentaContable.CuentaContableModelID == PosibleConciliado.CuentaContableModelID).ToList();
 
                         if(PosiblesAConciliar.Count() > 1) {
                             decimal Haber = 0;

@@ -132,7 +132,7 @@
  
                                             <td colspan="11"><b>Saldo Apertura:&nbsp;@ParseExtensions.NumeroConPuntosDeMiles(Contenido.SaldoAcumuladoRut)</b></td>
                                         </tr>
-                                        @foreach (var InfoCtasCtes in Contenido.Contenido)
+                                        @foreach (EstCtasCtesConciliadasViewModel InfoCtasCtes in Contenido.Contenido)
                                         {
                                             Correlativo++;
                                             string idFila = "idFila" + Correlativo.ToString();
@@ -142,26 +142,34 @@
                                             {
                                                 ColorConciliados = "bg-success text-white";
                                             }
-                                            <tr class="@ColorConciliados">
-                                                <td>@Correlativo</td>
-                                                <td>@InfoCtasCtes.RutPrestador</td>
-                                                <td>@InfoCtasCtes.NombrePrestador</td>
-                                                <td>@ParseExtensions.ToDD_MM_AAAA(InfoCtasCtes.Fecha)</td>
-                                                <td name="Folio" id="@idFila">@InfoCtasCtes.Folio</td>
-                                                <td><a class="label label-table label-warning" href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = InfoCtasCtes.VoucherID })" target="_blank">@InfoCtasCtes.Comprobante</a></td>
-                                                @if (InfoCtasCtes.Documento == 0)
-                                                {
-                                                    <td>Honorarios</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>@ParseExtensions.EnumGetDisplayAttrib(InfoCtasCtes.Documento)</td>
-                                                }
-                                                <td></td>
-                                                <td>@ParseExtensions.NumeroConPuntosDeMiles(InfoCtasCtes.Debe)</td>
-                                                <td>@ParseExtensions.NumeroConPuntosDeMiles(InfoCtasCtes.Haber)</td>
-                                                <td></td>
-                                            </tr>
+                                    <tr class="@ColorConciliados">
+                                        <td>@Correlativo</td>
+                                        <td>@InfoCtasCtes.RutPrestador</td>
+                                        <td>@InfoCtasCtes.NombrePrestador</td>
+                                        <td>@ParseExtensions.ToDD_MM_AAAA(InfoCtasCtes.Fecha)</td>
+                                        <td name="Folio" id="@idFila">@InfoCtasCtes.Folio</td>
+                                        @if (!string.IsNullOrWhiteSpace(InfoCtasCtes.Comprobante2))
+                                        {
+                                            <td><a class="label label-table label-warning" href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = InfoCtasCtes.VoucherID })" target="_blank">@InfoCtasCtes.Comprobante2</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td><a class="label label-table label-warning" href="@Url.Action("IngresoVoucher", "Contabilidad", new { IDVoucher = InfoCtasCtes.VoucherID })" target="_blank">@InfoCtasCtes.Comprobante</a></td>
+                                        }
+
+                                        @if (InfoCtasCtes.Documento == 0)
+                                        {
+                                            <td>Honorarios</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@ParseExtensions.EnumGetDisplayAttrib(InfoCtasCtes.Documento)</td>
+                                        }
+                                        <td></td>
+                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(InfoCtasCtes.Debe)</td>
+                                        <td>@ParseExtensions.NumeroConPuntosDeMiles(InfoCtasCtes.Haber)</td>
+                                        <td></td>
+                                    </tr>
                                         }
 
                                         <tr class="FooterTable">
