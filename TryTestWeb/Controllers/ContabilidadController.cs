@@ -70,38 +70,38 @@ namespace TryTestWeb.Controllers
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
             ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
-            NovedadesModel.AgregaUpdateTransversal(clienteSeleccionado, db);
+            //NovedadesModel.AgregaUpdateTransversal(clienteSeleccionado, db);
 
-            var TotalesPorMes = ParseExtensions.TotalesGananciasYPerdidasDelMes(db, clienteSeleccionado);
+            //var TotalesPorMes = ParseExtensions.TotalesGananciasYPerdidasDelMes(db, clienteSeleccionado);
  
-            ViewBag.GananciasMes = Math.Abs(TotalesPorMes.Item1);
-            ViewBag.PerdidasMes = Math.Abs(TotalesPorMes.Item2);
+            //ViewBag.GananciasMes = Math.Abs(TotalesPorMes.Item1);
+            //ViewBag.PerdidasMes = Math.Abs(TotalesPorMes.Item2);
 
-            var TotalAnual = ParseExtensions.TotalGananciasYPerdidasAnual(db, clienteSeleccionado);
+            //var TotalAnual = ParseExtensions.TotalGananciasYPerdidasAnual(db, clienteSeleccionado);
 
-            ViewBag.GananciasAnual = Math.Abs(TotalAnual.Item1);
-            ViewBag.PerdidasAnual = Math.Abs(TotalAnual.Item2);
+            //ViewBag.GananciasAnual = Math.Abs(TotalAnual.Item1);
+            //ViewBag.PerdidasAnual = Math.Abs(TotalAnual.Item2);
 
-            var TotalAnualYTodoslosMeses = ParseExtensions.TotalGananciasYPerdidasAnio(db, clienteSeleccionado);
+            //var TotalAnualYTodoslosMeses = ParseExtensions.TotalGananciasYPerdidasAnio(db, clienteSeleccionado);
             
-            ViewBag.TotalesMesesGanancias = TotalAnualYTodoslosMeses.Item1.Select(x => Math.Abs(x));
-            ViewBag.TotalesMesesPerdidas = TotalAnualYTodoslosMeses.Item2.Select(x => Math.Abs(x));
-            ViewBag.MesesYAnios = TotalAnualYTodoslosMeses.Item3.Select(x => ParseExtensions.obtenerNombreMes(x.Month));
-            ViewBag.Anio = TotalAnualYTodoslosMeses.Item3.Select(x => x.Year).FirstOrDefault();
+            //ViewBag.TotalesMesesGanancias = TotalAnualYTodoslosMeses.Item1.Select(x => Math.Abs(x));
+            //ViewBag.TotalesMesesPerdidas = TotalAnualYTodoslosMeses.Item2.Select(x => Math.Abs(x));
+            //ViewBag.MesesYAnios = TotalAnualYTodoslosMeses.Item3.Select(x => ParseExtensions.obtenerNombreMes(x.Month));
+            //ViewBag.Anio = TotalAnualYTodoslosMeses.Item3.Select(x => x.Year).FirstOrDefault();
             
 
-            string GastosXIntereses = "42";
+            //string GastosXIntereses = "42";
 
-            SubClasificacionCtaContable ExisteGastosXIntereses = new SubClasificacionCtaContable();
-            if(clienteSeleccionado != null) { 
-                ExisteGastosXIntereses = db.DBSubClasificacion.SingleOrDefault(x => x.CodigoInterno == GastosXIntereses &&
-                                                                                    x.ClientesContablesModelID == clienteSeleccionado.ClientesContablesModelID);
-            }
+            //SubClasificacionCtaContable ExisteGastosXIntereses = new SubClasificacionCtaContable();
+            //if(clienteSeleccionado != null) { 
+            //    ExisteGastosXIntereses = db.DBSubClasificacion.SingleOrDefault(x => x.CodigoInterno == GastosXIntereses &&
+            //                                                                        x.ClientesContablesModelID == clienteSeleccionado.ClientesContablesModelID);
+            //}
 
-            if (ExisteGastosXIntereses == null)
-            {
-                CuentaContableModel.UpdateCtaContParaAntiguos(clienteSeleccionado.ClientesContablesModelID, db);
-            }
+            //if (ExisteGastosXIntereses == null)
+            //{
+            //    CuentaContableModel.UpdateCtaContParaAntiguos(clienteSeleccionado.ClientesContablesModelID, db);
+            //}
 
             return View();
         }

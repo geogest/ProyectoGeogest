@@ -354,7 +354,7 @@ public class EstCtasCtesConciliadasViewModel
                                     {
                                         ItemConciliado.EstaConciliado = true;
                                         //Updateamos el estado de los detalles voucher en la db
-                                        var CambiarAConciliado = db.DBDetalleVoucher.SingleOrDefault(x => x.DetalleVoucherModelID == ItemConciliado.DetalleVoucherID);
+                                        var CambiarAConciliado = db.DBDetalleVoucher.FirstOrDefault(x => x.DetalleVoucherModelID == ItemConciliado.DetalleVoucherID);
                                         if(CambiarAConciliado.ConciliadoCtasCtes == false)
                                         {
                                             CambiarAConciliado.ConciliadoCtasCtes = true;

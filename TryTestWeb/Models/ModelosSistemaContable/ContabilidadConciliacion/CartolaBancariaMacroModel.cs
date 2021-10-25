@@ -22,13 +22,12 @@ public class CartolaBancariaMacroModel
 
 
 
-    public static bool GuardarCartolaBancaria(List<CartolaBancariaModel> LstCartolaConInfo, List<CartolaBancariaModel> LstCartolaSinInfo, string FechaCartola,int NumeroCartola, CuentaContableModel CuentaConsultada, ClientesContablesModel ObjCliente, FacturaPoliContext db)
+    public static bool GuardarCartolaBancaria(List<CartolaBancariaModel> LstCartolaConInfo/*, List<CartolaBancariaModel> LstCartolaSinInfo*/, string FechaCartola,int NumeroCartola, CuentaContableModel CuentaConsultada, ClientesContablesModel ObjCliente, FacturaPoliContext db)
     {
         bool Result = false;
 
         List<CartolaBancariaModel> CartolaBancariaCompleta = new List<CartolaBancariaModel>();
         CartolaBancariaCompleta.AddRange(LstCartolaConInfo);
-        CartolaBancariaCompleta.AddRange(LstCartolaSinInfo);
 
         CartolaBancariaMacroModel CartolaBancariaMacro = new CartolaBancariaMacroModel();
         CartolaBancariaMacro.FechaCartola = ParseExtensions.ToDD_MM_AAAA_Multi(FechaCartola);
@@ -228,10 +227,15 @@ public class CartolaBancariaMacroModel
         List<ObjCartolaYVouchers> ReturnValues = new List<ObjCartolaYVouchers>();
         SLDocument Excel = new SLDocument(file.InputStream);
 
+
+        DateTime? FechaDt = null;
+        DateTime? FechaStr = null;
         int row = 2;
         while (!string.IsNullOrEmpty(Excel.GetCellValueAsString(row, 1)))
         {
+            
             string Fecha = Excel.GetCellValueAsString(row, 1);
+            DateTime fechadt = Excel.GetCellValueAsDateTime(row,1);
             int Docum = Excel.GetCellValueAsInt32(row, 2);
             string Detalle = Excel.GetCellValueAsString(row, 3);
             decimal Debe = Excel.GetCellValueAsDecimal(row, 4);
@@ -240,13 +244,23 @@ public class CartolaBancariaMacroModel
             string CodigoInterno = Excel.GetCellValueAsString(row, 7);
             string Rut = Excel.GetCellValueAsString(row, 8);
             string Glosa = Excel.GetCellValueAsString(row, 9);
+            int TipoDteNumber = Excel.GetCellValueAsInt32(row, 10);
 
             if (!Fecha.Contains("-"))
-                throw new Exception("El formato de la fecha no es correcto");
+            {
+              if(fechadt != null) FechaDt = fechadt;
+            }
+            else
+            {
+                FechaStr = ParseExtensions.CreaFechaLiteral(Fecha);
+            }
+
+            //hacer testeo de lo que pasa cuando se ingresa un numero que no pertenece a un dte
+            TipoDte tipoDte = (TipoDte)TipoDteNumber; //Revisar una manera de validar que efectivamente se haya hecho el casteo ya que es requisito que el numero ingresado sea el del condigo del servicio de impuestos internos
 
             ObjCartolaYVouchers FilaAGuardar = new ObjCartolaYVouchers()
             {
-                Fecha = ParseExtensions.CreaFechaLiteral(Fecha),
+                Fecha = FechaStr != null ? FechaStr.Value : FechaDt.Value,
                 Docum = Docum,
                 Detalle = Detalle,
                 Debe = Debe,
@@ -254,7 +268,8 @@ public class CartolaBancariaMacroModel
                 Saldo = Saldo,
                 CodigoInterno = CodigoInterno,
                 Rut = Rut,
-                Glosa = Glosa 
+                Glosa = Glosa,
+                TipoDteNumVoucher = tipoDte
             };
 
             ReturnValues.Add(FilaAGuardar);
@@ -319,195 +334,203 @@ public class CartolaBancariaMacroModel
     {
         
         bool Result = false;
-        List<CartolaBancariaModel> LosQueNoEstanEnElMayor = new List<CartolaBancariaModel>();
 
         List<ObjCartolaYVouchers> LosQueNoPudieronInsertarse = new List<ObjCartolaYVouchers>();
 
         List<ObjCartolaYVouchers> LosQueTienenInformacion = LstCartolaYVouchers.Where(x => !string.IsNullOrWhiteSpace(x.CodigoInterno)).ToList();
+
+        if (!LosQueTienenInformacion.Any()) throw new Exception("No hay registros validos para insertar.");
         //Los que están en la cartola pero no en el mayor...
         List<ObjCartolaYVouchers> Pendientes = LstCartolaYVouchers.Where(x => string.IsNullOrWhiteSpace(x.CodigoInterno)).ToList();
+
         LosQueNoPudieronInsertarse.AddRange(Pendientes);
-
-
-        LosQueNoEstanEnElMayor = Pendientes.Select(x => new CartolaBancariaModel
-                                                   {
-                                                     VoucherModelID = 0,
-                                                     Fecha = x.Fecha,
-                                                     ClientesContablesModelID = ObjCliente,
-                                                     CuentaContableModelID = null,
-                                                     Folio = x.Docum,
-                                                     Detalle = x.Detalle,
-                                                     Oficina = "",
-                                                     Debe = x.Debe,
-                                                     Haber = x.Haber,
-                                                     Saldo = x.Saldo,
-                                                     EstaConciliado = false
-                                                   }).ToList();
 
         List<CartolaBancariaModel> CartolaCompleta = new List<CartolaBancariaModel>();
 
-        if (LstCartolaYVouchers.Count() > 0)
+        if (LstCartolaYVouchers.Any())
         {
+            db.Configuration.AutoDetectChangesEnabled = false; //revisar como mejora la performance
             DateTime FechaConvertida = ParseExtensions.ToDD_MM_AAAA_Multi(FechaCartola);
-            SiExisteReemplazala(FechaConvertida, NumeroCartola,db, ObjCliente);
+            DeleteCartolaBancariaExistente(FechaConvertida, NumeroCartola, db, ObjCliente);
             List<CartolaBancariaModel> CartolaDetalle = new List<CartolaBancariaModel>();
-            //De todas formas viene el mes y el año independientemente de que el día sea diferente
+            
 
             DateTime Fecha = LosQueTienenInformacion.FirstOrDefault().Fecha;
             int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(ObjCliente, db, Fecha.Month, Fecha.Year);
             int baseNumberFolio = nullableProxVoucherNumber.Value;
+
+            List<VoucherModel> LstVoucher = new List<VoucherModel>();
+
             foreach (ObjCartolaYVouchers itemCartola in LosQueTienenInformacion)
+            {
+                CuentaContableModel CuentaAUsar = UtilesContabilidad.CuentaContableDesdeCodInterno(itemCartola.CodigoInterno, ObjCliente);
+                QuickReceptorModel Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
+                TipoOrigen TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
+
+                if (CuentaAUsar == null)
+                    throw new Exception($"La cuenta contable que intentas ingresar no está en el plan de cuentas O no está digitada en el excel CUENTA CONTABLE CON ERROR : {itemCartola.CodigoInterno}");
+
+
+                if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null || CuentaAUsar.TieneAuxiliar == 0 && Prestador == null)
                 {
-                    CuentaContableModel CuentaAUsar = UtilesContabilidad.CuentaContableDesdeCodInterno(itemCartola.CodigoInterno, ObjCliente);
-                    QuickReceptorModel Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
-                    TipoOrigen TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
 
-                    if (CuentaAUsar == null)
-                        throw new Exception($"La cuenta contable que intentas ingresar no está en el plan de cuentas O no está digitada en el excel CUENTA CONTABLE CON ERROR : {itemCartola.CodigoInterno}");
+                    VoucherModel CapaVoucher = new VoucherModel();
 
-                    if(CuentaAUsar.TieneAuxiliar == 1 && Prestador == null)
+                    CapaVoucher.TipoOrigenVoucher = TipoPrestador;
+
+                    CapaVoucher.FechaEmision = itemCartola.Fecha;
+                    CapaVoucher.NumeroVoucher = baseNumberFolio;
+                    CapaVoucher.NumVoucherWithDate = ParseExtensions.BuildNewFormatNumVoucher(baseNumberFolio, Fecha);
+                    CapaVoucher.ClientesContablesModelID = ObjCliente.ClientesContablesModelID;
+                    CapaVoucher.Glosa = itemCartola.Glosa;
+
+                    if (itemCartola.Debe > 0 && itemCartola.Haber == 0)
+                        CapaVoucher.Tipo = TipoVoucher.Ingreso;
+                    else if (itemCartola.Haber > 0 && itemCartola.Debe == 0)
+                        CapaVoucher.Tipo = TipoVoucher.Egreso;
+
+                    //Armamos tabla Detalle Voucher
+                    //1
+
+                    List<DetalleVoucherModel> LstToEvaluate = new List<DetalleVoucherModel>();
+                    DetalleVoucherModel DetalleCartola = new DetalleVoucherModel(); //cada linea es solo 1 monto
+                    DetalleCartola.VoucherModelID = CapaVoucher.VoucherModelID;
+                    DetalleCartola.ObjCuentaContable = CuentaConsultada;
+                    DetalleCartola.FechaDoc = itemCartola.Fecha;
+                    DetalleCartola.GlosaDetalle = itemCartola.Glosa;
+
+                    if (itemCartola.Debe > 0 && itemCartola.Haber == 0)
+                        DetalleCartola.MontoDebe = itemCartola.Debe;
+                    else if (itemCartola.Haber > 0 && itemCartola.Debe == 0)
+                        DetalleCartola.MontoHaber = itemCartola.Haber;
+
+                    //2
+                    DetalleVoucherModel DetalleConciliacion = new DetalleVoucherModel();
+                    DetalleConciliacion.VoucherModelID = CapaVoucher.VoucherModelID;
+                    DetalleConciliacion.FechaDoc = itemCartola.Fecha;
+                    DetalleConciliacion.ObjCuentaContable = CuentaAUsar;
+                    DetalleConciliacion.GlosaDetalle = itemCartola.Glosa;
+                    if (DetalleCartola.MontoDebe > 0 && DetalleCartola.MontoHaber == 0)
+                        DetalleConciliacion.MontoHaber = DetalleCartola.MontoDebe;
+                    else if (DetalleCartola.MontoHaber > 0 && DetalleCartola.MontoDebe == 0)
+                        DetalleConciliacion.MontoDebe = DetalleCartola.MontoHaber;
+
+                    LstToEvaluate.Add(DetalleCartola);
+                    LstToEvaluate.Add(DetalleConciliacion);
+
+                    //Guardamos los detalles en una lista de detalles
+                    if (LstToEvaluate.Sum(r => r.MontoDebe) == LstToEvaluate.Sum(r => r.MontoHaber))
                     {
-                        CartolaBancariaModel LineaConAuxiliarNoValida = new CartolaBancariaModel()
+                        foreach (DetalleVoucherModel itemDetalle in LstToEvaluate)
                         {
-                            VoucherModelID = 0,
-                            Fecha = itemCartola.Fecha,
-                            ClientesContablesModelID = ObjCliente,
-                            CuentaContableModelID = null,
-                            Folio = itemCartola.Docum,
-                            Detalle = itemCartola.Detalle,
-                            Oficina = "",
-                            Debe = itemCartola.Debe,
-                            Haber = itemCartola.Haber,
-                            Saldo = itemCartola.Saldo,
-                            EstaConciliado = false
-                        };
+                            itemDetalle.Conciliado = true;
+                        }
 
-                        LosQueNoEstanEnElMayor.Add(LineaConAuxiliarNoValida);
-                    }
+                        CapaVoucher.ListaDetalleVoucher = LstToEvaluate;
+                        LstVoucher.Add(CapaVoucher);
 
-                    if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null || CuentaAUsar.TieneAuxiliar == 0 && Prestador == null)
-                    {
- 
-                        VoucherModel CapaVoucher = new VoucherModel();
-
-                        CapaVoucher.TipoOrigenVoucher = TipoPrestador;
-
-                        CapaVoucher.FechaEmision = itemCartola.Fecha;
-                        CapaVoucher.NumeroVoucher = baseNumberFolio;
-                        CapaVoucher.NumVoucherWithDate = ParseExtensions.BuildNewFormatNumVoucher(baseNumberFolio,Fecha);
-                        CapaVoucher.ClientesContablesModelID = ObjCliente.ClientesContablesModelID;
-                        CapaVoucher.Glosa = itemCartola.Glosa;
-
-                        if (itemCartola.Debe > 0 && itemCartola.Haber == 0)
-                            CapaVoucher.Tipo = TipoVoucher.Ingreso;
-                        else if (itemCartola.Haber > 0 && itemCartola.Debe == 0)
-                            CapaVoucher.Tipo = TipoVoucher.Egreso;
-
-                        //Armamos tabla Detalle Voucher
-                        List<DetalleVoucherModel> LstDetalle = new List<DetalleVoucherModel>();
-                        //1
-                        DetalleVoucherModel DetalleCartola = new DetalleVoucherModel(); //cada linea es solo 1 monto
-                        DetalleCartola.VoucherModelID = CapaVoucher.VoucherModelID;
-                        DetalleCartola.ObjCuentaContable = CuentaConsultada;
-                        DetalleCartola.FechaDoc = itemCartola.Fecha;
-                        DetalleCartola.GlosaDetalle = itemCartola.Glosa;
-
-                        if (itemCartola.Debe > 0 && itemCartola.Haber == 0)
-                            DetalleCartola.MontoDebe = itemCartola.Debe;
-                        else if (itemCartola.Haber > 0 && itemCartola.Debe == 0)
-                            DetalleCartola.MontoHaber = itemCartola.Haber;
-
-                        //2
-                        DetalleVoucherModel DetalleConciliacion = new DetalleVoucherModel();
-                        DetalleConciliacion.VoucherModelID = CapaVoucher.VoucherModelID;
-                        DetalleConciliacion.FechaDoc = itemCartola.Fecha;
-                        DetalleConciliacion.ObjCuentaContable = CuentaAUsar;
-                        DetalleConciliacion.GlosaDetalle = itemCartola.Glosa;
-                        if (DetalleCartola.MontoDebe > 0 && DetalleCartola.MontoHaber == 0)
-                            DetalleConciliacion.MontoHaber = DetalleCartola.MontoDebe;
-                        else if (DetalleCartola.MontoHaber > 0 && DetalleCartola.MontoDebe == 0)
-                            DetalleConciliacion.MontoDebe = DetalleCartola.MontoHaber;
-
-                        LstDetalle.Add(DetalleCartola);
-                        LstDetalle.Add(DetalleConciliacion);
-
-                        //Guardamos los detalles en una lista de detalles
-                        if (LstDetalle.Sum(r => r.MontoDebe) == LstDetalle.Sum(r => r.MontoHaber))
+                        if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null)
                         {
-                            db.DBVoucher.Add(CapaVoucher);
-                            db.SaveChanges();
-
-                            foreach (var itemDetalle in LstDetalle)
+                            foreach (DetalleVoucherModel NuevoDetalleVoucher in LstToEvaluate)
                             {
-                                itemDetalle.VoucherModelID = CapaVoucher.VoucherModelID;
-                                itemDetalle.Conciliado = true;
-                            }
-
-                            db.DBDetalleVoucher.AddRange(LstDetalle);
-                            db.SaveChanges();
-
-                            CartolaBancariaModel LineaCartola = new CartolaBancariaModel();
-                            LineaCartola.VoucherModelID = DetalleCartola.VoucherModelID;
-                            LineaCartola.Fecha = DetalleCartola.FechaDoc;
-                            LineaCartola.Folio = itemCartola.Docum;
-                            LineaCartola.EstaConciliado = true;
-                            LineaCartola.Detalle = DetalleCartola.GlosaDetalle;
-                            LineaCartola.CuentaContableModelID = DetalleCartola.ObjCuentaContable;
-                            LineaCartola.ClientesContablesModelID = ObjCliente;
-                            LineaCartola.Debe = DetalleCartola.MontoDebe;
-                            LineaCartola.Haber = DetalleCartola.MontoHaber;
-                            CartolaDetalle.Add(LineaCartola);
-
-
-                            if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null)
-                            {
-                                foreach (DetalleVoucherModel NuevoDetalleVoucher in LstDetalle)
+                                if (NuevoDetalleVoucher.ObjCuentaContable == CuentaAUsar)
                                 {
-                                    if (NuevoDetalleVoucher.ObjCuentaContable == CuentaAUsar)
+                                    AuxiliaresModel Auxiliar = new AuxiliaresModel();
+                                    Auxiliar.LineaNumeroDetalle = CapaVoucher.ListaDetalleVoucher.Count;
+                                    Auxiliar.MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber;
+                                    Auxiliar.objCtaContable = NuevoDetalleVoucher.ObjCuentaContable;
+
+                                    NuevoDetalleVoucher.Auxiliar = Auxiliar;
+
+                                    List<AuxiliaresDetalleModel> lstAuxDetalle = new List<AuxiliaresDetalleModel>();
+                                    AuxiliaresDetalleModel nuevoAuxDetalle = new AuxiliaresDetalleModel();
+                                
+                                    decimal MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber; 
+                                    if (TipoDte.FacturaElectronica == itemCartola.TipoDteNumVoucher) 
                                     {
-                                        AuxiliaresModel Auxiliar = new AuxiliaresModel();
-                                        Auxiliar.DetalleVoucherModelID = NuevoDetalleVoucher.DetalleVoucherModelID;
-                                        Auxiliar.LineaNumeroDetalle = CapaVoucher.ListaDetalleVoucher.Count;
-                                        Auxiliar.MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber;
-                                        Auxiliar.objCtaContable = NuevoDetalleVoucher.ObjCuentaContable;
-
-                                        NuevoDetalleVoucher.Auxiliar = Auxiliar;
-                                        db.DBAuxiliares.Add(Auxiliar);
-                                        db.SaveChanges();
-
-                                        AuxiliaresDetalleModel nuevoAuxDetalle = new AuxiliaresDetalleModel();
-                                        nuevoAuxDetalle.TipoDocumento = TipoDte.FacturaElectronica;
+                                        decimal MontoNeto = ParseExtensions.CalcularMontoNeto(MontoTotal);
+                                        decimal MontoIva = ParseExtensions.CalcularIva(MontoNeto);
+                                        nuevoAuxDetalle.TipoDocumento = itemCartola.TipoDteNumVoucher; 
+                                        nuevoAuxDetalle.Fecha = itemCartola.Fecha;
+                                        nuevoAuxDetalle.FechaContabilizacion = itemCartola.Fecha;
+                                        nuevoAuxDetalle.Folio = itemCartola.Docum;
+                                        nuevoAuxDetalle.Individuo2 = Prestador;
+                                        nuevoAuxDetalle.MontoNetoLinea = MontoNeto;
+                                        nuevoAuxDetalle.MontoExentoLinea = 0;
+                                        nuevoAuxDetalle.MontoIVALinea = MontoIva;
+                                        nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
+                                        nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
+                                        nuevoAuxDetalle.MontoIVANoRecuperable = 0;
+                                        nuevoAuxDetalle.MontoIVAUsoComun = 0;
+                                        nuevoAuxDetalle.MontoIVAActivoFijo = 0;
+                                    }
+                                    else if (itemCartola.TipoDteNumVoucher.ExentaIVA())
+                                    {
+                                        nuevoAuxDetalle.TipoDocumento = itemCartola.TipoDteNumVoucher; 
                                         nuevoAuxDetalle.Fecha = itemCartola.Fecha;
                                         nuevoAuxDetalle.FechaContabilizacion = itemCartola.Fecha;
                                         nuevoAuxDetalle.Folio = itemCartola.Docum;
                                         nuevoAuxDetalle.Individuo2 = Prestador;
                                         nuevoAuxDetalle.MontoNetoLinea = 0;
-                                        nuevoAuxDetalle.MontoExentoLinea = 0;
+                                        nuevoAuxDetalle.MontoExentoLinea = MontoTotal;
                                         nuevoAuxDetalle.MontoIVALinea = 0;
-                                        nuevoAuxDetalle.MontoTotalLinea = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber;
+                                        nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
                                         nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
                                         nuevoAuxDetalle.MontoIVANoRecuperable = 0;
                                         nuevoAuxDetalle.MontoIVAUsoComun = 0;
                                         nuevoAuxDetalle.MontoIVAActivoFijo = 0;
-
-                                        db.DBAuxiliaresDetalle.Add(nuevoAuxDetalle);
-                                        db.SaveChanges();
                                     }
+                                    else
+                                    {
+                                        throw new Exception("No existe una regla para tratar el tipoDTE");
+                                    }
+
+                                    lstAuxDetalle.Add(nuevoAuxDetalle);
+
+                                    Auxiliar.ListaDetalleAuxiliares = lstAuxDetalle;
                                 }
                             }
-
-                            baseNumberFolio++;
                         }
+
+                        baseNumberFolio++;
                     }
-                    else
-                    {
-                        LosQueNoPudieronInsertarse.Add(itemCartola);
-                    }    
                 }
-                //Se inserta toda la cartola bancaria para tener respaldo.
-                CartolaCompleta = ObtenerCartolaParaResultadoConciliacion(LosQueNoEstanEnElMayor, CartolaDetalle);
-                bool ResultadoInsercionCartolaBancaria = GuardarCartolaBancaria(CartolaDetalle, LosQueNoEstanEnElMayor, FechaCartola, NumeroCartola, CuentaConsultada, ObjCliente, db);
-                Result = true;
+                else
+                {
+                    LosQueNoPudieronInsertarse.Add(itemCartola);
+                }
+            }
+
+            List<DetalleVoucherModel> detalle = LstVoucher.SelectMany(x => x.ListaDetalleVoucher.Where(y => y.Auxiliar != null)).ToList();
+            
+            db.DBVoucher.AddRange(LstVoucher);
+            db.SaveChanges();
+
+            if (detalle.Any())
+            {
+                detalle.ForEach(x => { x.Auxiliar.DetalleVoucherModelID = x.DetalleVoucherModelID; });
+
+                foreach (AuxiliaresModel itemAuxiliar in detalle.Select(x => x.Auxiliar).ToArray())
+                {
+                    db.Entry(itemAuxiliar).State = System.Data.Entity.EntityState.Modified;
+                }
+                db.SaveChanges();
+            }
+
+            CartolaDetalle = LstVoucher.SelectMany(x => x.ListaDetalleVoucher.Where(y => y.ObjCuentaContable.CuentaContableModelID == CuentaConsultada.CuentaContableModelID))
+                                        .Select(x => new CartolaBancariaModel { 
+                                                VoucherModelID = x.VoucherModelID,
+                                                Fecha = x.FechaDoc,
+                                                Folio = x.Auxiliar != null ? x.Auxiliar.ListaDetalleAuxiliares.FirstOrDefault().Folio : 0,
+                                                EstaConciliado = true,
+                                                Detalle = x.GlosaDetalle,
+                                                CuentaContableModelID = x.ObjCuentaContable,
+                                                Debe = x.MontoDebe,
+                                                Haber = x.MontoHaber
+                                        }).ToList();
+
+            bool ResultadoInsercionCartolaBancaria = GuardarCartolaBancaria(CartolaDetalle, FechaCartola, NumeroCartola, CuentaConsultada, ObjCliente, db);
+            Result = true;
         }
         else
         {
@@ -538,10 +561,12 @@ public class CartolaBancariaMacroModel
 
     public static void SiExisteReemplazala(DateTime FechaCartola, int NumeroCartola, FacturaPoliContext db, ClientesContablesModel objCliente)
     {
-        CartolaBancariaMacroModel CartolaEncontrada = db.DBCartolaBMacro.Include("CartolaDetalle").Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                                x.FechaCartola.Month == FechaCartola.Month &&
-                                                                x.FechaCartola.Year == FechaCartola.Year &&
-                                                                x.NumeroCartola == NumeroCartola).FirstOrDefault();
+        //crear otra funcion que lo que haga sea insertar las que no existen en  la cartola -> definir como diferenciar los campos
+        CartolaBancariaMacroModel CartolaEncontrada = db.DBCartolaBMacro.Include("CartolaDetalle")
+                                                                            .Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                            x.FechaCartola.Month == FechaCartola.Month &&
+                                                                                                x.FechaCartola.Year == FechaCartola.Year &&
+                                                                                                    x.NumeroCartola == NumeroCartola).FirstOrDefault();
         List<int> lstVouchersId = new List<int>();
         if(CartolaEncontrada != null)
             lstVouchersId = CartolaEncontrada.CartolaDetalle.Select(x => x.VoucherModelID).ToList();
@@ -553,20 +578,56 @@ public class CartolaBancariaMacroModel
         if (VouchersADarDeBaja.Any())
         {
             VouchersADarDeBaja = VouchersADarDeBaja.Select(x => { x.DadoDeBaja = true; return x; }).ToList();
-            db.DBVoucher.AddOrUpdate(VouchersADarDeBaja.ToArray());
+            foreach (VoucherModel itemVoucher in VouchersADarDeBaja)
+            {
+                db.Entry(itemVoucher).State = System.Data.Entity.EntityState.Modified;
+            }
         }
 
         if (CartolaEncontrada != null)
             db.DBCartolaBMacro.Remove(CartolaEncontrada);
     }
+   
+    public static void DeleteCartolaBancariaExistente(DateTime FechaCartola, int NumeroCartola, FacturaPoliContext db, ClientesContablesModel objCliente)
+    {
+        CartolaBancariaMacroModel CartolaEncontrada = db.DBCartolaBMacro.Include("CartolaDetalle")
+                                                                            .Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                            x.FechaCartola.Month == FechaCartola.Month &&
+                                                                                                x.FechaCartola.Year == FechaCartola.Year &&
+                                                                                                    x.NumeroCartola == NumeroCartola).FirstOrDefault();
 
-    //Crear objeto voucher
-    //public static bool ValidarRedundanciaVoucher()
-    //{
+        List<int> lstVouchersId = new List<int>();
 
-    //}
+        List<AuxiliaresModel> AuxiliaresABorrar = new List<AuxiliaresModel>();
+
+        if(CartolaEncontrada != null)
+            lstVouchersId = CartolaEncontrada.CartolaDetalle.Select(x => x.VoucherModelID).ToList();
 
 
+        List<VoucherModel> VouchersADarDeBaja = new List<VoucherModel>();
+        if (lstVouchersId.Any()) 
+            VouchersADarDeBaja = db.DBVoucher.Where(x => lstVouchersId.Contains(x.VoucherModelID)).ToList(); 
+
+
+        if (VouchersADarDeBaja.Any()) {
+
+            AuxiliaresABorrar.AddRange(VouchersADarDeBaja.SelectMany(x => x.ListaDetalleVoucher.Where(y => y.Auxiliar != null)).Select(x => x.Auxiliar).ToList());
+
+            if (AuxiliaresABorrar.Any())
+                db.DBAuxiliares.RemoveRange(AuxiliaresABorrar);
+  
+            db.DBVoucher.RemoveRange(VouchersADarDeBaja);
+        }
+       //Es posible que cuando encuentre
+
+        if (CartolaEncontrada != null)
+            db.DBCartolaBMacro.Remove(CartolaEncontrada);
+
+        db.SaveChanges();
+        //Revisar como eliminar en cascada
+    }
+
+  
     public static bool ExistenRepetidos(DateTime FechaCartola, int NumeroCartola, FacturaPoliContext db, ClientesContablesModel  objCliente)
     {
         //Numero de la cartola es igual a uno existente en la db.
@@ -644,4 +705,5 @@ public class RelacionadosYConciliados
         public string CodigoInterno { get; set; }
         public string Rut { get; set; }
         public string Glosa { get; set; }
+        public TipoDte TipoDteNumVoucher { get; set; }
     }

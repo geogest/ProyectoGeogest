@@ -69,17 +69,25 @@
                         <div class="form-group">
                             <div class="col-md-6">
                                 <div class="notice notice-success">
-                                    <h3>@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.GananciasAnual)</h3>
-                                    <p>
-                                        GANANCIAS TOTALES</p>
+                                    @if (ViewBag.GananciasAnual != null)
+                                    {
+                                        <h3>@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.GananciasAnual)</h3>
+                                        <p>
+                                            GANANCIAS TOTALES
+                                        </p>
+                                    }
                                 </div>
                                
                             </div>
                             <div class="col-md-6">
                                 <div class="notice notice-danger">
-                                    <h3>@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.PerdidasAnual)</h3>
-                                    <p>
-                                        PERDIDAS TOTALES</p>
+                                    @if (ViewBag.PerdidasAnual != null)
+                                    {
+                                        <h3>@ParseExtensions.NumeroConPuntosDeMiles(ViewBag.PerdidasAnual)</h3>
+                                        <p>
+                                            PERDIDAS TOTALES
+                                        </p>
+                                    }
                                 </div>
                                 
                             </div>

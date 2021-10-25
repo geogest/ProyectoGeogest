@@ -735,6 +735,20 @@ public static class ParseExtensions
      
         return sb.ToString();
     }
+
+    public static decimal CalcularIva(decimal MontoNeto)
+    {
+        float ReturnValues = (float)MontoNeto * 0.19f;
+
+        return Convert.ToDecimal(Math.Round(ReturnValues, MidpointRounding.AwayFromZero));
+    }
+
+    public static decimal CalcularMontoNeto(decimal MontoTotal)
+    {
+        float ReturnValues = (float)MontoTotal / 1.19f;
+
+        return Convert.ToDecimal(Math.Round(ReturnValues, MidpointRounding.AwayFromZero));
+    }
     public static string ObtenerCuentaContableDropdownAsStringWithSelectedCodInterno(ClientesContablesModel ObjCliente, string IDOfSelected)
     {
         List<CuentaContableModel> ListaCuentas = ObjCliente.CtaContable.ToList();
@@ -3353,6 +3367,8 @@ public static class Extensions
                 return false;
         }
     }
+
+
 
     public static bool ExcedeMontoAPagar(this ICollection<DTEPagosModel> lstPagos, DTEPagosModel PagoAAgregar, decimal MontoTotalALograr)
     {
