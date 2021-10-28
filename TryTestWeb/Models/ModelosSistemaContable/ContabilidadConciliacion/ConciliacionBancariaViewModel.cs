@@ -9,7 +9,7 @@ public class ConciliacionBancariaViewModel
    public int VoucherID { get; set; }
    public string CodigoInterno { get; set; }
    public string CuentaContable { get; set; }
-   public int Folio { get; set; }
+   public long Folio { get; set; }
    public DateTime FechaContabilizacion { get; set; }
    public TipoDte Documento { get; set; }
    public string Glosa { get; set; }

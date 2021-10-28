@@ -10,7 +10,7 @@ public class CatorceTerViewModel
 {
     public DateTime Fecha { get; set; }
     public TipoDte TipoDocumento { get; set; }
-    public int Folio { get; set; }
+    public long Folio { get; set; }
     public string NombreReceptor { get; set; }
     public string RutReceptor { get; set; }
     public decimal Ingreso { get; set; }

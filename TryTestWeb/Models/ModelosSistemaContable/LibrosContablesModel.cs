@@ -38,8 +38,8 @@ public class LibrosContablesModel
     /// <summary>
     /// NOTE: [5] en el archivo del SII
     /// </summary>
-    public int Folio { get; set; }
-    public int FolioHasta { get; set; }
+    public long Folio { get; set; }
+    public long FolioHasta { get; set; }
     /// <summary>
     /// NOTE: [6] en el archivo del SII
     /// </summary>
@@ -412,6 +412,7 @@ public class LibrosContablesModel
                         {
                             foreach (ImpuestosAdRelacionModel Convertidor in AConvertir)
                             {
+                                //Cambiar esta parte a la actualizacion dejar de usar addorupdate
                                 Convertidor.HaSidoConvertidoAVoucher = true;
                                 db.DBImpuestosAdRelacionSII.AddOrUpdate(Convertidor);
                                 db.SaveChanges();
@@ -933,10 +934,6 @@ public class LibrosContablesModel
 
             ReturnValues.Add(Totales);
         }
-
-
-
-
 
         var Paginador = new PaginadorModel();
         Paginador.ResultStringArray = ReturnValues;

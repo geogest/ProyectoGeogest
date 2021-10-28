@@ -367,9 +367,7 @@ public class CartolaBancariaMacroModel
                 QuickReceptorModel Prestador = UtilesContabilidad.ObtenerPrestadorSiExiste(itemCartola.Rut, db, ObjCliente);
                 TipoOrigen TipoPrestador = UtilesContabilidad.RetornaTipoReceptor(Prestador);
 
-                if (CuentaAUsar == null)
-                    throw new Exception($"La cuenta contable que intentas ingresar no está en el plan de cuentas O no está digitada en el excel CUENTA CONTABLE CON ERROR : {itemCartola.CodigoInterno}");
-
+                if (CuentaAUsar == null) throw new Exception($"La cuenta contable que intentas ingresar no está en el plan de cuentas O no está digitada en el excel CUENTA CONTABLE CON ERROR : {itemCartola.CodigoInterno}");
 
                 if (CuentaAUsar.TieneAuxiliar == 1 && Prestador != null || CuentaAUsar.TieneAuxiliar == 0 && Prestador == null)
                 {

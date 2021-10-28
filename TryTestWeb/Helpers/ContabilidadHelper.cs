@@ -8,7 +8,7 @@ public class ContabilidadHelper
     public static string VerificaRepetidosEnExcelImportSIICoV(List<string[]> CsvSII , ClientesContablesModel objCliente, FacturaPoliContext db)
     {
         TipoCentralizacion tipoCentralizacion = TipoCentralizacion.Ninguno;
-        int folio = 0;
+        long folio = 0;
         TipoDte tipoDte = 0;
         var IdentificadorRepetidos = new List<string>();
         string ReturnValues = "";
@@ -34,7 +34,7 @@ public class ContabilidadHelper
            }
             tipoDte = (TipoDte)ParseExtensions.ParseInt(strFilaCSV[1]);
             string RutPrestador = strFilaCSV[3];
-            folio = Convert.ToInt32(strFilaCSV[5]);
+            folio = long.Parse(strFilaCSV[5]);
             
             var SinRepetidos = db.DBLibrosContables.Where(x => x.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
                                                                      x.Folio ==  folio &&
@@ -61,7 +61,7 @@ public class ContabilidadHelper
             }
         }
 
-        if(IdentificadorRepetidos.Count > 0)
+        if(IdentificadorRepetidos.Any())
             ReturnValues = string.Join(",", IdentificadorRepetidos);
 
         return ReturnValues;

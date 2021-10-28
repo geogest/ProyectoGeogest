@@ -2467,12 +2467,12 @@ namespace TryTestWeb.Controllers
                     AuxiliaresDetalleModel objAuxiliarDetalle = new AuxiliaresDetalleModel();
 
                     objAuxiliarDetalle.Fecha = ParseExtensions.ToDD_MM_AAAA(Request.Form.GetValues("AUXFecha")[i]);
-                    objAuxiliarDetalle.Folio = ParseExtensions.ParseInt(Request.Form.GetValues("AuxFolio")[i]);
+                    objAuxiliarDetalle.Folio = long.Parse(Request.Form.GetValues("AuxFolio")[i]);
                     
                     if(Request.Form.GetValues("FolioHasta") != null)
                     {
                         if (!string.IsNullOrWhiteSpace(Request.Form.GetValues("FolioHasta")[i])) { 
-                            objAuxiliarDetalle.FolioHasta = ParseExtensions.ParseInt(Request.Form.GetValues("FolioHasta")[i]);
+                            objAuxiliarDetalle.FolioHasta = long.Parse(Request.Form.GetValues("FolioHasta")[i].Trim());
                         }
                     }
 
@@ -6357,7 +6357,7 @@ namespace TryTestWeb.Controllers
            {
                 try
                 {
-                    var VerificaRepetidos = ContabilidadHelper.VerificaRepetidosEnExcelImportSIICoV(csvInput, objCliente, db);
+                    string VerificaRepetidos = ContabilidadHelper.VerificaRepetidosEnExcelImportSIICoV(csvInput, objCliente, db);
                     if (!string.IsNullOrWhiteSpace(VerificaRepetidos))
                     {
                         throw new Exception("Error Algunos de los datos que intentas exportar ya existen en tus libros. Los siguientes folios están repetidos:  " + VerificaRepetidos);
@@ -6427,7 +6427,7 @@ namespace TryTestWeb.Controllers
 
                         }
 
-                        NewLibroContableModel.Folio = ParseExtensions.ParseInt(strFilaCSV[5]);
+                        NewLibroContableModel.Folio = long.Parse(strFilaCSV[5]);
 
                         // Volver a activar después de hacer las pruebas.
                         //Errores en caso de que ya exista el libro y haya sido dado de alta.
@@ -6456,7 +6456,7 @@ namespace TryTestWeb.Controllers
                         if (string.IsNullOrWhiteSpace(strFilaCSV[0]) && !string.IsNullOrWhiteSpace(strFilaCSV[25]))
                         {
                             NewLibroContableModel.TipoDocumento = TipoDocDuple;
-                            NewLibroContableModel.Folio = ParseExtensions.ParseInt(FolioDuple);
+                            NewLibroContableModel.Folio = long.Parse(FolioDuple);
                             NewLibroContableModel.FechaDoc = ParseExtensions.ToDD_MM_AAAA_Multi(FechaDocumentoDuple);
                             NewLibroContableModel.FechaRecep = ParseExtensions.ToDD_MM_AAAA_Multi(FechaRecepcionDuple);
                         }

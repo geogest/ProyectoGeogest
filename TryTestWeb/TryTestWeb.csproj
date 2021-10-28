@@ -293,6 +293,14 @@
     <Compile Include="Migrations\202110050408260_SeAgregaFechaCreacionAVouchermodel.Designer.cs">
       <DependentUpon>202110050408260_SeAgregaFechaCreacionAVouchermodel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110270625526_DeIntALongFolio.cs" />
+    <Compile Include="Migrations\202110270625526_DeIntALongFolio.Designer.cs">
+      <DependentUpon>202110270625526_DeIntALongFolio.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110280451461_folioALong.cs" />
+    <Compile Include="Migrations\202110280451461_folioALong.Designer.cs">
+      <DependentUpon>202110280451461_folioALong.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminMonitoreo\ErrorMensajeMonitoreo.cs" />
     <Compile Include="Models\BoletasHonorariosModel.cs" />
@@ -349,6 +357,7 @@
     <Compile Include="Models\ModelosSistemaContable\UserClientesContablesModels.cs" />
     <Compile Include="Models\ModelosSistemaContable\VistaDeObjetos\CatorceTerViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\VistaDeObjetos\EstadoResultadoComparativoViewModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\VoucherDto.cs" />
     <Compile Include="Models\ModelosSistemaContable\VoucherModel.cs" />
     <Compile Include="Models\ModelsFactura\ActividadEconomicaModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -1009,6 +1018,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110050408260_SeAgregaFechaCreacionAVouchermodel.resx">
       <DependentUpon>202110050408260_SeAgregaFechaCreacionAVouchermodel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110270625526_DeIntALongFolio.resx">
+      <DependentUpon>202110270625526_DeIntALongFolio.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110280451461_folioALong.resx">
+      <DependentUpon>202110280451461_folioALong.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

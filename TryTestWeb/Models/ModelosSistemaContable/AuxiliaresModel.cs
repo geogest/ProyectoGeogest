@@ -6,12 +6,12 @@ using System.Web;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.Migrations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class AuxiliaresModel
 {
     public int AuxiliaresModelID { get; set; }
     public int DetalleVoucherModelID { get; set; }
-
     //public virtual PrestadoresModel Prestador { get; set; }
 
     public int LineaNumeroDetalle { get; set; }
@@ -39,8 +39,8 @@ public class AuxiliaresDetalleModel
     //El prestador contiene RUT y Razon Social
     public virtual AuxiliaresPrestadoresModel Individuo { get; set; }
     public TipoDte TipoDocumento { get; set; }
-    public int Folio { get; set; }
-    public int FolioHasta { get; set; }
+    public long Folio { get; set; }
+    public long FolioHasta { get; set; }
     //Utilizado por TipoAuxiliar = 1 / ProveedoresDeudores
     public decimal MontoBrutoLinea { get; set; }
     public decimal MontoNetoLinea { get; set; }

@@ -14,7 +14,7 @@ public class CartolaBancariaModel
     public  ClientesContablesModel ClientesContablesModelID { get; set; }
     public  CuentaContableModel CuentaContableModelID { get; set; }
     public  CartolaBancariaMacroModel CartolaBancariaMacroModelID { get; set; }
-    public int Folio { get; set; }
+    public long Folio { get; set; }
     public string Detalle { get; set; }
     public string Oficina { get; set; }
     public decimal Debe { get; set; }

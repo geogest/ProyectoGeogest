@@ -86,6 +86,10 @@ public enum TipoDte
     [Display(Name = "SET")]
     SET = -4444,
 
+    [TipoDocumento(SubTipoDocumento.Electronico)]
+    [Display(Name = "Declaración de ingreso (DIN)")]
+    DeclaracionDeIngreso = 914,
+
     //Boletas
     [TipoDocumento(SubTipoDocumento.Boletas)]
     [Display(Name = "Boleta Electrónica")]

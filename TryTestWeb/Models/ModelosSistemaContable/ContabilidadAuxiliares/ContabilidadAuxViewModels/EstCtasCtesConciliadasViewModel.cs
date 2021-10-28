@@ -11,7 +11,7 @@ public class EstCtasCtesConciliadasViewModel
     public string NombrePrestador { get; set; }
     public CuentaContableModel CuentaContable { get; set; }
     public DateTime Fecha { get; set; }
-    public int Folio { get; set; }
+    public long Folio { get; set; }
     public int VoucherID { get; set; }
     public int DetalleVoucherID { get; set; }
     public string Comprobante { get; set; }
@@ -365,8 +365,7 @@ public class EstCtasCtesConciliadasViewModel
                                     }
                                       
                                 }
-                            }
-                    
+                            }                    
                 }
             }
         }
