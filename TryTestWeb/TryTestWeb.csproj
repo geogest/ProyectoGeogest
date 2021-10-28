@@ -389,8 +389,10 @@
     <Content Include="Content\css\bootstrap-select.min.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\Contabilidad\BalanceGeneral.css" />
+    <Content Include="Content\css\Contabilidad\CargarLibrosHonorarios.css" />
     <Content Include="Content\css\Contabilidad\CatorceTer.css" />
     <Content Include="Content\css\Contabilidad\Chart.min.css" />
+    <Content Include="Content\css\Contabilidad\ComparacionCtaPresu.css" />
     <Content Include="Content\css\Contabilidad\EstadoResultado.css" />
     <Content Include="Content\css\Contabilidad\EstadoResultadoComparativo.css" />
     <Content Include="Content\css\Contabilidad\EstadoResultadoCtaBruto.css" />
@@ -398,6 +400,7 @@
     <Content Include="Content\css\Contabilidad\EstadoResultadoEBITDA.css" />
     <Content Include="Content\css\Contabilidad\EstadoResultadoEBT.css" />
     <Content Include="Content\css\Contabilidad\IEstadoResultado.css" />
+    <Content Include="Content\css\Contabilidad\IngresoVoucher.css" />
     <Content Include="Content\css\Contabilidad\jquery.dataTables.css" />
     <Content Include="Content\css\Contabilidad\LibroCompra.css" />
     <Content Include="Content\css\Contabilidad\LibroDeHonorarios.css" />
