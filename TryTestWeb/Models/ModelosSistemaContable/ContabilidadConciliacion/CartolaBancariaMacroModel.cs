@@ -588,18 +588,18 @@ public class CartolaBancariaMacroModel
    
     public static void DeleteCartolaBancariaExistente(DateTime FechaCartola, int NumeroCartola, FacturaPoliContext db, ClientesContablesModel objCliente)
     {
-        CartolaBancariaMacroModel CartolaEncontrada = db.DBCartolaBMacro.Include("CartolaDetalle")
-                                                                            .Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
-                                                                                            x.FechaCartola.Month == FechaCartola.Month &&
-                                                                                                x.FechaCartola.Year == FechaCartola.Year &&
-                                                                                                    x.NumeroCartola == NumeroCartola).FirstOrDefault();
+        List<CartolaBancariaMacroModel> CartolaEncontrada = db.DBCartolaBMacro.Include("CartolaDetalle")
+                                                                                .Where(x => x.ClientesContablesModelID.ClientesContablesModelID == objCliente.ClientesContablesModelID &&
+                                                                                                x.FechaCartola.Month == FechaCartola.Month &&
+                                                                                                    x.FechaCartola.Year == FechaCartola.Year &&
+                                                                                                        x.NumeroCartola == NumeroCartola).ToList();
 
         List<int> lstVouchersId = new List<int>();
 
         List<AuxiliaresModel> AuxiliaresABorrar = new List<AuxiliaresModel>();
 
-        if(CartolaEncontrada != null)
-            lstVouchersId = CartolaEncontrada.CartolaDetalle.Select(x => x.VoucherModelID).ToList();
+        if (CartolaEncontrada != null)
+            lstVouchersId = CartolaEncontrada.Select(x => x.CartolaDetalle.Select(y => y.VoucherModelID)).SelectMany(x => x).ToList();
 
 
         List<VoucherModel> VouchersADarDeBaja = new List<VoucherModel>();
@@ -618,8 +618,8 @@ public class CartolaBancariaMacroModel
         }
        //Es posible que cuando encuentre
 
-        if (CartolaEncontrada != null)
-            db.DBCartolaBMacro.Remove(CartolaEncontrada);
+        if (CartolaEncontrada.Any())
+            db.DBCartolaBMacro.RemoveRange(CartolaEncontrada);
 
         db.SaveChanges();
         //Revisar como eliminar en cascada

@@ -388,6 +388,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\bootstrap-select.min.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\ContabilidadAuxiliares\EstCtasCtesConciliado.css" />
     <Content Include="Content\css\Contabilidad\BalanceGeneral.css" />
     <Content Include="Content\css\Contabilidad\CargarLibrosHonorarios.css" />
     <Content Include="Content\css\Contabilidad\CatorceTer.css" />
@@ -413,6 +414,8 @@
     <Content Include="Content\css\Contabilidad\select2.min.css" />
     <Content Include="Content\css\flatpickr.min.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\SeleccionarClienteContable.css" />
+    <Content Include="Content\css\SeleccionarEmisorDesdeModulos.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\js\ContabilidadBoletas\ImportarBoletas.js" />
     <Content Include="Content\js\Contabilidad\Chart.min.js" />
