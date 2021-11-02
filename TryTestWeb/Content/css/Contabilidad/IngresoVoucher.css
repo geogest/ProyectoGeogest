@@ -15,3 +15,29 @@
 #cuentaCont2 {
     width: 220px !important;
 }
+
+.Remuneracion {
+    width: 50%;
+}
+
+.Esconder {
+    display: none;
+}
+
+#BoletaVenta {
+    width: 20px;
+    height: 20px;
+    margin: 0px auto;
+}
+
+#ContaLibroVenta {
+    width: 20px;
+    height: 20px;
+    margin: 0px auto;
+}
+
+#ContaLibroCompra {
+    width: 20px;
+    height: 20px;
+    margin: 0px auto;
+}
