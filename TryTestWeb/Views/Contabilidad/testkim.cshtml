@@ -1,129 +1,498 @@
-﻿@model List<UsuarioModel>
-@*se le declara el tipo de dato que se le manda a la vista con arroba.model*@
+﻿<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header-2">
+            <h2 class="page-header">Agregar Voucher</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Contabilidad</a>
+                </li>
+                <li>
+                    <a href="#">-</a>
+                </li>
+                <li class="active">
+                    Agregar Voucher
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
 
-@foreach (var item in Model)
+
+@using (Html.BeginForm("NuevoVoucher", "Contabilidad", FormMethod.Post, new { id = "DatosVoucher" }))
 {
-    <p>@item.RUT</p>
-    <p>@item.Nombre</p>
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+            <label class="control-label">Numero Voucher</label>
+            <input type="number" class="form-control" name="numVoucher" id="numVoucher" required readonly />
+        </div>
 
-}
+        <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+            <label class="control-label">Fecha Contabilización</label>
+            <div class='input-group date '>
+                <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="@(ParseExtensions.ToDD_MM_AAAA(DateTime.Now))" required />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+            <label class="control-label">Tipo de Voucher</label>
+            <select class="form-control basic-usage-select" name="tipo" id="tipo">
+                @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
+            </select>
+        </div>
+
+        <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+            <label>Tipo Origen</label>
+            <select class="form-control basic-usage-select" name="TipoOrigen" id="TipoOrigen">
+                @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
+            </select>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-5 form-group">
+            <label class="control-label">Glosa</label>
+            <input type="text" class="form-control" name="glosa" id="glosa" />
+        </div>
+
+        <div class="col-lg-1 col-md-1 col-sm-1 form-group mtop">
+            <a class="btn btn-default" id="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa"><i class="fa fa-copy"></i></a>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+
+                <div class="col-lg-8 col-md-8 col-sm-7">
+                    Items de Voucher
+                </div>
+
+                <div class="col-md-4">
+                    <a id="Btn_AgregarVoucher" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                </div>
+            </div>
+        </div>
 
 
-@*@model IList<ClientesContablesModel>
-    @{
-        ViewBag.Title = "Seleccionar Cliente Contable";
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
-    @using Microsoft.AspNet.Identityasdsadasdsadsadasdsadasd
+        <div class="panel-body">
+            <div class="row" id="titulos">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2">
+                    <label>Cuenta Contable</label>
+                </div>
+                <div class="col-lg-2">
+                    <label>Glosa</label>
+                </div>
+                <div class="col-lg-2">
+                    <label>CC</label>
+                </div>
+                <div class="col-lg-2">
+                    <label>Monto Debe</label>
+                </div>
+                <div class="col-lg-2">
+                    <label>Monto Haber</label>
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row" id="ContenidoDetalle">
+                
+            </div>
+        </div>
+        <div class="panel-footer text-center">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 col-lg-offset-8 col-md-offset-8 col-sm-offset-7 form-group">
+                    <span><strong>TOTAL DEBE</strong></span>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6 form-group">
+                    <span><strong>TOTAL HABER</strong></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 col-lg-offset-8 col-md-offset-8 col-sm-offset-7 form-group ">
+                    <span>$<span id="TotDebe"></span></span>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6 form-group">
+                    <span>$<span id="TotHaber"></span></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-lg-offset-7 col-md-offset-7 col-sm-offset-7 form-group">
+                    <div id="aviso"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-1 col-lg-offset-11">
+            <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress">Guardar Voucher</button>
+        </div>
+    </div>
 
-
-    <p class="text-muted m-b-30 "></p>
-
-    <div class="container">asdasdasd
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-
-                <p class="text-muted m-b-10"></p>
-                <div class="panel panel-default  text-center slider-bg">
-                    <div class="panel-body p-0">
-                        <div class="">
-                            <div id="owl-slider" class="owl-carousel">
-                                <div class="item">
-                                    <h1 class="text-wrap font-600">Selecciona tu Cliente Contable</h1>
-
-                                    <p class="small">Derechos Reservados, 2018</p>
-                                    @if (Model.Count() > 0)
-                                    {
-                                        <a href="@Url.Action("NuevoClienteContable","Contabilidad")" class="btn btn-success btn-small pull-right waves-effect waves-light" data-overlaySpeed="200" data-overlayColor="#36404a">
-                                            <span class="btn-label"><i class="ion-android-add"></i></span>
-                                            Clientes Contables
-                                        </a>
-                                        <br />
-                                    }
-
-
-                                    @if (Model.Count() == 0)
-                                    {
-                                        <br />
-                                        <div class="alert alert-danger" role="alert">
-                                            No se encontraron clientes contables
-                                        </div>
-                                        if (ViewBag.PerfilUsuario != null)
-                                        {
-                                            if (ViewBag.PerfilUsuario == "Admin" || ViewBag.PerfilUsuario == "SuperAdmin")
-                                            {
-                                                <a class="btn btn-primary" href="@Url.Action("NuevoClienteContable","Contabilidad")"><span class="btn-label"><i class="ion-android-add"></i></span>Crea clientes contables pinchando aquí</a>
-                                            }
-                                        }
-                                    }
+    @*Principio de modal para Proovedor Deudor Auxiliar*@
+    <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarProvDeudor">
+        @**@
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title" id="myLargeModalLabel">Ingreso de Auxiliares</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Cuenta Contable</label>
                                 </div>
-                                @if (Model.Count() != 0)
-                                {
-                                    <div class="item m-t-40">
-                                        <p class="text-muted m-b-20 "></p>
-                                        <table width="100%" class="tablesaw m-t-20 table m-b-0 table-bordered panel-color panel-primary table-responsive" id="tablaCliente">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center text-white">Rut Cliente</th>
-                                                    <th class="text-center text-white">Razón Social</th>
-                                                    <th class="text-center text-white">Seleccionar</th>
+                                <div class="col-lg-5">
+                                    <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control basic-usage-select" data-live-search="true" data-size="10" title="Ninguno">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Numero Línea</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="item" name="item" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Valor Línea</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="valoritem" name="valoritem" class="form-control" />
+                                </div>
+                            </div>
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-
-
-                                                @foreach (var ClienteContable in Model)
-                                                {
-                                                    <tr id="@ClienteContable.ClientesContablesModelID">
-                                                        <td>@ClienteContable.RUTEmpresa</td>
-                                                        <td>@ClienteContable.RazonSocial</td>
-                                                        <td><a href="javascript:SelecCliente('@ClienteContable.ClientesContablesModelID');"><span class="label label-table label-primary">Seleccionar</span></a></td>
-
-                                                    </tr>
-                                                }
-
-                                            </tbody>
-                                        </table>
+                            <div id="ConjuntoDetallesAuxiliares">
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Fecha</label>
+                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="" required />
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Tipo</label>
+                                    <select class="form-control" id="TipoPrestador" name="TipoPrestador"  required>
+                                        <option value="">Selecciona</option>
+                                        <option value="CL">Cliente</option>
+                                        <option value="PR">Proveedor</option>
+                                        <option value="P">Persona</option>
+                                        <option value="H">Honorarios</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Razon Social</label>
+                                    <select class="form-control" id="RazonPrestador" name="RazonPrestador" required>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Rut</label>
+                                    <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly />
+                                </div>
+                                <div class="col-lg-3 col-md-4 text-center mtop">
+                                    <label class="control-label">¿Es una Boleta?</label>
+                                    <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-5 col-md-4 text-center mtop">
+                                    <div id="CajaContaCompra">
+                                        <label class="control-label">¿Se Contabiliza en el libro de compras?</label>
+                                        <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
                                     </div>
-                                }
+                                </div>
+                                <div class="col-lg-4 col-md-4 text-center mtop">
+                                    <div id="CajaContaVenta">
+                                        <label class="control-label">¿Se Contabiliza en el libro de ventas?</label>
+                                        <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" value="Venta" />
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row mtop">
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <a id="Btn_AgregaFilaProvDeudor" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12" id="titulos">
+                                    <div class="col-lg-1">
+                                        <label>Folio</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Tipo DTE</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Monto Neto</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Monto Exento</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Monto IVA</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Monto Total</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12" id="TablaProvDeudorAux">
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <button class="btn btn-success redondo btnPress">Guardar Auxiliar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-        <div class="col-md-2"></div>
     </div>
+    @*final del primer modal para auxiliar*@
 
-    <style>
+    @*segundo modal para Remu auxiliar*@
 
-        .label-primary:hover {
-            background-color: #00ffff;
-        }
+    <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarRemu">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title" id="myLargeModalLabel">Ingreso de Auxiliares</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Cuenta Contable</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Numero Línea</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="item" name="item" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Valor Línea</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="valoritem" name="valoritem" class="form-control" />
+                                </div>
+                            </div>
 
-        #barralateral {
-            display: none;
-        }
-    </style>
+                            <div id="ConjuntoDetallesAuxiliares">
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Fecha</label>
+                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="" required />
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Tipo</label>
+                                    <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()" required>
+                                        <option value="">Selecciona</option>
+                                        <option value="CL">Cliente</option>
+                                        <option value="PR">Proveedor</option>
+                                        <option value="P">Persona</option>
+                                        <option value="H">Honorarios</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Razon Social</label>
+                                    <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()" required>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Rut</label>
+                                    <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly />
+                                </div>
+                            </div>
 
-    <script>
-        function SelecCliente(idClienteContable) {
-            $.ajax({
-                url: "DoSeleccionarClienteContable?EmisorID=" + idClienteContable,
-                success: function (response) {
-                    if (response != null && response.success) {
-                        //alert(document.location.href);
-                        document.location.href = "/Contabilidad/PanelClienteContable";
-                    }
-                    else {
-                        alert("No se puede operar con este cliente contable");
-                    }
+                            <div class="row mtop">
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <a id="Btn_AgregaFilaRemu" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12" id="titulos">
+                                    <div class="col-lg-3">
+                                        <label>Folio</label>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <label>Sueldo Líquido</label>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-12" id="TablaRemuAux">
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <button class="btn btn-success redondo btnPress">Guardar Auxiliar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*final del segundo modal auxiliar*@
+
+    @*tercer modal para Honorarios auxiliar*@
+
+    <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarHonor">
+        @**@
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title" id="myLargeModalLabel">Ingreso de Auxiliares</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Cuenta Contable</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Numero Línea</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="item" name="item" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Valor Línea</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="valoritem" name="valoritem" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div id="ConjuntoDetallesAuxiliares">
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Fecha</label>
+                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="" required />
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Tipo</label>
+                                    <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()" required>
+                                        <option value="">Selecciona</option>
+                                        <option value="CL">Cliente</option>
+                                        <option value="PR">Proveedor</option>
+                                        <option value="P">Persona</option>
+                                        <option value="H">Honorarios</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Razon Social</label>
+                                    <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()" required>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label class="control-label">Rut</label>
+                                    <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly />
+                                </div>
+                            </div>
+
+                            <div class="row mtop">
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <a id="Btn_AgregaFilaHonorarios" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12" id="titulos">
+                                    <div class="col-lg-2">
+                                        <label>Folio</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Valor Bruto</label>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>Tipo Retención</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Retención</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Valor Líquido</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12" id="TablaHonorAux">
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <button class="btn btn-success redondo btnPress">Guardar Auxiliar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    
+    document.getElementById('fecha').addEventListener('change', function () {
+        let numVoucher = document.getElementById('numVoucher');
+        $.ajax({
+            type: 'GET',
+            url: "@Url.Action("GetNewNumVoucherJson", "Contabilidad")",
+            data: { FechaContabilizacion: document.getElementById('fecha').value },
+            success: function (result) {
+                if (result.ok) {
+                    numVoucher.value = result.numVoucher;
+                } else {
+                    alert('No se logró obtener el numero de voucher');
                 }
-            });
-        }
-    </script>*@
+            }
+        })
+    });
+
+
+</script>
+
+@*@Styles.Render("~/bundles/contentcsscontabilidad")*@
+@*@Scripts.Render("~/bundles/contentjscontabilidad")*@
+<link href="~/Content/css/Contabilidad/IngresoVoucher.css" rel="stylesheet" />
+<link href="~/Content/css/Contabilidad/select2.min.css" rel="stylesheet" />
+@*<script type="text/javascript" src="~/Content/js/decimal.min.js"></script>*@
+<script type="text/javascript" src="~/Content/js/Contabilidad/select2.min.js"></script>
+<script type="text/javascript" src="~/Content/js/Contabilidad/IngresoVoucher.js"></script>
+<script type="text/javascript" src="~/Content/js/Contabilidad/CreacionTablasVoucher.js"></script>
