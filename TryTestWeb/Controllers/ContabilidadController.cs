@@ -120,6 +120,25 @@ namespace TryTestWeb.Controllers
             return View(usuarios);
         }
 
+        [HttpGet]
+        public JsonResult getLstCuentasContables()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+
+            var cuentasContables = ParseExtensions.ObtenerCuentaContableDropdownAsString(clienteSeleccionado);
+
+            return Json(new
+            {
+                ok = true,
+                result = cuentasContables
+            }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
         [ModuloHandler]
         [Authorize]
         public ActionResult EditarClienteContable()

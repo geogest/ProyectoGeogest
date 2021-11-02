@@ -933,7 +933,7 @@ public static class ParseExtensions
         }
             
         //Agregar la opcion vacia para poder validar en contra de ella
-        sb.Append("<option  data-auxiliar=\"0\"  data-item=\"0\"   data-cc=\"0\"   data-analisis=\"0\"  data-conciliancion=\"0\"  value=\"\">Seleccione</option>");
+        sb.Append("<option  data-auxiliar=\"0\" data-tipoauxiliar=\"0\" data-item=\"0\"   data-cc=\"0\"   data-analisis=\"0\"  data-conciliancion=\"0\"  value=\"\">Seleccione</option>");
 
         //para cuando hay subcategorias pobladas
         foreach (CuentaContableModel Cuentas in ListaCuentas.Where(r => r.SubSubClasificacion == null))
@@ -948,7 +948,7 @@ public static class ParseExtensions
                 sb.Append("<optgroup label=\"" + (_SubSubClasificacion.CodigoInterno + ":" + _SubSubClasificacion.NombreInterno) + "\">");
                 foreach (CuentaContableModel Cuentas in ListaCuentas.Where(r => r.SubSubClasificacion == _SubSubClasificacion))
                 {
-                    sb.Append("<option data-auxiliar=\"" + Cuentas.TieneAuxiliar + "\"  data-item=\"" + Cuentas.ItemsModelID + "\"   data-cc=\"" + Cuentas.CentroCostosModelID + "\"   data-analisis=\"" + Cuentas.AnalisisContablesModelID + "\"  data-conciliancion=\"" + Cuentas.Concilaciones + "\" data-tokens=\"" + Cuentas.SubSubClasificacion.NombreInterno + " " + Cuentas.GetCtaContableDisplayName() + "\"  value=\"" + Cuentas.CuentaContableModelID + "\">" + Cuentas.GetCtaContableDisplayName() + "</option>");
+                    sb.Append("<option data-auxiliar=\"" + Cuentas.TieneAuxiliar + "\" data-tipoauxiliar=\"" + Cuentas.TipoAuxiliarQueUtiliza + "\" data-item=\"" + Cuentas.ItemsModelID + "\"   data-cc=\"" + Cuentas.CentroCostosModelID + "\"   data-analisis=\"" + Cuentas.AnalisisContablesModelID + "\"  data-conciliancion=\"" + Cuentas.Concilaciones + "\" data-tokens=\"" + Cuentas.SubSubClasificacion.NombreInterno + " " + Cuentas.GetCtaContableDisplayName() + "\"  value=\"" + Cuentas.CuentaContableModelID + "\">" + Cuentas.GetCtaContableDisplayName() + "</option>");
                 }
                 sb.Append("</optgroup>");
             }

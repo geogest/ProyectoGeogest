@@ -357,7 +357,6 @@
     <Compile Include="Models\ModelosSistemaContable\UserClientesContablesModels.cs" />
     <Compile Include="Models\ModelosSistemaContable\VistaDeObjetos\CatorceTerViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\VistaDeObjetos\EstadoResultadoComparativoViewModel.cs" />
-    <Compile Include="Models\ModelosSistemaContable\VoucherDto.cs" />
     <Compile Include="Models\ModelosSistemaContable\VoucherModel.cs" />
     <Compile Include="Models\ModelsFactura\ActividadEconomicaModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -417,8 +416,9 @@
     <Content Include="Content\css\SeleccionarClienteContable.css" />
     <Content Include="Content\css\SeleccionarEmisorDesdeModulos.css" />
     <Content Include="Content\css\style.css" />
-    <Content Include="Content\js\ContabilidadBoletas\ImportarBoletas.js" />
     <Content Include="Content\js\Contabilidad\Chart.min.js" />
+    <Content Include="Content\js\Contabilidad\CreacionTablasVoucher.js" />
+    <Content Include="Content\js\Contabilidad\IngresoVoucher.js" />
     <Content Include="Content\js\Contabilidad\jquery.dataTables.js" />
     <Content Include="Content\js\Contabilidad\jspdf.plugin.autotable.js" />
     <Content Include="Content\js\Contabilidad\select2.min.js" />

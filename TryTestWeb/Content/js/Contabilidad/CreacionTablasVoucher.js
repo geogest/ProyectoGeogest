@@ -160,11 +160,11 @@ const ClickAux = () => {
         CrearAuxProvDeudor();
         $('#ModalAuxiliarProvDeudor').modal('show');
     }
-    if (OptionCuentaContable.dataset.tipoauxiliar == "Remuneracion") {
+    if (SelectCuentaContable.dataset.tipoauxiliar == "Remuneracion") {
         CrearTablaAuxRemu();
         $('#ModalAuxiliarRemu').modal('show');
     }
-    if (OptionCuentaContable.dataset.tipoauxiliar = "") {
+    if (SelectCuentaContable.dataset.tipoauxiliar = "Honorarios") {
         CrearTablaHonorariosAux();
         $('#ModalAuxiliarHonor').modal('show');
     }
