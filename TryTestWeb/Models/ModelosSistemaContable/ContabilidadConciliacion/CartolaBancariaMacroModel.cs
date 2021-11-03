@@ -433,10 +433,11 @@ public class CartolaBancariaMacroModel
                             {
                                 if (NuevoDetalleVoucher.ObjCuentaContable == CuentaAUsar)
                                 {
+                                    CuentaContableModel CtaAux = NuevoDetalleVoucher.ObjCuentaContable;
                                     AuxiliaresModel Auxiliar = new AuxiliaresModel();
                                     Auxiliar.LineaNumeroDetalle = CapaVoucher.ListaDetalleVoucher.Count;
                                     Auxiliar.MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber;
-                                    Auxiliar.objCtaContable = NuevoDetalleVoucher.ObjCuentaContable;
+                                    Auxiliar.objCtaContable = CtaAux;
 
                                     NuevoDetalleVoucher.Auxiliar = Auxiliar;
 
@@ -444,7 +445,9 @@ public class CartolaBancariaMacroModel
                                     AuxiliaresDetalleModel nuevoAuxDetalle = new AuxiliaresDetalleModel();
                                 
                                     decimal MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber; 
-                                    if (TipoDte.FacturaElectronica == itemCartola.TipoDteNumVoucher) 
+                                    if (itemCartola.TipoDteNumVoucher == TipoDte.FacturaElectronica ||
+                                        itemCartola.TipoDteNumVoucher == TipoDte.PagoElectronico ||
+                                        itemCartola.TipoDteNumVoucher == TipoDte.BoletaElectronica) 
                                     {
                                         decimal MontoNeto = ParseExtensions.CalcularMontoNeto(MontoTotal);
                                         decimal MontoIva = ParseExtensions.CalcularIva(MontoNeto);
@@ -472,6 +475,23 @@ public class CartolaBancariaMacroModel
                                         nuevoAuxDetalle.MontoNetoLinea = 0;
                                         nuevoAuxDetalle.MontoExentoLinea = MontoTotal;
                                         nuevoAuxDetalle.MontoIVALinea = 0;
+                                        nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
+                                        nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
+                                        nuevoAuxDetalle.MontoIVANoRecuperable = 0;
+                                        nuevoAuxDetalle.MontoIVAUsoComun = 0;
+                                        nuevoAuxDetalle.MontoIVAActivoFijo = 0;
+                                    }
+                                    else if(CtaAux.TipoAuxiliarQueUtiliza == TipoAuxiliar.Honorarios) //Revisar su funcionamiento
+                                    {
+                                        nuevoAuxDetalle.TipoDocumento = itemCartola.TipoDteNumVoucher;
+                                        nuevoAuxDetalle.Fecha = itemCartola.Fecha;
+                                        nuevoAuxDetalle.FechaContabilizacion = itemCartola.Fecha;
+                                        nuevoAuxDetalle.Folio = itemCartola.Docum;
+                                        nuevoAuxDetalle.Individuo2 = Prestador;
+                                        nuevoAuxDetalle.MontoNetoLinea = 0;
+                                        nuevoAuxDetalle.MontoExentoLinea = 0;
+                                        nuevoAuxDetalle.MontoIVALinea = 0;
+                                        nuevoAuxDetalle.ValorLiquido = MontoTotal;
                                         nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
                                         nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
                                         nuevoAuxDetalle.MontoIVANoRecuperable = 0;

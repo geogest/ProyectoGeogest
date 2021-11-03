@@ -89,6 +89,9 @@ public enum TipoDte
     [TipoDocumento(SubTipoDocumento.Electronico)]
     [Display(Name = "Declaración de ingreso (DIN)")]
     DeclaracionDeIngreso = 914,
+    [TipoDocumento(SubTipoDocumento.Electronico)]
+    [Display(Name = "Pago electrónico")]
+    PagoElectronico = 48,
 
     //Boletas
     [TipoDocumento(SubTipoDocumento.Boletas)]
