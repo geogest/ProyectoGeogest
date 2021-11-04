@@ -197,13 +197,20 @@
                                     }
                                     else if(ElTipoDeAuxiliar == TipoAuxiliar.ProveedorDeudor)
                                     {
-                                        <td class="form-group">
-                                            
-                                     
-                                         @ParseExtensions.EnumGetDisplayAttrib(lineaDetalleAux.TipoDocumento)
-                                            
-                                          
-                                        </td>
+                                <td class="form-group">
+
+                                    @if (lineaDetalleAux.TipoDocumento != null && lineaDetalleAux.TipoDocumento != 0)
+                                    {
+                                        @ParseExtensions.EnumGetDisplayAttrib(lineaDetalleAux.TipoDocumento)
+                                    }
+                                    else
+                                    {
+                                        @lineaDetalleAux.TipoDocumento
+                                    }
+
+
+
+                                </td>
                                         <td class="form-group">
                                             @ParseExtensions.NumeroConPuntosDeMiles(lineaDetalleAux.MontoNetoLinea)
                                         </td>

@@ -235,7 +235,7 @@ public class CartolaBancariaMacroModel
         {
             
             string Fecha = Excel.GetCellValueAsString(row, 1);
-            DateTime fechadt = Excel.GetCellValueAsDateTime(row,1);
+            DateTime fechadt = Excel.GetCellValueAsDateTime(row,1,"dd/MM/yyyy");
             int Docum = Excel.GetCellValueAsInt32(row, 2);
             string Detalle = Excel.GetCellValueAsString(row, 3);
             decimal Debe = Excel.GetCellValueAsDecimal(row, 4);
@@ -248,7 +248,7 @@ public class CartolaBancariaMacroModel
 
             if (!Fecha.Contains("-"))
             {
-              if(fechadt != null) FechaDt = fechadt;
+              if(fechadt != null) FechaDt = fechadt; //revisar el que  el parseo de la fecha se haga correctamente
             }
             else
             {
@@ -445,63 +445,22 @@ public class CartolaBancariaMacroModel
                                     AuxiliaresDetalleModel nuevoAuxDetalle = new AuxiliaresDetalleModel();
                                 
                                     decimal MontoTotal = NuevoDetalleVoucher.MontoDebe + NuevoDetalleVoucher.MontoHaber; 
-                                    if (itemCartola.TipoDteNumVoucher == TipoDte.FacturaElectronica ||
-                                        itemCartola.TipoDteNumVoucher == TipoDte.PagoElectronico ||
-                                        itemCartola.TipoDteNumVoucher == TipoDte.BoletaElectronica) 
-                                    {
-                                        decimal MontoNeto = ParseExtensions.CalcularMontoNeto(MontoTotal);
-                                        decimal MontoIva = ParseExtensions.CalcularIva(MontoNeto);
-                                        nuevoAuxDetalle.TipoDocumento = itemCartola.TipoDteNumVoucher; 
-                                        nuevoAuxDetalle.Fecha = itemCartola.Fecha;
-                                        nuevoAuxDetalle.FechaContabilizacion = itemCartola.Fecha;
-                                        nuevoAuxDetalle.Folio = itemCartola.Docum;
-                                        nuevoAuxDetalle.Individuo2 = Prestador;
-                                        nuevoAuxDetalle.MontoNetoLinea = MontoNeto;
-                                        nuevoAuxDetalle.MontoExentoLinea = 0;
-                                        nuevoAuxDetalle.MontoIVALinea = MontoIva;
-                                        nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
-                                        nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
-                                        nuevoAuxDetalle.MontoIVANoRecuperable = 0;
-                                        nuevoAuxDetalle.MontoIVAUsoComun = 0;
-                                        nuevoAuxDetalle.MontoIVAActivoFijo = 0;
-                                    }
-                                    else if (itemCartola.TipoDteNumVoucher.ExentaIVA())
-                                    {
-                                        nuevoAuxDetalle.TipoDocumento = itemCartola.TipoDteNumVoucher; 
-                                        nuevoAuxDetalle.Fecha = itemCartola.Fecha;
-                                        nuevoAuxDetalle.FechaContabilizacion = itemCartola.Fecha;
-                                        nuevoAuxDetalle.Folio = itemCartola.Docum;
-                                        nuevoAuxDetalle.Individuo2 = Prestador;
-                                        nuevoAuxDetalle.MontoNetoLinea = 0;
-                                        nuevoAuxDetalle.MontoExentoLinea = MontoTotal;
-                                        nuevoAuxDetalle.MontoIVALinea = 0;
-                                        nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
-                                        nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
-                                        nuevoAuxDetalle.MontoIVANoRecuperable = 0;
-                                        nuevoAuxDetalle.MontoIVAUsoComun = 0;
-                                        nuevoAuxDetalle.MontoIVAActivoFijo = 0;
-                                    }
-                                    else if(CtaAux.TipoAuxiliarQueUtiliza == TipoAuxiliar.Honorarios) //Revisar su funcionamiento
-                                    {
-                                        nuevoAuxDetalle.TipoDocumento = itemCartola.TipoDteNumVoucher;
-                                        nuevoAuxDetalle.Fecha = itemCartola.Fecha;
-                                        nuevoAuxDetalle.FechaContabilizacion = itemCartola.Fecha;
-                                        nuevoAuxDetalle.Folio = itemCartola.Docum;
-                                        nuevoAuxDetalle.Individuo2 = Prestador;
-                                        nuevoAuxDetalle.MontoNetoLinea = 0;
-                                        nuevoAuxDetalle.MontoExentoLinea = 0;
-                                        nuevoAuxDetalle.MontoIVALinea = 0;
-                                        nuevoAuxDetalle.ValorLiquido = MontoTotal;
-                                        nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
-                                        nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
-                                        nuevoAuxDetalle.MontoIVANoRecuperable = 0;
-                                        nuevoAuxDetalle.MontoIVAUsoComun = 0;
-                                        nuevoAuxDetalle.MontoIVAActivoFijo = 0;
-                                    }
-                                    else
-                                    {
-                                        throw new Exception("No existe una regla para tratar el tipoDTE");
-                                    }
+
+                                    nuevoAuxDetalle.TipoDocumento = itemCartola.TipoDteNumVoucher; 
+                                    nuevoAuxDetalle.Fecha = itemCartola.Fecha;
+                                    nuevoAuxDetalle.FechaContabilizacion = itemCartola.Fecha;
+                                    nuevoAuxDetalle.Folio = itemCartola.Docum;
+                                    nuevoAuxDetalle.Individuo2 = Prestador;
+                                    nuevoAuxDetalle.MontoNetoLinea = 0;
+                                    nuevoAuxDetalle.MontoExentoLinea = 0;
+                                    nuevoAuxDetalle.MontoIVALinea = 0;
+                                    nuevoAuxDetalle.MontoTotalLinea = MontoTotal;
+                                    nuevoAuxDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
+                                    nuevoAuxDetalle.MontoIVANoRecuperable = 0;
+                                    nuevoAuxDetalle.MontoIVAUsoComun = 0;
+                                    nuevoAuxDetalle.MontoIVAActivoFijo = 0;
+
+                                    if(CtaAux.TipoAuxiliarQueUtiliza == TipoAuxiliar.Honorarios) nuevoAuxDetalle.ValorLiquido = MontoTotal;
 
                                     lstAuxDetalle.Add(nuevoAuxDetalle);
 
