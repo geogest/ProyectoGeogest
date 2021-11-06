@@ -14,7 +14,7 @@ const LstCuentasContables = () => {
             }
 
         }
-        
+
     });
 }
 
@@ -264,16 +264,16 @@ const CrearTablaAuxRemu = () => {
     DivAuxRemu.appendChild(DivSueldoLiquido);
 
     //content eliminar fila
-    let divElimSueldoLiq = document.createElement("div");
-    divElimSueldoLiq.className = "form-group col-lg-1 col-lg-offset-3";
-    let btnEliminarSueldo = document.createElement("button");
-    btnEliminarSueldo.type = "button";
-    btnEliminarSueldo.className = "btn btn-danger btn-sm redondo btnPress";
-    btnEliminarSueldo.onclick = BorrarFilaAuxRemu;
-    btnEliminarSueldo.tabIndex = -1;
-    btnEliminarSueldo.textContent = "X";
-    divElimSueldoLiq.appendChild(btnEliminarSueldo);
-    DivAuxRemu.appendChild(divElimSueldoLiq);
+    let divElimFila = document.createElement("div");
+    divElimFila.className = "form-group col-lg-1 col-lg-offset-3";
+    let btnEliminarFila = document.createElement("button");
+    btnEliminarFila.type = "button";
+    btnEliminarFila.className = "btn btn-danger btn-sm redondo btnPress";
+    btnEliminarFila.onclick = BorrarFilaAuxRemu;
+    btnEliminarFila.tabIndex = -1;
+    btnEliminarFila.textContent = "X";
+    divElimFila.appendChild(btnEliminarFila);
+    DivAuxRemu.appendChild(divElimFila);
 }
 document.getElementById("Btn_AgregaFilaRemu").addEventListener('click', function () {
     CrearTablaAuxRemu();
@@ -397,13 +397,13 @@ const ClickAux = () => {
         $('#ModalAuxiliarProvDeudor').modal('show');
     }
     if (SelectCuentaContable.dataset.tipoauxiliar == "Remuneracion") {
-        if (IdDivAuxRemu==0) {
+        if (IdDivAuxRemu == 0) {
             CrearTablaAuxRemu();
         }
         $('#ModalAuxiliarRemu').modal('show');
     }
     if (SelectCuentaContable.dataset.tipoauxiliar == "Honorarios") {
-        if (IdAuxHonorarios==0) {
+        if (IdAuxHonorarios == 0) {
             CrearTablaHonorariosAux();
         }
         $('#ModalAuxiliarHonor').modal('show');
