@@ -1,5 +1,5 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    LstCuentasContables(); 
+    LstCuentasContables();
 });
 var CuentasContables;
 const LstCuentasContables = () => {
@@ -17,6 +17,7 @@ const LstCuentasContables = () => {
         
     });
 }
+
 var idDetalle = 0;
 const CrearTablaVoucher = () => {
     var glosa = $("input[name=glosaDetalle]:last").val();
@@ -89,7 +90,7 @@ const CrearTablaVoucher = () => {
     let DivMontoDebe = document.createElement("div");
     DivMontoDebe.className = "form-group col-lg-2";
     let InputDebe = document.createElement("input");
-    InputDebe.className = "basic-usage-select selectpicker form-control";
+    InputDebe.className = "selectpicker form-control";
     InputDebe.id = "debe";
     InputDebe.name = "debe";
     InputDebe.min = 0;
@@ -102,7 +103,7 @@ const CrearTablaVoucher = () => {
     let DivMontoHaber = document.createElement("div");
     DivMontoHaber.className = "form-group col-lg-2";
     let InputHaber = document.createElement("input");
-    InputHaber.className = "basic-usage-select selectpicker form-control";
+    InputHaber.className = "selectpicker form-control";
     InputHaber.id = "haber";
     InputHaber.name = "haber";
     InputHaber.min = 0;
@@ -123,7 +124,6 @@ const CrearTablaVoucher = () => {
     DivBtnEliminar.appendChild(BtnEliminar);
     DivTabla.appendChild(DivBtnEliminar);
 }
-
 function EliminarUltimaFila() {
     jQuery('#detalle' + idDetalle).remove();
     idDetalle--;
@@ -135,42 +135,9 @@ function EliminarUltimaFila() {
 document.getElementById("Btn_AgregarVoucher").addEventListener('click', function () {
     CrearTablaVoucher();
 });
-
 document.getElementById("duplica").addEventListener('click', function () {
     DuplicaGlosa();
 });
-
-
-const ActivaBtnAux = () => {
-    let SelectCtaContable = document.getElementById("cuentaCont");
-    let OptionCtaContable = SelectCtaContable.options[SelectCtaContable.selectedIndex];
-    console.log(OptionCtaContable);
-    let BtnAux = document.getElementById("BtnAux");
-    if (OptionCtaContable.dataset.auxiliar == 1 || OptionCtaContable.dataset.auxiliar == 2) {
-        BtnAux.disabled = false;
-    } else {
-        BtnAux.disabled = true;
-    }
-
-}
-const ClickAux = () => {
-    let SelectCuentaContable = document.getElementById("cuentaCont").selectedOptions[0];
-    console.log(SelectCuentaContable);
-    if (SelectCuentaContable.dataset.tipoauxiliar == "ProveedorDeudor") {
-        CrearAuxProvDeudor();
-        $('#ModalAuxiliarProvDeudor').modal('show');
-    }
-    if (SelectCuentaContable.dataset.tipoauxiliar == "Remuneracion") {
-        CrearTablaAuxRemu();
-        $('#ModalAuxiliarRemu').modal('show');
-    }
-    if (SelectCuentaContable.dataset.tipoauxiliar = "Honorarios") {
-        CrearTablaHonorariosAux();
-        $('#ModalAuxiliarHonor').modal('show');
-    }
-}
-    
-
 
 var IdDivAuxProvDeudor = 0;
 const CrearAuxProvDeudor = () => {
@@ -251,7 +218,6 @@ const CrearAuxProvDeudor = () => {
     divEliminarAuxiliar.appendChild(buttonFila);
     DivContenidoAux.appendChild(divEliminarAuxiliar);
 }
-
 function BorrarFilaAuxiliarProvDeudor() {
     jQuery('#detalle' + IdDivAuxProvDeudor).remove();
     IdDivAuxProvDeudor--;
@@ -259,14 +225,11 @@ function BorrarFilaAuxiliarProvDeudor() {
         IdDivAuxProvDeudor = 0;
     }
 }
-
 document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
     CrearAuxProvDeudor();
 });
 
-
 var IdDivAuxRemu = 0;
-
 const CrearTablaAuxRemu = () => {
     IdDivAuxRemu = IdDivAuxRemu + 1;
     let DivAuxRemuPadre = document.getElementById("TablaRemuAux");
@@ -312,11 +275,9 @@ const CrearTablaAuxRemu = () => {
     divElimSueldoLiq.appendChild(btnEliminarSueldo);
     DivAuxRemu.appendChild(divElimSueldoLiq);
 }
-
 document.getElementById("Btn_AgregaFilaRemu").addEventListener('click', function () {
     CrearTablaAuxRemu();
 });
-
 function BorrarFilaAuxRemu() {
     jQuery('#detalleRemu' + IdDivAuxRemu).remove();
     IdDivAuxRemu--;
@@ -403,11 +364,9 @@ const CrearTablaHonorariosAux = () => {
     DivBtnBorrar.appendChild(BtnBorrarHono);
     DivHonoAux.appendChild(DivBtnBorrar);
 }
-
 document.getElementById("Btn_AgregaFilaHonorarios").addEventListener('click', function () {
     CrearTablaHonorariosAux();
 });
-
 function BorrarFilaAuxRemu() {
     jQuery('#detalleHono' + IdAuxHonorarios).remove();
     IdAuxHonorarios--;
@@ -416,3 +375,41 @@ function BorrarFilaAuxRemu() {
     }
 }
 
+const ActivaBtnAux = () => {
+    let SelectCtaContable = document.getElementById("cuentaCont");
+    let OptionCtaContable = SelectCtaContable.options[SelectCtaContable.selectedIndex];
+    console.log(OptionCtaContable);
+    let BtnAux = document.getElementById("BtnAux");
+    if (OptionCtaContable.dataset.auxiliar == 1 || OptionCtaContable.dataset.auxiliar == 2) {
+        BtnAux.disabled = false;
+    } else {
+        BtnAux.disabled = true;
+    }
+
+}
+const ClickAux = () => {
+    let SelectCuentaContable = document.getElementById("cuentaCont").selectedOptions[0];
+    console.log(SelectCuentaContable);
+    if (SelectCuentaContable.dataset.tipoauxiliar == "ProveedorDeudor") {
+        if (IdDivAuxProvDeudor == 0) {
+            CrearAuxProvDeudor();
+        }
+        $('#ModalAuxiliarProvDeudor').modal('show');
+    }
+    if (SelectCuentaContable.dataset.tipoauxiliar == "Remuneracion") {
+        if (IdDivAuxRemu==0) {
+            CrearTablaAuxRemu();
+        }
+        $('#ModalAuxiliarRemu').modal('show');
+    }
+    if (SelectCuentaContable.dataset.tipoauxiliar == "Honorarios") {
+        if (IdAuxHonorarios==0) {
+            CrearTablaHonorariosAux();
+        }
+        $('#ModalAuxiliarHonor').modal('show');
+    }
+}
+
+$(document).ready(function () {
+    $('.basic-usage-select').select2();
+});

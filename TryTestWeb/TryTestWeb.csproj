@@ -393,6 +393,7 @@
     <Content Include="Content\css\Contabilidad\CatorceTer.css" />
     <Content Include="Content\css\Contabilidad\Chart.min.css" />
     <Content Include="Content\css\Contabilidad\ComparacionCtaPresu.css" />
+    <Content Include="Content\css\Contabilidad\EditarVoucher.css" />
     <Content Include="Content\css\Contabilidad\EstadoResultado.css" />
     <Content Include="Content\css\Contabilidad\EstadoResultadoComparativo.css" />
     <Content Include="Content\css\Contabilidad\EstadoResultadoCtaBruto.css" />
@@ -418,6 +419,7 @@
     <Content Include="Content\css\style.css" />
     <Content Include="Content\js\Contabilidad\Chart.min.js" />
     <Content Include="Content\js\Contabilidad\CreacionTablasVoucher.js" />
+    <Content Include="Content\js\Contabilidad\EditarVoucher.js" />
     <Content Include="Content\js\Contabilidad\IngresoVoucher.js" />
     <Content Include="Content\js\Contabilidad\jquery.dataTables.js" />
     <Content Include="Content\js\Contabilidad\jspdf.plugin.autotable.js" />
