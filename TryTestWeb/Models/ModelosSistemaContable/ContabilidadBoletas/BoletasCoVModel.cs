@@ -30,6 +30,94 @@ namespace TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas
         public int CentroDeCostos { get; set; }
         public DateTime FechaPeriodoTributario { get; set; }
 
+
+        public static bool InsertBoletasCovLinq(ClientesContablesModel ObjCliente, List<BoletasExcelModel> BoletasItems, TipoCentralizacion Tipo, FacturaPoliContext db)
+        {
+            using(var dbTransaction = db.Database.BeginTransaction())
+            {
+                List<BoletasCoVModel> ListaBoletasHijo = new List<BoletasCoVModel>();
+
+                CuentaContableModel CuentaIva = ParametrosClienteModel.GetCuentaContableIvaAUsarObj(ObjCliente,db); //cuenta Iva
+
+                //Al importar un libro hay 2 opciones para saber si es compra o venta
+                //1.- al momento de  importar  la intefaz grafica dirá que elija si es compra o venta
+                //2.- la segunda forma es la siguiente -> tomar el primer registro y dependiendo de su centralización indicar si es compra o venta.
+                //Ambas opciones pueden llegar a cometer errores por ende tener en cuenta esto para cuando el desarrollo ya esté avanzado
+
+                decimal TotalNeto = 0;
+                decimal TotalIva = 0;
+
+                TipoReceptor tipoReceptor = new TipoReceptor();
+
+                if (Tipo == TipoCentralizacion.Compra) tipoReceptor = TipoReceptor.PR;
+                if (Tipo == TipoCentralizacion.Venta) tipoReceptor = TipoReceptor.CL;
+
+
+                DateTime Fecha = BoletasItems.FirstOrDefault().Fecha;
+                int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(ObjCliente, db, Fecha.Month, Fecha.Year);
+                int baseNumberFolio = nullableProxVoucherNumber.Value;
+
+                //en el futuro hacer estas agrupaciones por día -> un voucher tendrá tantos registros como todos los que caigan en el mismo día (se sugiere hacer un group by con este criterio en el foreach)
+                foreach (BoletasExcelModel ItemBoleta in BoletasItems)
+                {
+                    List<DetalleVoucherModelDTO> detalleVoucher = new List<DetalleVoucherModelDTO>();
+                    QuickReceptorModel Receptor = QuickReceptorModel.CrearOActualizarPrestadorPorRut(ItemBoleta.Rut, ItemBoleta.RazonSocial, ObjCliente, db, tipoReceptor.ToString());
+                    CuentaContableModel CuentaAuxiliar = UtilesContabilidad.CuentaContableDesdeCodInterno(ItemBoleta.CuentaAuxiliar, ObjCliente); //CuentaAuxiliar
+                    CuentaContableModel CuentaProveedorDeudor = UtilesContabilidad.CuentaContableDesdeCodInterno(ItemBoleta.CuentaContable, ObjCliente); //Cuenta ProveedorDeudor
+
+                    if (CuentaProveedorDeudor == null) throw new Exception("La cuenta de proveedor deudor debe existir para este cliente contable");
+
+                    //Cada uno de estos detallevouchers que se hará lleva la misma logica que los libros de compra que se insertan a día de hoy -> revisar la inserción de libros de compra y venta ya existente
+                    VoucherModel NuevoVoucher = new VoucherModel();
+                    NuevoVoucher.TipoOrigen = Tipo == TipoCentralizacion.Compra ? "Compra" : "Venta";
+                    NuevoVoucher.TipoOrigenVoucher = Tipo == TipoCentralizacion.Compra ? TipoOrigen.Compra : TipoOrigen.Venta;
+                    NuevoVoucher.ClientesContablesModelID = ObjCliente.ClientesContablesModelID;
+                    NuevoVoucher.FechaEmision = ItemBoleta.Fecha;
+                    NuevoVoucher.Tipo = TipoVoucher.Traspaso;
+                    NuevoVoucher.NumeroVoucher = baseNumberFolio;
+                    NuevoVoucher.NumVoucherWithDate = ParseExtensions.BuildNewFormatNumVoucher(baseNumberFolio, Fecha);
+                    string FullDescripcionDocOriginal = (int)ItemBoleta.TipoDocumento + " / Folio: " + ItemBoleta.NumeroDeDocumento + " / " + Receptor != null ? Receptor.NombreFantasia : "";
+                    NuevoVoucher.Glosa = FullDescripcionDocOriginal;  //Revisar como debe ser creada la glosa es probable que se haga con la misma logica que con la importación de libros de compra y ventas
+
+
+                    decimal CostoNeto = ItemBoleta.Neto;
+                    decimal MontoIva = ItemBoleta.Iva;
+                    decimal MontoTotal = ItemBoleta.Neto + ItemBoleta.Iva;
+
+                    //detalle voucher 1 -> Proveedor deudor
+                    DetalleVoucherModel LineaCuentaCorriente = new DetalleVoucherModel();
+                    LineaCuentaCorriente.FechaDoc = ItemBoleta.Fecha;
+                    LineaCuentaCorriente.ObjCuentaContable = CuentaProveedorDeudor;
+                    LineaCuentaCorriente.MontoDebe = CostoNeto;
+                    LineaCuentaCorriente.MontoHaber = 0;
+                    //detalle voucher 2 -> Iva
+                    DetalleVoucherModel LineaDetalleIva = new DetalleVoucherModel();
+                    LineaDetalleIva.FechaDoc = ItemBoleta.Fecha;
+                    LineaDetalleIva.ObjCuentaContable = CuentaIva;
+                    LineaDetalleIva.MontoDebe = MontoIva;
+                    LineaDetalleIva.MontoHaber = 0;
+                    //detalle voucher 3 -> Auxiliar}
+                    DetalleVoucherModel LineaDetalleAuxiliar = new DetalleVoucherModel();
+                    LineaDetalleAuxiliar.FechaDoc = ItemBoleta.Fecha;
+                    LineaDetalleAuxiliar.ObjCuentaContable = CuentaAuxiliar;
+                    LineaDetalleAuxiliar.MontoDebe = 0;
+                    LineaDetalleAuxiliar.MontoHaber = MontoTotal;
+
+                        //Auxiliares -> para la cuenta de Iva si aplica...
+                        //Inserción de datos y unión de tablas detallevouchermodel y auxiliaresmodel
+                        //Inserción de datos de las tablas de boletas tanto padres como hijas -> (como manejarás estos datos ¿también se podrán resubir como las conciliaciones bancarias?)
+                    
+
+
+
+
+                }
+
+            }
+
+
+            return false;
+        }
         public static bool InsertBoletasCoV(ClientesContablesModel ObjCliente, List<BoletasExcelModel> BoletasItems, TipoCentralizacion Tipo)
         {
             bool result = false;

@@ -23,4 +23,12 @@ public class ParametrosClienteModel
         return cuentaContableId;
     }
 
+
+    public static CuentaContableModel GetCuentaContableIvaAUsarObj(ClientesContablesModel objCliente, FacturaPoliContext db)
+    {
+        CuentaContableModel cuentacontable = db.DBCuentaContable.FirstOrDefault(x => x.CuentaContableModelID == objCliente.ParametrosCliente.CuentaIvaCompras.CuentaContableModelID && x.ClientesContablesModelID == objCliente.ClientesContablesModelID);
+
+        return cuentacontable;
+    }
+
 }
