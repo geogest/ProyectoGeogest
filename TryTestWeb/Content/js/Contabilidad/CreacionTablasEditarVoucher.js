@@ -10,6 +10,7 @@ const LstCuentasContables = () => {
 
             if (result.ok) {
                 CuentasContables = result.result;
+                console.log(CuentasContables);
                 CrearTablaVoucher();
             }
 
@@ -91,11 +92,12 @@ const CrearTablaVoucher = () => {
     DivMontoDebe.className = "form-group col-lg-2";
     let InputDebe = document.createElement("input");
     InputDebe.className = "selectpicker form-control";
+    InputDebe.type = "number";
     InputDebe.id = "debe";
     InputDebe.name = "debe";
     InputDebe.min = 0;
     InputDebe.value = 0;
-    InputDebe.onchange = Totales;
+    InputDebe.onchange = SumaTotales;
     DivMontoDebe.appendChild(InputDebe);
     DivTabla.appendChild(DivMontoDebe);
 
@@ -104,11 +106,12 @@ const CrearTablaVoucher = () => {
     DivMontoHaber.className = "form-group col-lg-2";
     let InputHaber = document.createElement("input");
     InputHaber.className = "selectpicker form-control";
+    InputHaber.type = "number";
     InputHaber.id = "haber";
     InputHaber.name = "haber";
     InputHaber.min = 0;
     InputHaber.value = 0;
-    InputHaber.onchange = Totales;
+    InputHaber.onchange = SumaTotales;
     DivMontoHaber.appendChild(InputHaber);
     DivTabla.appendChild(DivMontoHaber);
 
@@ -125,10 +128,11 @@ const CrearTablaVoucher = () => {
     DivTabla.appendChild(DivBtnEliminar);
 }
 function EliminarUltimaFila() {
-    jQuery('#detalle' + idDetalle).remove();
-    idDetalle--;
-    if (idDetalle <= 0) {
-        idDetalle = 0;
+    
+    if (idDetalle > 1) {
+        jQuery('#detalle' + idDetalle).remove();
+        idDetalle--;
+        //idDetalle = 0;
     }
     Totales();
 }
@@ -146,7 +150,7 @@ const CrearAuxProvDeudor = () => {
 
     let ContenidoAux = document.getElementById("TablaProvDeudorAux");
     let DivContenidoAux = document.createElement("div");
-    DivContenidoAux.id = "detalle" + IdDivAuxProvDeudor;
+    DivContenidoAux.id = "detalleAuxProvDeudor" + IdDivAuxProvDeudor;
     DivContenidoAux.className = "form-group col-lg-12";
     ContenidoAux.appendChild(DivContenidoAux);
 
@@ -179,6 +183,12 @@ const CrearAuxProvDeudor = () => {
     DivMontoNeto.className = "form-group col-lg-2";
     let InputMontoNeto = document.createElement("input");
     InputMontoNeto.className = "form-control";
+    InputMontoNeto.id = "ValorNeto";
+    InputMontoNeto.name = "ValorNeto";
+    InputMontoNeto.type = "number";
+    InputMontoNeto.min = 0;
+    InputMontoNeto.value = 0;
+    InputMontoNeto.disabled = true;
     DivMontoNeto.appendChild(InputMontoNeto);
     DivContenidoAux.appendChild(DivMontoNeto);
 
@@ -187,6 +197,12 @@ const CrearAuxProvDeudor = () => {
     DivMontoExento.className = "form-group col-lg-2";
     let InputMontoExento = document.createElement("input");
     InputMontoExento.className = "form-control";
+    InputMontoExento.id = "MontoExento";
+    InputMontoExento.name = "MontoExento";
+    InputMontoExento.type = "number";
+    InputMontoExento.min = 0;
+    InputMontoExento.value = 0;
+    InputMontoExento.onchange = function () {CalculoAuxMontoExento(DivContenidoAux.id)};
     DivMontoExento.appendChild(InputMontoExento);
     DivContenidoAux.appendChild(DivMontoExento);
 
@@ -194,6 +210,12 @@ const CrearAuxProvDeudor = () => {
     let DivMontoIVA = document.createElement("div");
     DivMontoIVA.className = "form-group col-lg-2";
     let InputIVA = document.createElement("input");
+    InputIVA.id = "MontoIVA";
+    InputIVA.name = "MontoIVA";
+    InputIVA.type = "number";
+    InputIVA.disabled = true;
+    InputIVA.min = 0;
+    InputIVA.value = 0;
     InputIVA.className = "form-control";
     DivMontoIVA.appendChild(InputIVA);
     DivContenidoAux.appendChild(DivMontoIVA);
@@ -203,6 +225,12 @@ const CrearAuxProvDeudor = () => {
     DivMontoTotal.className = "form-group col-lg-2";
     let InputMontoTotal = document.createElement("input");
     InputMontoTotal.className = "form-control";
+    InputMontoTotal.type = "number";
+    InputMontoTotal.id = "MontoTotal";
+    InputMontoTotal.name = "MontoTotal";
+    InputMontoTotal.min = 0;
+    InputMontoTotal.value = 0;
+    InputMontoTotal.onchange = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
     DivMontoTotal.appendChild(InputMontoTotal);
     DivContenidoAux.appendChild(DivMontoTotal);
 
@@ -219,10 +247,11 @@ const CrearAuxProvDeudor = () => {
     DivContenidoAux.appendChild(divEliminarAuxiliar);
 }
 function BorrarFilaAuxiliarProvDeudor() {
-    jQuery('#detalle' + IdDivAuxProvDeudor).remove();
-    IdDivAuxProvDeudor--;
-    if (IdDivAuxProvDeudor <= 0) {
-        IdDivAuxProvDeudor = 0;
+    
+    if (IdDivAuxProvDeudor > 1) {
+        jQuery('#detalleAuxProvDeudor' + IdDivAuxProvDeudor).remove();
+        IdDivAuxProvDeudor--;
+        //IdDivAuxProvDeudor = 0;
     }
 }
 document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
@@ -279,10 +308,10 @@ document.getElementById("Btn_AgregaFilaRemu").addEventListener('click', function
     CrearTablaAuxRemu();
 });
 function BorrarFilaAuxRemu() {
-    jQuery('#detalleRemu' + IdDivAuxRemu).remove();
-    IdDivAuxRemu--;
-    if (IdDivAuxRemu <= 0) {
-        IdDivAuxRemu = 0;
+    if (IdDivAuxRemu > 1) {
+        jQuery('#detalleRemu' + IdDivAuxRemu).remove();
+        IdDivAuxRemu--;
+        //IdDivAuxRemu = 0;
     }
 }
 
@@ -368,10 +397,10 @@ document.getElementById("Btn_AgregaFilaHonorarios").addEventListener('click', fu
     CrearTablaHonorariosAux();
 });
 function BorrarFilaAuxHonor() {
-    jQuery('#detalleHono' + IdAuxHonorarios).remove();
-    IdAuxHonorarios--;
-    if (IdAuxHonorarios <= 0) {
-        IdAuxHonorarios = 0;
+    if (IdAuxHonorarios > 1) {
+        jQuery('#detalleHono' + IdAuxHonorarios).remove();
+        IdAuxHonorarios--;
+        //IdAuxHonorarios = 0;
     }
 }
 
@@ -410,6 +439,36 @@ const ClickAux = () => {
     }
 }
 
-$(document).ready(function () {
-    $('.basic-usage-select').select2();
-});
+
+const CalculoAuxiliarProvDeudor = (id) => {
+    let DivPadre = document.getElementById(id);
+    let DivHijos = DivPadre.childNodes;
+
+    let MontoNeto = DivHijos[2].firstChild;
+    let MontoExento = DivHijos[3].firstChild;
+    let MontoIva = DivHijos[4].firstChild;
+    let MontoTotal = DivHijos[5].firstChild;
+   
+    if (MontoTotal.value != "" && MontoTotal.value != null) {
+        MontoIva.value = Math.round((MontoTotal.value * 0.19) / 1.19);
+        MontoNeto.value = MontoTotal.value - MontoIva.value;
+        MontoExento.value = 0;
+
+    }
+    
+}
+const CalculoAuxMontoExento = (id) => {
+    let DivPadre = document.getElementById(id);
+    let DivHijos = DivPadre.childNodes;
+
+    let MontoNeto = DivHijos[2].firstChild;
+    let MontoExento = DivHijos[3].firstChild;
+    let MontoIva = DivHijos[4].firstChild;
+    let MontoTotal = DivHijos[5].firstChild;
+
+    if (MontoExento.value != "" && MontoExento.value != null) {
+        MontoTotal.value = MontoExento.value;
+        MontoIva.value = 0;
+        MontoNeto.value = 0;
+    }
+}

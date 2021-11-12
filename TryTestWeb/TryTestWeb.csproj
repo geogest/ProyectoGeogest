@@ -418,12 +418,14 @@
     <Content Include="Content\css\SeleccionarEmisorDesdeModulos.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\js\Contabilidad\Chart.min.js" />
+    <Content Include="Content\js\Contabilidad\CreacionTablasEditarVoucher.js" />
     <Content Include="Content\js\Contabilidad\CreacionTablasVoucher.js" />
     <Content Include="Content\js\Contabilidad\EditarVoucher.js" />
     <Content Include="Content\js\Contabilidad\IngresoVoucher.js" />
     <Content Include="Content\js\Contabilidad\jquery.dataTables.js" />
     <Content Include="Content\js\Contabilidad\jspdf.plugin.autotable.js" />
     <Content Include="Content\js\Contabilidad\select2.min.js" />
+    <Content Include="Content\js\Decimal.js" />
     <Content Include="Content\js\flatpickr.js" />
     <Content Include="Content\Template2\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\Template2\js\locales\bootstrap-datetimepicker.es.js" />
