@@ -57,10 +57,12 @@ namespace TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas
                 int? nullableProxVoucherNumber = ParseExtensions.GetNumVoucher(ObjCliente, db, Fecha.Month, Fecha.Year);
                 int baseNumberFolio = nullableProxVoucherNumber.Value;
 
+                List<BoletasExcelModel> LosQueNoPudieronInsertarse = new List<BoletasExcelModel>();
+                List<VoucherModel> LstVoucher = new List<VoucherModel>();
                 //en el futuro hacer estas agrupaciones por día -> un voucher tendrá tantos registros como todos los que caigan en el mismo día (se sugiere hacer un group by con este criterio en el foreach)
                 foreach (BoletasExcelModel ItemBoleta in BoletasItems)
                 {
-                    List<DetalleVoucherModelDTO> detalleVoucher = new List<DetalleVoucherModelDTO>();
+                    List<DetalleVoucherModel> detalleVoucher = new List<DetalleVoucherModel>();
                     QuickReceptorModel Receptor = QuickReceptorModel.CrearOActualizarPrestadorPorRut(ItemBoleta.Rut, ItemBoleta.RazonSocial, ObjCliente, db, tipoReceptor.ToString());
                     CuentaContableModel CuentaAuxiliar = UtilesContabilidad.CuentaContableDesdeCodInterno(ItemBoleta.CuentaAuxiliar, ObjCliente); //CuentaAuxiliar
                     CuentaContableModel CuentaProveedorDeudor = UtilesContabilidad.CuentaContableDesdeCodInterno(ItemBoleta.CuentaContable, ObjCliente); //Cuenta ProveedorDeudor
@@ -79,40 +81,119 @@ namespace TryTestWeb.Models.ModelosSistemaContable.ContabilidadBoletas
                     string FullDescripcionDocOriginal = (int)ItemBoleta.TipoDocumento + " / Folio: " + ItemBoleta.NumeroDeDocumento + " / " + Receptor != null ? Receptor.NombreFantasia : "";
                     NuevoVoucher.Glosa = FullDescripcionDocOriginal;  //Revisar como debe ser creada la glosa es probable que se haga con la misma logica que con la importación de libros de compra y ventas
 
+                    //Encerrar la logica de las compras y las ventas en otra función?
 
                     decimal CostoNeto = ItemBoleta.Neto;
                     decimal MontoIva = ItemBoleta.Iva;
                     decimal MontoTotal = ItemBoleta.Neto + ItemBoleta.Iva;
-
-                    //detalle voucher 1 -> Proveedor deudor
                     DetalleVoucherModel LineaCuentaCorriente = new DetalleVoucherModel();
+                    DetalleVoucherModel LineaDetalleIva = new DetalleVoucherModel();
+                    DetalleVoucherModel LineaDetalleAuxiliar = new DetalleVoucherModel();
+
                     LineaCuentaCorriente.FechaDoc = ItemBoleta.Fecha;
                     LineaCuentaCorriente.ObjCuentaContable = CuentaProveedorDeudor;
-                    LineaCuentaCorriente.MontoDebe = CostoNeto;
-                    LineaCuentaCorriente.MontoHaber = 0;
-                    //detalle voucher 2 -> Iva
-                    DetalleVoucherModel LineaDetalleIva = new DetalleVoucherModel();
+                    LineaCuentaCorriente.GlosaDetalle = "Costo Neto" + FullDescripcionDocOriginal;
+
                     LineaDetalleIva.FechaDoc = ItemBoleta.Fecha;
                     LineaDetalleIva.ObjCuentaContable = CuentaIva;
-                    LineaDetalleIva.MontoDebe = MontoIva;
-                    LineaDetalleIva.MontoHaber = 0;
-                    //detalle voucher 3 -> Auxiliar}
-                    DetalleVoucherModel LineaDetalleAuxiliar = new DetalleVoucherModel();
+                    LineaDetalleIva.GlosaDetalle = "Iva Compras" + FullDescripcionDocOriginal;
+
                     LineaDetalleAuxiliar.FechaDoc = ItemBoleta.Fecha;
                     LineaDetalleAuxiliar.ObjCuentaContable = CuentaAuxiliar;
-                    LineaDetalleAuxiliar.MontoDebe = 0;
-                    LineaDetalleAuxiliar.MontoHaber = MontoTotal;
+                    LineaDetalleAuxiliar.GlosaDetalle = "";
 
-                        //Auxiliares -> para la cuenta de Iva si aplica...
-                        //Inserción de datos y unión de tablas detallevouchermodel y auxiliaresmodel
-                        //Inserción de datos de las tablas de boletas tanto padres como hijas -> (como manejarás estos datos ¿también se podrán resubir como las conciliaciones bancarias?)
-                    
+                    if (ItemBoleta.TipoDocumento.EsUnaNotaCredito())
+                    {
+                        LineaCuentaCorriente.MontoDebe = 0;
+                        LineaCuentaCorriente.MontoHaber = CostoNeto;
 
+                        LineaDetalleIva.MontoDebe = 0;
+                        LineaDetalleIva.MontoHaber = MontoIva;
 
+                        LineaDetalleAuxiliar.MontoDebe = MontoTotal;
+                        LineaDetalleAuxiliar.MontoHaber = 0;
+                    }
+                    else
+                    {
+                        
+                        LineaCuentaCorriente.MontoDebe = CostoNeto;
+                        LineaCuentaCorriente.MontoHaber = 0;
+                        //detalle voucher 2 -> Iva
+                       
+                        LineaDetalleIva.MontoDebe = MontoIva;
+                        LineaDetalleIva.MontoHaber = 0;
+                        //detalle voucher 3 -> Auxiliar}
+                       
+                        LineaDetalleAuxiliar.MontoDebe = 0;
+                        LineaDetalleAuxiliar.MontoHaber = MontoTotal;
+                    }
 
+                    detalleVoucher.Add(LineaCuentaCorriente);
+                    detalleVoucher.Add(LineaDetalleIva);
+                    detalleVoucher.Add(LineaDetalleAuxiliar);
 
+                    if(detalleVoucher.Sum(x => x.MontoDebe) == detalleVoucher.Sum(x => x.MontoHaber))
+                    {
+                        NuevoVoucher.ListaDetalleVoucher = detalleVoucher;
+
+                        baseNumberFolio++;
+                    }
+                    else
+                    {
+                        LosQueNoPudieronInsertarse.Add(ItemBoleta);
+                    }
+
+                    //revisar si funciona  de esta manera
+                    foreach (DetalleVoucherModel ItemDetalle in NuevoVoucher.ListaDetalleVoucher.Where(x => x.ObjCuentaContable == CuentaAuxiliar).ToList())
+                    {
+                        AuxiliaresModel Auxiliar = new AuxiliaresModel();
+                        CuentaContableModel CtaAux = ItemDetalle.ObjCuentaContable;
+                        Auxiliar.LineaNumeroDetalle = NuevoVoucher.ListaDetalleVoucher.Count;
+                        Auxiliar.MontoTotal = ItemDetalle.MontoDebe + ItemDetalle.MontoHaber;
+                        Auxiliar.objCtaContable = CtaAux;
+
+                        ItemDetalle.Auxiliar = Auxiliar;
+                        List<AuxiliaresDetalleModel> lstAuxDetalle = new List<AuxiliaresDetalleModel>();
+                        AuxiliaresDetalleModel AuxiliarDetalle = new AuxiliaresDetalleModel();
+
+                        decimal MontoTotalLinea = ItemDetalle.MontoDebe + ItemDetalle.MontoHaber;
+
+                        AuxiliarDetalle.TipoDocumento = ItemBoleta.TipoDocumento;
+                        AuxiliarDetalle.Fecha = ItemBoleta.Fecha;
+                        AuxiliarDetalle.FechaContabilizacion = ItemBoleta.Fecha;
+                        AuxiliarDetalle.Folio = ItemBoleta.NumeroDeDocumento;
+                        AuxiliarDetalle.Individuo2 = Receptor;
+                        AuxiliarDetalle.MontoNetoLinea = 0;
+                        AuxiliarDetalle.MontoExentoLinea = 0;
+                        AuxiliarDetalle.MontoIVALinea = 0;
+                        AuxiliarDetalle.MontoTotalLinea = MontoTotalLinea;
+                        AuxiliarDetalle.AuxiliaresModelID = Auxiliar.AuxiliaresModelID;
+                        AuxiliarDetalle.MontoIVANoRecuperable = 0;
+                        AuxiliarDetalle.MontoIVAUsoComun = 0;
+                        AuxiliarDetalle.MontoIVAActivoFijo = 0;
+
+                        lstAuxDetalle.Add(AuxiliarDetalle);
+                        Auxiliar.ListaDetalleAuxiliares = lstAuxDetalle;
+                    }
+
+                   
+                    //BaseNumFolio
+                    List<DetalleVoucherModel> detalle = LstVoucher.SelectMany(x => x.ListaDetalleVoucher.Where(y => y.Auxiliar != null)).ToList();
+            
+                    db.DBVoucher.AddRange(LstVoucher);
+                    db.SaveChanges();
+
+                    if (detalle.Any())
+                    {
+                        detalle.ForEach(x => { x.Auxiliar.DetalleVoucherModelID = x.DetalleVoucherModelID; });
+
+                        foreach (AuxiliaresModel itemAuxiliar in detalle.Select(x => x.Auxiliar).ToArray())
+                        {
+                            db.Entry(itemAuxiliar).State = System.Data.Entity.EntityState.Modified;
+                        }
+                        db.SaveChanges();
+                    }
                 }
-
             }
 
 
