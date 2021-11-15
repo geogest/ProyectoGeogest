@@ -12,7 +12,6 @@ const LstCuentasContables = () => {
         success: function (result) {
             if (result.ok) {
                 CuentasContables = result.result;
-                CrearTablaVoucher();
             }
 
         }
@@ -28,6 +27,7 @@ const LstCentroCosto = () => {
         success: function (result) {
             if (result.ok) {
                 CentroCostos = result.result;
+                CrearTablaVoucher();
             }
         }
 

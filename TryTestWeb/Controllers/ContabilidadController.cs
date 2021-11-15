@@ -139,6 +139,25 @@ namespace TryTestWeb.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult getLstCentroCosto()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+
+            var centroCosto = ParseExtensions.ObtenerCentrosDeCostosDropdownAsString(clienteSeleccionado,0);
+
+            return Json(new
+            {
+                ok = true,
+                result = centroCosto
+            }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
         [ModuloHandler]
         [Authorize]
         public ActionResult EditarClienteContable()
