@@ -3,6 +3,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     LstCuentasContables();
     LstCentroCosto();
+    LstTipoDTE();
 });
 var CuentasContables;
 const LstCuentasContables = () => {
@@ -34,7 +35,23 @@ const LstCentroCosto = () => {
     })
 
 }
-console.log(CentroCostos);
+var TipoDTE;
+const LstTipoDTE = () => {
+
+    $.ajax({
+        type: 'GET',
+        url: "getLstTipoDTE/Contabilidad",
+        success: function (result) {
+            if (result.ok) {
+                TipoDTE = result.result;
+                CrearAuxProvDeudor();
+                console.log(TipoDTE);
+            }
+        }
+
+    })
+
+}
 var idDetalle = 0;
 const CrearTablaVoucher = () => {
     var glosa = $("input[name=glosaDetalle]:last").val();
@@ -114,7 +131,7 @@ const CrearTablaVoucher = () => {
     InputDebe.name = "debe";
     InputDebe.min = 0;
     InputDebe.value = 0;
-    InputDebe.onchange = SumaTotales;
+    InputDebe.onchange = SumaTotalesVoucher;
     DivMontoDebe.appendChild(InputDebe);
     DivTabla.appendChild(DivMontoDebe);
 
@@ -128,7 +145,7 @@ const CrearTablaVoucher = () => {
     InputHaber.name = "haber";
     InputHaber.min = 0;
     InputHaber.value = 0;
-    InputHaber.onchange = SumaTotales;
+    InputHaber.onchange = SumaTotalesVoucher;
     DivMontoHaber.appendChild(InputHaber);
     DivTabla.appendChild(DivMontoHaber);
 
@@ -150,8 +167,9 @@ function EliminarUltimaFila() {
         jQuery('#detalle' + idDetalle).remove();
         idDetalle--;
         //idDetalle = 0;
+        SumaTotalesVoucher();
     }
-    SumaTotales();
+    
 }
 document.getElementById("Btn_AgregarVoucher").addEventListener('click', function () {
     CrearTablaVoucher();
@@ -186,11 +204,8 @@ const CrearAuxProvDeudor = () => {
     DivTipoDTE.className = "form-group col-lg-2";
     let selectTipoDte = document.createElement("select");
     selectTipoDte.className = "form-control";
-    let Seleccionar = document.createElement("option");
-    Seleccionar.setAttribute("value", "value1");
-    let OptionText = document.createTextNode("Seleccionar");
-    Seleccionar.appendChild(OptionText);
-    selectTipoDte.appendChild(Seleccionar);
+    selectTipoDte.required=true;
+    selectTipoDte.innerHTML=TipoDTE;
     DivTipoDTE.appendChild(selectTipoDte);
     DivContenidoAux.appendChild(DivTipoDTE);
 
@@ -246,6 +261,7 @@ const CrearAuxProvDeudor = () => {
     InputMontoTotal.name = "MontoTotal";
     InputMontoTotal.min = 0;
     InputMontoTotal.value = 0;
+    InputMontoTotal.required=true;
     InputMontoTotal.onchange = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
     DivMontoTotal.appendChild(InputMontoTotal);
     DivContenidoAux.appendChild(DivMontoTotal);
@@ -268,6 +284,7 @@ function BorrarFilaAuxiliarProvDeudor() {
     if (IdDivAuxProvDeudor > 1) {
         jQuery('#detalleAuxProvDeudor' + IdDivAuxProvDeudor).remove();
         IdDivAuxProvDeudor--;
+        CuadrarValorProvDeudor();
     }
 }
 document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
@@ -301,10 +318,11 @@ const CrearTablaAuxRemu = () => {
     DivSueldoLiquido.className = "col-lg-5";
     let InputSueldoLiquido = document.createElement("input");
     InputSueldoLiquido.className = "form-control";
-    InputSueldoLiquido.id = "AuxTotal";
-    InputSueldoLiquido.name = "AuxTotal";
+    InputSueldoLiquido.id = "AuxTotalRemu";
+    InputSueldoLiquido.name = "AuxTotalRemu";
     InputSueldoLiquido.type = "number";
     InputSueldoLiquido.required = true;
+    InputSueldoLiquido.onchange = SumaSueldoLiquidoRemu;
     DivSueldoLiquido.appendChild(InputSueldoLiquido);
     DivAuxRemu.appendChild(DivSueldoLiquido);
 
@@ -323,11 +341,12 @@ const CrearTablaAuxRemu = () => {
 document.getElementById("Btn_AgregaFilaRemu").addEventListener('click', function () {
     CrearTablaAuxRemu();
 });
+
 function BorrarFilaAuxRemu() {
     if (IdDivAuxRemu > 1) {
         jQuery('#detalleRemu' + IdDivAuxRemu).remove();
         IdDivAuxRemu--;
-        //IdDivAuxRemu = 0;
+        CuadrarValorAuxRemu();
     }
 }
 
@@ -410,7 +429,7 @@ const CrearTablaHonorariosAux = () => {
     InputRetencion.type = "number";
     InputRetencion.className = "form-control";
     InputRetencion.name = "AUXValorRetencion";
-    InputRetencion.readOnly = true;
+    InputRetencion.disabled = true;
     InputRetencion.required = true;
     DivRetencion.appendChild(InputRetencion);
     DivHonoAux.appendChild(DivRetencion);
@@ -422,7 +441,7 @@ const CrearTablaHonorariosAux = () => {
     InputValorLiq.type = "number";
     InputValorLiq.className = "form-control";
     InputValorLiq.name = "AUXValorLiquido";
-    InputValorLiq.required = true;
+    InputValorLiq.disabled = true;
     InputValorLiq.readOnly = true;
     DivValorLiquido.appendChild(InputValorLiq);
     DivHonoAux.appendChild(DivValorLiquido);
@@ -446,7 +465,7 @@ function BorrarFilaAuxHonor() {
     if (IdAuxHonorarios > 1) {
         jQuery('#detalleHono' + IdAuxHonorarios).remove();
         IdAuxHonorarios--;
-        //IdAuxHonorarios = 0;
+        CuadrarValorAuxRetencion();
     }
 }
 
@@ -456,7 +475,6 @@ const ActivaBtnAux = (id) => {
 
     let SelectCtaContable = DivHijosBtn[1].firstChild;
     let OptionCtaContable = SelectCtaContable.selectedOptions[0];
-    console.log(OptionCtaContable);
     let BtnAux = DivHijosBtn[0].firstChild;
     if (OptionCtaContable.dataset.auxiliar == 1 || OptionCtaContable.dataset.auxiliar == 2) {
         BtnAux.disabled = false;
@@ -474,7 +492,7 @@ const ClickAux = (id) => {
    
     if (OptionSelected.dataset.tipoauxiliar == "ProveedorDeudor") {
         if (IdDivAuxProvDeudor == 0) {
-            CrearAuxProvDeudor();
+            LstTipoDTE();
         }
         $('#ModalAuxiliarProvDeudor').modal('show');
         EnviarDatosAuxProvDeudor(OptionSelected.textContent,id);
@@ -516,7 +534,6 @@ const EnviarDatosAuxProvDeudor = (NombreCuentaContable, id) => {
 const EnviarDatosHonorAux = (NombreCuentaContable, id) => {
     let DivPadreBtn = document.getElementById(id);
     let DivHijosBtn = DivPadreBtn.childNodes;
-    console.log(NombreCuentaContable);
     let MontoDebe = DivHijosBtn[4].firstChild;
     let MontoHaber = DivHijosBtn[5].firstChild;
     document.getElementById("AuxCuenta").value = NombreCuentaContable;
@@ -524,11 +541,11 @@ const EnviarDatosHonorAux = (NombreCuentaContable, id) => {
 
 
     if (MontoDebe.value != 0 && MontoDebe.value != "" && MontoDebe.value != null) {
-        document.getElementById("AUXvaloritem").value = MontoDebe.value;
+        document.getElementById("AuxValorHonor").value = MontoDebe.value;
     }
 
     if (MontoHaber.value != 0 && MontoHaber.value != "" && MontoHaber.value != null) {
-        document.getElementById("AUXvaloritem").value = MontoHaber.value;
+        document.getElementById("AuxValorHonor").value = MontoHaber.value;
     }
 }
 const EnviarDatosRemuneracion = (NombreCuentaContable, id) => {

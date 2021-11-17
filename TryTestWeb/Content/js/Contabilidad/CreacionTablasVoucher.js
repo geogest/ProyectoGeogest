@@ -3,6 +3,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     LstCuentasContables();
     LstCentroCosto();
+    $(".basic-usage-select").select2();
 });
 var CuentasContables;
 const LstCuentasContables = () => {
@@ -12,7 +13,6 @@ const LstCuentasContables = () => {
         success: function (result) {
             if (result.ok) {
                 CuentasContables = result.result;
-                CrearTablaVoucher();
             }
 
         }
@@ -28,13 +28,13 @@ const LstCentroCosto = () => {
         success: function (result) {
             if (result.ok) {
                 CentroCostos = result.result;
+                CrearTablaVoucher();
             }
         }
 
     })
 
 }
-console.log(CentroCostos);
 var idDetalle = 0;
 const CrearTablaVoucher = () => {
     var glosa = $("input[name=glosaDetalle]:last").val();
@@ -268,6 +268,7 @@ function BorrarFilaAuxiliarProvDeudor() {
     if (IdDivAuxProvDeudor > 1) {
         jQuery('#detalleAuxProvDeudor' + IdDivAuxProvDeudor).remove();
         IdDivAuxProvDeudor--;
+        CuadrarValorProvDeudor();
     }
 }
 document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
@@ -446,7 +447,7 @@ function BorrarFilaAuxHonor() {
     if (IdAuxHonorarios > 1) {
         jQuery('#detalleHono' + IdAuxHonorarios).remove();
         IdAuxHonorarios--;
-        //IdAuxHonorarios = 0;
+        CuadrarValorAuxRetencion();
     }
 }
 
@@ -456,7 +457,6 @@ const ActivaBtnAux = (id) => {
 
     let SelectCtaContable = DivHijosBtn[1].firstChild;
     let OptionCtaContable = SelectCtaContable.selectedOptions[0];
-    console.log(OptionCtaContable);
     let BtnAux = DivHijosBtn[0].firstChild;
     if (OptionCtaContable.dataset.auxiliar == 1 || OptionCtaContable.dataset.auxiliar == 2) {
         BtnAux.disabled = false;
@@ -516,7 +516,6 @@ const EnviarDatosAuxProvDeudor = (NombreCuentaContable, id) => {
 const EnviarDatosHonorAux = (NombreCuentaContable, id) => {
     let DivPadreBtn = document.getElementById(id);
     let DivHijosBtn = DivPadreBtn.childNodes;
-    console.log(NombreCuentaContable);
     let MontoDebe = DivHijosBtn[4].firstChild;
     let MontoHaber = DivHijosBtn[5].firstChild;
     document.getElementById("AuxCuenta").value = NombreCuentaContable;
@@ -524,11 +523,11 @@ const EnviarDatosHonorAux = (NombreCuentaContable, id) => {
 
 
     if (MontoDebe.value != 0 && MontoDebe.value != "" && MontoDebe.value != null) {
-        document.getElementById("AUXvaloritem").value = MontoDebe.value;
+        document.getElementById("AuxValorHonor").value = MontoDebe.value;
     }
 
     if (MontoHaber.value != 0 && MontoHaber.value != "" && MontoHaber.value != null) {
-        document.getElementById("AUXvaloritem").value = MontoHaber.value;
+        document.getElementById("AuxValorHonor").value = MontoHaber.value;
     }
 }
 const EnviarDatosRemuneracion = (NombreCuentaContable, id) => {

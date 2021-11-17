@@ -12,7 +12,7 @@ $(document).ready(function () {
 });
 
 
-function SumaTotales() {
+function SumaTotalesVoucher() {
     let TotDebe = 0;
     let TotHaber = 0;
     let ValorDebe = document.getElementsByName("debe");
@@ -65,10 +65,18 @@ const CalculoAuxiliarProvDeudor = (id) => {
         MontoIva.value = Math.round((MontoTotal.value * 0.19) / 1.19);
         MontoNeto.value = MontoTotal.value - MontoIva.value;
         MontoExento.value = 0;
-
+        
     }
+    const TodosTotales = document.getElementsByName("MontoTotal");
+    let SumaDeTotales = 0;
+    TodosTotales.forEach(function (sumatotales) {
+        SumaDeTotales = SumaDeTotales + parseFloat(sumatotales);
+    });
 
+    CuadrarValorProvDeudor(SumaDeTotales);
+    
 }
+
 const CalculoAuxMontoExento = (id) => {
     let DivPadreAuxMontoExento = document.getElementById(id);
     let DivHijos = DivPadreAuxMontoExento.childNodes;
@@ -83,7 +91,33 @@ const CalculoAuxMontoExento = (id) => {
         MontoIva.value = 0;
         MontoNeto.value = 0;
     }
+
+    const TodosTotales = document.getElementsByName("MontoTotal");
+    let SumaDeTotales = 0;
+    TodosTotales.forEach(function (sumatotales) {
+        SumaDeTotales = SumaDeTotales + parseFloat(sumatotales.value);
+    });
+
+    CuadrarValorProvDeudor(SumaDeTotales);
 }
+
+const CuadrarValorProvDeudor = (valor) => {
+    let ValorTotal = document.getElementById("AUXvalorProvDeudor").value;
+
+    if (ValorTotal == valor) {
+        document.getElementById("BtnGuardarAux").disabled = false;
+        document.getElementById("Aviso").style.display = "none";
+    } else {
+        document.getElementById("BtnGuardarAux").disabled = true;
+        document.getElementById("Aviso").textContent = "Montos NO cuadran con Total";
+        document.getElementById("Aviso").className = "alert alert-danger";
+        document.getElementById("Aviso").style.fontWeight = "700";
+        document.getElementById("Aviso").style.textAlign = "right";
+        document.getElementById("Aviso").style.display = "";
+    }
+}
+
+
 const CalculoAuxRetencion = (id) => {
     let DivPadreAuxRetencion = document.getElementById(id);
     let DivHijo = DivPadreAuxRetencion.childNodes;
@@ -92,7 +126,6 @@ const CalculoAuxRetencion = (id) => {
     let SelectedOption = TipoRetencion.selectedOptions[0];
     let Retencion = DivHijo[3].firstChild;
     let ValorLiquido = DivHijo[4].firstChild;
-
 
     if (SelectedOption.text == "Retención 10%") {
         Retencion.value = Math.round(ValorBruto.value * 0.1);
@@ -113,5 +146,55 @@ const CalculoAuxRetencion = (id) => {
     if (SelectedOption.text == "Sin Retención") {
         ValorLiquido.value = ValorBruto.value;
         Retencion.value = 0;
+    }
+
+    let SumaTotalAuxRetencion = 0;
+    let ValoresTotalesAuxRetencion = document.getElementsByName("AUXValorLiquido");
+
+    ValoresTotalesAuxRetencion.forEach(function (totalexauxret) {
+        SumaTotalAuxRetencion = SumaTotalAuxRetencion + parseFloat(totalexauxret.value);
+    });
+
+    CuadrarValorAuxRetencion(SumaTotalAuxRetencion);
+}
+
+const CuadrarValorAuxRetencion = (valor) => {
+    let ValorTotal = document.getElementById("AuxValorHonor").value;
+    if (ValorTotal == valor) {
+        document.getElementById("BtnGuardarHonor").disabled = false;
+        document.getElementById("AvisoHonor").style.display = "none";
+    } else {
+        document.getElementById("BtnGuardarHonor").disabled = true;
+        document.getElementById("AvisoHonor").textContent = "Montos NO cuadran con Total";
+        document.getElementById("AvisoHonor").className = "alert alert-danger";
+        document.getElementById("AvisoHonor").style.fontWeight = "700";
+        document.getElementById("AvisoHonor").style.textAlign = "right";
+        document.getElementById("AvisoHonor").style.display = "";
+    }
+}
+
+const SumaSueldoLiquidoRemu = () => {
+let LstTotalSLiquido = document.getElementsByName("AuxTotalRemu");
+let SumaTotalSLiquido = 0;
+
+LstTotalSLiquido.forEach(function(sumatotalremu){
+    SumaTotalSLiquido=SumaTotalSLiquido+parseFloat(sumatotalremu.value);
+});
+CuadrarValorAuxRemu(SumaTotalSLiquido);
+}
+
+const CuadrarValorAuxRemu = (valor) => {
+    let ValorLineaRemu = document.getElementById("AUXvaloritemRemu").value;
+
+    if (ValorLineaRemu == valor) {
+        document.getElementById("BtnGuardarAuxRemu").disabled=false;
+        document.getElementById("AvisoAuxRemu").style.display="none";
+    }else{
+        document.getElementById("BtnGuardarAuxRemu").disabled=true;
+        document.getElementById("AvisoAuxRemu").textContent="Montos NO cuadran con Total";
+        document.getElementById("AvisoAuxRemu").className="alert alert-danger";
+        document.getElementById("AvisoAuxRemu").style.fontWeight="700";
+        document.getElementById("AvisoAuxRemu").style.textAlign="right";
+        document.getElementById("AvisoAuxRemu").style.display="";
     }
 }

@@ -158,6 +158,24 @@ namespace TryTestWeb.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult getLstTipoDTE()
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+
+            var TipoDTE = ParseExtensions.ObtenerTipoDTEDropdownAsString();
+
+            return Json(new
+            {
+                ok = true,
+                result = TipoDTE
+            }, JsonRequestBehavior.AllowGet);
+
+
+        }
         [ModuloHandler]
         [Authorize]
         public ActionResult EditarClienteContable()
