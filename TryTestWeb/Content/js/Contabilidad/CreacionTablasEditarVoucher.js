@@ -1,10 +1,14 @@
 ﻿"use strict";
+// document.addEventListener("DOMContentLoaded", function () {
+//     LstCuentasContables();
+//     LstTipoDTE();
+// });
 
-document.addEventListener("DOMContentLoaded", function () {
+window.onload = function(){
     LstCuentasContables();
-    LstCentroCosto();
     LstTipoDTE();
-});
+    $(".estiloSelect").select2();
+};
 var CuentasContables;
 const LstCuentasContables = () => {
     $.ajax({
@@ -13,6 +17,7 @@ const LstCuentasContables = () => {
         success: function (result) {
             if (result.ok) {
                 CuentasContables = result.result;
+                LstCentroCosto();
             }
 
         }
@@ -45,7 +50,6 @@ const LstTipoDTE = () => {
             if (result.ok) {
                 TipoDTE = result.result;
                 CrearAuxProvDeudor();
-                console.log(TipoDTE);
             }
         }
 
@@ -84,15 +88,16 @@ const CrearTablaVoucher = () => {
     let DivCuentaContable = document.createElement("div");
     DivCuentaContable.className = "form-group col-lg-2";
     let SelectCuentaContable = document.createElement("select");
-    SelectCuentaContable.className = "basic-usage-select form-control custom-select";
-    SelectCuentaContable.id = "cuentaCont";
-    SelectCuentaContable.name = "ctacont";
-    SelectCuentaContable.title = "Seleccionar";
+    SelectCuentaContable.className = "form-control estiloSelectCtaCont"+idDetalle;
     SelectCuentaContable.onchange = function () { ActivaBtnAux(DivTabla.id) };
     SelectCuentaContable.required = true;
+    SelectCuentaContable.id="ctacont"+idDetalle;
+    SelectCuentaContable.name="ctacont"+idDetalle;
     SelectCuentaContable.innerHTML = CuentasContables;
     DivCuentaContable.appendChild(SelectCuentaContable);
     DivTabla.appendChild(DivCuentaContable);
+    $(".estiloSelectCtaCont"+idDetalle).select2();
+    
 
     //creacion input glosa
     let DivInputGlosa = document.createElement("div");
@@ -109,18 +114,17 @@ const CrearTablaVoucher = () => {
     DivTabla.appendChild(DivInputGlosa);
 
     //creación centro costo
-
     let DivCentroCosto = document.createElement("div");
     DivCentroCosto.className = "form-group col-lg-2";
     let SelectCC = document.createElement("select");
-    SelectCC.className = "basic-usage-select selectpicker form-control";
-    SelectCC.id = "centrocosto";
-    SelectCC.name = "centrocosto";
-    SelectCC.tabIndex = -1;
+    SelectCC.className = "form-control estiloSelectCC"+idDetalle;
+    SelectCC.id="centrocosto"+idDetalle;
+    SelectCC.name="centrocosto"+idDetalle;
     SelectCC.innerHTML = CentroCostos;
     DivCentroCosto.appendChild(SelectCC);
     DivTabla.appendChild(DivCentroCosto);
-
+    $(".estiloSelectCC"+idDetalle).select2();
+   
     //creación Debe
     let DivMontoDebe = document.createElement("div");
     DivMontoDebe.className = "form-group col-lg-2";
@@ -168,11 +172,14 @@ function EliminarUltimaFila() {
         idDetalle--;
         //idDetalle = 0;
         SumaTotalesVoucher();
+        
     }
     
 }
 document.getElementById("Btn_AgregarVoucher").addEventListener('click', function () {
+    
     CrearTablaVoucher();
+    
 });
 document.getElementById("duplica").addEventListener('click', function () {
     DuplicaGlosa();
@@ -203,11 +210,14 @@ const CrearAuxProvDeudor = () => {
     let DivTipoDTE = document.createElement("div");
     DivTipoDTE.className = "form-group col-lg-2";
     let selectTipoDte = document.createElement("select");
-    selectTipoDte.className = "form-control";
+    selectTipoDte.className = "form-control estiloSelectTipoDTE"+IdDivAuxProvDeudor;
     selectTipoDte.required=true;
+    selectTipoDte.id="TipoDTE"+IdDivAuxProvDeudor;
+    selectTipoDte.name="TipoDTE"+IdDivAuxProvDeudor;
     selectTipoDte.innerHTML=TipoDTE;
     DivTipoDTE.appendChild(selectTipoDte);
     DivContenidoAux.appendChild(DivTipoDTE);
+    $(".estiloSelectTipoDTE"+IdDivAuxProvDeudor).select2();
 
     //contentMonto neto
     let DivMontoNeto = document.createElement("div");
@@ -289,6 +299,7 @@ function BorrarFilaAuxiliarProvDeudor() {
 }
 document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
     CrearAuxProvDeudor();
+    $(".estiloSelectTablas").append($('<option>')).select2();
 });
 
 var IdDivAuxRemu = 0;
@@ -390,9 +401,9 @@ const CrearTablaHonorariosAux = () => {
     let DivTipoRetencion = document.createElement("div");
     DivTipoRetencion.className = "form-group col-lg-3";
     let SelectTipoRetencion = document.createElement("select");
-    SelectTipoRetencion.className = "form-control";
-    SelectTipoRetencion.id = "AUXtipoRetencion";
-    SelectTipoRetencion.name = "AUXtipoRetencion";
+    SelectTipoRetencion.className = "form-control estiloSelectHonor"+IdAuxHonorarios;
+    SelectTipoRetencion.id = "AUXtipoRetencion"+IdAuxHonorarios;
+    SelectTipoRetencion.name = "AUXtipoRetencion"+IdAuxHonorarios;
     SelectTipoRetencion.required = true;
     SelectTipoRetencion.onchange = function () { CalculoAuxRetencion(DivHonoAux.id) };
     let OptionDefault = document.createElement("option");
@@ -421,6 +432,7 @@ const CrearTablaHonorariosAux = () => {
     SelectTipoRetencion.add(OptionSinRet);
     DivTipoRetencion.appendChild(SelectTipoRetencion);
     DivHonoAux.appendChild(DivTipoRetencion);
+    $(".estiloSelectHonor"+IdAuxHonorarios).select2();
 
     //retención
     let DivRetencion = document.createElement("div");
@@ -457,6 +469,7 @@ const CrearTablaHonorariosAux = () => {
     BtnBorrarHono.textContent = "X";
     DivBtnBorrar.appendChild(BtnBorrarHono);
     DivHonoAux.appendChild(DivBtnBorrar);
+   
 }
 document.getElementById("Btn_AgregaFilaHonorarios").addEventListener('click', function () {
     CrearTablaHonorariosAux();
@@ -565,4 +578,56 @@ const EnviarDatosRemuneracion = (NombreCuentaContable, id) => {
     if (MontoHaber.value != 0 && MontoHaber.value != "" && MontoHaber.value != null) {
         document.getElementById("AUXvaloritemRemu").value = MontoHaber.value;
     }
+}
+
+const AuxPrestadorSeleccionado=()=> {
+
+    let Url = "ObtenerPrestador/Contabilidad";
+    let PrestadorProvDeudor = document.getElementById("TipoPrestadorProvDeudor").selectedOptions[0].value;
+    let PrestadorRemu = document.getElementById("TipoPrestadorRemu").selectedOptions[0].value;
+    let PrestadorHonor = document.getElementById("TipoPrestadorHonor").selectedOptions[0].value;
+
+    $.getJSON(Url, { TipoPrestador: PrestadorProvDeudor }, function (data) {
+        if (data.ok == true) {
+
+            $('#RazonPrestadorProvDeudor').html(data.selectInput);
+        }
+    });
+    $.getJSON(Url, { TipoPrestador: PrestadorRemu }, function (data) {
+        if (data.ok == true) {
+
+            $('#RazonPrestadorRemu').html(data.selectInput);
+        }   
+    });
+    $.getJSON(Url, { TipoPrestador: PrestadorHonor }, function (data) {
+        if (data.ok == true) {
+
+            $('#RazonPrestadorHonor').html(data.selectInput);
+        }
+    });
+}
+
+const ObtenerRUTPresSeleccionado=()=> {
+    let Url = "ObtenerRutPrestador/Contabilidad";
+    let PrestadorIDProvDeudor = document.getElementById("RazonPrestadorProvDeudor").value;
+    let PrestadorIDRemu = document.getElementById("RazonPrestadorRemu").value;
+    let PrestadorIDHonor = document.getElementById("RazonPrestadorHonor").value;
+    
+    $.getJSON(Url, { IDPrestador: PrestadorIDProvDeudor }, function (data) {
+        if (data.ok == true) {
+            $('#RutPrestadorProvDeudor').val(data.RutPrestador);
+        }
+    });
+
+    $.getJSON(Url, { IDPrestador: PrestadorIDRemu }, function (data) {
+        if (data.ok == true) {
+            $('#RutPrestadorRemu').val(data.RutPrestador);
+        }
+    });
+
+    $.getJSON(Url, { IDPrestador: PrestadorIDHonor }, function (data) {
+        if (data.ok == true) {
+            $('#RutPrestadorHonor').val(data.RutPrestador);
+        }
+    });
 }

@@ -7,10 +7,6 @@ function DuplicaGlosa() {
     });
 }
 
-$(document).ready(function () {
-    $(".basic-usage-select").select2();
-});
-
 
 function SumaTotalesVoucher() {
     let TotDebe = 0;
