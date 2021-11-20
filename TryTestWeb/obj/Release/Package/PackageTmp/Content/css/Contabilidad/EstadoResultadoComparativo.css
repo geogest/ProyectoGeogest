@@ -1,0 +1,19 @@
+﻿html {
+    font-size:100%; /*16px*/
+}
+.centrar {
+    margin-top: 1.9rem;
+}
+
+.Esconder {
+    display: none;
+}
+
+.margen {
+    margin-top: 2rem;
+}
+@media(max-width:425px) {
+    .margen {
+        margin-top:3.5rem;
+    }
+}

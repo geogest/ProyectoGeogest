@@ -5777,18 +5777,30 @@ namespace TryTestWeb.Controllers
                 TablaHonorStrings[3] = itemHonor.Fecha.ToString("dd-MM-yyyy");
                 TablaHonorStrings[4] = itemHonor.Individuo2.RUT;
                 TablaHonorStrings[5] = itemHonor.Individuo2.RazonSocial;
-                TablaHonorStrings[6] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorLiquido);
-                TablaHonorStrings[7] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorRetencion);
-                TablaHonorStrings[8] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.MontoTotalLinea);
 
 
-  
-                Bruto += itemHonor.ValorLiquido;
-                Retencion += itemHonor.ValorRetencion;
-                Neto += itemHonor.MontoTotalLinea;
+                //De aquí en adelante esto es variable dependiendo de las columnas de las cuales se sacarán los calculos
+
+                if(itemHonor.MontoBrutoLinea > 0)
+                {
+                    TablaHonorStrings[6] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.MontoBrutoLinea);
+                    TablaHonorStrings[7] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorRetencion);
+                    TablaHonorStrings[8] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorLiquido);
+                    Bruto += itemHonor.MontoBrutoLinea;
+                    Retencion += itemHonor.ValorRetencion;
+                    Neto += itemHonor.ValorLiquido;
+                }
+                else
+                {
+                    TablaHonorStrings[6] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.MontoTotalLinea);
+                    TablaHonorStrings[7] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorRetencion);
+                    TablaHonorStrings[8] = ParseExtensions.NumeroConPuntosDeMiles(itemHonor.ValorLiquido);
+                    Bruto += itemHonor.MontoTotalLinea;
+                    Retencion += itemHonor.ValorRetencion;
+                    Neto += itemHonor.ValorLiquido;
+                }
 
                 Correlativo++;
-
                 ReturnValues.Add(TablaHonorStrings);
             }
 

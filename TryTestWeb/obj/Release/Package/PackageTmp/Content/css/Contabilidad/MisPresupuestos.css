@@ -1,0 +1,20 @@
+﻿html {
+    font-size:100%;/*16px*/
+}
+.Esconder {
+    display: none;
+}
+@media(max-width:768px) {
+    .mat10 {
+        margin-bottom:/*0.63rem*/1rem;
+    }
+}
+@media(max-width:425px) {
+    .mat10 {
+        margin-top:0px;
+        padding-left:0px;
+    }
+    .m10 {
+        margin-bottom:0.63rem;
+    }
+}

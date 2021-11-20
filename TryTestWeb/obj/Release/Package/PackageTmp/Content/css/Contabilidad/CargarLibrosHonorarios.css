@@ -1,0 +1,11 @@
+﻿html {
+    font-size:100%;
+}
+.margen {
+    margin-top: 1.9rem;
+}
+@media (max-width: 425px) {
+    .margen {
+        margin-top: 3.3rem;
+    }
+}

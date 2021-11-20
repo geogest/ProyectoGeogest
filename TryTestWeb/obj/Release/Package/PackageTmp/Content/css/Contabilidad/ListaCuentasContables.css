@@ -1,0 +1,21 @@
+﻿html {
+    font-size:100%; /*16px*/
+}
+.margen {
+    margin-top:1.9rem;
+}
+
+@media (max-width: 768px) {
+    .margen {
+        margin-top:2rem;
+    }
+}
+@media (max-width: 425px) {
+    html {
+        font-size: 1.2rem;
+    }
+
+    .margen {
+        padding-top: 1rem;
+    }
+}

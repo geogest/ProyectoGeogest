@@ -1,0 +1,33 @@
+﻿html {
+    font-size:100%; /*16px*/
+}
+
+.margen {
+    padding-top:1.9rem;
+}
+.mt0 {
+    margin-top:0px;
+}
+@media (max-width: 768px) {
+    html {
+        font-size:1.5rem; /*24px*/
+    }
+    .margen {
+        padding-top:1.2rem;
+    }
+    .mg {
+        margin-top: 0.5rem;
+    }
+    .mg7 {
+        margin-top: 0.3rem;
+    }
+    .mt0 {
+        margin-top:0.4rem;
+        margin-bottom:0px;
+    }
+}
+@media (max-width: 425px) {
+    .margen {
+        padding-top: 2.3rem;
+    }
+}

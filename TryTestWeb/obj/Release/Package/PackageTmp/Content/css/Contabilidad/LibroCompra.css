@@ -1,0 +1,29 @@
+﻿html {
+    font-size:100%;
+}
+.centrar {
+    margin-top: 1.6rem;
+}
+.margen {
+    margin-top:1.9rem;
+}
+@media (max-width: 1024px) {
+    .mtop {
+        margin-top: 1.2rem;
+    }
+}
+@media (max-width: 768px) {
+    .margen {
+        margin-top: 1.8rem;
+    }
+}
+
+@media (max-width: 425px) {
+    .margen {
+        margin-top: 3.3rem;
+    }
+
+    .mtop {
+        margin-top: 1.3rem;
+    }
+}

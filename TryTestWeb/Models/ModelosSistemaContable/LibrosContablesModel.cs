@@ -744,7 +744,7 @@ public class LibrosContablesModel
             ConversionFechaFinExitosa = DateTime.TryParseExact(FechaFin, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtFechaFin);
         }
 
-        
+            
         IQueryable<AuxiliaresDetalleModel> TablaPrestador = (from Voucher in db.DBVoucher
                                                               join DetalleVoucher in db.DBDetalleVoucher on Voucher.VoucherModelID equals DetalleVoucher.VoucherModelID
                                                               join Auxiliares in db.DBAuxiliares on DetalleVoucher.DetalleVoucherModelID equals Auxiliares.DetalleVoucherModelID
@@ -836,7 +836,6 @@ public class LibrosContablesModel
         decimal TotalIvaUsocomun = 0;
         decimal TotalMontoTotal = 0;
 
-        //Son necesarios los totales de las notas de credito ya que actuaran restando a los totales
         var TotalesNotasDeCredito = (from lstLibro in lstlibroData.Where(x => x.TipoDocumento.EsUnaNotaCredito())
                                      group lstLibro by 1 into g
                                      select new
@@ -880,19 +879,24 @@ public class LibrosContablesModel
                     BalanceRow[6] = "";
                 }
 
+             
                 BalanceRow[7] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoExento);
-               
-                TotalExento += Item.MontoExento;
                 BalanceRow[8] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoNeto);
-                TotalNeto += Item.MontoNeto;
                 BalanceRow[9] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIva);
-                TotalIva += Item.MontoIva;
                 BalanceRow[10] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaNoRecuperable);
-                TotalIvaNoRecuperable += Item.MontoIvaNoRecuperable;
                 BalanceRow[11] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoIvaUsocomun);
-                TotalIvaUsocomun += Item.MontoIvaUsocomun;
                 BalanceRow[12] = ParseExtensions.NumeroConPuntosDeMiles(Item.MontoTotal);
-                TotalMontoTotal += Item.MontoTotal;
+               
+
+                if (!Item.TipoDocumento.EsUnaNotaCredito())
+                {
+                    TotalExento += Item.MontoExento;
+                    TotalNeto += Item.MontoNeto;
+                    TotalIva += Item.MontoIva;
+                    TotalIvaNoRecuperable += Item.MontoIvaNoRecuperable;
+                    TotalIvaUsocomun += Item.MontoIvaUsocomun;
+                    TotalMontoTotal += Item.MontoTotal;
+                }
                
                 BalanceRow[13] = "True";
 
