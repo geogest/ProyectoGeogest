@@ -414,6 +414,11 @@
     <Content Include="Content\css\Contabilidad\select2.min.css" />
     <Content Include="Content\css\flatpickr.min.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\Home\ListarClienteC.css" />
+    <Content Include="Content\css\Home\ListarHonorarios.css" />
+    <Content Include="Content\css\Home\ListarPersona.css" />
+    <Content Include="Content\css\Home\ListarProveedor.css" />
+    <Content Include="Content\css\Home\ReestablecerPrestador.css" />
     <Content Include="Content\css\SeleccionarClienteContable.css" />
     <Content Include="Content\css\SeleccionarEmisorDesdeModulos.css" />
     <Content Include="Content\css\style.css" />
