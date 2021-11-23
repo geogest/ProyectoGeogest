@@ -1,14 +1,10 @@
 ﻿"use strict";
-// document.addEventListener("DOMContentLoaded", function () {
-//     LstCuentasContables();
-//     LstTipoDTE();
-// });
-
-window.onload = function(){
+document.addEventListener("DOMContentLoaded", function () {
     LstCuentasContables();
     LstTipoDTE();
     $(".estiloSelect").select2();
-};
+});
+
 var CuentasContables;
 const LstCuentasContables = () => {
     $.ajax({
@@ -24,6 +20,7 @@ const LstCuentasContables = () => {
 
     });
 }
+
 var CentroCostos;
 const LstCentroCosto = () => {
 
@@ -195,12 +192,29 @@ const CrearAuxProvDeudor = () => {
     DivContenidoAux.className = "form-group col-lg-12";
     ContenidoAux.appendChild(DivContenidoAux);
 
-    //content folio
+    //content folio desde
+
+    let DivFolioDesde = document.createElement("div");
+    DivFolioDesde.className="form-group col-lg-1";
+    DivFolioDesde.style.display="none";
+    DivFolioDesde.id="AuxFolioDesde"+IdDivAuxProvDeudor;
+    let InputFolioDesde = document.createElement("input");
+    InputFolioDesde.className="form-control";
+    InputFolioDesde.id = "AuxInputFolioDesde"+IdDivAuxProvDeudor;
+    InputFolioDesde.name = "AuxInputFolioDesde";
+    InputFolioDesde.min = 1;
+    InputFolioDesde.required = true;
+    InputFolioDesde.type = "number";
+    DivFolioDesde.appendChild(InputFolioDesde);
+    DivContenidoAux.appendChild(DivFolioDesde);
+
+    //content folio/folioHasta
     let DivFolio = document.createElement("div");
     DivFolio.className = "form-group col-lg-1";
     let InputFolio = document.createElement("input");
     InputFolio.className = "form-control";
     InputFolio.name = "FechaPrestador";
+    InputFolio.id="FechaPrestador"+IdDivAuxProvDeudor;
     InputFolio.type = "text";
     InputFolio.required = true;
     DivFolio.appendChild(InputFolio);
@@ -243,15 +257,16 @@ const CrearAuxProvDeudor = () => {
     InputMontoExento.type = "number";
     InputMontoExento.min = 0;
     InputMontoExento.value = 0;
-    InputMontoExento.onchange = function () {CalculoAuxMontoExento(DivContenidoAux.id)};
+    InputMontoExento.onfocusout = function () {CalculoAuxMontoExento(DivContenidoAux.id)};
     DivMontoExento.appendChild(InputMontoExento);
     DivContenidoAux.appendChild(DivMontoExento);
 
     //content monto iva
     let DivMontoIVA = document.createElement("div");
     DivMontoIVA.className = "form-group col-lg-2";
+    DivMontoIVA.id="DMontoIVA"+IdDivAuxProvDeudor;
     let InputIVA = document.createElement("input");
-    InputIVA.id = "MontoIVA";
+    InputIVA.id = "MontoIVA"+IdDivAuxProvDeudor;
     InputIVA.name = "MontoIVA";
     InputIVA.type = "number";
     InputIVA.disabled = true;
@@ -272,7 +287,7 @@ const CrearAuxProvDeudor = () => {
     InputMontoTotal.min = 0;
     InputMontoTotal.value = 0;
     InputMontoTotal.required=true;
-    InputMontoTotal.onchange = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
+    InputMontoTotal.onfocusout = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
     DivMontoTotal.appendChild(InputMontoTotal);
     DivContenidoAux.appendChild(DivMontoTotal);
 
@@ -297,10 +312,43 @@ function BorrarFilaAuxiliarProvDeudor() {
         CuadrarValorProvDeudor();
     }
 }
-document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
-    CrearAuxProvDeudor();
-    $(".estiloSelectTablas").append($('<option>')).select2();
-});
+
+const AgregaFilaProvDeudor=()=>{
+
+    if(document.getElementById("BoletaVenta").checked){
+        CrearAuxProvDeudor();
+        EsUnaBoleta();
+    }else{
+        CrearAuxProvDeudor();
+    }
+
+}
+const EsUnaBoleta=()=>{
+    if(document.getElementById("BoletaVenta").checked){
+
+        document.getElementById("FolioDesdeL").style.display="";
+        document.getElementById("AuxFolioDesde"+IdDivAuxProvDeudor).style.display="";
+        document.getElementById("MontoIL").className = "col-lg-1";
+        document.getElementById("DMontoIVA"+IdDivAuxProvDeudor).className = "col-lg-1";
+        document.getElementById("FolioHastaL").innerText="Folio Hasta";
+
+
+    }else{
+
+        document.getElementById("FolioDesdeL").style.display="none";
+        document.getElementById("AuxFolioDesde"+IdDivAuxProvDeudor).style.display="none";
+        document.getElementById("MontoIL").className = "col-lg-2";
+        document.getElementById("DMontoIVA"+IdDivAuxProvDeudor).className = "col-lg-2";
+        document.getElementById("FolioHastaL").innerText="Folio";
+
+    }
+
+}
+// document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
+
+    
+    
+// });
 
 var IdDivAuxRemu = 0;
 const CrearTablaAuxRemu = () => {
@@ -631,3 +679,4 @@ const ObtenerRUTPresSeleccionado=()=> {
         }
     });
 }
+

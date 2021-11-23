@@ -1,7 +1,7 @@
 ﻿<div class="row">
     <div class="col-sm-12">
         <div class="page-header-2">
-            <h2 class="page-header">Agregar Voucher</h2>
+            <h2 class="page-header">Editar Voucher</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="#">Contabilidad</a>
@@ -10,7 +10,7 @@
                     <a href="#">-</a>
                 </li>
                 <li class="active">
-                    Agregar Voucher
+                    Editar Voucher
                 </li>
             </ol>
         </div>
@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-lg-2 col-md-3 col-sm-6 form-group">
             <label class="control-label">Numero Voucher</label>
-            <input type="number" class="form-control" name="numVoucher" id="numVoucher" required readonly />
+            <input type="number" class="form-control" name="numVoucher" id="numVoucher" required disabled/>
         </div>
 
         <div class="col-lg-2 col-md-3 col-sm-6 form-group">
@@ -38,14 +38,14 @@
 
         <div class="col-lg-2 col-md-3 col-sm-6 form-group">
             <label class="control-label">Tipo de Voucher</label>
-            <select class="form-control basic-usage-select" name="tipo" id="tipo">
+            <select class="form-control estiloSelect" name="tipo" id="tipo">
                 @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
             </select>
         </div>
 
         <div class="col-lg-2 col-md-3 col-sm-6 form-group">
             <label>Tipo Origen</label>
-            <select class="form-control basic-usage-select" name="TipoOrigen" id="TipoOrigen">
+            <select class="form-control estiloSelect" name="TipoOrigen" id="TipoOrigen">
                 @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
             </select>
         </div>
@@ -96,7 +96,7 @@
                 <div class="col-lg-1"></div>
             </div>
             <div class="row" id="ContenidoDetalle">
-                
+
             </div>
         </div>
         <div class="panel-footer text-center">
@@ -125,14 +125,13 @@
     </div>
     <div class="row">
         <div class="col-lg-1 col-lg-offset-11">
-            <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress">Guardar Voucher</button>
+            <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress" disabled>Guardar Voucher</button>
         </div>
     </div>
 
-    @*Principio de modal para Proovedor Deudor Auxiliar*@
-    <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarProvDeudor">
-        @**@
-        <div class="modal-dialog modal-lg" role="document">
+    @*Principio de modal para Proveedor Deudor Auxiliar*@
+    <div class="modal fade" role="dialog" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarProvDeudor">
+        <div class="modal-dialog tamanoModal" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -148,8 +147,8 @@
                                     <label class="control-label">Cuenta Contable</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control basic-usage-select" data-live-search="true" data-size="10" title="Ninguno">
-                                    </select>
+                                    <input class="form-control" type="text" id="AuxCuentaProvDeudor" name="AuxCuentaProvDeudor"  disabled/>
+                                  
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-lg-offset-2">
@@ -157,7 +156,7 @@
                                     <label class="control-label">Numero Línea</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <input type="number" id="item" name="item" class="form-control" />
+                                    <input type="number" id="AUXitemProvDeudor" name="AUXitemProvDeudor" class="form-control" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-lg-offset-2">
@@ -165,89 +164,93 @@
                                     <label class="control-label">Valor Línea</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <input type="number" id="valoritem" name="valoritem" class="form-control" />
+                                    <input type="number" id="AUXvalorProvDeudor" name="AUXvalorProvDeudor" class="form-control" value="0" disabled/>
                                 </div>
                             </div>
 
                             <div id="ConjuntoDetallesAuxiliares">
-                                <div class="col-lg-3 col-md-3">
-                                    <label class="control-label">Fecha</label>
-                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="" required />
-                                </div>
-                                <div class="col-lg-3 col-md-3">
-                                    <label class="control-label">Tipo</label>
-                                    <select class="form-control" id="TipoPrestador" name="TipoPrestador"  required>
-                                        <option value="">Selecciona</option>
-                                        <option value="CL">Cliente</option>
-                                        <option value="PR">Proveedor</option>
-                                        <option value="P">Persona</option>
-                                        <option value="H">Honorarios</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-3 col-md-3">
-                                    <label class="control-label">Razon Social</label>
-                                    <select class="form-control" id="RazonPrestador" name="RazonPrestador" required>
-                                    </select>
-                                </div>
-                                <div class="col-lg-3 col-md-3">
-                                    <label class="control-label">Rut</label>
-                                    <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly />
-                                </div>
-                                <div class="col-lg-3 col-md-4 text-center mtop">
-                                    <label class="control-label">¿Es una Boleta?</label>
-                                    <input type="checkbox" name="BoletaVenta" id="BoletaVenta" class="form-control" value="" />
-                                </div>
-                                <div class="col-lg-5 col-md-4 text-center mtop">
-                                    <div id="CajaContaCompra">
-                                        <label class="control-label">¿Se Contabiliza en el libro de compras?</label>
-                                        <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Fecha</label>
+                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" required />
+                                    </div>
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Tipo</label>
+                                        <select class="form-control estiloSelect" id="TipoPrestadorProvDeudor" name="TipoPrestadorProvDeudor" onchange="AuxPrestadorSeleccionado()" required>
+                                            <option value="">Selecciona</option>
+                                            <option value="CL">Cliente</option>
+                                            <option value="PR">Proveedor</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Razon Social</label>
+                                            <select class="form-control estiloSelect" id="RazonPrestadorProvDeudor" name="RazonPrestadorProvDeudor" onchange="ObtenerRUTPresSeleccionado()" required>
+                                             </select>
+                                        </div>
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Rut</label>
+                                        <input class="form-control" id="RutPrestadorProvDeudor" name="RutPrestadorProvDeudor" type="text" required disabled/>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-4 text-center mtop">
-                                    <div id="CajaContaVenta">
-                                        <label class="control-label">¿Se Contabiliza en el libro de ventas?</label>
-                                        <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" value="Venta" />
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 text-center mtop">
+                                        <label class="control-label">¿Es una Boleta?</label>
+                                        <input type="checkbox" name="BoletaVenta" id="BoletaVenta" onclick="EsUnaBoleta()" class="form-control"/>
+                                    </div>
+                                    <div class="col-lg-5 col-md-4 text-center mtop">
+                                        <div id="CajaContaCompra">
+                                            <label class="control-label">¿Se Contabiliza en el libro de compras?</label>
+                                            <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 text-center mtop">
+                                        <div id="CajaContaVenta">
+                                            <label class="control-label">¿Se Contabiliza en el libro de ventas?</label>
+                                            <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" value="Venta" />
+                                        </div>
                                     </div>
                                 </div>
-
-
                             </div>
 
                             <div class="row mtop">
                                 <div class="col-lg-2 col-lg-offset-10 mtop">
-                                    <a id="Btn_AgregaFilaProvDeudor" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                                    <a id="Btn_AgregaFilaProvDeudor" onclick="AgregaFilaProvDeudor()" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-lg-12" id="titulos">
-                                    <div class="col-lg-1">
-                                        <label>Folio</label>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label>Tipo DTE</label>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label>Monto Neto</label>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label>Monto Exento</label>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label>Monto IVA</label>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label>Monto Total</label>
+                            <div class="container">
+                                <div class="row" id="titulos">
+                                    <div class="form-group col-lg-12">
+                                        <div class="col-lg-1" id="FolioDesdeL" style="display:none">
+                                            <label>Folio Desde</label>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <label id="FolioHastaL">Folio</label>
+                                        </div>
+                                        <div class="col-lg-2" id="TipoDTEL">
+                                            <label>Tipo DTE</label>
+                                        </div>
+                                        <div class="col-lg-2" id="MontoNL">
+                                            <label>Monto Neto</label>
+                                        </div>
+                                        <div class="col-lg-2" id="MontoEL">
+                                            <label>Monto Exento</label>
+                                        </div>
+                                        <div class="col-lg-2" id="MontoIL">
+                                            <label>Monto IVA</label>
+                                        </div>
+                                        <div class="col-lg-2" id="MontoTL">
+                                            <label>Monto Total</label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12" id="TablaProvDeudorAux">
-
-                                </div>
+                                <div class="row" id="TablaProvDeudorAux"></div>
                             </div>
 
                             <div class="row">
+                                <div class="col-lg-12" id="Aviso"></div>
                                 <div class="col-lg-2 col-lg-offset-10 mtop">
-                                    <button class="btn btn-success redondo btnPress">Guardar Auxiliar</button>
+                                    <button class="btn btn-success redondo btnPress" id="BtnGuardarAux" disabled>Guardar Auxiliar</button>
                                 </div>
                             </div>
                         </div>
@@ -256,7 +259,6 @@
             </div>
         </div>
     </div>
-    @*final del primer modal para auxiliar*@
 
     @*segundo modal para Remu auxiliar*@
 
@@ -277,8 +279,7 @@
                                     <label class="control-label">Cuenta Contable</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno">
-                                    </select>
+                                    <input id="AuxRemu" name="AuxRemu" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" disabled>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-lg-offset-2">
@@ -286,7 +287,7 @@
                                     <label class="control-label">Numero Línea</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <input type="number" id="item" name="item" class="form-control" />
+                                    <input type="number" id="AUXitemRemu" name="AUXitemRemu" class="form-control" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-lg-offset-2">
@@ -294,33 +295,30 @@
                                     <label class="control-label">Valor Línea</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <input type="number" id="valoritem" name="valoritem" class="form-control" />
+                                    <input type="number" id="AUXvaloritemRemu" name="AUXvaloritemRemu" class="form-control" value="0" disabled/>
                                 </div>
                             </div>
 
                             <div id="ConjuntoDetallesAuxiliares">
                                 <div class="col-lg-3 col-md-3">
                                     <label class="control-label">Fecha</label>
-                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="" required />
+                                    <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" required />
                                 </div>
                                 <div class="col-lg-3 col-md-3">
                                     <label class="control-label">Tipo</label>
-                                    <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()" required>
-                                        <option value="">Selecciona</option>
-                                        <option value="CL">Cliente</option>
-                                        <option value="PR">Proveedor</option>
-                                        <option value="P">Persona</option>
-                                        <option value="H">Honorarios</option>
+                                    <select class="form-control estiloSelect" id="TipoPrestadorRemu" name="TipoPrestadorRemu" onchange="AuxPrestadorSeleccionado()" required>
+                                            <option value="">Selecciona</option>
+                                            <option value="P">Persona</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
                                     <label class="control-label">Razon Social</label>
-                                    <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()" required>
+                                    <select class="form-control estiloSelect" id="RazonPrestadorRemu" name="RazonPrestadorRemu" onchange="ObtenerRUTPresSeleccionado()" required>
                                     </select>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
                                     <label class="control-label">Rut</label>
-                                    <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly />
+                                    <input class="form-control" id="RutPrestadorRemu" name="RutPrestadorRemu" type="text" required disabled/>
                                 </div>
                             </div>
 
@@ -346,8 +344,9 @@
                             </div>
 
                             <div class="row">
+                                <div class="col-lg-12" id="AvisoAuxRemu"></div>
                                 <div class="col-lg-2 col-lg-offset-10 mtop">
-                                    <button class="btn btn-success redondo btnPress">Guardar Auxiliar</button>
+                                    <button class="btn btn-success redondo btnPress" id="BtnGuardarAuxRemu" disabled>Guardar Auxiliar</button>
                                 </div>
                             </div>
                         </div>
@@ -356,13 +355,11 @@
             </div>
         </div>
     </div>
-    @*final del segundo modal auxiliar*@
 
     @*tercer modal para Honorarios auxiliar*@
 
     <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarHonor">
-        @**@
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xlg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -378,8 +375,7 @@
                                     <label class="control-label">Cuenta Contable</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <select id="cuenta" name="cuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno">
-                                    </select>
+                                    <input id="AuxCuenta" name="AuxCuenta" class="selectpicker show-tick form-control" data-live-search="true" data-size="10" title="Ninguno" disabled>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-lg-offset-2">
@@ -387,7 +383,7 @@
                                     <label class="control-label">Numero Línea</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <input type="number" id="item" name="item" class="form-control" />
+                                    <input type="number" id="AUXitem" name="AUXitem" class="form-control" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-lg-offset-2">
@@ -395,7 +391,7 @@
                                     <label class="control-label">Valor Línea</label>
                                 </div>
                                 <div class="col-lg-5">
-                                    <input type="number" id="valoritem" name="valoritem" class="form-control" />
+                                    <input type="number" id="AuxValorHonor" name="AuxValorHonor" class="form-control" value="0" disabled/>
                                 </div>
                             </div>
 
@@ -406,22 +402,19 @@
                                 </div>
                                 <div class="col-lg-3 col-md-3">
                                     <label class="control-label">Tipo</label>
-                                    <select class="form-control" id="TipoPrestador" name="TipoPrestador" onchange="AuxPrestadorSeleccionado()" required>
-                                        <option value="">Selecciona</option>
-                                        <option value="CL">Cliente</option>
-                                        <option value="PR">Proveedor</option>
-                                        <option value="P">Persona</option>
-                                        <option value="H">Honorarios</option>
+                                    <select class="form-control estiloSelect" id="TipoPrestadorHonor" name="TipoPrestadorHonor" onchange="AuxPrestadorSeleccionado()" required>
+                                            <option value="">Selecciona</option>
+                                            <option value="H">Honorario</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
                                     <label class="control-label">Razon Social</label>
-                                    <select class="form-control" id="RazonPrestador" name="RazonPrestador" onchange="ObtenerRUTPresSeleccionado()" required>
+                                    <select class="form-control estiloSelect" id="RazonPrestadorHonor" name="RazonPrestadorHonor" onchange="ObtenerRUTPresSeleccionado()" required>
                                     </select>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
                                     <label class="control-label">Rut</label>
-                                    <input class="form-control" id="RutPrestador" name="RutPrestador" type="text" value="" required readonly />
+                                    <input class="form-control" id="RutPrestadorHonor" name="RutPrestadorHonor" type="text" required disabled/>
                                 </div>
                             </div>
 
@@ -455,8 +448,9 @@
                             </div>
 
                             <div class="row">
+                                <div class="col-lg-12" id="AvisoHonor"></div>
                                 <div class="col-lg-2 col-lg-offset-10 mtop">
-                                    <button class="btn btn-success redondo btnPress">Guardar Auxiliar</button>
+                                    <button class="btn btn-success redondo btnPress" id="BtnGuardarHonor" disabled>Guardar Auxiliar</button>
                                 </div>
                             </div>
                         </div>
@@ -465,8 +459,8 @@
             </div>
         </div>
     </div>
-}
 
+}
 <script>
     
     document.getElementById('fecha').addEventListener('change', function () {
@@ -485,14 +479,11 @@
         })
     });
 
-
 </script>
 
-@*@Styles.Render("~/bundles/contentcsscontabilidad")*@
-@*@Scripts.Render("~/bundles/contentjscontabilidad")*@
-<link href="~/Content/css/Contabilidad/IngresoVoucher.css" rel="stylesheet" />
 <link href="~/Content/css/Contabilidad/select2.min.css" rel="stylesheet" />
-@*<script type="text/javascript" src="~/Content/js/decimal.min.js"></script>*@
+<link href="~/Content/css/Contabilidad/EditarVoucher.css" rel="stylesheet" />
 <script type="text/javascript" src="~/Content/js/Contabilidad/select2.min.js"></script>
-<script type="text/javascript" src="~/Content/js/Contabilidad/IngresoVoucher.js"></script>
-<script type="text/javascript" src="~/Content/js/Contabilidad/CreacionTablasVoucher.js"></script>
+<script type="text/javascript" src="~/Content/js/Contabilidad/EditarVoucher.js"></script>
+<script type="text/javascript" src="~/Content/js/Contabilidad/CreacionTablasEditarVoucher.js"></script>
+<script type="text/javascript" src="~/Content/js/Decimal.js"></script>
