@@ -1,42 +1,37 @@
 ﻿"use strict";
-
 document.addEventListener("DOMContentLoaded", function () {
     LstCuentasContables();
-    LstCentroCosto();
-    $(".basic-usage-select").select2();
+    LstTipoDTE();
 });
-var CuentasContables;
-const LstCuentasContables = () => {
-    $.ajax({
-        type: 'GET',
-        url: "getLstCuentasContables/Contabilidad",
-        success: function (result) {
-            if (result.ok) {
-                CuentasContables = result.result;
-            }
+const LstCuentasContables=()=>{
 
-        }
-
-    });
+    let url = 'getLstCuentasContables/Contabilidad';
+    fetch(url)
+    .then(response => response.json())
+    .then(data => LstCentroCosto(data.result))
+    .catch(error => console.log(error));
 }
-var CentroCostos;
-const LstCentroCosto = () => {
 
-    $.ajax({
-        type: 'GET',
-        url: "getLstCentroCosto/Contabilidad",
-        success: function (result) {
-            if (result.ok) {
-                CentroCostos = result.result;
-                CrearTablaVoucher();
-            }
-        }
+const LstCentroCosto = (data1) => {
+    
+    let url = 'getLstCentroCosto/Contabilidad';
+    fetch(url)
+    .then(response => response.json())
+    .then(data => CrearTablaVoucher(data1,data.result))
+    .catch(error => console.log(error));
+}
+var LstTipoDTET;
+const LstTipoDTE = () => {
 
-    })
+    let url = 'getLstTipoDTE/Contabilidad';
+    fetch(url)
+    .then(response => response.json())
+    .then(data => CrearAuxProvDeudor(LstTipoDTET=data.result))
+    .catch(error => console.log(error));
 
 }
 var idDetalle = 0;
-const CrearTablaVoucher = () => {
+const CrearTablaVoucher = (CuentaContable,CentroCostos) => {
     var glosa = $("input[name=glosaDetalle]:last").val();
     if (glosa == null) {
         glosa = "";
@@ -67,15 +62,16 @@ const CrearTablaVoucher = () => {
     let DivCuentaContable = document.createElement("div");
     DivCuentaContable.className = "form-group col-lg-2";
     let SelectCuentaContable = document.createElement("select");
-    SelectCuentaContable.className = "basic-usage-select form-control custom-select";
-    SelectCuentaContable.id = "cuentaCont";
-    SelectCuentaContable.name = "ctacont";
-    SelectCuentaContable.title = "Seleccionar";
+    SelectCuentaContable.className = "form-control estiloSelectCtaCont"+idDetalle;
     SelectCuentaContable.onchange = function () { ActivaBtnAux(DivTabla.id) };
     SelectCuentaContable.required = true;
-    SelectCuentaContable.innerHTML = CuentasContables;
+    SelectCuentaContable.id="ctacont"+idDetalle;
+    SelectCuentaContable.name="ctacont"+idDetalle;
+    SelectCuentaContable.innerHTML = CuentaContable;
     DivCuentaContable.appendChild(SelectCuentaContable);
     DivTabla.appendChild(DivCuentaContable);
+    $(".estiloSelectCtaCont"+idDetalle).select2();
+    
 
     //creacion input glosa
     let DivInputGlosa = document.createElement("div");
@@ -92,18 +88,17 @@ const CrearTablaVoucher = () => {
     DivTabla.appendChild(DivInputGlosa);
 
     //creación centro costo
-
     let DivCentroCosto = document.createElement("div");
     DivCentroCosto.className = "form-group col-lg-2";
     let SelectCC = document.createElement("select");
-    SelectCC.className = "basic-usage-select selectpicker form-control";
-    SelectCC.id = "centrocosto";
-    SelectCC.name = "centrocosto";
-    SelectCC.tabIndex = -1;
+    SelectCC.className = "form-control estiloSelectCC"+idDetalle;
+    SelectCC.id="centrocosto"+idDetalle;
+    SelectCC.name="centrocosto"+idDetalle;
     SelectCC.innerHTML = CentroCostos;
     DivCentroCosto.appendChild(SelectCC);
     DivTabla.appendChild(DivCentroCosto);
-
+    $(".estiloSelectCC"+idDetalle).select2();
+   
     //creación Debe
     let DivMontoDebe = document.createElement("div");
     DivMontoDebe.className = "form-group col-lg-2";
@@ -114,7 +109,7 @@ const CrearTablaVoucher = () => {
     InputDebe.name = "debe";
     InputDebe.min = 0;
     InputDebe.value = 0;
-    InputDebe.onchange = SumaTotales;
+    InputDebe.onchange = SumaTotalesVoucher;
     DivMontoDebe.appendChild(InputDebe);
     DivTabla.appendChild(DivMontoDebe);
 
@@ -128,7 +123,7 @@ const CrearTablaVoucher = () => {
     InputHaber.name = "haber";
     InputHaber.min = 0;
     InputHaber.value = 0;
-    InputHaber.onchange = SumaTotales;
+    InputHaber.onchange = SumaTotalesVoucher;
     DivMontoHaber.appendChild(InputHaber);
     DivTabla.appendChild(DivMontoHaber);
 
@@ -145,24 +140,26 @@ const CrearTablaVoucher = () => {
     DivTabla.appendChild(DivBtnEliminar);
 }
 function EliminarUltimaFila() {
-
+    
     if (idDetalle > 1) {
         jQuery('#detalle' + idDetalle).remove();
         idDetalle--;
         //idDetalle = 0;
+        SumaTotalesVoucher();
+        
     }
-    SumaTotales();
+    
 }
 document.getElementById("Btn_AgregarVoucher").addEventListener('click', function () {
-    CrearTablaVoucher();
+    LstCuentasContables();
 });
 document.getElementById("duplica").addEventListener('click', function () {
     DuplicaGlosa();
 });
 
 var IdDivAuxProvDeudor = 0;
-const CrearAuxProvDeudor = () => {
-
+const CrearAuxProvDeudor = (tipoDTE) => {
+    
     IdDivAuxProvDeudor = IdDivAuxProvDeudor + 1;
     let ContenidoAux = document.getElementById("TablaProvDeudorAux");
     let DivContenidoAux = document.createElement("div");
@@ -170,12 +167,29 @@ const CrearAuxProvDeudor = () => {
     DivContenidoAux.className = "form-group col-lg-12";
     ContenidoAux.appendChild(DivContenidoAux);
 
-    //content folio
+    //content folio desde
+
+    let DivFolioDesde = document.createElement("div");
+    DivFolioDesde.className="form-group col-lg-1 DivFolioDesde";
+    DivFolioDesde.style.display="none";
+    DivFolioDesde.id="AuxFolioDesde"+IdDivAuxProvDeudor;
+    let InputFolioDesde = document.createElement("input");
+    InputFolioDesde.className="form-control";
+    InputFolioDesde.id = "AuxInputFolioDesde"+IdDivAuxProvDeudor;
+    InputFolioDesde.name = "AuxInputFolioDesde";
+    InputFolioDesde.min = 1;
+    InputFolioDesde.required = true;
+    InputFolioDesde.type = "number";
+    DivFolioDesde.appendChild(InputFolioDesde);
+    DivContenidoAux.appendChild(DivFolioDesde);
+
+    //content folio/folioHasta
     let DivFolio = document.createElement("div");
     DivFolio.className = "form-group col-lg-1";
     let InputFolio = document.createElement("input");
     InputFolio.className = "form-control";
     InputFolio.name = "FechaPrestador";
+    InputFolio.id="FechaPrestador"+IdDivAuxProvDeudor;
     InputFolio.type = "text";
     InputFolio.required = true;
     DivFolio.appendChild(InputFolio);
@@ -185,14 +199,14 @@ const CrearAuxProvDeudor = () => {
     let DivTipoDTE = document.createElement("div");
     DivTipoDTE.className = "form-group col-lg-2";
     let selectTipoDte = document.createElement("select");
-    selectTipoDte.className = "form-control";
-    let Seleccionar = document.createElement("option");
-    Seleccionar.setAttribute("value", "value1");
-    let OptionText = document.createTextNode("Seleccionar");
-    Seleccionar.appendChild(OptionText);
-    selectTipoDte.appendChild(Seleccionar);
+    selectTipoDte.className = "form-control estiloSelectTipoDTE"+IdDivAuxProvDeudor;
+    selectTipoDte.required=true;
+    selectTipoDte.id="TipoDTE"+IdDivAuxProvDeudor;
+    selectTipoDte.name="TipoDTE"+IdDivAuxProvDeudor;
+    selectTipoDte.innerHTML=tipoDTE;
     DivTipoDTE.appendChild(selectTipoDte);
     DivContenidoAux.appendChild(DivTipoDTE);
+    $(".estiloSelectTipoDTE"+IdDivAuxProvDeudor).select2();
 
     //contentMonto neto
     let DivMontoNeto = document.createElement("div");
@@ -218,15 +232,15 @@ const CrearAuxProvDeudor = () => {
     InputMontoExento.type = "number";
     InputMontoExento.min = 0;
     InputMontoExento.value = 0;
-    InputMontoExento.onchange = function () { CalculoAuxMontoExento(DivContenidoAux.id) };
+    InputMontoExento.onfocusout = function () {CalculoAuxMontoExento(DivContenidoAux.id)};
     DivMontoExento.appendChild(InputMontoExento);
     DivContenidoAux.appendChild(DivMontoExento);
 
     //content monto iva
     let DivMontoIVA = document.createElement("div");
-    DivMontoIVA.className = "form-group col-lg-2";
+    DivMontoIVA.className = "form-group col-lg-2 DMontoIVA";
     let InputIVA = document.createElement("input");
-    InputIVA.id = "MontoIVA";
+    InputIVA.id = "MontoIVA"+IdDivAuxProvDeudor;
     InputIVA.name = "MontoIVA";
     InputIVA.type = "number";
     InputIVA.disabled = true;
@@ -246,7 +260,8 @@ const CrearAuxProvDeudor = () => {
     InputMontoTotal.name = "MontoTotal";
     InputMontoTotal.min = 0;
     InputMontoTotal.value = 0;
-    InputMontoTotal.onchange = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
+    InputMontoTotal.required=true;
+    InputMontoTotal.onfocusout = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
     DivMontoTotal.appendChild(InputMontoTotal);
     DivContenidoAux.appendChild(DivMontoTotal);
 
@@ -264,16 +279,54 @@ const CrearAuxProvDeudor = () => {
 
 }
 function BorrarFilaAuxiliarProvDeudor() {
-
+    
     if (IdDivAuxProvDeudor > 1) {
         jQuery('#detalleAuxProvDeudor' + IdDivAuxProvDeudor).remove();
         IdDivAuxProvDeudor--;
         CuadrarValorProvDeudor();
     }
 }
-document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
-    CrearAuxProvDeudor();
-});
+
+const AgregaFilaProvDeudor=()=>{
+
+    if(document.getElementById("BoletaVenta").checked){
+        CrearAuxProvDeudor(LstTipoDTET);
+        EsUnaBoleta();
+    }else{
+        LstTipoDTE();
+    }
+
+}
+const EsUnaBoleta=()=>{
+    
+    let DivFolioDesde = document.getElementsByClassName("DivFolioDesde");
+    let DivFolioHasta = document.getElementsByClassName("DMontoIVA");
+    let labelFolioDesde = document.querySelector(".FolioDesdeL");
+    let labelIVA = document.querySelector(".MontoIL");
+    
+    if(document.getElementById("BoletaVenta").checked){
+
+        document.getElementById("FolioHastaL").innerText="Folio Hasta";
+        labelFolioDesde.style.display="";
+        labelIVA.className="col-lg-1 MontoIL";
+        
+        for (let i = 0; i < DivFolioDesde.length && i < DivFolioHasta.length; i++) {
+            DivFolioDesde[i].style.display="";
+            DivFolioHasta[i].className = "form-group col-lg-1 DMontoIVA";
+            
+        }
+    }else{
+        document.getElementById("FolioHastaL").innerText="Folio";
+        labelFolioDesde.style.display="none";
+        labelIVA.className="col-lg-2 MontoIL";
+
+        for (let i = 0; i < DivFolioDesde.length && i < DivFolioHasta.length; i++) {
+            DivFolioDesde[i].style.display="none";
+            DivFolioHasta[i].className = "form-group col-lg-2 DMontoIVA";
+        }
+    }
+
+}
 
 var IdDivAuxRemu = 0;
 const CrearTablaAuxRemu = () => {
@@ -302,10 +355,11 @@ const CrearTablaAuxRemu = () => {
     DivSueldoLiquido.className = "col-lg-5";
     let InputSueldoLiquido = document.createElement("input");
     InputSueldoLiquido.className = "form-control";
-    InputSueldoLiquido.id = "AuxTotal";
-    InputSueldoLiquido.name = "AuxTotal";
+    InputSueldoLiquido.id = "AuxTotalRemu";
+    InputSueldoLiquido.name = "AuxTotalRemu";
     InputSueldoLiquido.type = "number";
     InputSueldoLiquido.required = true;
+    InputSueldoLiquido.onchange = SumaSueldoLiquidoRemu;
     DivSueldoLiquido.appendChild(InputSueldoLiquido);
     DivAuxRemu.appendChild(DivSueldoLiquido);
 
@@ -324,11 +378,12 @@ const CrearTablaAuxRemu = () => {
 document.getElementById("Btn_AgregaFilaRemu").addEventListener('click', function () {
     CrearTablaAuxRemu();
 });
+
 function BorrarFilaAuxRemu() {
     if (IdDivAuxRemu > 1) {
         jQuery('#detalleRemu' + IdDivAuxRemu).remove();
         IdDivAuxRemu--;
-        //IdDivAuxRemu = 0;
+        CuadrarValorAuxRemu();
     }
 }
 
@@ -367,14 +422,14 @@ const CrearTablaHonorariosAux = () => {
     DivValorBruto.appendChild(InputValorBruto);
     DivHonoAux.appendChild(DivValorBruto);
 
-
+    
     //tipo retención
     let DivTipoRetencion = document.createElement("div");
     DivTipoRetencion.className = "form-group col-lg-3";
     let SelectTipoRetencion = document.createElement("select");
-    SelectTipoRetencion.className = "form-control";
-    SelectTipoRetencion.id = "AUXtipoRetencion";
-    SelectTipoRetencion.name = "AUXtipoRetencion";
+    SelectTipoRetencion.className = "form-control estiloSelectHonor"+IdAuxHonorarios;
+    SelectTipoRetencion.id = "AUXtipoRetencion"+IdAuxHonorarios;
+    SelectTipoRetencion.name = "AUXtipoRetencion"+IdAuxHonorarios;
     SelectTipoRetencion.required = true;
     SelectTipoRetencion.onchange = function () { CalculoAuxRetencion(DivHonoAux.id) };
     let OptionDefault = document.createElement("option");
@@ -403,6 +458,7 @@ const CrearTablaHonorariosAux = () => {
     SelectTipoRetencion.add(OptionSinRet);
     DivTipoRetencion.appendChild(SelectTipoRetencion);
     DivHonoAux.appendChild(DivTipoRetencion);
+    $(".estiloSelectHonor"+IdAuxHonorarios).select2();
 
     //retención
     let DivRetencion = document.createElement("div");
@@ -411,7 +467,7 @@ const CrearTablaHonorariosAux = () => {
     InputRetencion.type = "number";
     InputRetencion.className = "form-control";
     InputRetencion.name = "AUXValorRetencion";
-    InputRetencion.readOnly = true;
+    InputRetencion.disabled = true;
     InputRetencion.required = true;
     DivRetencion.appendChild(InputRetencion);
     DivHonoAux.appendChild(DivRetencion);
@@ -423,7 +479,7 @@ const CrearTablaHonorariosAux = () => {
     InputValorLiq.type = "number";
     InputValorLiq.className = "form-control";
     InputValorLiq.name = "AUXValorLiquido";
-    InputValorLiq.required = true;
+    InputValorLiq.disabled = true;
     InputValorLiq.readOnly = true;
     DivValorLiquido.appendChild(InputValorLiq);
     DivHonoAux.appendChild(DivValorLiquido);
@@ -439,6 +495,7 @@ const CrearTablaHonorariosAux = () => {
     BtnBorrarHono.textContent = "X";
     DivBtnBorrar.appendChild(BtnBorrarHono);
     DivHonoAux.appendChild(DivBtnBorrar);
+   
 }
 document.getElementById("Btn_AgregaFilaHonorarios").addEventListener('click', function () {
     CrearTablaHonorariosAux();
@@ -471,27 +528,27 @@ const ClickAux = (id) => {
     let SelectCuentaContable = DivHijosBtn[1].firstChild;
     let OptionSelected = SelectCuentaContable.selectedOptions[0];
 
-
+   
     if (OptionSelected.dataset.tipoauxiliar == "ProveedorDeudor") {
         if (IdDivAuxProvDeudor == 0) {
-            CrearAuxProvDeudor();
+            LstTipoDTE();
         }
         $('#ModalAuxiliarProvDeudor').modal('show');
-        EnviarDatosAuxProvDeudor(OptionSelected.textContent, id);
+        EnviarDatosAuxProvDeudor(OptionSelected.textContent,id);
     }
     if (OptionSelected.dataset.tipoauxiliar == "Remuneracion") {
         if (IdDivAuxRemu == 0) {
             CrearTablaAuxRemu();
         }
         $('#ModalAuxiliarRemu').modal('show');
-        EnviarDatosRemuneracion(OptionSelected.textContent, id);
+        EnviarDatosRemuneracion(OptionSelected.textContent,id);
     }
     if (OptionSelected.dataset.tipoauxiliar == "Honorarios") {
         if (IdAuxHonorarios == 0) {
             CrearTablaHonorariosAux();
         }
         $('#ModalAuxiliarHonor').modal('show');
-        EnviarDatosHonorAux(OptionSelected.textContent, id);
+        EnviarDatosHonorAux(OptionSelected.textContent,id);
     }
 }
 
@@ -504,11 +561,11 @@ const EnviarDatosAuxProvDeudor = (NombreCuentaContable, id) => {
     document.getElementById("AuxCuentaProvDeudor").value = NombreCuentaContable;
     document.getElementById("AUXitemProvDeudor").value = idDetalle;
 
-
+    
     if (MontoDebe.value != 0 && MontoDebe.value != "" && MontoDebe.value != null) {
         document.getElementById("AUXvalorProvDeudor").value = MontoDebe.value;
     }
-
+    
     if (MontoHaber.value != 0 && MontoHaber.value != "" && MontoHaber.value != null) {
         document.getElementById("AUXvalorProvDeudor").value = MontoHaber.value;
     }
@@ -548,3 +605,70 @@ const EnviarDatosRemuneracion = (NombreCuentaContable, id) => {
         document.getElementById("AUXvaloritemRemu").value = MontoHaber.value;
     }
 }
+
+const AuxPrestadorSeleccionado=()=> {
+
+    let Url = "ObtenerPrestador/Contabilidad";
+    let PrestadorProvDeudor = document.getElementById("TipoPrestadorProvDeudor").selectedOptions[0].value;
+    let PrestadorRemu = document.getElementById("TipoPrestadorRemu").selectedOptions[0].value;
+    let PrestadorHonor = document.getElementById("TipoPrestadorHonor").selectedOptions[0].value;
+
+    if(PrestadorProvDeudor!=""){
+        $.getJSON(Url, { TipoPrestador: PrestadorProvDeudor }, function (data) {
+            if (data.ok == true) {
+    
+                $('#RazonPrestadorProvDeudor').html(data.selectInput);
+            }
+        });
+    }
+    if(PrestadorRemu!=""){
+        $.getJSON(Url, { TipoPrestador: PrestadorRemu }, function (data) {
+            if (data.ok == true) {
+    
+                $('#RazonPrestadorRemu').html(data.selectInput);
+            }   
+        });
+    }
+    if(PrestadorHonor!=""){
+        $.getJSON(Url, { TipoPrestador: PrestadorHonor }, function (data) {
+            if (data.ok == true) {
+    
+                $('#RazonPrestadorHonor').html(data.selectInput);
+            }
+        });
+    }
+}
+
+const ObtenerRUTPresSeleccionado=()=> {
+    let Url = "ObtenerRutPrestador/Contabilidad";
+    let PrestadorIDProvDeudor = document.getElementById("RazonPrestadorProvDeudor").value;
+    let PrestadorIDRemu = document.getElementById("RazonPrestadorRemu").value;
+    let PrestadorIDHonor = document.getElementById("RazonPrestadorHonor").value;
+    
+    if(PrestadorIDProvDeudor!="" && PrestadorIDProvDeudor!="Selecciona"){
+        $.getJSON(Url, { IDPrestador: PrestadorIDProvDeudor }, function (data) {
+            if (data.ok == true) {
+                $('#RutPrestadorProvDeudor').val(data.RutPrestador);
+            }
+        });
+    }
+    
+    if(PrestadorIDRemu!="" && PrestadorIDRemu!="Selecciona"){
+        $.getJSON(Url, { IDPrestador: PrestadorIDRemu }, function (data) {
+            if (data.ok == true) {
+                $('#RutPrestadorRemu').val(data.RutPrestador);
+            }
+        });
+    }
+
+    if(PrestadorIDHonor!="" && PrestadorIDHonor!="Selecciona"){
+        $.getJSON(Url, { IDPrestador: PrestadorIDHonor }, function (data) {
+            if (data.ok == true) {
+                $('#RutPrestadorHonor').val(data.RutPrestador);
+            }
+        });
+    }
+
+    
+}
+

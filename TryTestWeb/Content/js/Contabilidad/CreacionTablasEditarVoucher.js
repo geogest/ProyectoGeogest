@@ -2,59 +2,36 @@
 document.addEventListener("DOMContentLoaded", function () {
     LstCuentasContables();
     LstTipoDTE();
-    $(".estiloSelect").select2();
 });
+const LstCuentasContables=()=>{
 
-var CuentasContables;
-const LstCuentasContables = () => {
-    $.ajax({
-        type: 'GET',
-        url: "getLstCuentasContables/Contabilidad",
-        success: function (result) {
-            if (result.ok) {
-                CuentasContables = result.result;
-                LstCentroCosto();
-            }
-
-        }
-
-    });
+    let url = 'getLstCuentasContables/Contabilidad';
+    fetch(url)
+    .then(response => response.json())
+    .then(data => LstCentroCosto(data.result))
+    .catch(error => console.log(error));
 }
 
-var CentroCostos;
-const LstCentroCosto = () => {
-
-    $.ajax({
-        type: 'GET',
-        url: "getLstCentroCosto/Contabilidad",
-        success: function (result) {
-            if (result.ok) {
-                CentroCostos = result.result;
-                CrearTablaVoucher();
-            }
-        }
-
-    })
-
+const LstCentroCosto = (data1) => {
+    
+    let url = 'getLstCentroCosto/Contabilidad';
+    fetch(url)
+    .then(response => response.json())
+    .then(data => CrearTablaVoucher(data1,data.result))
+    .catch(error => console.log(error));
 }
-var TipoDTE;
+var LstTipoDTET;
 const LstTipoDTE = () => {
 
-    $.ajax({
-        type: 'GET',
-        url: "getLstTipoDTE/Contabilidad",
-        success: function (result) {
-            if (result.ok) {
-                TipoDTE = result.result;
-                CrearAuxProvDeudor();
-            }
-        }
-
-    })
+    let url = 'getLstTipoDTE/Contabilidad';
+    fetch(url)
+    .then(response => response.json())
+    .then(data => CrearAuxProvDeudor(LstTipoDTET=data.result))
+    .catch(error => console.log(error));
 
 }
 var idDetalle = 0;
-const CrearTablaVoucher = () => {
+const CrearTablaVoucher = (CuentaContable,CentroCostos) => {
     var glosa = $("input[name=glosaDetalle]:last").val();
     if (glosa == null) {
         glosa = "";
@@ -90,7 +67,7 @@ const CrearTablaVoucher = () => {
     SelectCuentaContable.required = true;
     SelectCuentaContable.id="ctacont"+idDetalle;
     SelectCuentaContable.name="ctacont"+idDetalle;
-    SelectCuentaContable.innerHTML = CuentasContables;
+    SelectCuentaContable.innerHTML = CuentaContable;
     DivCuentaContable.appendChild(SelectCuentaContable);
     DivTabla.appendChild(DivCuentaContable);
     $(".estiloSelectCtaCont"+idDetalle).select2();
@@ -174,16 +151,14 @@ function EliminarUltimaFila() {
     
 }
 document.getElementById("Btn_AgregarVoucher").addEventListener('click', function () {
-    
-    CrearTablaVoucher();
-    
+    LstCuentasContables();
 });
 document.getElementById("duplica").addEventListener('click', function () {
     DuplicaGlosa();
 });
 
 var IdDivAuxProvDeudor = 0;
-const CrearAuxProvDeudor = () => {
+const CrearAuxProvDeudor = (tipoDTE) => {
     
     IdDivAuxProvDeudor = IdDivAuxProvDeudor + 1;
     let ContenidoAux = document.getElementById("TablaProvDeudorAux");
@@ -195,7 +170,7 @@ const CrearAuxProvDeudor = () => {
     //content folio desde
 
     let DivFolioDesde = document.createElement("div");
-    DivFolioDesde.className="form-group col-lg-1";
+    DivFolioDesde.className="form-group col-lg-1 DivFolioDesde";
     DivFolioDesde.style.display="none";
     DivFolioDesde.id="AuxFolioDesde"+IdDivAuxProvDeudor;
     let InputFolioDesde = document.createElement("input");
@@ -228,7 +203,7 @@ const CrearAuxProvDeudor = () => {
     selectTipoDte.required=true;
     selectTipoDte.id="TipoDTE"+IdDivAuxProvDeudor;
     selectTipoDte.name="TipoDTE"+IdDivAuxProvDeudor;
-    selectTipoDte.innerHTML=TipoDTE;
+    selectTipoDte.innerHTML=tipoDTE;
     DivTipoDTE.appendChild(selectTipoDte);
     DivContenidoAux.appendChild(DivTipoDTE);
     $(".estiloSelectTipoDTE"+IdDivAuxProvDeudor).select2();
@@ -263,8 +238,7 @@ const CrearAuxProvDeudor = () => {
 
     //content monto iva
     let DivMontoIVA = document.createElement("div");
-    DivMontoIVA.className = "form-group col-lg-2";
-    DivMontoIVA.id="DMontoIVA"+IdDivAuxProvDeudor;
+    DivMontoIVA.className = "form-group col-lg-2 DMontoIVA";
     let InputIVA = document.createElement("input");
     InputIVA.id = "MontoIVA"+IdDivAuxProvDeudor;
     InputIVA.name = "MontoIVA";
@@ -316,39 +290,43 @@ function BorrarFilaAuxiliarProvDeudor() {
 const AgregaFilaProvDeudor=()=>{
 
     if(document.getElementById("BoletaVenta").checked){
-        CrearAuxProvDeudor();
+        CrearAuxProvDeudor(LstTipoDTET);
         EsUnaBoleta();
     }else{
-        CrearAuxProvDeudor();
+        LstTipoDTE();
     }
 
 }
 const EsUnaBoleta=()=>{
+    
+    let DivFolioDesde = document.getElementsByClassName("DivFolioDesde");
+    let DivFolioHasta = document.getElementsByClassName("DMontoIVA");
+    let labelFolioDesde = document.querySelector(".FolioDesdeL");
+    let labelIVA = document.querySelector(".MontoIL");
+    
     if(document.getElementById("BoletaVenta").checked){
 
-        document.getElementById("FolioDesdeL").style.display="";
-        document.getElementById("AuxFolioDesde"+IdDivAuxProvDeudor).style.display="";
-        document.getElementById("MontoIL").className = "col-lg-1";
-        document.getElementById("DMontoIVA"+IdDivAuxProvDeudor).className = "col-lg-1";
         document.getElementById("FolioHastaL").innerText="Folio Hasta";
-
-
+        labelFolioDesde.style.display="";
+        labelIVA.className="col-lg-1 MontoIL";
+        
+        for (let i = 0; i < DivFolioDesde.length && i < DivFolioHasta.length; i++) {
+            DivFolioDesde[i].style.display="";
+            DivFolioHasta[i].className = "form-group col-lg-1 DMontoIVA";
+            
+        }
     }else{
-
-        document.getElementById("FolioDesdeL").style.display="none";
-        document.getElementById("AuxFolioDesde"+IdDivAuxProvDeudor).style.display="none";
-        document.getElementById("MontoIL").className = "col-lg-2";
-        document.getElementById("DMontoIVA"+IdDivAuxProvDeudor).className = "col-lg-2";
         document.getElementById("FolioHastaL").innerText="Folio";
+        labelFolioDesde.style.display="none";
+        labelIVA.className="col-lg-2 MontoIL";
 
+        for (let i = 0; i < DivFolioDesde.length && i < DivFolioHasta.length; i++) {
+            DivFolioDesde[i].style.display="none";
+            DivFolioHasta[i].className = "form-group col-lg-2 DMontoIVA";
+        }
     }
 
 }
-// document.getElementById("Btn_AgregaFilaProvDeudor").addEventListener('click', function () {
-
-    
-    
-// });
 
 var IdDivAuxRemu = 0;
 const CrearTablaAuxRemu = () => {
@@ -635,24 +613,30 @@ const AuxPrestadorSeleccionado=()=> {
     let PrestadorRemu = document.getElementById("TipoPrestadorRemu").selectedOptions[0].value;
     let PrestadorHonor = document.getElementById("TipoPrestadorHonor").selectedOptions[0].value;
 
-    $.getJSON(Url, { TipoPrestador: PrestadorProvDeudor }, function (data) {
-        if (data.ok == true) {
-
-            $('#RazonPrestadorProvDeudor').html(data.selectInput);
-        }
-    });
-    $.getJSON(Url, { TipoPrestador: PrestadorRemu }, function (data) {
-        if (data.ok == true) {
-
-            $('#RazonPrestadorRemu').html(data.selectInput);
-        }   
-    });
-    $.getJSON(Url, { TipoPrestador: PrestadorHonor }, function (data) {
-        if (data.ok == true) {
-
-            $('#RazonPrestadorHonor').html(data.selectInput);
-        }
-    });
+    if(PrestadorProvDeudor!=""){
+        $.getJSON(Url, { TipoPrestador: PrestadorProvDeudor }, function (data) {
+            if (data.ok == true) {
+    
+                $('#RazonPrestadorProvDeudor').html(data.selectInput);
+            }
+        });
+    }
+    if(PrestadorRemu!=""){
+        $.getJSON(Url, { TipoPrestador: PrestadorRemu }, function (data) {
+            if (data.ok == true) {
+    
+                $('#RazonPrestadorRemu').html(data.selectInput);
+            }   
+        });
+    }
+    if(PrestadorHonor!=""){
+        $.getJSON(Url, { TipoPrestador: PrestadorHonor }, function (data) {
+            if (data.ok == true) {
+    
+                $('#RazonPrestadorHonor').html(data.selectInput);
+            }
+        });
+    }
 }
 
 const ObtenerRUTPresSeleccionado=()=> {
@@ -661,22 +645,30 @@ const ObtenerRUTPresSeleccionado=()=> {
     let PrestadorIDRemu = document.getElementById("RazonPrestadorRemu").value;
     let PrestadorIDHonor = document.getElementById("RazonPrestadorHonor").value;
     
-    $.getJSON(Url, { IDPrestador: PrestadorIDProvDeudor }, function (data) {
-        if (data.ok == true) {
-            $('#RutPrestadorProvDeudor').val(data.RutPrestador);
-        }
-    });
+    if(PrestadorIDProvDeudor!="" && PrestadorIDProvDeudor!="Selecciona"){
+        $.getJSON(Url, { IDPrestador: PrestadorIDProvDeudor }, function (data) {
+            if (data.ok == true) {
+                $('#RutPrestadorProvDeudor').val(data.RutPrestador);
+            }
+        });
+    }
+    
+    if(PrestadorIDRemu!="" && PrestadorIDRemu!="Selecciona"){
+        $.getJSON(Url, { IDPrestador: PrestadorIDRemu }, function (data) {
+            if (data.ok == true) {
+                $('#RutPrestadorRemu').val(data.RutPrestador);
+            }
+        });
+    }
 
-    $.getJSON(Url, { IDPrestador: PrestadorIDRemu }, function (data) {
-        if (data.ok == true) {
-            $('#RutPrestadorRemu').val(data.RutPrestador);
-        }
-    });
+    if(PrestadorIDHonor!="" && PrestadorIDHonor!="Selecciona"){
+        $.getJSON(Url, { IDPrestador: PrestadorIDHonor }, function (data) {
+            if (data.ok == true) {
+                $('#RutPrestadorHonor').val(data.RutPrestador);
+            }
+        });
+    }
 
-    $.getJSON(Url, { IDPrestador: PrestadorIDHonor }, function (data) {
-        if (data.ok == true) {
-            $('#RutPrestadorHonor').val(data.RutPrestador);
-        }
-    });
+    
 }
 

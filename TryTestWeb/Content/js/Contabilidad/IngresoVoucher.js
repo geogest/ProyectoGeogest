@@ -8,7 +8,7 @@ function DuplicaGlosa() {
 }
 
 $(document).ready(function () {
-    $(".basic-usage-select").select2();
+    $(".estiloSelect").select2();
 });
 
 
@@ -20,14 +20,12 @@ function SumaTotales() {
     ValorDebe.forEach(function (valordebe) {
         if (valordebe.value != 0) {
             TotDebe = TotDebe + parseFloat(valordebe.value);
-            //document.getElementById("haber").disabled = true;
         }
         document.getElementById("TotDebe").textContent = TotDebe;
     });
     ValorHaber.forEach(function (valorhaber) {
         if (valorhaber.value != 0) {
             TotHaber = TotHaber + parseFloat(valorhaber.value);
-            //document.getElementById("debe").disabled = true;
         }
 
         document.getElementById("TotHaber").textContent = TotHaber;
