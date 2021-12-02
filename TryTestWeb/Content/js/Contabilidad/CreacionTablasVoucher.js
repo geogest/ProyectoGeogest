@@ -144,7 +144,6 @@ function EliminarUltimaFila() {
     if (idDetalle > 1) {
         jQuery('#detalle' + idDetalle).remove();
         idDetalle--;
-        //idDetalle = 0;
         SumaTotalesVoucher();
         
     }

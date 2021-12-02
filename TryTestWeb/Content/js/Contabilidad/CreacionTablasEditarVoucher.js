@@ -1,7 +1,8 @@
 ﻿"use strict";
 document.addEventListener("DOMContentLoaded", function () {
-    LstCuentasContables();
-    LstTipoDTE();
+    InfoVoucher();
+    // LstCuentasContables();
+    // LstTipoDTE();
 });
 const LstCuentasContables=()=>{
 
@@ -28,8 +29,9 @@ const LstTipoDTE = () => {
     .then(response => response.json())
     .then(data => CrearAuxProvDeudor(LstTipoDTET=data.result))
     .catch(error => console.log(error));
-
 }
+
+
 var idDetalle = 0;
 const CrearTablaVoucher = (CuentaContable,CentroCostos) => {
     var glosa = $("input[name=glosaDetalle]:last").val();

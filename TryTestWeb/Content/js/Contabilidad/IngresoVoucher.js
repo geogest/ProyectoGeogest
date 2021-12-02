@@ -12,7 +12,7 @@ $(document).ready(function () {
 });
 
 
-function SumaTotales() {
+function SumaTotalesVoucher() {
     let TotDebe = 0;
     let TotHaber = 0;
     let ValorDebe = document.getElementsByName("debe");
@@ -54,16 +54,15 @@ const CalculoAuxiliarProvDeudor = (id) => {
     let DivPadreAuxProv = document.getElementById(id);
     let DivHijos = DivPadreAuxProv.childNodes;
 
-    let MontoNeto = DivHijos[2].firstChild;
-    let MontoExento = DivHijos[3].firstChild;
-    let MontoIva = DivHijos[4].firstChild;
-    let MontoTotal = DivHijos[5].firstChild;
+    let MontoNeto = DivHijos[3].firstChild;
+    let MontoExento = DivHijos[4].firstChild;
+    let MontoIva = DivHijos[5].firstChild;
+    let MontoTotal = DivHijos[6].firstChild;
 
     if (MontoTotal.value != "" && MontoTotal.value != null) {
         MontoIva.value = Math.round((MontoTotal.value * 0.19) / 1.19);
         MontoNeto.value = MontoTotal.value - MontoIva.value;
         MontoExento.value = 0;
-
     }
     const TodosTotales = document.getElementsByName("MontoTotal");
     let SumaDeTotales = 0;
@@ -79,10 +78,10 @@ const CalculoAuxMontoExento = (id) => {
     let DivPadreAuxMontoExento = document.getElementById(id);
     let DivHijos = DivPadreAuxMontoExento.childNodes;
 
-    let MontoNeto = DivHijos[2].firstChild;
-    let MontoExento = DivHijos[3].firstChild;
-    let MontoIva = DivHijos[4].firstChild;
-    let MontoTotal = DivHijos[5].firstChild;
+    let MontoNeto = DivHijos[3].firstChild;
+    let MontoExento = DivHijos[4].firstChild;
+    let MontoIva = DivHijos[5].firstChild;
+    let MontoTotal = DivHijos[6].firstChild;
 
     if (MontoExento.value != "" && MontoExento.value != null) {
         MontoTotal.value = MontoExento.value;
@@ -169,4 +168,12 @@ const CuadrarValorAuxRetencion = (valor) => {
         document.getElementById("AvisoHonor").style.textAlign = "right";
         document.getElementById("AvisoHonor").style.display = "";
     }
+}
+const SumaSueldoLiquidoRemu = () => {
+    let LstTotalSLiquido = document.getElementsByName("AuxTotalRemu");
+    let SumaTotalSLiquido = 0;
+    LstTotalSLiquido.forEach(function(sumatotalremu){
+        SumaTotalSLiquido=SumaTotalSLiquido+parseFloat(sumatotalremu.value);
+    });
+    CuadrarValorAuxRemu(SumaTotalSLiquido);
 }

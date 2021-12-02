@@ -1336,6 +1336,69 @@ namespace TryTestWeb.Controllers
             }
         }
 
+        public ActionResult EditarVoucher(int IDVoucher) {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+
+            ViewBag.Id = IDVoucher;
+
+            return View();
+        }
+        [Authorize]
+        public JsonResult GetInfoVoucher(int IDVoucherAEditar)
+        {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            if (objCliente == null) throw new Exception("Terminó la sesión");
+
+            //saber los campos que contendra este objeto
+
+            VoucherInfoDto Voucher = objCliente.ListVoucher.Where(x => x.VoucherModelID == IDVoucherAEditar).Select(x => new VoucherInfoDto
+            {
+                VoucherModelID = x.VoucherModelID,
+                Glosa = x.Glosa,
+                FechaContabilizacion = x.FechaEmision,
+                TipoOrigenVoucher = x.TipoOrigenVoucher,
+                NumVoucher = x.NumeroVoucher,
+                Tipo = x.Tipo,
+                DetalleVoucher = x.ListaDetalleVoucher.Select(y => new DetalleVoucherDto
+                {
+                    CuentaContableID = y.ObjCuentaContable.CuentaContableModelID,
+                    CentroDeCostoID = y.CentroCostoID,
+                    MontoDebe = y.MontoDebe,
+                    MontoHaber = y.MontoHaber,
+                    AuxiliarDetalle = y.Auxiliar != null ? y.Auxiliar.ListaDetalleAuxiliares.Select(z => new AuxiliaresDetalleDto
+                    {
+                        AuxiliarDetalleID = z.AuxiliaresDetalleModelID,
+                        FechaContabilizacion = z.FechaContabilizacion,
+                        TipoReceptor = z.Individuo2.tipoReceptor,
+                        Rut = z.Individuo2.RUT,
+                        RazonSocial = z.Individuo2.RazonSocial,
+                        Folio = z.Folio,
+                        MontoBruto = z.MontoBrutoLinea,
+                        MontoNeto = z.MontoNetoLinea,
+                        MontoIvaUsoComun = z.MontoIVAUsoComun,
+                        MontoIvaNoRecuperable = z.MontoIVANoRecuperable,
+                        MontoIvaLinea = z.MontoIVALinea,
+                        MontoIvaActivoLinea = z.MontoIVAActivoFijo,
+                        ValorLiquido = z.ValorLiquido,
+                        MontoTotalLinea = z.MontoTotalLinea,
+                        MontoExento = z.MontoExentoLinea,
+                        TipoDTE = z.TipoDocumento
+                    }).ToList() : null
+                }).ToList(),
+            }).FirstOrDefault();
+
+            return Json(new
+            {
+                result = Voucher
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+
         [Authorize]
         public ActionResult InfoImportada()
         {

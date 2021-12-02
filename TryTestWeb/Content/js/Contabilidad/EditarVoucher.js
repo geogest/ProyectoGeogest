@@ -12,7 +12,7 @@ $(document).ready(function () {
 });
 
 
-function SumaTotales() {
+function SumaTotalesVoucher() {
     let TotDebe = 0;
     let TotHaber = 0;
     let ValorDebe = document.getElementsByName("debe");
@@ -63,8 +63,8 @@ const CalculoAuxiliarProvDeudor = (id) => {
         MontoIva.value = Math.round((MontoTotal.value * 0.19) / 1.19);
         MontoNeto.value = MontoTotal.value - MontoIva.value;
         MontoExento.value = 0;
-
     }
+
     const TodosTotales = document.getElementsByName("MontoTotal");
     let SumaDeTotales = 0;
     TodosTotales.forEach(function (sumatotales) {
@@ -114,7 +114,6 @@ const CuadrarValorProvDeudor = (valor) => {
         document.getElementById("Aviso").style.display = "";
     }
 }
-
 
 const CalculoAuxRetencion = (id) => {
     let DivPadreAuxRetencion = document.getElementById(id);
@@ -169,4 +168,46 @@ const CuadrarValorAuxRetencion = (valor) => {
         document.getElementById("AvisoHonor").style.textAlign = "right";
         document.getElementById("AvisoHonor").style.display = "";
     }
+}
+
+const SumaSueldoLiquidoRemu = () => {
+    let LstTotalSLiquido = document.getElementsByName("AuxTotalRemu");
+    let SumaTotalSLiquido = 0;
+    LstTotalSLiquido.forEach(function(sumatotalremu){
+        SumaTotalSLiquido=SumaTotalSLiquido+parseFloat(sumatotalremu.value);
+    });
+    CuadrarValorAuxRemu(SumaTotalSLiquido);
+}
+
+const MostrarDatos=(datos)=>{
+    console.log(datos);
+    let FechaContabilizacion = moment.utc(datos.FechaContabilizacion).format('DD-MM-YYYY');
+    let GlosaNombre = document.getElementsByName("glosaDetalle");
+    let MontoDebe = document.getElementsByName("debe");
+    let MontoHaber = document.getElementsByName("haber");
+    document.getElementById("glosa").value = datos.Glosa;
+    document.getElementById("numVoucher").value=datos.NumVoucher;
+    document.getElementById("fecha").value=FechaContabilizacion;
+    document.getElementById("TipoOrigen").selected = datos.TipoOrigenVoucher;
+    document.getElementById("tipo").selected = datos.Tipo;
+    
+    for (let a = 1; a <= datos.DetalleVoucher.length; a++) {
+        CrearTablaVoucher(datos.DetalleVoucher.CuentaContableID, datos.DetalleVoucher.CentroDeCostoID);
+        // LstCuentasContables();
+        
+    }
+    GlosaNombre.forEach(function(AsignaNombre){
+        AsignaNombre.value = datos.Glosa;
+    })
+    var b = 0;
+    MontoDebe.forEach(function(AsignaMontoDebe){
+        AsignaMontoDebe.value = datos.DetalleVoucher[b].MontoDebe;
+        b = b + 1;
+    })
+    var c = 0;
+    MontoHaber.forEach(function(AsignaMontoHaber){
+        AsignaMontoHaber.value = datos.DetalleVoucher[c].MontoHaber;
+        c = c + 1;
+    })
+    SumaTotalesVoucher();
 }

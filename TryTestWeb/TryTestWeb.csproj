@@ -320,6 +320,7 @@
     <Compile Include="Models\ModelosSistemaContable\ClientesProveedoresModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\Common\NovedadesEnumKeys.cs" />
     <Compile Include="Models\ModelosSistemaContable\Common\NovedadesModel.cs" />
+    <Compile Include="Models\ModelosSistemaContable\Common\VoucherInfoDto.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\AuxPendientesViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstadoCuentasCorrientesViewModel.cs" />
     <Compile Include="Models\ModelosSistemaContable\ContabilidadAuxiliares\ContabilidadAuxViewModels\EstCtasCtesConciliadasViewModel.cs" />
@@ -1005,6 +1006,7 @@
     <Content Include="Views\Monitoreo\ControlarEstadoSesion.cshtml" />
     <Content Include="Views\Contabilidad\ProcesarExcelBoleta.cshtml" />
     <Content Include="Views\Contabilidad\ImportarBoletas.cshtml" />
+    <Content Include="Views\Contabilidad\EditarVoucher.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClasesDocsSII\" />
