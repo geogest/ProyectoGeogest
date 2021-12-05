@@ -42,14 +42,14 @@
 
             <div class="col-lg-2 col-md-3 col-sm-6 form-group">
                 <label class="control-label">Tipo de Voucher</label>
-                <select class="form-control estiloSelect" name="tipo" id="tipo">
+                <select class="form-control " name="tipo" id="tipo">
                     @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
                 </select>
             </div>
 
             <div class="col-lg-2 col-md-3 col-sm-6 form-group">
                 <label>Tipo Origen</label>
-                <select class="form-control estiloSelect" name="TipoOrigen" id="TipoOrigen">
+                <select class="form-control " name="TipoOrigen" id="TipoOrigen">
                     @Html.Raw(ParseExtensions.ObtenerEnumListaSeleccionadoTipoOrigen(ViewBag.TipoOrigenVoucher))
                 </select>
             </div>
@@ -478,10 +478,11 @@
         }
     </script>
 
-    <link href="~/Content/css/Contabilidad/select2.min.css" rel="stylesheet" />
-    <link href="~/Content/css/Contabilidad/EditarVoucher.css" rel="stylesheet" />
+    
     <script type="text/javascript" src="~/Content/Template2/js/moment.min.js"></script>
-    <script type="text/javascript" src="~/Content/js/Contabilidad/select2.min.js"></script>
     <script type="text/javascript" src="~/Content/js/Contabilidad/EditarVoucher.js"></script>
     <script type="text/javascript" src="~/Content/js/Contabilidad/CreacionTablasEditarVoucher.js"></script>
+    <script type="text/javascript" src="~/Content/js/Contabilidad/select2.min.js"></script>
     <script type="text/javascript" src="~/Content/js/Decimal.js"></script> 
+    <link href="~/Content/css/Contabilidad/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/css/Contabilidad/EditarVoucher.css" rel="stylesheet" />

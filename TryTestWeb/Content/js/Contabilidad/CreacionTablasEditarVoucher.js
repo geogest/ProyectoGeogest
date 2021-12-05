@@ -1,25 +1,29 @@
 ﻿"use strict";
 document.addEventListener("DOMContentLoaded", function () {
     InfoVoucher();
-    // LstCuentasContables();
-    // LstTipoDTE();
+    LstCuentasContables();
+    LstCentroCosto();
+    CrearTablaVoucher();
 });
-const LstCuentasContables=()=>{
+const LstCuentasContables = async () => {
 
-    let url = 'getLstCuentasContables/Contabilidad';
-    fetch(url)
-    .then(response => response.json())
-    .then(data => LstCentroCosto(data.result))
-    .catch(error => console.log(error));
+    const urlLstCtasCont = await fetch('getLstCuentasContables/Contabilidad');
+    const resCtaCont = await urlLstCtasCont.json();
+    console.log(resCtaCont.result);
+    return resCtaCont.result;
+    // fetch(url)
+    // .then(response => response.json())
+    // .then(data => Cuentatupoto=data.result)
+    // .catch(error => console.log(error));
 }
-
-const LstCentroCosto = (data1) => {
-    
-    let url = 'getLstCentroCosto/Contabilidad';
-    fetch(url)
-    .then(response => response.json())
-    .then(data => CrearTablaVoucher(data1,data.result))
-    .catch(error => console.log(error));
+const LstCentroCosto = async () => {
+    const urlLstCC = await fetch('getLstCentroCosto/Contabilidad');
+    const resCC = await urlLstCC.json();
+    return resCC;
+    // fetch(urlLstCC)
+    // .then(response => response.json())
+    // .then(data => Centrowea=data.result)
+    // .catch(error => console.log(error));
 }
 var LstTipoDTET;
 const LstTipoDTE = () => {
@@ -33,8 +37,10 @@ const LstTipoDTE = () => {
 
 
 var idDetalle = 0;
-const CrearTablaVoucher = (CuentaContable,CentroCostos) => {
-    var glosa = $("input[name=glosaDetalle]:last").val();
+const CrearTablaVoucher = async () => {
+    let Cuentacontable = await LstCuentasContables();
+    console.lo(Cuentacontable);
+    var glosa = document.getElementById("glosa").value;
     if (glosa == null) {
         glosa = "";
     }
@@ -69,7 +75,7 @@ const CrearTablaVoucher = (CuentaContable,CentroCostos) => {
     SelectCuentaContable.required = true;
     SelectCuentaContable.id="ctacont"+idDetalle;
     SelectCuentaContable.name="ctacont"+idDetalle;
-    SelectCuentaContable.innerHTML = CuentaContable;
+    SelectCuentaContable.innerHTML = Cuentacontable;
     DivCuentaContable.appendChild(SelectCuentaContable);
     DivTabla.appendChild(DivCuentaContable);
     $(".estiloSelectCtaCont"+idDetalle).select2();
@@ -96,7 +102,7 @@ const CrearTablaVoucher = (CuentaContable,CentroCostos) => {
     SelectCC.className = "form-control estiloSelectCC"+idDetalle;
     SelectCC.id="centrocosto"+idDetalle;
     SelectCC.name="centrocosto"+idDetalle;
-    SelectCC.innerHTML = CentroCostos;
+    SelectCC.innerHTML = LstCentroCosto;
     DivCentroCosto.appendChild(SelectCC);
     DivTabla.appendChild(DivCentroCosto);
     $(".estiloSelectCC"+idDetalle).select2();
