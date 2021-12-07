@@ -109,6 +109,9 @@ namespace TryTestWeb.Controllers
         public ActionResult testkim() {
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            ClientesContablesModel clienteSeleccionado = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            
             //se crea la base de datos
             List<UsuarioModel> usuarios = db.DBUsuarios.ToList();
             //se crea la consulta y luego se pasa a la vista
@@ -1340,6 +1343,7 @@ namespace TryTestWeb.Controllers
             string UserID = User.Identity.GetUserId();
             FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
             QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
             ViewBag.Id = IDVoucher;
 
@@ -1368,6 +1372,7 @@ namespace TryTestWeb.Controllers
                 {
                     CuentaContableID = y.ObjCuentaContable.CuentaContableModelID,
                     CentroDeCostoID = y.CentroCostoID,
+                    GlosaDetalle = y.GlosaDetalle,
                     MontoDebe = y.MontoDebe,
                     MontoHaber = y.MontoHaber,
                     AuxiliarDetalle = y.Auxiliar != null ? y.Auxiliar.ListaDetalleAuxiliares.Select(z => new AuxiliaresDetalleDto
