@@ -179,32 +179,28 @@ const SumaSueldoLiquidoRemu = () => {
     CuadrarValorAuxRemu(SumaTotalSLiquido);
 }
 
-const MostrarDatos=(datos)=>{
+const MostrarDatos=async(datos)=>{
     console.log(datos);
     let FechaContabilizacion = moment.utc(datos.FechaContabilizacion).format('DD-MM-YYYY');
-    let MontoDebe = document.getElementsByName("debe");
-    let MontoHaber = document.getElementsByName("haber");
     document.getElementById("glosa").value = datos.Glosa;
     document.getElementById("numVoucher").value=datos.NumVoucher;
     document.getElementById("fecha").value=FechaContabilizacion;
     document.getElementById("tipo").value=datos.Tipo;
     document.getElementById("TipoOrigen").value = datos.TipoOrigenVoucher;
-    for (let a = 1; a <= datos.DetalleVoucher.length; a++) {
-        // CrearTablaVoucher(Cuentatupoto,Centrowea);
-        // console.log(Cuentatupoto);
-        // console.log(Centrowea);
-        // LstCuentasContables();
-    //     MontoDebe.forEach(function(AsignaMontoDebe){
-    //     AsignaMontoDebe.value = datos.DetalleVoucher[b].MontoDebe;
-    //     b = b + 1;
-    // })
-    // var c = 0;
-    // MontoHaber.forEach(function(AsignaMontoHaber){
-    //     AsignaMontoHaber.value = datos.DetalleVoucher[c].MontoHaber;
-    //     c = c + 1;
-    // })  
-    }
-    
+
+    datos.DetalleVoucher.map(function(num){
+        CrearTablaVoucher(num)
+    })
     SumaTotalesVoucher();
+    await SeleccionarCtaContable(datos.DetalleVoucher);
 }
 
+const SeleccionarCtaContable=(data)=>{
+debugger;
+var id=1;
+    data.map(function(pepe){
+        document.getElementById("ctacont"+id).value=pepe.CuentaContableID;
+        console.log(pepe.CuentaContableID);
+        id=id+1;
+        });
+}

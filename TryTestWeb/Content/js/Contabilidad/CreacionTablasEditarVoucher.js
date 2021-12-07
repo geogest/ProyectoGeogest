@@ -1,30 +1,21 @@
 ﻿"use strict";
-document.addEventListener("DOMContentLoaded", function () {
-    InfoVoucher();
-    LstCuentasContables();
-    LstCentroCosto();
-    CrearTablaVoucher();
-});
-const LstCuentasContables = async () => {
-
-    const urlLstCtasCont = await fetch('getLstCuentasContables/Contabilidad');
-    const resCtaCont = await urlLstCtasCont.json();
-    console.log(resCtaCont.result);
-    return resCtaCont.result;
-    // fetch(url)
-    // .then(response => response.json())
-    // .then(data => Cuentatupoto=data.result)
-    // .catch(error => console.log(error));
+var Cuentacontable = "";
+var CentroDeCostos = "";
+const LstCuentasContables = async() => {
+    return (await fetch('getLstCuentasContables/Contabilidad')).json();
 }
 const LstCentroCosto = async () => {
-    const urlLstCC = await fetch('getLstCentroCosto/Contabilidad');
-    const resCC = await urlLstCC.json();
-    return resCC;
-    // fetch(urlLstCC)
-    // .then(response => response.json())
-    // .then(data => Centrowea=data.result)
-    // .catch(error => console.log(error));
+    return (await fetch('getLstCentroCosto/Contabilidad')).json();
 }
+document.addEventListener("DOMContentLoaded", async () =>{
+    try{
+        Cuentacontable = await LstCuentasContables();
+        CentroDeCostos = await LstCentroCosto();
+        await InfoVoucher();
+    } catch(e){
+        console.log(e);
+    }
+});
 var LstTipoDTET;
 const LstTipoDTE = () => {
 
@@ -35,15 +26,10 @@ const LstTipoDTE = () => {
     .catch(error => console.log(error));
 }
 
-
 var idDetalle = 0;
-const CrearTablaVoucher = async () => {
-    let Cuentacontable = await LstCuentasContables();
-    console.lo(Cuentacontable);
-    var glosa = document.getElementById("glosa").value;
-    if (glosa == null) {
-        glosa = "";
-    }
+const CrearTablaVoucher = async (Finalminchi) => {
+
+    var glosa = Finalminchi.GlosaDetalle;
 
     idDetalle = idDetalle + 1;
 
@@ -70,12 +56,12 @@ const CrearTablaVoucher = async () => {
     let DivCuentaContable = document.createElement("div");
     DivCuentaContable.className = "form-group col-lg-2";
     let SelectCuentaContable = document.createElement("select");
-    SelectCuentaContable.className = "form-control estiloSelectCtaCont"+idDetalle;
+    SelectCuentaContable.className = "form-control";
     SelectCuentaContable.onchange = function () { ActivaBtnAux(DivTabla.id) };
     SelectCuentaContable.required = true;
     SelectCuentaContable.id="ctacont"+idDetalle;
     SelectCuentaContable.name="ctacont"+idDetalle;
-    SelectCuentaContable.innerHTML = Cuentacontable;
+    SelectCuentaContable.innerHTML = Cuentacontable.result;
     DivCuentaContable.appendChild(SelectCuentaContable);
     DivTabla.appendChild(DivCuentaContable);
     $(".estiloSelectCtaCont"+idDetalle).select2();
@@ -99,10 +85,10 @@ const CrearTablaVoucher = async () => {
     let DivCentroCosto = document.createElement("div");
     DivCentroCosto.className = "form-group col-lg-2";
     let SelectCC = document.createElement("select");
-    SelectCC.className = "form-control estiloSelectCC"+idDetalle;
+    SelectCC.className = "form-control";
     SelectCC.id="centrocosto"+idDetalle;
     SelectCC.name="centrocosto"+idDetalle;
-    SelectCC.innerHTML = LstCentroCosto;
+    SelectCC.innerHTML = CentroDeCostos.result;
     DivCentroCosto.appendChild(SelectCC);
     DivTabla.appendChild(DivCentroCosto);
     $(".estiloSelectCC"+idDetalle).select2();
@@ -116,7 +102,7 @@ const CrearTablaVoucher = async () => {
     InputDebe.id = "debe";
     InputDebe.name = "debe";
     InputDebe.min = 0;
-    InputDebe.value = 0;
+    InputDebe.value = Finalminchi.MontoDebe;
     InputDebe.onchange = SumaTotalesVoucher;
     DivMontoDebe.appendChild(InputDebe);
     DivTabla.appendChild(DivMontoDebe);
@@ -130,7 +116,7 @@ const CrearTablaVoucher = async () => {
     InputHaber.id = "haber";
     InputHaber.name = "haber";
     InputHaber.min = 0;
-    InputHaber.value = 0;
+    InputHaber.value = Finalminchi.MontoHaber;
     InputHaber.onchange = SumaTotalesVoucher;
     DivMontoHaber.appendChild(InputHaber);
     DivTabla.appendChild(DivMontoHaber);
@@ -159,7 +145,7 @@ function EliminarUltimaFila() {
     
 }
 document.getElementById("Btn_AgregarVoucher").addEventListener('click', function () {
-    LstCuentasContables();
+    CrearTablaVoucher();
 });
 document.getElementById("duplica").addEventListener('click', function () {
     DuplicaGlosa();
@@ -679,4 +665,3 @@ const ObtenerRUTPresSeleccionado=()=> {
 
     
 }
-
