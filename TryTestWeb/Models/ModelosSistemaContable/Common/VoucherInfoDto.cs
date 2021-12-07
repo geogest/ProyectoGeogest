@@ -21,6 +21,7 @@ namespace TryTestWeb.Models.ModelosSistemaContable.Common
     {
         public int CuentaContableID { get; set; }
         public int CentroDeCostoID { get; set; }
+        public string GlosaDetalle { get; set; }
         public decimal MontoDebe { get; set; }
         public decimal MontoHaber { get; set; }
         public List<AuxiliaresDetalleDto> AuxiliarDetalle { get; set; }
