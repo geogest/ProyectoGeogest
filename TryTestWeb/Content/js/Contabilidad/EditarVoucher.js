@@ -1,15 +1,15 @@
 ﻿"use strict";
 
-function DuplicaGlosa() {
+const DuplicaGlosa=()=> {
     var glosa = document.getElementById("glosa").value;
     $("input[name='glosaDetalle']").each(function () {
         $("input[name='glosaDetalle']").val(glosa);
     });
 }
 
-$(document).ready(function () {
-    $(".estiloSelect").select2();
-});
+// $(document).ready(function () {
+//     $(".estiloSelect").select2();
+// });
 
 
 function SumaTotalesVoucher() {
@@ -49,7 +49,6 @@ function SumaTotalesVoucher() {
 
     }
 }
-
 const CalculoAuxiliarProvDeudor = (id) => {
     let DivPadreAuxProv = document.getElementById(id);
     let DivHijos = DivPadreAuxProv.childNodes;
@@ -74,7 +73,6 @@ const CalculoAuxiliarProvDeudor = (id) => {
     CuadrarValorProvDeudor(SumaDeTotales);
 
 }
-
 const CalculoAuxMontoExento = (id) => {
     let DivPadreAuxMontoExento = document.getElementById(id);
     let DivHijos = DivPadreAuxMontoExento.childNodes;
@@ -98,7 +96,6 @@ const CalculoAuxMontoExento = (id) => {
 
     CuadrarValorProvDeudor(SumaDeTotales);
 }
-
 const CuadrarValorProvDeudor = (valor) => {
     let ValorTotal = document.getElementById("AUXvalorProvDeudor").value;
 
@@ -114,7 +111,6 @@ const CuadrarValorProvDeudor = (valor) => {
         document.getElementById("Aviso").style.display = "";
     }
 }
-
 const CalculoAuxRetencion = (id) => {
     let DivPadreAuxRetencion = document.getElementById(id);
     let DivHijo = DivPadreAuxRetencion.childNodes;
@@ -154,7 +150,6 @@ const CalculoAuxRetencion = (id) => {
 
     CuadrarValorAuxRetencion(SumaTotalAuxRetencion);
 }
-
 const CuadrarValorAuxRetencion = (valor) => {
     let ValorTotal = document.getElementById("AuxValorHonor").value;
     if (ValorTotal == valor) {
@@ -169,7 +164,6 @@ const CuadrarValorAuxRetencion = (valor) => {
         document.getElementById("AvisoHonor").style.display = "";
     }
 }
-
 const SumaSueldoLiquidoRemu = () => {
     let LstTotalSLiquido = document.getElementsByName("AuxTotalRemu");
     let SumaTotalSLiquido = 0;
@@ -179,7 +173,8 @@ const SumaSueldoLiquidoRemu = () => {
     CuadrarValorAuxRemu(SumaTotalSLiquido);
 }
 
-const MostrarDatos=async(datos)=>{
+
+const MostrarDatosVoucher=(datos)=>{
     console.log(datos);
     let FechaContabilizacion = moment.utc(datos.FechaContabilizacion).format('DD-MM-YYYY');
     document.getElementById("glosa").value = datos.Glosa;
@@ -188,19 +183,138 @@ const MostrarDatos=async(datos)=>{
     document.getElementById("tipo").value=datos.Tipo;
     document.getElementById("TipoOrigen").value = datos.TipoOrigenVoucher;
 
-    datos.DetalleVoucher.map(function(num){
-        CrearTablaVoucher(num)
+    datos.DetalleVoucher.map(function(dato){
+        RellenarTablaVoucher(dato);
     })
     SumaTotalesVoucher();
-    await SeleccionarCtaContable(datos.DetalleVoucher);
+    SeleccionarCtaContable(datos.DetalleVoucher);
+}
+let q = 0;
+const MostrarDatosProvDeudor=(data)=>{
+    debugger;
+    console.log(data);
+    let FechaContProvDeudor = moment.utc(data.FechaContabilizacion).format('DD-MM-YYYY');
+    document.getElementById("FechaPrestador").value = FechaContProvDeudor;
+    document.getElementById("TipoPrestadorProvDeudor").value = data.TipoReceptor;
+    document.getElementById("TipoDTE"+q).value = data.TipoDTE;
+    AuxPrestadorSeleccionado(data.RazonSocialID,data.Rut);
+    q=q+1;
+}
+const MostrarDatosHonor=(data)=>{
+    // debugger;
+    console.log(data);
+    let FechaContHonor = moment.utc(data.FechaContabilizacion).format('DD-MM-YYYY');
+    document.getElementById("FechaPrestadorHonor").value = FechaContHonor;
+    document.getElementById("TipoPrestadorHonor").value = data.TipoReceptor;
+    AuxPrestadorSeleccionado(data.RazonSocialID,data.Rut);
+}
+const SeleccionarCtaContable=(data)=>{
+    // debugger;
+    let id=0;
+    data.map(function(select){
+        document.getElementById("ctacont"+id).value=select.CuentaContableID;
+        ActivaBtnAux("detalle"+id,select);
+        if(select.CentroDeCostoID == -1){
+            document.getElementById("centrocosto"+id).value="0";
+        }else{
+            document.getElementById("centrocosto"+id).value=select.CentroDeCostoID;
+            console.log(select);
+        }
+        id=id+1;
+    });    
 }
 
-const SeleccionarCtaContable=(data)=>{
-debugger;
-var id=1;
-    data.map(function(pepe){
-        document.getElementById("ctacont"+id).value=pepe.CuentaContableID;
-        console.log(pepe.CuentaContableID);
-        id=id+1;
-        });
+
+const ActivaBtnAuxNuevo = (id) => {
+    debugger;
+    let DivPadreBtn = document.getElementById(id);
+    let DivHijosBtn = DivPadreBtn.childNodes;
+
+    let SelectCtaContable = DivHijosBtn[1].firstChild;
+    let OptionCtaContable = SelectCtaContable.selectedOptions[0];
+    let BtnAux = DivHijosBtn[0].firstChild;
+    if (OptionCtaContable.dataset.auxiliar == 1 || OptionCtaContable.dataset.auxiliar == 2) {
+        BtnAux.disabled = false;
+    } else {
+        BtnAux.disabled = true;
+    }
+
+}
+const ClickAuxNuevo = (id) => {
+    let DivPadreBtn = document.getElementById(id);
+    let DivHijosBtn = DivPadreBtn.childNodes;
+    let SelectCuentaContable = DivHijosBtn[1].firstChild;
+    let OptionSelected = SelectCuentaContable.selectedOptions[0];
+
+   
+    if (OptionSelected.dataset.tipoauxiliar == "ProveedorDeudor") {
+        if (IdDivAuxProvDeudor == 0) {
+            CrearTablaAuxProvDeudor();
+        }
+        $('#ModalAuxiliarProvDeudor').modal('show');
+        EnviarDatosAuxProvDeudor(OptionSelected.textContent,id);
+    }
+    if (OptionSelected.dataset.tipoauxiliar == "Remuneracion") {
+        if (IdDivAuxRemu == 0) {
+            CrearTablaAuxRemu();
+        }
+        $('#ModalAuxiliarRemu').modal('show');
+        EnviarDatosRemuneracion(OptionSelected.textContent,id);
+    }
+    if (OptionSelected.dataset.tipoauxiliar == "Honorarios") {
+        if (IdAuxHonorarios == 0) {
+            CrearTablaHonorariosAux();
+        }
+        $('#ModalAuxiliarHonor').modal('show');
+        EnviarDatosHonorAux(OptionSelected.textContent,id);
+    }
+}
+
+
+const ActivaBtnAux = (id,AuxDetalle) => {
+    debugger;
+    let DivPadreBtn = document.getElementById(id);
+    let DivHijosBtn = DivPadreBtn.childNodes;
+    let BtnAux = DivHijosBtn[0].firstChild;
+
+    if (AuxDetalle.AuxiliarDetalle==null) {
+        BtnAux.disabled = true;
+    } else {
+        BtnAux.disabled = false;
+    }
+}
+const ClickAux = (id,AuxDetalle) => {
+    console.log(AuxDetalle);
+    debugger;
+    let DivPadreBtn = document.getElementById(id);
+    let DivHijosBtn = DivPadreBtn.childNodes;
+    let SelectCuentaContable = DivHijosBtn[1].firstChild;
+    let OptionSelected = SelectCuentaContable.selectedOptions[0];
+
+   
+    if (OptionSelected.dataset.tipoauxiliar == "ProveedorDeudor") {
+        if (IdDivAuxProvDeudor == 0) {
+            RellenarTablaAuxProvDeudor(AuxDetalle);
+        }
+        $('#ModalAuxiliarProvDeudor').modal('show');
+        EnviarDatosAuxProvDeudor(OptionSelected.textContent,id);
+    }
+    if (OptionSelected.dataset.tipoauxiliar == "Remuneracion") {
+        if (IdDivAuxRemu == 0) {
+            RellenarTablaAuxRemu(AuxDetalle);
+        }
+        $('#ModalAuxiliarRemu').modal('show');
+        EnviarDatosRemuneracion(OptionSelected.textContent,id);
+    }
+    if (OptionSelected.dataset.tipoauxiliar == "Honorarios") {
+        if (IdAuxHonorarios == 0) {
+            RellenarTablaHonorariosAux(AuxDetalle);
+        }
+        else{
+            document.getElementById("AuxFolio").value=AuxDetalle.Folio;
+            document.getElementById("RazonPrestadorHonor").value=AuxDetalle.RazonSocialID;
+        }
+        $('#ModalAuxiliarHonor').modal('show');
+        EnviarDatosHonorAux(OptionSelected.textContent,id);
+    }
 }

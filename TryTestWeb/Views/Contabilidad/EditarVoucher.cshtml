@@ -1,6 +1,4 @@
-﻿
-<input type="hidden" id="VoucherAEditar" value="@ViewBag.Id">
-
+﻿<input type="hidden" id="VoucherAEditar" value="@ViewBag.Id">
 <div class="row">
     <div class="col-sm-12">
         <div class="page-header-2">
@@ -60,7 +58,7 @@
             </div>
 
             <div class="col-lg-1 col-md-1 col-sm-1 form-group mtop">
-                <a class="btn btn-default" id="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa"><i class="fa fa-copy"></i></a>
+                <a class="btn btn-default" id="duplica" data-toggle="tooltip" data-placement="top" title="Duplicar Glosa" onclick="DuplicaGlosa()"><i class="fa fa-copy"></i></a>
             </div>
         </div>
 
@@ -129,140 +127,142 @@
         </div>
         <div class="row">
             <div class="col-lg-1 col-lg-offset-11">
-                <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress" disabled>Guardar Voucher</button>
+                <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress" disabled>Guardar Cambios</button>
             </div>
         </div>
 
-        @*Principio de modal para Proveedor Deudor Auxiliar*@
+    @*Principio de modal para Proveedor Deudor Auxiliar*@
+
     <div class="modal fade" role="dialog" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarProvDeudor">
-            <div class="modal-dialog tamanoModal" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title" id="myLargeModalLabel">Ingreso de Auxiliares</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="form-group col-lg-12 col-lg-offset-2">
-                                    <div class="col-lg-2">
-                                        <label class="control-label">Cuenta Contable</label>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <input class="form-control" type="text" id="AuxCuentaProvDeudor" name="AuxCuentaProvDeudor" disabled />
+        <div class="modal-dialog tamanoModal" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title" id="myLargeModalLabel">Ingreso de Auxiliares</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Cuenta Contable</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input class="form-control" type="text" id="AuxCuentaProvDeudor" name="AuxCuentaProvDeudor" disabled />
 
-                                    </div>
                                 </div>
-                                <div class="form-group col-lg-12 col-lg-offset-2">
-                                    <div class="col-lg-2">
-                                        <label class="control-label">Numero Línea</label>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <input type="number" id="AUXitemProvDeudor" name="AUXitemProvDeudor" class="form-control" required disabled />
-                                    </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Numero Línea</label>
                                 </div>
-                                <div class="form-group col-lg-12 col-lg-offset-2">
-                                    <div class="col-lg-2">
-                                        <label class="control-label">Valor Línea</label>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <input type="number" id="AUXvalorProvDeudor" name="AUXvalorProvDeudor" class="form-control" value="0" required disabled />
-                                    </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="AUXitemProvDeudor" name="AUXitemProvDeudor" class="form-control" required disabled />
                                 </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-lg-offset-2">
+                                <div class="col-lg-2">
+                                    <label class="control-label">Valor Línea</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="number" id="AUXvalorProvDeudor" name="AUXvalorProvDeudor" class="form-control" value="0" required disabled />
+                                </div>
+                            </div>
 
-                                <div id="ConjuntoDetallesAuxiliares">
-                                    <div class="row">
-                                        <div class="col-lg-3 col-md-3">
-                                            <label class="control-label">Fecha</label>
-                                            <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" required />
-                                        </div>
-                                        <div class="col-lg-3 col-md-3">
-                                            <label class="control-label">Tipo</label>
-                                            <select class="form-control estiloSelect" id="TipoPrestadorProvDeudor" name="TipoPrestadorProvDeudor" onchange="AuxPrestadorSeleccionado()" required>
-                                                <option value="">Selecciona</option>
-                                                <option value="CL">Cliente</option>
-                                                <option value="PR">Proveedor</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-3 col-md-3">
-                                            <label class="control-label">Razon Social</label>
-                                            <select class="form-control estiloSelect" id="RazonPrestadorProvDeudor" name="RazonPrestadorProvDeudor" onchange="ObtenerRUTPresSeleccionado()" required>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-3 col-md-3">
-                                            <label class="control-label">Rut</label>
-                                            <input class="form-control" id="RutPrestadorProvDeudor" name="RutPrestadorProvDeudor" type="text" value="" required disabled />
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-3 col-md-4 text-center mtop">
-                                            <label class="control-label">¿Es una Boleta?</label>
-                                            <input type="checkbox" name="BoletaVenta" id="BoletaVenta" onclick="EsUnaBoleta()" class="form-control" />
-                                        </div>
-                                        <div class="col-lg-5 col-md-4 text-center mtop">
-                                            <div id="CajaContaCompra">
-                                                <label class="control-label">¿Se Contabiliza en el libro de compras?</label>
-                                                <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 text-center mtop">
-                                            <div id="CajaContaVenta">
-                                                <label class="control-label">¿Se Contabiliza en el libro de ventas?</label>
-                                                <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" value="Venta" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mtop">
-                                    <div class="col-lg-2 col-lg-offset-10 mtop">
-                                        <a id="Btn_AgregaFilaProvDeudor" onclick="AgregaFilaProvDeudor()" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="container">
-                                    <div class="row" id="titulos">
-                                        <div class="form-group col-lg-12">
-                                            <div class="col-lg-1 FolioDesdeL" style="display: none;">
-                                                <label>Folio Desde</label>
-                                            </div>
-                                            <div class="col-lg-1">
-                                                <label id="FolioHastaL">Folio</label>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label>Tipo DTE</label>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label>Monto Neto</label>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label>Monto Exento</label>
-                                            </div>
-                                            <div class="col-lg-2 MontoIL">
-                                                <label>Monto IVA</label>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label>Monto Total</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" id="TablaProvDeudorAux"></div>
-                                </div>
-
+                            <div id="ConjuntoDetallesAuxiliares">
                                 <div class="row">
-                                    <div class="col-lg-12" id="Aviso"></div>
-                                    <div class="col-lg-2 col-lg-offset-10 mtop">
-                                        <button class="btn btn-success redondo btnPress" id="BtnGuardarAux" disabled>Guardar Auxiliar</button>
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Fecha</label>
+                                        <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" required />
                                     </div>
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Tipo</label>
+                                        <select class="form-control estiloSelect" id="TipoPrestadorProvDeudor" name="TipoPrestadorProvDeudor" onchange="AuxPrestadorSeleccionado()" required>
+                                            <option value="">Selecciona</option>
+                                            <option value="CL">Cliente</option>
+                                            <option value="PR">Proveedor</option>
+                                            <option value="P">Persona</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Razon Social</label>
+                                        <select class="form-control estiloSelect" id="RazonPrestadorProvDeudor" name="RazonPrestadorProvDeudor" onchange="ObtenerRUTPresSeleccionado()" required>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="control-label">Rut</label>
+                                        <input class="form-control" id="RutPrestadorProvDeudor" name="RutPrestadorProvDeudor" type="text" value="" required disabled />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 text-center mtop">
+                                        <label class="control-label">¿Es una Boleta?</label>
+                                        <input type="checkbox" name="BoletaVenta" id="BoletaVenta" onclick="EsUnaBoleta()" class="form-control" />
+                                    </div>
+                                    <div class="col-lg-5 col-md-4 text-center mtop">
+                                        <div id="CajaContaCompra">
+                                            <label class="control-label">¿Se Contabiliza en el libro de compras?</label>
+                                            <input type="checkbox" name="ContaLibroCompra" id="ContaLibroCompra" class="form-control CheckClass" value="Compra" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 text-center mtop">
+                                        <div id="CajaContaVenta">
+                                            <label class="control-label">¿Se Contabiliza en el libro de ventas?</label>
+                                            <input type="checkbox" name="ContaLibroVenta" id="ContaLibroVenta" class="form-control CheckClass" value="Venta" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mtop">
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <a id="Btn_AgregaFilaProvDeudor" onclick="AgregaFilaProvDeudor()" value="Agrega Fila" class="btn btn-icon waves-effect waves-light btn-success pull-right"><i class="ion-android-add"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <div class="row" id="titulos">
+                                    <div class="form-group col-lg-12">
+                                        <div class="col-lg-1 FolioDesdeL" style="display: none;">
+                                            <label>Folio Desde</label>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <label id="FolioHastaL">Folio</label>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>Tipo DTE</label>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>Monto Neto</label>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>Monto Exento</label>
+                                        </div>
+                                        <div class="col-lg-2 MontoIL">
+                                            <label>Monto IVA</label>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>Monto Total</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="TablaProvDeudorAux"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12" id="Aviso"></div>
+                                <div class="col-lg-2 col-lg-offset-10 mtop">
+                                    <button class="btn btn-success redondo btnPress" id="BtnGuardarAux" disabled>Guardar Auxiliar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
+    </div>
 
     @*segundo modal para Remu auxiliar*@
 
@@ -361,7 +361,7 @@
         </div> 
 
     @*tercer modal para Honorarios auxiliar*@
-
+    
     <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarHonor">
                 <div class="modal-dialog modal-xlg" role="document">
                     <div class="modal-content">
@@ -402,18 +402,18 @@
                                     <div id="ConjuntoDetallesAuxiliares">
                                         <div class="col-lg-3 col-md-3">
                                             <label class="control-label">Fecha</label>
-                                            <input class="form-control" id="FechaPrestador" name="FechaPrestador" type="text" value="" required />
+                                            <input class="form-control" id="FechaPrestadorHonor" name="FechaPrestadorHonor" type="text" value="" required />
                                         </div>
                                         <div class="col-lg-3 col-md-3">
                                             <label class="control-label">Tipo</label>
-                                            <select class="form-control estiloSelect" id="TipoPrestadorHonor" name="TipoPrestadorHonor" onchange="AuxPrestadorSeleccionado()" required>
+                                            <select class="form-control estiloSelect" id="TipoPrestadorHonor" name="TipoPrestadorHonor" value="" required>
                                                 <option value="">Selecciona</option>
                                                 <option value="H">Honorario</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-3 col-md-3">
                                             <label class="control-label">Razon Social</label>
-                                            <select class="form-control estiloSelect" id="RazonPrestadorHonor" name="RazonPrestadorHonor" onchange="ObtenerRUTPresSeleccionado()" required>
+                                            <select class="form-control estiloSelect" id="RazonPrestadorHonor" name="RazonPrestadorHonor" value="" required>
                                             </select>
                                         </div>
                                         <div class="col-lg-3 col-md-3">
@@ -464,15 +464,14 @@
                 </div>
             </div>
 
-        }
+ }
    
     <script>
 
         const InfoVoucher = async() => {
         let url = await fetch('@Url.Action("GetInfoVoucher","Contabilidad", new {IDVoucherAEditar = ViewBag.Id })');
         var resInfo = await url.json();
-        await MostrarDatos(resInfo.result);
-        
+        await MostrarDatosVoucher(resInfo.result);
         }
 
     </script>

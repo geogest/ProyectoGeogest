@@ -33,7 +33,7 @@ namespace TryTestWeb.Models.ModelosSistemaContable.Common
         public DateTime FechaContabilizacion { get; set; }
         public string TipoReceptor { get; set; }
         public string Rut { get; set; }
-        public string RazonSocial { get; set; }
+        public int RazonSocialID { get; set; }
         public long Folio { get; set; }
         public decimal MontoBruto { get; set; }
         public decimal MontoNeto { get; set; }
@@ -44,6 +44,7 @@ namespace TryTestWeb.Models.ModelosSistemaContable.Common
         public decimal ValorLiquido { get; set; }
         public decimal MontoTotalLinea { get; set; }
         public decimal MontoExento { get; set; }
+        public decimal MontoRetencion { get; set; }
         public TipoDte TipoDTE { get; set; }
     }
 

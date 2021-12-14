@@ -1378,10 +1378,10 @@ namespace TryTestWeb.Controllers
                     AuxiliarDetalle = y.Auxiliar != null ? y.Auxiliar.ListaDetalleAuxiliares.Select(z => new AuxiliaresDetalleDto
                     {
                         AuxiliarDetalleID = z.AuxiliaresDetalleModelID,
-                        FechaContabilizacion = z.FechaContabilizacion,
+                        FechaContabilizacion = z.Fecha,
                         TipoReceptor = z.Individuo2.tipoReceptor,
                         Rut = z.Individuo2.RUT,
-                        RazonSocial = z.Individuo2.RazonSocial,
+                        RazonSocialID = z.Individuo2.QuickReceptorModelID,
                         Folio = z.Folio,
                         MontoBruto = z.MontoBrutoLinea,
                         MontoNeto = z.MontoNetoLinea,
@@ -1392,6 +1392,7 @@ namespace TryTestWeb.Controllers
                         ValorLiquido = z.ValorLiquido,
                         MontoTotalLinea = z.MontoTotalLinea,
                         MontoExento = z.MontoExentoLinea,
+                        MontoRetencion = z.ValorRetencion,
                         TipoDTE = z.TipoDocumento
                     }).ToList() : null
                 }).ToList(),
