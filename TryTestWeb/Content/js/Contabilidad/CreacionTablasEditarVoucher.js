@@ -1,9 +1,10 @@
 ﻿"use strict";
-var Cuentacontable = "";
-var CentroDeCostos = "";
-var ListTipoDTE="";
-var IdTablaVoucher="";
-const LstCuentasContables = async () => {
+var GetCuentacontable = "";
+var GetLstCentroDeCostos = "";
+var GetLstTipoDTE="";
+var Voucher={};
+var AuxiliaresDetalle=[];
+const GetLstCuentasContables = async () => {
     return (await fetch('getLstCuentasContables/Contabilidad')).json();
 }
 const LstCentroCosto = async () => {
@@ -16,21 +17,22 @@ const GetRazonSocial = async (TipoPrestador) =>{
     return (await fetch('ObtenerPrestador/Contabilidad?TipoPrestador='+TipoPrestador)).json();
 }
 document.addEventListener("DOMContentLoaded", async () =>{
+    // debugger;
     try{
-        Cuentacontable = await LstCuentasContables();
-        CentroDeCostos = await LstCentroCosto();
-        ListTipoDTE = await LstTipoDTE();
-        await InfoVoucher();
+        GetCuentacontable = await GetLstCuentasContables();
+        GetLstCentroDeCostos = await LstCentroCosto();
+        GetLstTipoDTE = await LstTipoDTE();
+        Voucher = await InfoVoucher();
+        console.log(Voucher);
+        // GuardarVoucher();
     } catch(e){
         console.log(e);
     }
 });
 
-
-var idDetalle = 0;
+var idDetalle = 1;
 const CrearTablaVoucher = () => {
-    debugger;
-    var glosa = $("input[name=glosaDetalle]:last").val();
+    let glosa = $("input[name=glosaDetalle]:last").val();
     if (glosa == null) {
         glosa = "";
     }
@@ -38,7 +40,7 @@ const CrearTablaVoucher = () => {
     let DivPadreC = document.getElementById("ContenidoDetalle");
     let DivTablaVoucher = document.createElement("div");
     DivTablaVoucher.id = "detalle" + idDetalle;
-    DivTablaVoucher.className = "form-group col-lg-12";
+    DivTablaVoucher.className = "form-group col-lg-12 GuardarDatosVoucher";
     DivPadreC.appendChild(DivTablaVoucher);
 
     //creacion de btnAuxiliar
@@ -47,9 +49,9 @@ const CrearTablaVoucher = () => {
     let BtnAuxNuevo = document.createElement("button");
     BtnAuxNuevo.className = "btn btn-success btn-sm redondo btnPress";
     BtnAuxNuevo.type = "button";
-    BtnAuxNuevo.id = "BtnAux"+idDetalle;
+    BtnAuxNuevo.id = idDetalle;
     BtnAuxNuevo.textContent = "AUX";
-    BtnAuxNuevo.onclick = function () { ClickAuxNuevo(DivTablaVoucher.id) };
+    BtnAuxNuevo.onclick = function () { ClickAuxNuevo(DivTablaVoucher.id,BtnAuxNuevo.id) };
     BtnAuxNuevo.disabled = true;
     DivBtnAuxVoucher.appendChild(BtnAuxNuevo);
     DivTablaVoucher.appendChild(DivBtnAuxVoucher);
@@ -63,7 +65,7 @@ const CrearTablaVoucher = () => {
     SelectCuentaContable.required = true;
     SelectCuentaContable.id="ctacont"+idDetalle;
     SelectCuentaContable.name="ctacont";
-    SelectCuentaContable.innerHTML = Cuentacontable.result;
+    SelectCuentaContable.innerHTML = GetCuentacontable.result;
     DivCuentaContable.appendChild(SelectCuentaContable);
     DivTablaVoucher.appendChild(DivCuentaContable);
     $(".estiloSelectCtaCont"+idDetalle).select2();
@@ -90,7 +92,7 @@ const CrearTablaVoucher = () => {
     SelectCC.className = "form-control estiloSelectCC"+idDetalle;
     SelectCC.id="centrocosto"+idDetalle;
     SelectCC.name="centrocosto";
-    SelectCC.innerHTML = CentroDeCostos.result;
+    SelectCC.innerHTML = GetLstCentroDeCostos.result;
     DivCentroCosto.appendChild(SelectCC);
     DivTablaVoucher.appendChild(DivCentroCosto);
     $(".estiloSelectCC"+idDetalle).select2();
@@ -128,7 +130,7 @@ const CrearTablaVoucher = () => {
     DivBtnEliminarFila.className = "form-group col-lg-1";
     let BtnEliminarFilaVoucher = document.createElement("button");
     BtnEliminarFilaVoucher.className = "btn btn-danger btn-sm redondo btnPress";
-    BtnEliminarFilaVoucher.id = "borrarTabla"+idDetalle;
+    BtnEliminarFilaVoucher.name = "borrarTabla"+idDetalle;
     BtnEliminarFilaVoucher.type = "button";
     BtnEliminarFilaVoucher.textContent = "X";
     BtnEliminarFilaVoucher.onclick = BorrarFilaVoucher;
@@ -140,10 +142,10 @@ var IdDivAuxProvDeudor = 0;
 const CrearTablaAuxProvDeudor = () => {
 
     let ContenidoAux = document.getElementById("TablaProvDeudorAux");
-    let DivContenidoAux = document.createElement("div");
-    DivContenidoAux.id = "detalleAuxProvDeudor" + IdDivAuxProvDeudor;
-    DivContenidoAux.className = "form-group col-lg-12";
-    ContenidoAux.appendChild(DivContenidoAux);
+    let DivContenidoAux1 = document.createElement("div");
+    DivContenidoAux1.id = "detalleAuxProvDeudor" + IdDivAuxProvDeudor;
+    DivContenidoAux1.className = "form-group col-lg-12 GuardarDatosAuxProvDeudor";
+    ContenidoAux.appendChild(DivContenidoAux1);
 
     //content folio desde
     let DivFolioDesde = document.createElement("div");
@@ -153,24 +155,24 @@ const CrearTablaAuxProvDeudor = () => {
     let InputFolioDesde = document.createElement("input");
     InputFolioDesde.className="form-control";
     InputFolioDesde.id = "AuxInputFolioDesde"+IdDivAuxProvDeudor;
-    InputFolioDesde.name = "AuxInputFolioDesde";
+    InputFolioDesde.name = "FolioDesde";
     InputFolioDesde.min = 1;
     InputFolioDesde.required = true;
     InputFolioDesde.type = "number";
     DivFolioDesde.appendChild(InputFolioDesde);
-    DivContenidoAux.appendChild(DivFolioDesde);
+    DivContenidoAux1.appendChild(DivFolioDesde);
 
     //content folio/folioHasta
     let DivFolio = document.createElement("div");
     DivFolio.className = "form-group col-lg-1";
     let InputFolio = document.createElement("input");
     InputFolio.className = "form-control";
-    InputFolio.name = "FechaPrestador";
+    InputFolio.name = "FolioHasta";
     InputFolio.id="FechaPrestador"+IdDivAuxProvDeudor;
     InputFolio.type = "text";
     InputFolio.required = true;
     DivFolio.appendChild(InputFolio);
-    DivContenidoAux.appendChild(DivFolio);
+    DivContenidoAux1.appendChild(DivFolio);
 
     //content TipoDTE
     let DivTipoDTE = document.createElement("div");
@@ -179,10 +181,10 @@ const CrearTablaAuxProvDeudor = () => {
     selectTipoDte.className = "form-control estiloSelectTipoDTE"+IdDivAuxProvDeudor;
     selectTipoDte.required=true;
     selectTipoDte.id="TipoDTE"+IdDivAuxProvDeudor;
-    selectTipoDte.name="TipoDTE"+IdDivAuxProvDeudor;
-    selectTipoDte.innerHTML=ListTipoDTE.result;
+    selectTipoDte.name="TipoDTE";
+    selectTipoDte.innerHTML=GetLstTipoDTE.result;
     DivTipoDTE.appendChild(selectTipoDte);
-    DivContenidoAux.appendChild(DivTipoDTE);
+    DivContenidoAux1.appendChild(DivTipoDTE);
     $(".estiloSelectTipoDTE"+IdDivAuxProvDeudor).select2();
 
     //contentMonto neto
@@ -190,28 +192,28 @@ const CrearTablaAuxProvDeudor = () => {
     DivMontoNeto.className = "form-group col-lg-2";
     let InputMontoNeto = document.createElement("input");
     InputMontoNeto.className = "form-control";
-    InputMontoNeto.id = "ValorNeto";
+    InputMontoNeto.id = "ValorNeto"+IdDivAuxProvDeudor;
     InputMontoNeto.name = "ValorNeto";
     InputMontoNeto.type = "number";
     InputMontoNeto.min = 0;
     InputMontoNeto.value = 0;
     InputMontoNeto.disabled = true;
     DivMontoNeto.appendChild(InputMontoNeto);
-    DivContenidoAux.appendChild(DivMontoNeto);
+    DivContenidoAux1.appendChild(DivMontoNeto);
 
     //content monto exento
     let DivMontoExento = document.createElement("div");
     DivMontoExento.className = "form-group col-lg-2";
     let InputMontoExento = document.createElement("input");
     InputMontoExento.className = "form-control";
-    InputMontoExento.id = "MontoExento";
+    InputMontoExento.id = "MontoExento"+IdDivAuxProvDeudor;
     InputMontoExento.name = "MontoExento";
     InputMontoExento.type = "number";
     InputMontoExento.min = 0;
     InputMontoExento.value = 0;
-    InputMontoExento.onfocusout = function () {CalculoAuxMontoExento(DivContenidoAux.id)};
+    InputMontoExento.onfocusout = function () {CalculoAuxMontoExento(DivContenidoAux1.id)};
     DivMontoExento.appendChild(InputMontoExento);
-    DivContenidoAux.appendChild(DivMontoExento);
+    DivContenidoAux1.appendChild(DivMontoExento);
 
     //content monto iva
     let DivMontoIVA = document.createElement("div");
@@ -225,7 +227,7 @@ const CrearTablaAuxProvDeudor = () => {
     InputIVA.value = 0;
     InputIVA.className = "form-control";
     DivMontoIVA.appendChild(InputIVA);
-    DivContenidoAux.appendChild(DivMontoIVA);
+    DivContenidoAux1.appendChild(DivMontoIVA);
 
     //content monto total
     let DivMontoTotal = document.createElement("div");
@@ -233,14 +235,14 @@ const CrearTablaAuxProvDeudor = () => {
     let InputMontoTotal = document.createElement("input");
     InputMontoTotal.className = "form-control";
     InputMontoTotal.type = "number";
-    InputMontoTotal.id = "MontoTotal";
+    InputMontoTotal.id = "MontoTotal"+IdDivAuxProvDeudor;
     InputMontoTotal.name = "MontoTotal";
     InputMontoTotal.min = 0;
     InputMontoTotal.value = 0;
     InputMontoTotal.required=true;
-    InputMontoTotal.onfocusout = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
+    InputMontoTotal.onfocusout = function () { CalculoAuxiliarProvDeudor(DivContenidoAux1.id) };
     DivMontoTotal.appendChild(InputMontoTotal);
-    DivContenidoAux.appendChild(DivMontoTotal);
+    DivContenidoAux1.appendChild(DivMontoTotal);
 
     //content eliminar fila
     let divEliminarAuxiliar = document.createElement("div");
@@ -252,7 +254,7 @@ const CrearTablaAuxProvDeudor = () => {
     buttonFila.tabIndex = -1;
     buttonFila.textContent = "X";
     divEliminarAuxiliar.appendChild(buttonFila);
-    DivContenidoAux.appendChild(divEliminarAuxiliar);
+    DivContenidoAux1.appendChild(divEliminarAuxiliar);
     IdDivAuxProvDeudor = IdDivAuxProvDeudor + 1;
 }
 var IdDivAuxRemu = 0;
@@ -309,7 +311,7 @@ const CrearTablaHonorariosAux = () => {
     let GetDivHonorariosAux = document.getElementById("TablaHonorAux");
     let DivHonoAux = document.createElement("div");
     DivHonoAux.id = "detalleHono" + IdAuxHonorarios;
-    DivHonoAux.className = "col-lg-12";
+    DivHonoAux.className = "form-group col-lg-12 GuardarDatosAuxHonor";
     GetDivHonorariosAux.appendChild(DivHonoAux);
 
     //folio
@@ -435,14 +437,12 @@ document.getElementById("Btn_AgregaFilaHonorarios").addEventListener('click', fu
 
 
 function BorrarFilaVoucher() {
-    debugger;
+    let cont = document.getElementById('ContenidoDetalle');
     if (idDetalle > 1) {
-        jQuery('#detalle' + idDetalle).remove();
+        cont.removeChild(cont.lastChild);
         idDetalle--;
         SumaTotalesVoucher();
-        
     }
-    
 }
 function BorrarFilaAuxiliarProvDeudor() {
     
@@ -468,15 +468,14 @@ function BorrarFilaAuxHonor() {
 }
 
 
-const RellenarTablaVoucher = async (content) => {
-console.log(content);
-    var glosa = content.GlosaDetalle;
+const RellenarTablaVoucher = (content) => {
+    let glosa = content.GlosaDetalle;
     let DivPadre = document.getElementById("ContenidoDetalle");
     let DivTabla = document.createElement("div");
     DivTabla.id = "detalle" + idDetalle;
-    DivTabla.className = "form-group col-lg-12";
+    DivTabla.className = "form-group col-lg-12 GuardarDatosVoucher";
     DivPadre.appendChild(DivTabla);
-    IdTablaVoucher=DivTabla.id;
+    // IdTablaVoucher=DivTabla.id;
     
     //creacion de btnAuxiliar
     let DivBtnAux = document.createElement("div");
@@ -486,7 +485,7 @@ console.log(content);
     BtnAux.type = "button";
     BtnAux.id = idDetalle;
     BtnAux.textContent = "AUX";
-    BtnAux.onclick = function () { ClickAux(DivTabla.id,content.AuxiliarDetalle[0]) };
+    BtnAux.onclick = function () { ClickAux(DivTabla.id,content.AuxiliarDetalle[0],BtnAux.id) };
     BtnAux.disabled = true;
     DivBtnAux.appendChild(BtnAux);
     DivTabla.appendChild(DivBtnAux);
@@ -499,7 +498,7 @@ console.log(content);
     SelectCuentaContable.required = true;
     SelectCuentaContable.id="ctacont"+idDetalle;
     SelectCuentaContable.name="ctacont"+idDetalle;
-    SelectCuentaContable.innerHTML = Cuentacontable.result;
+    SelectCuentaContable.innerHTML = GetCuentacontable.result;
     DivCuentaContable.appendChild(SelectCuentaContable);
     DivTabla.appendChild(DivCuentaContable);
     $(".estiloSelectCtaCont"+idDetalle).select2();
@@ -526,7 +525,7 @@ console.log(content);
     SelectCC.className = "form-control";
     SelectCC.id="centrocosto"+idDetalle;
     SelectCC.name="centrocosto"+idDetalle;
-    SelectCC.innerHTML = CentroDeCostos.result;
+    SelectCC.innerHTML = GetLstCentroDeCostos.result;
     DivCentroCosto.appendChild(SelectCC);
     DivTabla.appendChild(DivCentroCosto);
     $(".estiloSelectCC"+idDetalle).select2();
@@ -564,7 +563,7 @@ console.log(content);
     DivBtnEliminar.className = "form-group col-lg-1";
     let BtnEliminar = document.createElement("button");
     BtnEliminar.className = "btn btn-danger btn-sm redondo btnPress";
-    BtnEliminar.id = "borrarTabla";
+    BtnEliminar.name = "borrarTabla"+idDetalle;
     BtnEliminar.type = "button";
     BtnEliminar.textContent = "X";
     BtnEliminar.onclick = BorrarFilaVoucher;
@@ -573,11 +572,10 @@ console.log(content);
     idDetalle = idDetalle + 1;
 }
 const RellenarTablaAuxProvDeudor = (data) => {
-    console.log(data[IdDivAuxProvDeudor]);
     let ContenidoAux = document.getElementById("TablaProvDeudorAux");
     let DivContenidoAux = document.createElement("div");
     DivContenidoAux.id = "detalleAuxProvDeudor" + IdDivAuxProvDeudor;
-    DivContenidoAux.className = "form-group col-lg-12";
+    DivContenidoAux.className = "form-group col-lg-12 GuardarDatosAuxProvDeudor";
     ContenidoAux.appendChild(DivContenidoAux);
 
     //content folio desde
@@ -604,7 +602,7 @@ const RellenarTablaAuxProvDeudor = (data) => {
     InputFolio.name = "FechaPrestador";
     InputFolio.id="FechaPrestador"+IdDivAuxProvDeudor;
     InputFolio.type = "text";
-    InputFolio.value = data[IdDivAuxProvDeudor].Folio;
+    InputFolio.value = data.Folio;
     InputFolio.required = true;
     DivFolio.appendChild(InputFolio);
     DivContenidoAux.appendChild(DivFolio);
@@ -617,7 +615,7 @@ const RellenarTablaAuxProvDeudor = (data) => {
     selectTipoDte.required=true;
     selectTipoDte.id="TipoDTE"+IdDivAuxProvDeudor;
     selectTipoDte.name="TipoDTE"+IdDivAuxProvDeudor;
-    selectTipoDte.innerHTML=ListTipoDTE.result;
+    selectTipoDte.innerHTML=GetLstTipoDTE.result;
     DivTipoDTE.appendChild(selectTipoDte);
     DivContenidoAux.appendChild(DivTipoDTE);
     $(".estiloSelectTipoDTE"+IdDivAuxProvDeudor).select2();
@@ -631,7 +629,7 @@ const RellenarTablaAuxProvDeudor = (data) => {
     InputMontoNeto.name = "ValorNeto";
     InputMontoNeto.type = "number";
     InputMontoNeto.min = 0;
-    InputMontoNeto.value = data[IdDivAuxProvDeudor].MontoNeto;
+    InputMontoNeto.value = data.MontoNeto;
     InputMontoNeto.disabled = true;
     DivMontoNeto.appendChild(InputMontoNeto);
     DivContenidoAux.appendChild(DivMontoNeto);
@@ -645,7 +643,7 @@ const RellenarTablaAuxProvDeudor = (data) => {
     InputMontoExento.name = "MontoExento";
     InputMontoExento.type = "number";
     InputMontoExento.min = 0;
-    InputMontoExento.value = data[IdDivAuxProvDeudor].MontoExento;
+    InputMontoExento.value = data.MontoExento;
     InputMontoExento.onfocusout = function () {CalculoAuxMontoExento(DivContenidoAux.id)};
     DivMontoExento.appendChild(InputMontoExento);
     DivContenidoAux.appendChild(DivMontoExento);
@@ -659,7 +657,7 @@ const RellenarTablaAuxProvDeudor = (data) => {
     InputIVA.type = "number";
     InputIVA.disabled = true;
     InputIVA.min = 0;
-    InputIVA.value = data[IdDivAuxProvDeudor].MontoIvaLinea;
+    InputIVA.value = data.MontoIvaLinea;
     InputIVA.className = "form-control";
     DivMontoIVA.appendChild(InputIVA);
     DivContenidoAux.appendChild(DivMontoIVA);
@@ -673,7 +671,7 @@ const RellenarTablaAuxProvDeudor = (data) => {
     InputMontoTotal.id = "MontoTotal";
     InputMontoTotal.name = "MontoTotal";
     InputMontoTotal.min = 0;
-    InputMontoTotal.value = data[IdDivAuxProvDeudor].MontoTotalLinea;
+    InputMontoTotal.value = data.MontoTotalLinea;
     InputMontoTotal.required=true;
     InputMontoTotal.onfocusout = function () { CalculoAuxiliarProvDeudor(DivContenidoAux.id) };
     DivMontoTotal.appendChild(InputMontoTotal);
@@ -691,7 +689,7 @@ const RellenarTablaAuxProvDeudor = (data) => {
     divEliminarAuxiliar.appendChild(buttonFila);
     DivContenidoAux.appendChild(divEliminarAuxiliar);
 
-    MostrarDatosProvDeudor(data[IdDivAuxProvDeudor]);
+    MostrarDatosProvDeudor(data);
 
     IdDivAuxProvDeudor = IdDivAuxProvDeudor + 1;
 }
@@ -742,14 +740,11 @@ const RellenarTablaAuxRemu = (AuxDetalle) => {
 
     IdDivAuxRemu = IdDivAuxRemu + 1;
 }
-
 const RellenarTablaHonorariosAux = (AuxDetalle) => {
-    debugger;
-    console.log(AuxDetalle);
     let GetDivHonorariosAux = document.getElementById("TablaHonorAux");
     let DivHonoAux = document.createElement("div");
     DivHonoAux.id = "detalleHono" + IdAuxHonorarios;
-    DivHonoAux.className = "col-lg-12";
+    DivHonoAux.className = "form-group col-lg-12 GuardarDatosAuxHonor";
     GetDivHonorariosAux.appendChild(DivHonoAux);
 
     //folio
@@ -825,6 +820,7 @@ const RellenarTablaHonorariosAux = (AuxDetalle) => {
     InputRetencion.type = "number";
     InputRetencion.className = "form-control";
     InputRetencion.name = "AUXValorRetencion";
+    InputRetencion.id="AUXValorRetencion";
     InputRetencion.value=AuxDetalle.MontoRetencion;
     InputRetencion.disabled = true;
     InputRetencion.required = true;
@@ -838,6 +834,7 @@ const RellenarTablaHonorariosAux = (AuxDetalle) => {
     InputValorLiq.type = "number";
     InputValorLiq.className = "form-control";
     InputValorLiq.name = "AUXValorLiquido";
+    InputValorLiq.id="AUXValorLiquido";
     InputValorLiq.value = AuxDetalle.ValorLiquido;
     InputValorLiq.disabled = true;
     InputValorLiq.readOnly = true;
@@ -861,14 +858,20 @@ const RellenarTablaHonorariosAux = (AuxDetalle) => {
 }
 
 
-const EnviarDatosAuxProvDeudor = (NombreCuentaContable, id) => {
+const EnviarDatosAuxProvDeudor = async(NombreCuentaContable,IdCtaContable, id, idLinea) => {
+    // debugger;
     let DivPadreBtn = document.getElementById(id);
     let DivHijosBtn = DivPadreBtn.childNodes;
 
     let MontoDebe = DivHijosBtn[4].firstChild;
     let MontoHaber = DivHijosBtn[5].firstChild;
-    document.getElementById("AuxCuentaProvDeudor").value = NombreCuentaContable;
-    document.getElementById("AUXitemProvDeudor").value = idDetalle;
+    let SelectCtaContableProv = document.getElementById("AuxCuentaProvDeudor");
+    let option1 = document.createElement("option")
+    option1.value = IdCtaContable;
+    option1.textContent=NombreCuentaContable;
+    SelectCtaContableProv.appendChild(option1);
+
+    document.getElementById("AUXitemProvDeudor").value = idLinea;
 
     
     if (MontoDebe.value != 0 && MontoDebe.value != "" && MontoDebe.value != null) {
@@ -879,14 +882,19 @@ const EnviarDatosAuxProvDeudor = (NombreCuentaContable, id) => {
         document.getElementById("AUXvalorProvDeudor").value = MontoHaber.value;
     }
 }
-const EnviarDatosHonorAux = (NombreCuentaContable, id) => {
-    debugger;
+const EnviarDatosHonorAux = async(NombreCuentaContable,idCtaContable, id,IdBoton) => {
+    // debugger;
     let DivPadreBtn = document.getElementById(id);
     let DivHijosBtn = DivPadreBtn.childNodes;
     let MontoDebe = DivHijosBtn[4].firstChild;
     let MontoHaber = DivHijosBtn[5].firstChild;
-    document.getElementById("AuxCuenta").value = NombreCuentaContable;
-    document.getElementById("AUXitem").value = idDetalle;
+
+    let SelectCtaContableHonor = document.getElementById("AuxCuenta");
+    let OptionSelected = document.createElement("option")
+    OptionSelected.value=idCtaContable;
+    OptionSelected.textContent=NombreCuentaContable;
+    SelectCtaContableHonor.appendChild(OptionSelected);
+    document.getElementById("AUXitem").value = IdBoton;
 
 
     if (MontoDebe.value != 0 && MontoDebe.value != "" && MontoDebe.value != null) {
@@ -897,7 +905,7 @@ const EnviarDatosHonorAux = (NombreCuentaContable, id) => {
         document.getElementById("AuxValorHonor").value = MontoHaber.value;
     }
 }
-const EnviarDatosRemuneracion = (NombreCuentaContable, id) => {
+const EnviarDatosRemuneracion = (NombreCuentaContable,IdCtaContable, id, idLinea) => {
     let DivPadreBtn = document.getElementById(id);
     let DivHijosBtn = DivPadreBtn.childNodes;
 
@@ -916,32 +924,34 @@ const EnviarDatosRemuneracion = (NombreCuentaContable, id) => {
     }
 }
 const AuxPrestadorSeleccionado = async(razonsocialID,rut)=> {
-    debugger;
-    var PrestadorSeleccionado="";
+    // debugger;
+    let PrestadorSeleccionado="";
     let PrestadorProvDeudor = document.getElementById("TipoPrestadorProvDeudor").selectedOptions[0].value;
     let PrestadorRemu = document.getElementById("TipoPrestadorRemu").selectedOptions[0].value;
     let PrestadorHonor = document.getElementById("TipoPrestadorHonor").selectedOptions[0].value;
 
     if(PrestadorProvDeudor!=""){
         PrestadorSeleccionado = PrestadorProvDeudor;
-        var res = await GetRazonSocial(PrestadorSeleccionado);
-        document.getElementById("RazonPrestadorProvDeudor").innerHTML = res.selectInput;
+        let GetResRazonSocial = await GetRazonSocial(PrestadorSeleccionado);
+        document.getElementById("RazonPrestadorProvDeudor").innerHTML = GetResRazonSocial.selectInput;
         document.getElementById("RazonPrestadorProvDeudor").value = razonsocialID;
         document.getElementById("RutPrestadorProvDeudor").value = rut;
+        // GuardarAuxProvDeudor(razonsocialID);
     }
     if(PrestadorRemu!=""){
         PrestadorSeleccionado = PrestadorRemu;
-        let res = await GetRazonSocial(PrestadorSeleccionado);
-        document.getElementById("RazonPrestadorRemu").innerHTML = res.selectInput;
+        let GetResRazonSocial = await GetRazonSocial(PrestadorSeleccionado);
+        document.getElementById("RazonPrestadorRemu").innerHTML = GetResRazonSocial.selectInput;
         document.getElementById("RazonPrestadorHonor").value = razonsocialID;
         document.getElementById("RutPrestadorHonor").value = rut;
     }
     if(PrestadorHonor!=""){
         PrestadorSeleccionado = PrestadorHonor;
-        var res = await GetRazonSocial(PrestadorSeleccionado);
-        document.getElementById("RazonPrestadorHonor").innerHTML = res.selectInput;
+        let GetResRazonSocial = await GetRazonSocial(PrestadorSeleccionado);
+        document.getElementById("RazonPrestadorHonor").innerHTML = GetResRazonSocial.selectInput;
         document.getElementById("RazonPrestadorHonor").value = razonsocialID;
         document.getElementById("RutPrestadorHonor").value = rut;
+        // GuardarAuxHonor(razonsocialID);
     }
 }
 const EsUnaBoleta=()=>{
