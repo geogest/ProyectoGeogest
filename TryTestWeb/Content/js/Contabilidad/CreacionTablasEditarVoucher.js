@@ -131,7 +131,7 @@ const CrearTablaVoucher = () => {
     BtnEliminarFilaVoucher.name = "borrarTabla"+idDetalle;
     BtnEliminarFilaVoucher.type = "button";
     BtnEliminarFilaVoucher.textContent = "X";
-    BtnEliminarFilaVoucher.onclick = function() {BorrarFilaVoucher(DivTablaVoucher.id,idDetalle)};
+    BtnEliminarFilaVoucher.onclick = function() {BorrarFilaVoucher(DivTablaVoucher.id,BtnAuxNuevo.id)};
     DivBtnEliminarFila.appendChild(BtnEliminarFilaVoucher);
     DivTablaVoucher.appendChild(DivBtnEliminarFila);
     $(".estiloSelectCtaCont"+idDetalle).select2();
@@ -433,12 +433,15 @@ document.getElementById("Btn_AgregaFilaHonorarios").addEventListener('click', fu
 });
 
 
-function BorrarFilaVoucher(IdRow) {
+function BorrarFilaVoucher(IdRow,IdBtn) {
     let DivPadreABorrar = document.getElementById('ContenidoDetalle');
     let FilaABorrar = document.getElementById(IdRow);
     if (idDetalle > 1) {
         DivPadreABorrar.removeChild(FilaABorrar);
         // VoucherCompleto.DetalleVoucher.splice(VoucherCompleto.DetalleVoucher.length-1,1);
+        AuxiliaresDetalle.splice(IdBtn-1,1);
+        ReordenarFila();
+        console.log(AuxiliaresDetalle);
         idDetalle--;
         SumaTotalesVoucher();
     }
@@ -563,7 +566,7 @@ const RellenarTablaVoucher = (content) => {
     BtnEliminar.name = "borrarTabla"+idDetalle;
     BtnEliminar.type = "button";
     BtnEliminar.textContent = "X";
-    BtnEliminar.onclick = function(){BorrarFilaVoucher(DivTabla.id,idDetalle)};
+    BtnEliminar.onclick = function(){BorrarFilaVoucher(DivTabla.id,BtnAux.id)};
     DivBtnEliminar.appendChild(BtnEliminar);
     DivTabla.appendChild(DivBtnEliminar);
 }
@@ -1029,3 +1032,17 @@ const EsUnaBoleta=()=>{
 
 }
 
+const ReordenarFila=()=>{
+    debugger;
+    let VouchersExistentes = document.getElementsByClassName("GuardarDatosVoucher");
+    for (let i = 0; i < VouchersExistentes.length; i++) {
+        const element = VouchersExistentes[i].firstChild.firstChild;
+        element.id = i+1;
+        VouchersExistentes[i].id="detalle"+(i+1);
+        if (AuxiliaresDetalle[i]!=null) {
+            AuxiliaresDetalle[i].NumeroLinea = i+1;
+        }
+    }
+    console.log(VouchersExistentes);
+    console.log(AuxiliaresDetalle);
+}

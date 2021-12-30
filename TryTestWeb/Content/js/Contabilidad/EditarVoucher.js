@@ -356,14 +356,13 @@ const TieneAuxiliares=(Voucher)=>{
     //si tiene auxiliar se agrega a la variable global Detalle Vouchers
     //que contiene el detalle de cada voucher 
     debugger;   
-    let id = 1;
     DetalleVouchers.push(Voucher);
     Voucher.flatMap(
         (x)=> {
             if(x.AuxiliarDetalle){
                 // AuxiliaresDetalle.push(x.AuxiliarDetalle);
                 let DetallesAuxAPushear = {
-                    NumeroLinea: id++,
+                    NumeroLinea: idDetalle,
                     AuxiliarDetalleID: x.AuxiliarDetalle[0].AuxiliarDetalleID,
                     FechaContabilizacion:x.AuxiliarDetalle[0].FechaContabilizacion,
                     Folio: x.AuxiliarDetalle[0].Folio,
@@ -384,7 +383,7 @@ const TieneAuxiliares=(Voucher)=>{
                 }
                 AuxiliaresDetalle.push(DetallesAuxAPushear);
             }else{
-                console.log("no tiene");
+                AuxiliaresDetalle.push(null);
             }
         });
         console.log(AuxiliaresDetalle);
