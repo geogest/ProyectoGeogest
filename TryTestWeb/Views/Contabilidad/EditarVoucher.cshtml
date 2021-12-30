@@ -133,7 +133,7 @@
 
     @*Principio de modal para Proveedor Deudor Auxiliar*@
 
-    <div class="modal fade" role="dialog" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarProvDeudor">
+    <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="myLargeModalLabel" id="ModalAuxiliarProvDeudor">
         <div class="modal-dialog tamanoModal" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -179,8 +179,8 @@
                                     </div>
                                     <div class="col-lg-3 col-md-3">
                                         <label class="control-label">Tipo</label>
-                                        <select class="form-control estiloSelect" id="TipoPrestadorProvDeudor" name="TipoPrestadorProvDeudor" onchange="AuxPrestadorSeleccionado()" required>
-                                            <option value="">Selecciona</option>
+                                        <select class="form-control estiloSelect" id="TipoPrestadorProvDeudor" name="TipoPrestadorProvDeudor" onchange="AuxSelectPrestadorSeleccionado()" required>
+                                            <option value="Selecciona">Selecciona</option>
                                             <option value="CL">Cliente</option>
                                             <option value="PR">Proveedor</option>
                                             <option value="P">Persona</option>
@@ -254,7 +254,7 @@
                             <div class="row">
                                 <div class="col-lg-12" id="Aviso"></div>
                                 <div class="col-lg-2 col-lg-offset-10 mtop">
-                                    <button class="btn btn-success redondo btnPress" type="button" id="BtnGuardarAuxProvDeudor">Guardar Auxiliar</button>
+                                    <button class="btn btn-success redondo btnPress" type="button" id="BtnGuardarAuxProvDeudor" onclick="GuardarAuxProvDeudor()" disabled>Guardar Auxiliar</button>
                                 </div>
                             </div>
                         </div>
@@ -310,14 +310,14 @@
                                     </div>
                                     <div class="col-lg-3 col-md-3">
                                         <label class="control-label">Tipo</label>
-                                        <select class="form-control estiloSelect" id="TipoPrestadorRemu" name="TipoPrestadorRemu" onchange="AuxPrestadorSeleccionado()" required>
+                                        <select class="form-control estiloSelect" id="TipoPrestadorRemu" name="TipoPrestadorRemu" required>
                                             <option value="">Selecciona</option>
                                             <option value="P">Persona</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-3 col-md-3">
                                         <label class="control-label">Razon Social</label>
-                                        <select class="form-control estiloSelect" id="RazonPrestadorRemu" name="RazonPrestadorRemu" onchange="ObtenerRUTPresSeleccionado()" required>
+                                        <select class="form-control estiloSelect" id="RazonPrestadorRemu" name="RazonPrestadorRemu" required>
                                         </select>
                                     </div>
                                     <div class="col-lg-3 col-md-3">
@@ -350,7 +350,7 @@
                                 <div class="row">
                                     <div class="col-lg-12" id="AvisoAuxRemu"></div>
                                     <div class="col-lg-2 col-lg-offset-10 mtop">
-                                        <button class="btn btn-success redondo btnPress" type="button" id="BtnGuardarAuxRemu" disabled>Guardar Auxiliar</button>
+                                        <button class="btn btn-success redondo btnPress" type="button" id="BtnGuardarAuxRemu" onclick="GuardarAuxProvDeudor()" disabled>Guardar Auxiliar</button>
                                     </div>
                                 </div>
                             </div>
@@ -406,14 +406,14 @@
                                         </div>
                                         <div class="col-lg-3 col-md-3">
                                             <label class="control-label">Tipo</label>
-                                            <select class="form-control estiloSelect" id="TipoPrestadorHonor" name="TipoPrestadorHonor" value="" required>
+                                            <select class="form-control estiloSelect" id="TipoPrestadorHonor" name="TipoPrestadorHonor" onchange="AuxPrestadorSeleccionado()" required>
                                                 <option value="">Selecciona</option>
                                                 <option value="H">Honorario</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-3 col-md-3">
                                             <label class="control-label">Razon Social</label>
-                                            <select class="form-control estiloSelect" id="RazonPrestadorHonor" name="RazonPrestadorHonor" value="" required>
+                                            <select class="form-control estiloSelect" id="RazonPrestadorHonor" name="RazonPrestadorHonor" onchange="ObtenerRUTPresSeleccionado()" required>
                                             </select>
                                         </div>
                                         <div class="col-lg-3 col-md-3">
@@ -454,7 +454,7 @@
                                     <div class="row">
                                         <div class="col-lg-12" id="AvisoHonor"></div>
                                         <div class="col-lg-2 col-lg-offset-10 mtop">
-                                            <button class="btn btn-success redondo btnPress" type="button" id="BtnGuardarHonor">Guardar Auxiliar</button>
+                                            <button class="btn btn-success redondo btnPress" type="button" id="BtnGuardarHonor" onclick="GuardarAuxHonor()" disabled>Guardar Auxiliar</button>
                                         </div>
                                     </div>
                                 </div>

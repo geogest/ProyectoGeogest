@@ -51,10 +51,10 @@ const CalculoAuxiliarProvDeudor = (id) => {
     let DivPadreAuxProv = document.getElementById(id);
     let DivHijos = DivPadreAuxProv.childNodes;
 
-    let MontoNeto = DivHijos[2].firstChild;
-    let MontoExento = DivHijos[3].firstChild;
-    let MontoIva = DivHijos[4].firstChild;
-    let MontoTotal = DivHijos[5].firstChild;
+    let MontoNeto = DivHijos[3].firstChild;
+    let MontoExento = DivHijos[4].firstChild;
+    let MontoIva = DivHijos[5].firstChild;
+    let MontoTotal = DivHijos[6].firstChild;
 
     if (MontoTotal.value != "" && MontoTotal.value != null) {
         MontoIva.value = Math.round((MontoTotal.value * 0.19) / 1.19);
@@ -62,10 +62,11 @@ const CalculoAuxiliarProvDeudor = (id) => {
         MontoExento.value = 0;
     }
 
-    const TodosTotales = document.getElementsByName("MontoTotal");
+    let TodosTotalesProv = document.getElementsByName("MontoTotal");
     let SumaDeTotales = 0;
-    TodosTotales.forEach(function (sumatotales) {
-        SumaDeTotales = SumaDeTotales + parseFloat(sumatotales);
+    
+    TodosTotalesProv.forEach(function (sumatotales) {
+        SumaDeTotales = SumaDeTotales + parseFloat(sumatotales.value);
     });
 
     CuadrarValorProvDeudor(SumaDeTotales);
@@ -75,10 +76,10 @@ const CalculoAuxMontoExento = (id) => {
     let DivPadreAuxMontoExento = document.getElementById(id);
     let DivHijos = DivPadreAuxMontoExento.childNodes;
 
-    let MontoNeto = DivHijos[2].firstChild;
-    let MontoExento = DivHijos[3].firstChild;
-    let MontoIva = DivHijos[4].firstChild;
-    let MontoTotal = DivHijos[5].firstChild;
+    let MontoNeto = DivHijos[3].firstChild;
+    let MontoExento = DivHijos[4].firstChild;
+    let MontoIva = DivHijos[5].firstChild;
+    let MontoTotal = DivHijos[6].firstChild;
 
     if (MontoExento.value != "" && MontoExento.value != null) {
         MontoTotal.value = MontoExento.value;
@@ -93,21 +94,6 @@ const CalculoAuxMontoExento = (id) => {
     });
 
     CuadrarValorProvDeudor(SumaDeTotales);
-}
-const CuadrarValorProvDeudor = (valor) => {
-    let ValorTotal = document.getElementById("AUXvalorProvDeudor").value;
-
-    if (ValorTotal == valor) {
-        document.getElementById("BtnGuardarAux").disabled = false;
-        document.getElementById("Aviso").style.display = "none";
-    } else {
-        document.getElementById("BtnGuardarAux").disabled = true;
-        document.getElementById("Aviso").textContent = "Montos NO cuadran con Total";
-        document.getElementById("Aviso").className = "alert alert-danger";
-        document.getElementById("Aviso").style.fontWeight = "700";
-        document.getElementById("Aviso").style.textAlign = "right";
-        document.getElementById("Aviso").style.display = "";
-    }
 }
 const CalculoAuxRetencion = (id) => {
     let DivPadreAuxRetencion = document.getElementById(id);
@@ -148,6 +134,22 @@ const CalculoAuxRetencion = (id) => {
 
     CuadrarValorAuxRetencion(SumaTotalAuxRetencion);
 }
+const CuadrarValorProvDeudor = (valor) => {
+    debugger;
+    let ValorTotal = document.getElementById("AUXvalorProvDeudor").value;
+
+    if (ValorTotal == valor) {
+        document.getElementById("BtnGuardarAuxProvDeudor").disabled = false;
+        document.getElementById("Aviso").style.display = "none";
+    } else {
+        document.getElementById("BtnGuardarAuxProvDeudor").disabled = true;
+        document.getElementById("Aviso").textContent = "Montos NO cuadran con Total";
+        document.getElementById("Aviso").className = "alert alert-danger";
+        document.getElementById("Aviso").style.fontWeight = "700";
+        document.getElementById("Aviso").style.textAlign = "right";
+        document.getElementById("Aviso").style.display = "";
+    }
+}
 const CuadrarValorAuxRetencion = (valor) => {
     let ValorTotal = document.getElementById("AuxValorHonor").value;
     if (ValorTotal == valor) {
@@ -173,7 +175,6 @@ const SumaSueldoLiquidoRemu = () => {
 
 
 const MostrarDatosVoucher=(datos)=>{
-    debugger;
     console.log(datos);
     let FechaContabilizacion = moment.utc(datos.FechaContabilizacion).format('DD-MM-YYYY');
     document.getElementById("glosa").value = datos.Glosa;
@@ -189,7 +190,7 @@ const MostrarDatosVoucher=(datos)=>{
     SeleccionarCtaContable(datos.DetalleVoucher);
     
 }
-let q = 0;
+let q = 1;
 const MostrarDatosProvDeudor=(data)=>{
     let FechaContProvDeudor = moment.utc(data.FechaContabilizacion).format('DD-MM-YYYY');
     document.getElementById("FechaPrestador").value = FechaContProvDeudor;
@@ -233,8 +234,9 @@ const ActivaBtnAuxNuevo = (id) => {
     }
 
 }
-const ClickAuxNuevo = (idPadre,IdBoton) => {
-    let DivPadreBtn = document.getElementById(idPadre);
+const ClickAuxNuevo = (idRow,IdBoton) => {
+    debugger;
+    let DivPadreBtn = document.getElementById(idRow);
     let DivHijosBtn = DivPadreBtn.childNodes;
     let SelectCuentaContable = DivHijosBtn[1].firstChild;
     let OptionSelected = SelectCuentaContable.selectedOptions[0];
@@ -243,23 +245,42 @@ const ClickAuxNuevo = (idPadre,IdBoton) => {
     if (OptionSelected.dataset.tipoauxiliar == "ProveedorDeudor") {
         if (IdDivAuxProvDeudor == 0) {
             CrearTablaAuxProvDeudor();
+        }else{
+            document.getElementById("FechaPrestador").value = "";
+            document.getElementById("TipoPrestadorProvDeudor").value = "";
+            document.getElementById("RazonPrestadorProvDeudor").value = "";
+            document.getElementById("RutPrestadorProvDeudor").value = "";
+            document.getElementById("AuxFolioHasta1").value = "";
+            document.getElementById("TipoDTE1").value = "";
+            document.getElementById("ValorNeto1").value = "";
+            document.getElementById("MontoExento1").value = "";
+            document.getElementById("MontoIVA1").value = "";
+            document.getElementById("MontoTotal1").value = "";
         }
         $('#ModalAuxiliarProvDeudor').modal('show');
-        EnviarDatosAuxProvDeudor(OptionSelected.textContent,OptionSelected.value,idPadre,IdBoton);
+        EnviarDatosAuxProvDeudor(OptionSelected.textContent,OptionSelected.value,idRow,IdBoton);
     }
     if (OptionSelected.dataset.tipoauxiliar == "Remuneracion") {
         if (IdDivAuxRemu == 0) {
             CrearTablaAuxRemu();
         }
         $('#ModalAuxiliarRemu').modal('show');
-        EnviarDatosRemuneracion(OptionSelected.textContent,OptionSelected.value,idPadre,IdBoton);
+        EnviarDatosRemuneracion(OptionSelected.textContent,OptionSelected.value,idRow,IdBoton);
     }
     if (OptionSelected.dataset.tipoauxiliar == "Honorarios") {
         if (IdAuxHonorarios == 0) {
             CrearTablaHonorariosAux();
+        }else{
+            document.getElementById("AuxFolio1").value = "";
+            document.getElementById("RazonPrestadorHonor").value = "";
+            document.getElementById("AuxValorBruto1").value = "";
+            document.getElementById("AUXValorRetencion1").value = "";
+            document.getElementById("AUXValorLiquido1").value = "";
+            document.getElementById("FechaPrestadorHonor").value = "";
+            document.getElementById("RutPrestadorHonor").value = "";
         }
         $('#ModalAuxiliarHonor').modal('show');
-        EnviarDatosHonorAux(OptionSelected.textContent,OptionSelected.value,idPadre,IdBoton);
+        EnviarDatosHonorAux(OptionSelected.textContent,OptionSelected.value,idRow,IdBoton);
     }
 }
 
@@ -276,7 +297,6 @@ const ActivaBtnAux = (id,AuxDetalle) => {
     }
 }
 const ClickAux = (id,AuxDetalle,idBtn) => {
-    // debugger;
     let DivPadreBtn = document.getElementById(id);
     let DivHijosBtn = DivPadreBtn.childNodes;
     let SelectCuentaContable = DivHijosBtn[1].firstChild;
@@ -287,6 +307,17 @@ const ClickAux = (id,AuxDetalle,idBtn) => {
         if (IdDivAuxProvDeudor == 0) {
             RellenarTablaAuxProvDeudor(AuxDetalle);
         }else{
+            let FechaContProv = moment.utc(AuxDetalle.FechaContabilizacion).format('DD-MM-YYYY');
+            document.getElementById("FechaPrestador").value = FechaContProv;
+            document.getElementById("TipoPrestadorProvDeudor").value=AuxDetalle.TipoReceptor;
+            document.getElementById("RazonPrestadorProvDeudor").value = AuxDetalle.RazonSocialID;
+            document.getElementById("RutPrestadorProvDeudor").value = AuxDetalle.Rut;
+            document.getElementById("AuxFolioHasta1").value = AuxDetalle.Folio;
+            document.getElementById("TipoDTE1").value = AuxDetalle.TipoDTE;
+            document.getElementById("ValorNeto1").value= AuxDetalle.MontoNeto;
+            document.getElementById("MontoExento1").value = AuxDetalle.MontoExento;
+            document.getElementById("MontoIVA1").value = AuxDetalle.MontoIvaLinea;
+            document.getElementById("MontoTotal1").value = AuxDetalle.MontoTotalLinea;
         }
         $('#ModalAuxiliarProvDeudor').modal('show');
          EnviarDatosAuxProvDeudor(OptionSelected.textContent,OptionSelected.value,id,idBtn);
@@ -299,155 +330,221 @@ const ClickAux = (id,AuxDetalle,idBtn) => {
 
         }
         $('#ModalAuxiliarRemu').modal('show');
-        EnviarDatosRemuneracion(OptionSelected.textContent,id);
+        EnviarDatosRemuneracion(OptionSelected.textContent,OptionSelected.value,id,idBtn);
     }
 
     if (OptionSelected.dataset.tipoauxiliar == "Honorarios") {
         if (IdAuxHonorarios == 0) {
             RellenarTablaHonorariosAux(AuxDetalle);
-        }
-        else{
-            document.getElementById("AuxFolio").value=AuxDetalle.Folio;
+        }else{
+            let FechaContHonor = moment.utc(AuxDetalle.FechaContabilizacion).format('DD-MM-YYYY');
             document.getElementById("RazonPrestadorHonor").value=AuxDetalle.RazonSocialID;
-            document.getElementById("AuxValorBruto").value=AuxDetalle.MontoBruto;
-            document.getElementById("AUXValorRetencion").value = AuxDetalle.MontoRetencion;
-            document.getElementById("AUXValorLiquido").value = AuxDetalle.ValorLiquido;
+            document.getElementById("FechaPrestadorHonor").value = FechaContHonor;
+            document.getElementById("RutPrestadorHonor").value = AuxDetalle.Rut;
+            document.getElementById("AuxFolio1").value=AuxDetalle.Folio;
+            document.getElementById("AuxValorBruto1").value=AuxDetalle.MontoBruto;
+            document.getElementById("AUXValorRetencion1").value = AuxDetalle.MontoRetencion;
+            document.getElementById("AUXValorLiquido1").value = AuxDetalle.ValorLiquido;
         }
         $('#ModalAuxiliarHonor').modal('show');
         EnviarDatosHonorAux(OptionSelected.textContent,OptionSelected.value,id,idBtn);
     }
 }
 
+const TieneAuxiliares=(Voucher)=>{
+    //con esta función se sabrá cuantos auxiliares tiene el voucher que viene cargado
+    //si tiene auxiliar se agrega a la variable global Detalle Vouchers
+    //que contiene el detalle de cada voucher 
+    debugger;   
+    let id = 1;
+    DetalleVouchers.push(Voucher);
+    Voucher.flatMap(
+        (x)=> {
+            if(x.AuxiliarDetalle){
+                // AuxiliaresDetalle.push(x.AuxiliarDetalle);
+                let DetallesAuxAPushear = {
+                    NumeroLinea: id++,
+                    AuxiliarDetalleID: x.AuxiliarDetalle[0].AuxiliarDetalleID,
+                    FechaContabilizacion:x.AuxiliarDetalle[0].FechaContabilizacion,
+                    Folio: x.AuxiliarDetalle[0].Folio,
+                    MontoBruto: x.AuxiliarDetalle[0].MontoBruto,
+                    MontoExento:x.AuxiliarDetalle[0].MontoExento,
+                    MontoIvaActivoLinea:x.AuxiliarDetalle[0].MontoIvaActivoLinea,
+                    MontoIvaLinea:x.AuxiliarDetalle[0].MontoIvaLinea,
+                    MontoIvaNoRecuperable:x.AuxiliarDetalle[0].MontoIvaNoRecuperable,
+                    MontoIvaUsoComun:x.AuxiliarDetalle[0].MontoIvaUsoComun,
+                    MontoNeto:x.AuxiliarDetalle[0].MontoNeto,
+                    MontoRetencion:x.AuxiliarDetalle[0].MontoRetencion,
+                    MontoTotalLinea:x.AuxiliarDetalle[0].MontoTotalLinea,
+                    RazonSocialID:x.AuxiliarDetalle[0].RazonSocialID,
+                    Rut:x.AuxiliarDetalle[0].Rut,
+                    TipoDTE:x.AuxiliarDetalle[0].TipoDTE,
+                    TipoReceptor:x.AuxiliarDetalle[0].TipoReceptor,
+                    ValorLiquido:x.AuxiliarDetalle[0].ValorLiquido
+                }
+                AuxiliaresDetalle.push(DetallesAuxAPushear);
+            }else{
+                console.log("no tiene");
+            }
+        });
+        console.log(AuxiliaresDetalle);
+}
+
 const GuardarAuxProvDeudor=()=>{
     debugger;
-    let CContableProvDeudorID = document.getElementById("AuxCuentaProvDeudor").value;
-    let NumeroLinea = document.getElementById("AUXitemProvDeudor").value;
-    let Valorlinea = document.getElementById("AUXvalorProvDeudor").value;
+    //función que se ejecuta al momento de darle a guardar al auxiliar
+    let CContableProvDeudorID = Number(document.getElementById("AuxCuentaProvDeudor").value);
+    let NumeroLinea = Number(document.getElementById("AUXitemProvDeudor").value);
+    let Valorlinea = Number(document.getElementById("AUXvalorProvDeudor").value);
 
     let Fecha = document.getElementById("FechaPrestador").value;
     let Tipo = document.getElementById("TipoPrestadorProvDeudor").value;
-    let RazonSocialID = document.getElementById("RazonPrestadorProvDeudor").value;
+    let RazonSocialID = Number(document.getElementById("RazonPrestadorProvDeudor").value);
     let Rut = document.getElementById("RutPrestadorProvDeudor").value;
 
     let EsBoleta = document.getElementById("BoletaVenta").checked;
     let ContalibroCompra = document.getElementById("ContaLibroCompra").checked;
     let ContalibroVenta = document.getElementById("ContaLibroVenta").checked;
 
-    let AuxProvDetalle = {
-        CuentaContableID:CContableProvDeudorID,
-        NumeroLinea:NumeroLinea,
-        ValorLinea:Valorlinea,
-        Fecha:Fecha,
-        Tipo:Tipo,
-        RazonSocialID:RazonSocialID,
-        Rut:Rut,
-        EsBoleta:EsBoleta,
-        ContaLibroCompra:ContalibroCompra,
-        ContaLibroVenta:ContalibroVenta,
-        DetalleAuxiliar:[]
-    }; 
 
-    let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxProvDeudor");
-    let LstHijos = [...LstAuxProvDeudor];
-    LstHijos.map(function(data) {
-        let PropiedadesHijos = data.childNodes;
-        let DetalleAux = {
-            FolioDesde:PropiedadesHijos[0].firstChild.value,
-            FolioHasta:PropiedadesHijos[1].firstChild.value,
-            TipoDte:PropiedadesHijos[2].firstChild.value,
-            MontoNeto:PropiedadesHijos[3].firstChild.value,
-            MontoExento:PropiedadesHijos[4].firstChild.value,
-            MontoIVA:PropiedadesHijos[5].firstChild.value,
-            MontoTotal:PropiedadesHijos[6].firstChild.value
-        }
-        AuxProvDetalle.DetalleAuxiliar.push(DetalleAux)
-    })
-   
-    console.log(AuxProvDetalle);
+    if (AuxiliaresDetalle.filter(function(e) {return e.NumeroLinea === NumeroLinea}).length > 0) {
+        AuxiliaresDetalle.map(function(AuxDetalle){
+            if(AuxDetalle.NumeroLinea == NumeroLinea){
+                let AuxProvDetalleEditado = {
+                    NumeroLinea:NumeroLinea,
+                    CuentaContableID:CContableProvDeudorID,
+                    Fecha:Fecha,
+                    ValorLinea:Valorlinea,
+                    Tipo:Tipo,
+                    RazonSocialID:RazonSocialID,
+                    Rut:Rut,
+                    EsBoleta:EsBoleta,
+                    ContaLibroCompra:ContalibroCompra,
+                    ContaLibroVenta:ContalibroVenta,
+                    DetalleAuxiliar:[]
+                }; 
+                    let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxProvDeudor");
+                    let LstHijos = [...LstAuxProvDeudor];
+                    LstHijos.map(function(data) {
+                    let PropiedadesHijos = data.childNodes;
+                    let DetalleAux = {
+                    FolioDesde:Number(PropiedadesHijos[0].firstChild.value),
+                    FolioHasta:Number(PropiedadesHijos[1].firstChild.value),
+                    TipoDTE:Number(PropiedadesHijos[2].firstChild.value),
+                    MontoNeto:Number(PropiedadesHijos[3].firstChild.value),
+                    MontoExento:Number(PropiedadesHijos[4].firstChild.value),
+                    MontoIVA:Number(PropiedadesHijos[5].firstChild.value),
+                    MontoTotal:Number(PropiedadesHijos[6].firstChild.value)
+                    }
+                    AuxProvDetalleEditado.DetalleAuxiliar.push(DetalleAux);
+                })
+                AuxiliaresDetalle.splice(NumeroLinea-1,1, AuxProvDetalleEditado);
+                console.log(AuxiliaresDetalle);
+            }
+        })
+    }else{
+        let AuxProvDetalle = {
+            NumeroLinea:NumeroLinea,
+            CuentaContableID:CContableProvDeudorID,
+            Fecha:Fecha,
+            ValorLinea:Valorlinea,
+            Tipo:Tipo,
+            RazonSocialID:RazonSocialID,
+            Rut:Rut,
+            EsBoleta:EsBoleta,
+            ContaLibroCompra:ContalibroCompra,
+            ContaLibroVenta:ContalibroVenta,
+            DetalleAuxiliar:[]
+        }; 
+    
+        let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxProvDeudor");
+        let LstHijos = [...LstAuxProvDeudor];
+        LstHijos.map(function(data) {
+            let PropiedadesHijos = data.childNodes;
+            let DetalleAux = {
+                FolioDesde:Number(PropiedadesHijos[0].firstChild.value),
+                FolioHasta:Number(PropiedadesHijos[1].firstChild.value),
+                TipoDTE:Number(PropiedadesHijos[2].firstChild.value),
+                MontoNeto:Number(PropiedadesHijos[3].firstChild.value),
+                MontoExento:Number(PropiedadesHijos[4].firstChild.value),
+                MontoIVA:Number(PropiedadesHijos[5].firstChild.value),
+                MontoTotal:Number(PropiedadesHijos[6].firstChild.value)
+            }
+            AuxProvDetalle.DetalleAuxiliar.push(DetalleAux);
+        })
+        AuxiliaresDetalle.push(AuxProvDetalle);
+        console.log(AuxiliaresDetalle);
+    }
+    
 }
 const GuardarAuxHonor=()=>{
     debugger;
+    //función que se ejecuta al momento de darle a guardar al auxiliar
     let CuentaContableHonorID = document.getElementById("AuxCuenta").value;
-    let NumeroLineaHonor = document.getElementById("AUXitem").value;
+    let NumeroLineaHonor = Number(document.getElementById("AUXitem").value);
     let ValorLineaHonor = document.getElementById("AuxValorHonor").value;
 
     let FechaHonor = document.getElementById("FechaPrestadorHonor").value;
     let TipoHonor = document.getElementById("TipoPrestadorHonor").value;
     let RazonSocialHonorID = document.getElementById("RazonPrestadorHonor").value;
     let RutHonor = document.getElementById("RutPrestadorHonor").value;
-    
-    let AuxHonorDetalle = {
-        CuentaContableID:CuentaContableHonorID,
-        NumeroLinea:NumeroLineaHonor,
-        ValorLinea:ValorLineaHonor,
-        Fecha:FechaHonor,
-        Tipo:TipoHonor,
-        RazonSocialID:RazonSocialHonorID,
-        Rut:RutHonor,
-        DetalleAuxHonor:[]
-    }
+    if (AuxiliaresDetalle.filter(function(e) {return e.NumeroLinea === NumeroLineaHonor}).length > 0) {
 
-    let LstAuxHonor = document.getElementsByClassName("GuardarDatosAuxHonor");
-    let LstHijosHonor = [...LstAuxHonor];
-    // console.log(LstHijosHonor);
+        AuxiliaresDetalle.map(function(AuxDetalle){
+            if(AuxDetalle.NumeroLinea == NumeroLineaHonor){
+                let AuxHonorDetalleEditado = {
+                    CuentaContableID:CuentaContableHonorID,
+                    NumeroLinea:NumeroLineaHonor,
+                    ValorLinea:ValorLineaHonor,
+                    Fecha:FechaHonor,
+                    Tipo:TipoHonor,
+                    RazonSocialID:RazonSocialHonorID,
+                    Rut:RutHonor,
+                    DetalleAuxHonor:[]
+                }
+                let LstAuxHonor = document.getElementsByClassName("GuardarDatosAuxHonor");
+                let LstHijosHonor = [...LstAuxHonor];
+                LstHijosHonor.map(function(data){
+                    let propHijos = data.childNodes;
+                    let DetalleAux = {
+                        Folio:propHijos[0].firstChild.value,
+                        ValorBruto:propHijos[1].firstChild.value,
+                        TipoRetencion:propHijos[2].firstChild.value,
+                        MontoRetencion:propHijos[3].firstChild.value,
+                        MontoTotal:propHijos[4].firstChild.value
+                    }
+                    AuxHonorDetalleEditado.DetalleAuxHonor.push(DetalleAux);
+                })
 
-    LstHijosHonor.map(function(data){
-        let propHijos = data.childNodes;
-        let DetalleAux = {
-            Folio:propHijos[0].firstChild.value,
-            ValorBruto:propHijos[1].firstChild.value,
-            TipoRetencion:propHijos[2].firstChild.value,
-            MontoRetencion:propHijos[3].firstChild.value,
-            MontoTotal:propHijos[4].firstChild.value
+                AuxiliaresDetalle.splice(NumeroLineaHonor-1,1, AuxHonorDetalleEditado);
+                console.log(AuxiliaresDetalle);
+            }
+        })
+    }else{
+        let AuxHonorDetalle = {
+            CuentaContableID:CuentaContableHonorID,
+            NumeroLinea:NumeroLineaHonor,
+            ValorLinea:ValorLineaHonor,
+            Fecha:FechaHonor,
+            Tipo:TipoHonor,
+            RazonSocialID:RazonSocialHonorID,
+            Rut:RutHonor,
+            DetalleAuxHonor:[]
         }
-        AuxHonorDetalle.DetalleAuxHonor.push(DetalleAux);
-    })
-    console.log(AuxHonorDetalle);
-}
-const GuardarVoucher=()=>{
-    let VoucherModelID= document.getElementById("VoucherAEditar").value;
-    let NumVoucher = document.getElementById("numVoucher").value;
-    let Fecha = document.getElementById("fecha").value;
-    let TipoVoucher = document.getElementById("tipo").value;
-    let TipoOrigen = document.getElementById("TipoOrigen").value;
-    let Glosa = document.getElementById("glosa").value;
-   
-    let Voucher = {
-        NumVoucher:NumVoucher,
-        Fecha:Fecha,
-        TipoVoucher:TipoVoucher,
-        TipoOrigen:TipoOrigen,
-        Glosa:Glosa,
-        VoucherModelId:VoucherModelID,
-        DetalleVoucher:[]
+        let LstAuxHonor = document.getElementsByClassName("GuardarDatosAuxHonor");
+        let LstHijosHonor = [...LstAuxHonor];
+        LstHijosHonor.map(function(data){
+            let propHijos = data.childNodes;
+            let DetalleAux = {
+                Folio:propHijos[0].firstChild.value,
+                ValorBruto:propHijos[1].firstChild.value,
+                TipoRetencion:propHijos[2].firstChild.value,
+                MontoRetencion:propHijos[3].firstChild.value,
+                MontoTotal:propHijos[4].firstChild.value
+            }
+            AuxHonorDetalle.DetalleAuxiliar.push(DetalleAux);
+        })
+        AuxiliaresDetalle.push(AuxHonorDetalle);
+        console.log(AuxiliaresDetalle);
     }
-
-    let LstItemsVoucher = document.getElementsByClassName("GuardarDatosVoucher");
-    let HijosVoucher = [...LstItemsVoucher]
-
-    HijosVoucher.map(function(data){
-        let PropHijos = data.childNodes;
-        // console.log(PropHijos);
-        let DetalleVoucher = {
-            CuentaContableID: PropHijos[1].firstChild.value,
-            GlosaDetalle: PropHijos[2].firstChild.value,
-            CentroCostoID:PropHijos[3].firstChild.value,
-            MontoDebe:PropHijos[4].firstChild.value,
-            MontoHaber:PropHijos[5].firstChild.value,
-        }
-        Voucher.DetalleVoucher.push(DetalleVoucher)
-    })
-    console.log(Voucher);
 }
-
-document.getElementById("BtnGuardarHonor").addEventListener('click', function () {
-    GuardarAuxHonor();
-    $('#ModalAuxiliarHonor').modal('hide');
-    // alert('Auxiliar guardado correctamente.');
-});
-
-document.getElementById("BtnGuardarAuxProvDeudor").addEventListener('click', function () {
-    GuardarAuxProvDeudor();
-    $('#ModalAuxiliarProvDeudor').modal('hide');
-    // alert('Auxiliar guardado correctamente.');
-});
