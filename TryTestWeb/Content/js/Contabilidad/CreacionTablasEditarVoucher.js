@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
 var idDetalle = 0;
 const CrearTablaVoucher = () => {
     idDetalle = idDetalle + 1;
-    let glosa = $("input[name=glosaDetalle]:last").val();
+    let glosa = document.getElementById("glosa").value;
     if (glosa == null) {
         glosa = "";
     }
@@ -434,12 +434,12 @@ document.getElementById("Btn_AgregaFilaHonorarios").addEventListener('click', fu
 
 
 function BorrarFilaVoucher(IdRow,IdBtn) {
-    let DivPadreABorrar = document.getElementById('ContenidoDetalle');
-    let FilaABorrar = document.getElementById(IdRow);
+    //DELETE
+    let DivPadreABorrar = document.getElementById('ContenidoDetalle'); //toma el div padre 
+    let FilaABorrar = document.getElementById(IdRow); //toma el div hijo que se borrará 
     if (idDetalle > 1) {
-        DivPadreABorrar.removeChild(FilaABorrar);
-        // VoucherCompleto.DetalleVoucher.splice(VoucherCompleto.DetalleVoucher.length-1,1);
-        AuxiliaresDetalle.splice(IdBtn-1,1);
+        DivPadreABorrar.removeChild(FilaABorrar); //borra div hijo
+        AuxiliaresDetalle.splice(IdBtn-1,1); //borra dentro del array el auxiliar correspondiente al div que se eliminó
         ReordenarFila();
         console.log(AuxiliaresDetalle);
         idDetalle--;
@@ -1033,16 +1033,13 @@ const EsUnaBoleta=()=>{
 }
 
 const ReordenarFila=()=>{
-    debugger;
     let VouchersExistentes = document.getElementsByClassName("GuardarDatosVoucher");
     for (let i = 0; i < VouchersExistentes.length; i++) {
-        const element = VouchersExistentes[i].firstChild.firstChild;
-        element.id = i+1;
+        const BtnAuxID = VouchersExistentes[i].firstChild.firstChild;
+        BtnAuxID.id = i+1;
         VouchersExistentes[i].id="detalle"+(i+1);
         if (AuxiliaresDetalle[i]!=null) {
             AuxiliaresDetalle[i].NumeroLinea = i+1;
         }
     }
-    console.log(VouchersExistentes);
-    console.log(AuxiliaresDetalle);
 }

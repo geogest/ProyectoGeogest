@@ -354,15 +354,17 @@ const ClickAux = (id,AuxDetalle,idBtn) => {
 const TieneAuxiliares=(Voucher)=>{
     //con esta función se sabrá cuantos auxiliares tiene el voucher que viene cargado
     //si tiene auxiliar se agrega a la variable global Detalle Vouchers
-    //que contiene el detalle de cada voucher 
-    debugger;   
+    //que contiene el detalle de cada voucher
+    //READ
+    debugger;
+    let NumLinea=1; 
     DetalleVouchers.push(Voucher);
     Voucher.flatMap(
         (x)=> {
             if(x.AuxiliarDetalle){
                 // AuxiliaresDetalle.push(x.AuxiliarDetalle);
                 let DetallesAuxAPushear = {
-                    NumeroLinea: idDetalle,
+                    NumeroLinea: NumLinea++,
                     AuxiliarDetalleID: x.AuxiliarDetalle[0].AuxiliarDetalleID,
                     FechaContabilizacion:x.AuxiliarDetalle[0].FechaContabilizacion,
                     Folio: x.AuxiliarDetalle[0].Folio,
@@ -384,6 +386,7 @@ const TieneAuxiliares=(Voucher)=>{
                 AuxiliaresDetalle.push(DetallesAuxAPushear);
             }else{
                 AuxiliaresDetalle.push(null);
+                NumLinea++;
             }
         });
         console.log(AuxiliaresDetalle);
@@ -392,6 +395,8 @@ const TieneAuxiliares=(Voucher)=>{
 const GuardarAuxProvDeudor=()=>{
     debugger;
     //función que se ejecuta al momento de darle a guardar al auxiliar
+    //CREATE
+    //UPDATE
     let CContableProvDeudorID = Number(document.getElementById("AuxCuentaProvDeudor").value);
     let NumeroLinea = Number(document.getElementById("AUXitemProvDeudor").value);
     let Valorlinea = Number(document.getElementById("AUXvalorProvDeudor").value);
@@ -406,40 +411,52 @@ const GuardarAuxProvDeudor=()=>{
     let ContalibroVenta = document.getElementById("ContaLibroVenta").checked;
 
 
-    if (AuxiliaresDetalle.filter(function(e) {return e.NumeroLinea === NumeroLinea}).length > 0) {
+    
+    if (AuxiliaresDetalle.filter(function(e) {
+        if(e!=null){
+            return e.NumeroLinea === NumeroLinea
+        }
+    }).length > 0) {
         AuxiliaresDetalle.map(function(AuxDetalle){
-            if(AuxDetalle.NumeroLinea == NumeroLinea){
-                let AuxProvDetalleEditado = {
-                    NumeroLinea:NumeroLinea,
-                    CuentaContableID:CContableProvDeudorID,
-                    Fecha:Fecha,
-                    ValorLinea:Valorlinea,
-                    Tipo:Tipo,
-                    RazonSocialID:RazonSocialID,
-                    Rut:Rut,
-                    EsBoleta:EsBoleta,
-                    ContaLibroCompra:ContalibroCompra,
-                    ContaLibroVenta:ContalibroVenta,
-                    DetalleAuxiliar:[]
-                }; 
-                    let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxProvDeudor");
-                    let LstHijos = [...LstAuxProvDeudor];
-                    LstHijos.map(function(data) {
-                    let PropiedadesHijos = data.childNodes;
-                    let DetalleAux = {
-                    FolioDesde:Number(PropiedadesHijos[0].firstChild.value),
-                    FolioHasta:Number(PropiedadesHijos[1].firstChild.value),
-                    TipoDTE:Number(PropiedadesHijos[2].firstChild.value),
-                    MontoNeto:Number(PropiedadesHijos[3].firstChild.value),
-                    MontoExento:Number(PropiedadesHijos[4].firstChild.value),
-                    MontoIVA:Number(PropiedadesHijos[5].firstChild.value),
-                    MontoTotal:Number(PropiedadesHijos[6].firstChild.value)
-                    }
-                    AuxProvDetalleEditado.DetalleAuxiliar.push(DetalleAux);
-                })
-                AuxiliaresDetalle.splice(NumeroLinea-1,1, AuxProvDetalleEditado);
-                console.log(AuxiliaresDetalle);
+            if(AuxDetalle!=null){
+                if(AuxDetalle.NumeroLinea == NumeroLinea){
+                    let AuxProvDetalleEditado = {
+                        NumeroLinea:NumeroLinea,
+                        CuentaContableID:CContableProvDeudorID,
+                        Fecha:Fecha,
+                        RazonSocialID:RazonSocialID,
+                        Rut:Rut,
+                        Tipo:Tipo,
+                        EsBoleta:EsBoleta,
+                        ContaLibroCompra:ContalibroCompra,
+                        ContaLibroVenta:ContalibroVenta,
+                        DetalleAuxiliar:[]
+                    }; 
+                        let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxProvDeudor");
+                        let LstHijos = [...LstAuxProvDeudor];
+                        LstHijos.map(function(data) {
+                        let PropiedadesHijos = data.childNodes;
+                        let DetalleAux = {
+                        FolioDesde:Number(PropiedadesHijos[0].firstChild.value),
+                        FolioHasta:Number(PropiedadesHijos[1].firstChild.value),
+                        MontoBruto: 0,
+                        MontoExento:Number(PropiedadesHijos[4].firstChild.value),
+                        MontoIvaActivoLinea:0,
+                        MontoIVALinea:Number(PropiedadesHijos[5].firstChild.value),
+                        MontoIvaNoRecuperable:0,
+                        MontoIvaUsoComun:0,
+                        MontoNeto:Number(PropiedadesHijos[3].firstChild.value),
+                        MontoRetencion:0,
+                        MontoTotalLinea:Number(PropiedadesHijos[6].firstChild.value),
+                        TipoDTE:Number(PropiedadesHijos[2].firstChild.value)
+                        }
+                        AuxProvDetalleEditado.DetalleAuxiliar.push(DetalleAux);
+                    })
+                    AuxiliaresDetalle.splice(NumeroLinea-1,1, AuxProvDetalleEditado);
+                    console.log(AuxiliaresDetalle);
+                }
             }
+            
         })
     }else{
         let AuxProvDetalle = {
@@ -479,6 +496,7 @@ const GuardarAuxProvDeudor=()=>{
 const GuardarAuxHonor=()=>{
     debugger;
     //función que se ejecuta al momento de darle a guardar al auxiliar
+    //CREATE
     let CuentaContableHonorID = document.getElementById("AuxCuenta").value;
     let NumeroLineaHonor = Number(document.getElementById("AUXitem").value);
     let ValorLineaHonor = document.getElementById("AuxValorHonor").value;
@@ -492,13 +510,12 @@ const GuardarAuxHonor=()=>{
         AuxiliaresDetalle.map(function(AuxDetalle){
             if(AuxDetalle.NumeroLinea == NumeroLineaHonor){
                 let AuxHonorDetalleEditado = {
-                    CuentaContableID:CuentaContableHonorID,
                     NumeroLinea:NumeroLineaHonor,
-                    ValorLinea:ValorLineaHonor,
+                    CuentaContableID:CuentaContableHonorID,
                     Fecha:FechaHonor,
-                    Tipo:TipoHonor,
                     RazonSocialID:RazonSocialHonorID,
                     Rut:RutHonor,
+                    Tipo:TipoHonor,
                     DetalleAuxHonor:[]
                 }
                 let LstAuxHonor = document.getElementsByClassName("GuardarDatosAuxHonor");
@@ -507,10 +524,16 @@ const GuardarAuxHonor=()=>{
                     let propHijos = data.childNodes;
                     let DetalleAux = {
                         Folio:propHijos[0].firstChild.value,
-                        ValorBruto:propHijos[1].firstChild.value,
-                        TipoRetencion:propHijos[2].firstChild.value,
+                        MontoBruto:propHijos[1].firstChild.value,
+                        MontoExento:0,
+                        MontoIvaActivoLinea:0,
+                        MontoIVALinea:0,
+                        MontoIvaNoRecuperable:0,
+                        MontoIvaUsoComun:0,
+                        MontoNeto:0,
                         MontoRetencion:propHijos[3].firstChild.value,
-                        MontoTotal:propHijos[4].firstChild.value
+                        MontoTotalLinea:propHijos[4].firstChild.value,
+                        tipoDTE:43
                     }
                     AuxHonorDetalleEditado.DetalleAuxHonor.push(DetalleAux);
                 })
@@ -547,3 +570,4 @@ const GuardarAuxHonor=()=>{
         console.log(AuxiliaresDetalle);
     }
 }
+
