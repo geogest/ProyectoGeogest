@@ -278,7 +278,12 @@ const ClickAuxNuevo = (idRow,IdBoton) => {
     let DivHijosBtn = DivPadreBtn.childNodes;
     let SelectCuentaContable = DivHijosBtn[1].firstChild;
     let OptionSelected = SelectCuentaContable.selectedOptions[0];
-    let AuxiliarExiste = AuxiliaresDetalle.find(aux => aux.NumeroLinea === Number(DivHijosBtn[0].firstChild.id ));
+    let AuxiliarSinNull = AuxiliaresDetalle.filter(function(e){
+        if(e!=null){
+            return e;
+        }
+    })
+    let AuxiliarExiste = AuxiliarSinNull.find(aux => aux.NumeroLinea === Number(DivHijosBtn[0].firstChild.id ));
     if (OptionSelected.dataset.tipoauxiliar == "ProveedorDeudor") {
         if (Object.keys(AuxiliarExiste).length <= 1) {
             document.getElementById("TablaProvDeudorAux").innerHTML = "";
@@ -478,7 +483,7 @@ const GuardarAuxProvDeudor=()=>{
                         ValorLiquido:0,
                         TipoDTE:Number(PropiedadesHijos[2].firstChild.value)
                         }
-                        AuxProvDetalleEditado.DetalleAuxiliar.push(DetalleAux);
+                        AuxProvDetalleEditado.AuxiliarDetalle.push(DetalleAux);
                     })
                     AuxiliaresDetalle.splice(NumeroLinea-1,1, AuxProvDetalleEditado);
                     console.log(AuxiliaresDetalle);
@@ -514,7 +519,7 @@ const GuardarAuxProvDeudor=()=>{
                 MontoIVA:Number(PropiedadesHijos[5].firstChild.value),
                 MontoTotal:Number(PropiedadesHijos[6].firstChild.value)
             }
-            AuxProvDetalle.DetalleAuxiliar.push(DetalleAux);
+            AuxProvDetalle.AuxiliarDetalle.push(DetalleAux);
         })
         AuxiliaresDetalle.push(AuxProvDetalle);
         console.log(AuxiliaresDetalle);
@@ -566,7 +571,7 @@ const GuardarAuxHonor=()=>{
                             ValorLiquido:0,
                             tipoDTE:0
                         }
-                        AuxHonorDetalleEditado.DetalleAuxiliar.push(DetalleAux);
+                        AuxHonorDetalleEditado.AuxiliarDetalle.push(DetalleAux);
                     })
     
                     AuxiliaresDetalle.splice(NumeroLineaHonor-1,1, AuxHonorDetalleEditado);
@@ -596,7 +601,7 @@ const GuardarAuxHonor=()=>{
                 MontoRetencion:propHijos[3].firstChild.value,
                 MontoTotal:propHijos[4].firstChild.value
             }
-            AuxHonorDetalle.DetalleAuxiliar.push(DetalleAux);
+            AuxHonorDetalle.AuxiliarDetalle.push(DetalleAux);
         })
         AuxiliaresDetalle.push(AuxHonorDetalle);
         console.log(AuxiliaresDetalle);
@@ -649,7 +654,7 @@ const GuardarAuxRemu=()=>{
                             ValorLiquido:Number(propHijos[1].firstChild.value),
                             tipoDTE:0
                         }
-                        AuxRemuDetalleEditado.DetalleAuxiliar.push(DetalleAuxRemu);
+                        AuxRemuDetalleEditado.AuxiliarDetalle.push(DetalleAuxRemu);
                     })
                     AuxiliaresDetalle.splice(NumeroLineaRemu-1, 1, AuxRemuDetalleEditado);
                     console.log(AuxiliaresDetalle);
@@ -686,7 +691,7 @@ const GuardarAuxRemu=()=>{
                 MontoTotalLinea:PropiedadesHijos[1].firstChild.value,
                 tipoDTE:43
             }
-            AuxRemuDetalle.DetalleAuxiliarRemu.push(DetalleAux);
+            AuxRemuDetalle.AuxiliarDetalle.push(DetalleAux);
         })
         AuxiliaresDetalle.push(AuxProvDetalle);
         console.log(AuxiliaresDetalle);
@@ -709,7 +714,7 @@ const EnviarVoucher=()=>{
         Glosa: Glosa,
         FechaContabilizacion: FechaContabilizacion,
         TipoVoucher: TipoOrigen,
-        NumeroVoucher: NumeroVoucher,
+        NumVoucher: NumeroVoucher,
         TipoOrigenVoucher: TipoOrigenVoucher,
         DetalleVoucher:[]
     };
