@@ -1,4 +1,4 @@
-﻿<input type="hidden" id="VoucherAEditar" value="@ViewBag.Id">
+﻿
 <div class="row">
     <div class="col-sm-12">
         <div class="page-header-2">
@@ -18,20 +18,19 @@
     </div>
 </div>
 
-
-@using (Html.BeginForm("EditarVoucher", "Contabilidad", FormMethod.Post, new { iIDVoucherAEditar = "DatosVoucher" }))
-{
     
+
+        <input type="hidden" id="VoucherAEditar" value="@ViewBag.Id">
         <div class="row">
             <div class="col-lg-2 col-md-3 col-sm-6 form-group">
                 <label class="control-label">Numero Voucher</label>
-                <input type="number" class="form-control" name="numVoucher" id="numVoucher" value="" required disabled />
+                <input type="number" class="form-control" name="numVoucher" id="numVoucher" required disabled />
             </div>
 
             <div class="col-lg-2 col-md-3 col-sm-6 form-group">
                 <label class="control-label">Fecha Contabilización</label>
                 <div class='input-group date '>
-                    <input type="text" class="form-control anotherSelector" name="fecha" id="fecha" value="" required />
+                    <input type="text" class="form-control anotherSelector" name="FechaContabilizacion" id="FechaContabilizacion" value="" required />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -40,7 +39,7 @@
 
             <div class="col-lg-2 col-md-3 col-sm-6 form-group">
                 <label class="control-label">Tipo de Voucher</label>
-                <select class="form-control " name="tipo" id="tipo">
+                <select class="form-control " name="TipoVoucher" id="TipoVoucher">
                     @Html.Raw(ParseExtensions.ObtenerListaTipoVoucherComoInputSelect(ViewBag.TipoVoucherEdit))
                 </select>
             </div>
@@ -127,7 +126,7 @@
         </div>
         <div class="row">
             <div class="col-lg-1 col-lg-offset-11">
-                <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress" disabled>Guardar Cambios</button>
+                <button id="submitButton" type="submit" class="btn btn-primary pull-right redondo btnPress" onclick="EnviarVoucher()">Guardar Cambios</button>
             </div>
         </div>
 
@@ -482,7 +481,7 @@
                 </div>
             </div>
 
- }
+ 
    
     <script>
 

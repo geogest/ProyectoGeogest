@@ -1346,8 +1346,16 @@ namespace TryTestWeb.Controllers
             ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
 
             ViewBag.Id = IDVoucher;
-
             return View();
+        }
+        [HttpPost]
+        public ActionResult EditarVoucher(VoucherDataDto VoucherCompletoAEditar) {
+            string UserID = User.Identity.GetUserId();
+            FacturaPoliContext db = ParseExtensions.GetDatabaseContext(UserID);
+            QuickEmisorModel objEmisor = PerfilamientoModule.GetEmisorSeleccionado(Session, UserID);
+            ClientesContablesModel objCliente = PerfilamientoModule.GetClienteContableSeleccionado(Session, UserID, db);
+
+            return RedirectToAction("ListaVoucher","Contabilidad");
         }
         [Authorize]
         public JsonResult GetInfoVoucher(int IDVoucherAEditar)

@@ -207,8 +207,8 @@ const MostrarDatosVoucher=(datos)=>{
     let FechaContabilizacion = moment.utc(datos.FechaContabilizacion).format('DD-MM-YYYY');
     document.getElementById("glosa").value = datos.Glosa;
     document.getElementById("numVoucher").value=datos.NumVoucher;
-    document.getElementById("fecha").value=FechaContabilizacion;
-    document.getElementById("tipo").value=datos.Tipo;
+    document.getElementById("FechaContabilizacion").value=FechaContabilizacion;
+    document.getElementById("TipoVoucher").value=datos.Tipo;
     document.getElementById("TipoOrigen").value = datos.TipoOrigenVoucher;
 
     datos.DetalleVoucher.map(function(dato){
@@ -378,25 +378,26 @@ const TieneAuxiliares=(Voucher)=>{
     //si tiene auxiliar se agrega a la variable global Detalle Vouchers
     //que contiene el detalle de cada voucher
     //READ
+    debugger;
     let NumLinea=1;
-    DetalleVouchers.push(Voucher);
     Voucher.flatMap(
         (x)=> {
             if(x.AuxiliarDetalle){
                 let index = 0;
                 let DetallesAuxAPushear = {
-                    NumeroLinea: NumLinea,
+                    NumLinea: NumLinea,
                     AuxiliarDetalleID: x.AuxiliarDetalle[index].AuxiliarDetalleID,
-                    FechaContabilizacion: x.AuxiliarDetalle[index].FechaContabilizacion,
+                    FechaContabilizacion: moment.utc(x.AuxiliarDetalle[index].FechaContabilizacion).format('DD-MM-YYYY'),
                     RazonSocialID: x.AuxiliarDetalle[index].RazonSocialID,
                     Rut: x.AuxiliarDetalle[index].Rut,
                     TipoReceptor: x.AuxiliarDetalle[index].TipoReceptor,
-                    DetalleAuxiliar:[]
+                    AuxiliarDetalle:[]
                 }
                 // AuxiliaresDetalle.push(x.AuxiliarDetalle);
                 x.AuxiliarDetalle.forEach(AuxDetallePush => {
                     let DetallesAux = {
-                        Folio: AuxDetallePush.Folio,
+                        FolioDesde: AuxDetallePush.Folio,
+                        FolioHasta: AuxDetallePush.Folio,
                         MontoBruto: AuxDetallePush.MontoBruto,
                         MontoExento: AuxDetallePush.MontoExento,
                         MontoIvaActivoLinea: AuxDetallePush.MontoIvaActivoLinea,
@@ -409,7 +410,7 @@ const TieneAuxiliares=(Voucher)=>{
                         TipoDTE: AuxDetallePush.TipoDTE,
                         ValorLiquido: AuxDetallePush.ValorLiquido
                     }
-                    DetallesAuxAPushear.DetalleAuxiliar.push(DetallesAux);
+                    DetallesAuxAPushear.AuxiliarDetalle.push(DetallesAux);
                 });
                 NumLinea++;
                 index++;
@@ -427,7 +428,7 @@ const GuardarAuxProvDeudor=()=>{
     let NumeroLinea = Number(document.getElementById("AUXitemProvDeudor").value);
     let Valorlinea = Number(document.getElementById("AUXvalorProvDeudor").value);
 
-    let Fecha = document.getElementById("FechaPrestador").value;
+    let FechaContabilizacion = new Date(document.getElementById("FechaPrestador").value);
     let TipoReceptorProv = document.getElementById("TipoPrestadorProvDeudor").value;
     let RazonSocialID = Number(document.getElementById("RazonPrestadorProvDeudor").value);
     let Rut = document.getElementById("RutPrestadorProvDeudor").value;
@@ -447,16 +448,16 @@ const GuardarAuxProvDeudor=()=>{
             if(AuxDetalle!=null){
                 if(AuxDetalle.NumeroLinea == NumeroLinea){
                     let AuxProvDetalleEditado = {
-                        NumeroLinea:NumeroLinea,
-                        CuentaContableID:CContableProvDeudorID,
-                        Fecha:Fecha,
+                        NumLinea:NumeroLinea,
+                        AuxiliarDetalleID:CContableProvDeudorID,
+                        FechaContabilizacion:FechaContabilizacion,
                         RazonSocialID:RazonSocialID,
                         Rut:Rut,
                         TipoReceptor:TipoReceptorProv,
                         EsBoleta:EsBoleta,
-                        ContaLibroCompra:ContalibroCompra,
-                        ContaLibroVenta:ContalibroVenta,
-                        DetalleAuxiliar:[]
+                        ContabilizaCompra:ContalibroCompra,
+                        ContabilizaVenta:ContalibroVenta,
+                        AuxiliarDetalle:[]
                     }; 
                         let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxProvDeudor");
                         let LstHijos = [...LstAuxProvDeudor];
@@ -474,6 +475,7 @@ const GuardarAuxProvDeudor=()=>{
                         MontoNeto:Number(PropiedadesHijos[3].firstChild.value),
                         MontoRetencion:0,
                         MontoTotalLinea:Number(PropiedadesHijos[6].firstChild.value),
+                        ValorLiquido:0,
                         TipoDTE:Number(PropiedadesHijos[2].firstChild.value)
                         }
                         AuxProvDetalleEditado.DetalleAuxiliar.push(DetalleAux);
@@ -486,7 +488,7 @@ const GuardarAuxProvDeudor=()=>{
         })
     }else{
         let AuxProvDetalle = {
-            NumeroLinea:NumeroLinea,
+            NumLinea:NumeroLinea,
             CuentaContableID:CContableProvDeudorID,
             Fecha:Fecha,
             ValorLinea:Valorlinea,
@@ -496,7 +498,7 @@ const GuardarAuxProvDeudor=()=>{
             EsBoleta:EsBoleta,
             ContaLibroCompra:ContalibroCompra,
             ContaLibroVenta:ContalibroVenta,
-            DetalleAuxiliar:[]
+            AuxiliarDetalle:[]
         }; 
     
         let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxProvDeudor");
@@ -525,7 +527,7 @@ const GuardarAuxHonor=()=>{
     let NumeroLineaHonor = Number(document.getElementById("AUXitem").value);
     let ValorLineaHonor = Number(document.getElementById("AuxValorHonor").value);
 
-    let FechaHonor = document.getElementById("FechaPrestadorHonor").value;
+    let FechaHonor = new Date(document.getElementById("FechaPrestadorHonor").value);
     let TipoHonor = document.getElementById("TipoPrestadorHonor").value;
     let RazonSocialHonorID = Number(document.getElementById("RazonPrestadorHonor").value);
     let RutHonor = document.getElementById("RutPrestadorHonor").value;
@@ -538,13 +540,13 @@ const GuardarAuxHonor=()=>{
             if(AuxDetalle!=null){
                 if(AuxDetalle.NumeroLinea == NumeroLineaHonor){
                     let AuxHonorDetalleEditado = {
-                        NumeroLinea:NumeroLineaHonor,
+                        NumLinea:NumeroLineaHonor,
                         CuentaContableID:CuentaContableHonorID,
                         Fecha:FechaHonor,
                         RazonSocialID:RazonSocialHonorID,
                         Rut:RutHonor,
                         TipoReceptor:TipoHonor,
-                        DetalleAuxHonor:[]
+                        AuxiliarDetalle:[]
                     }
                     let LstAuxHonor = document.getElementsByClassName("GuardarDatosAuxHonor");
                     let LstHijosHonor = [...LstAuxHonor];
@@ -561,9 +563,10 @@ const GuardarAuxHonor=()=>{
                             MontoNeto:0,
                             MontoRetencion:Number(propHijos[3].firstChild.value),
                             MontoTotalLinea:Number(propHijos[4].firstChild.value),
+                            ValorLiquido:0,
                             tipoDTE:0
                         }
-                        AuxHonorDetalleEditado.DetalleAuxHonor.push(DetalleAux);
+                        AuxHonorDetalleEditado.DetalleAuxiliar.push(DetalleAux);
                     })
     
                     AuxiliaresDetalle.splice(NumeroLineaHonor-1,1, AuxHonorDetalleEditado);
@@ -574,13 +577,13 @@ const GuardarAuxHonor=()=>{
     }else{
         let AuxHonorDetalle = {
             CuentaContableID:CuentaContableHonorID,
-            NumeroLinea:NumeroLineaHonor,
+            NumLinea:NumeroLineaHonor,
             ValorLinea:ValorLineaHonor,
             Fecha:FechaHonor,
             TipoReceptor:TipoHonor,
             RazonSocialID:RazonSocialHonorID,
             Rut:RutHonor,
-            DetalleAuxHonor:[]
+            AuxiliarDetalle:[]
         }
         let LstAuxHonor = document.getElementsByClassName("GuardarDatosAuxHonor");
         let LstHijosHonor = [...LstAuxHonor];
@@ -606,7 +609,7 @@ const GuardarAuxRemu=()=>{
     let NumeroLineaRemu = Number(document.getElementById("AUXitemRemu").value);
     let ValorLineaRemu = Number(document.getElementById("AUXvaloritemRemu").value);
 
-    let FechaRemu = document.getElementById("FechaPrestadorRemu").value;
+    let FechaRemu = new Date(document.getElementById("FechaPrestadorRemu").value);
     let TipoPrestadorRemu = document.getElementById("TipoPrestadorRemu").value;
     let RazonSocialRemuID = Number(document.getElementById("RazonPrestadorRemu").value);
     let RutRemu = document.getElementById("RutPrestadorRemu").value;
@@ -620,13 +623,13 @@ const GuardarAuxRemu=()=>{
             if(AuxDetalle!=null){
                 if(AuxDetalle.NumeroLinea == NumeroLineaRemu){
                     let AuxRemuDetalleEditado = {
-                        NumeroLinea:NumeroLineaRemu,
+                        NumLinea:NumeroLineaRemu,
                         CuentaContableID:CuentaContableRemuID,
                         Fecha:FechaRemu,
                         RazonSocialID:RazonSocialRemuID,
                         Rut:RutRemu,
                         TipoReceptor:TipoPrestadorRemu,
-                        DetalleAuxRemuneracion:[]
+                        AuxiliarDetalle:[]
                     }
                     let LstAuxRemu = document.getElementsByClassName("GuardarDatosAuxRemu");
                     let LstHijosRemu = [...LstAuxRemu];
@@ -643,9 +646,10 @@ const GuardarAuxRemu=()=>{
                             MontoNeto:0,
                             MontoRetencion:0,
                             MontoTotalLinea:Number(propHijos[1].firstChild.value),
+                            ValorLiquido:Number(propHijos[1].firstChild.value),
                             tipoDTE:0
                         }
-                        AuxRemuDetalleEditado.DetalleAuxRemuneracion.push(DetalleAuxRemu);
+                        AuxRemuDetalleEditado.DetalleAuxiliar.push(DetalleAuxRemu);
                     })
                     AuxiliaresDetalle.splice(NumeroLineaRemu-1, 1, AuxRemuDetalleEditado);
                     console.log(AuxiliaresDetalle);
@@ -655,14 +659,14 @@ const GuardarAuxRemu=()=>{
 
     }else{
         let AuxRemuDetalle = {
-            NumeroLinea:NumeroLineaRemu,
+            NumLinea:NumeroLineaRemu,
             CuentaContableID:CuentaContableRemuID,
             Fecha:FechaRemu,
             ValorLinea:ValorLineaRemu,
             TipoReceptor:TipoPrestadorRemu,
             RazonSocialID:RazonSocialRemuID,
             Rut:RutRemu,
-            DetalleAuxiliarRemu:[]
+            AuxiliarDetalle:[]
         }; 
     
         let LstAuxProvDeudor = document.getElementsByClassName("GuardarDatosAuxRemu");
@@ -688,4 +692,65 @@ const GuardarAuxRemu=()=>{
         console.log(AuxiliaresDetalle);
     }
     $('#ModalAuxiliarRemu').modal('toggle');
+}
+
+
+const EnviarVoucher=()=>{
+    debugger;
+    let VoucherAEditar = Number(document.getElementById("VoucherAEditar").value);
+    let NumeroVoucher = Number(document.getElementById("numVoucher").value);
+    let FechaContabilizacion = new Date(document.getElementById("FechaContabilizacion").value);
+    let TipoOrigenVoucher = Number(document.getElementById("TipoVoucher").value);
+    let TipoOrigen = Number(document.getElementById("TipoOrigen").value);
+    let Glosa = document.getElementById("glosa").value;
+
+    VoucherCompleto = {
+        VoucherModelID: VoucherAEditar,
+        Glosa: Glosa,
+        FechaContabilizacion: FechaContabilizacion,
+        TipoVoucher: TipoOrigen,
+        NumeroVoucher: NumeroVoucher,
+        TipoOrigenVoucher: TipoOrigenVoucher,
+        DetalleVoucher:[]
+    };
+
+    let LstVouchers = document.getElementsByClassName("GuardarDatosVoucher");
+    let LstHijosVoucher = [...LstVouchers];
+
+    LstHijosVoucher.map(function(Voucher){
+        let propiedadesVoucher = Voucher.childNodes;
+
+        let DetalleVoucher = {
+            NumeroLinea:Number(propiedadesVoucher[0].firstChild.id),
+            CentroDeCostoID:Number(propiedadesVoucher[3].firstChild.value),
+            CuentaContableID:Number(propiedadesVoucher[1].firstChild.value),
+            GlosaDetalle:propiedadesVoucher[2].firstChild.value,
+            MontoDebe:Number(propiedadesVoucher[4].firstChild.value),
+            MontoHaber:Number(propiedadesVoucher[5].firstChild.value),
+            AuxiliaresDetalle:[]
+        }
+        
+        VoucherCompleto.DetalleVoucher.push(DetalleVoucher);
+    });
+
+    
+    VoucherCompleto.DetalleVoucher.map(function(Detalle){
+        let NuevaLista = AuxiliaresDetalle.filter(function(Aux){return Aux !== null});
+
+        NuevaLista.flatMap(function(Aux){
+            if (Detalle.NumeroLinea === Aux.NumLinea) {
+                Detalle.AuxiliaresDetalle.push(Aux);
+            }
+        });
+    });
+console.log(VoucherCompleto);
+
+$.ajax({
+    url: "EditarVoucher/Contabilidad",
+    method: "POST",
+    data: JSON.stringify(VoucherCompleto),
+    headers:{
+        "Content-Type":"application/json"
+    }
+});
 }
